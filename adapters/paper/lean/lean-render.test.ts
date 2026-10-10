@@ -106,7 +106,8 @@ describe("stageLeanRender", () => {
 
   test("--modules prunes the rest and repoints every link into it, the iframe navbar included", () => {
     const site = mkdtempSync(join(tmpdir(), "lean-site-"));
-    const r = stageLeanRender({ docs: render(), site, route: "docs/lean", modules: ["QOU"] });
+    // By PACKAGE name, lower case: matched to the module root `QOU`.
+    const r = stageLeanRender({ docs: render(), site, route: "docs/lean", modules: ["qou"] });
     expect(r.droppedModules).toEqual(["Mathlib"]);
     expect(existsSync(join(site, "docs/lean/Mathlib"))).toBe(false);
     expect(existsSync(join(site, "docs/lean/QOU/Basic.html"))).toBe(true);
