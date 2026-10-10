@@ -46,8 +46,8 @@ import {
   buildContentGraph,
   isElaborated,
   type ContentGraph,
-} from "../../../cat-harness/content/pipeline/content-graph";
-import { findContentRepoRoot } from "../../../cat-harness/content/pipeline/repo-root";
+} from "../../../cat-harness-tools/content/pipeline/content-graph";
+import { findContentRepoRoot } from "../../../cat-harness-tools/content/pipeline/repo-root";
 import { folioDir } from "../../../cat-harness/schemas/cat-harness.js";
 
 /** Lean status buckets the render writes into `\blockannot[…]`. */

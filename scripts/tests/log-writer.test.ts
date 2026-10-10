@@ -11,10 +11,10 @@ import { mkdirSync, mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { workflowFile } from "../../../cat-harness/scripts/known-skills.js";
-import { loadProcessModel } from "../../../cat-harness/src/workflow/process-model.ts";
-import { writeLogEntry } from "../../../cat-harness/src/logging/log-writer.ts";
-import { writeDeclaration } from "../../../cat-harness/test/support/instance-fixture.js";
+import { workflowFile } from "../../../cat-harness-tools/scripts/known-skills.js";
+import { loadProcessModel } from "../../../cat-harness-tools/src/workflow/process-model.ts";
+import { writeLogEntry } from "../../../cat-harness-tools/src/logging/log-writer.ts";
+import { writeDeclaration } from "../../../cat-harness-tools/test/support/instance-fixture.js";
 
 /** An instance whose declaration names a trashcan, so there is somewhere to log. */
 function instance(): string {

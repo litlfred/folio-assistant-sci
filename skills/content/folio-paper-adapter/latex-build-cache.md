@@ -111,7 +111,7 @@ only ran on `workflow_dispatch`, so the image was never actually built.
 
 | Tool | Role |
 |------|------|
-| [`cat-harness/scripts/install-tex.sh`](../../../../cat-harness/scripts/install-tex.sh) | Get a TeX engine into the sandbox (the base Ubuntu repos are reachable; only launchpad PPAs are firewalled). Idempotent. **This is how you compile/verify at all.** |
+| [`cat-harness-tools/scripts/install-tex.sh`](../../../../cat-harness-tools/scripts/install-tex.sh) | Get a TeX engine into the sandbox (the base Ubuntu repos are reachable; only launchpad PPAs are firewalled). Idempotent. **This is how you compile/verify at all.** |
 | [`adapters/paper/latex/feature-build.sh`](../../../adapters/paper/latex/feature-build.sh) (Tool `paper-feature-build`) | Quick draft: compiles ONLY the changed chapters (not the full paper) with the **inline** preamble, + per-chapter latexdiff (colored + plain). Speedup is from fewer chapters, not a format. **Sets `FAST_PREVIEW=1` by default** (margins off, ~2× on top). |
 | **`FAST_PREVIEW=1`** env flag | Read by `generate-main-tex.ts`: no-ops `\marginnote`, skipping the 2944 per-block source/issue/Lean icons that cost **~50%** of compile (19.5 s → 9.2 s). Body byte-identical; **published builds leave it unset**. The biggest single *preview* speedup. |
 
@@ -122,7 +122,7 @@ are reachable (only the launchpad PPAs — `ondrej/php`, `deadsnakes` —
 are firewalled and break `apt-get update`). Run:
 
 ```bash
-cat-harness/scripts/install-tex.sh     # run with run_in_background: true (~5 GB, ~10-20 min)
+cat-harness-tools/scripts/install-tex.sh     # run with run_in_background: true (~5 GB, ~10-20 min)
 ```
 
 It disables the firewalled PPAs, installs `texlive-full` + `latexmk`,
@@ -153,10 +153,10 @@ the result, and skips only the PDFs. By hand, from the folio:
 P=folio-assistant
 cat $P/folio-assistant-sci/adapters/paper/latex/paper-preamble.tex \
     <paper dir>/latex/notation-preamble.tex > /tmp/fb/preamble.tex
-bun run --preload scripts/preload-registry.ts $P/cat-harness/content/pipeline/build.ts \
+bun run --preload scripts/preload-registry.ts $P/cat-harness-tools/content/pipeline/build.ts \
   <paper dir>/<paper>.ts --out-dir /tmp/fb/chapters \
   --generate-main --main-out /tmp/fb/main.tex --preamble /tmp/fb/preamble.tex
-bun run $P/cat-harness/content/pipeline/latex-preflight.ts /tmp/fb/main.tex   # exit 0 = no fatal classes
+bun run $P/cat-harness-tools/content/pipeline/latex-preflight.ts /tmp/fb/main.tex   # exit 0 = no fatal classes
 ```
 
 For a real compile, install TeX (above) and run

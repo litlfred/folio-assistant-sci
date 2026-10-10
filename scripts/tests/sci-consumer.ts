@@ -23,13 +23,13 @@ import { mkdirSync, mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
-import { writeInstanceConfig } from "../../../cat-harness/test/support/instance-fixture";
+import { writeInstanceConfig } from "../../../cat-harness-tools/test/support/instance-fixture";
 import { loadContributions, loadContributionsSync } from "../../../cat-harness/schemas/harness-config";
 import { ContributionRegistry, type FolioContribution } from "../../../cat-harness/schemas/contributions";
 import {
   registerDefaultChapterProfiles,
   usePipelinePluginRegistry,
-} from "../../../cat-harness/content/pipeline/pipeline-plugins";
+} from "../../../cat-harness-tools/content/pipeline/pipeline-plugins";
 
 /** This instance's root: `folio-assistant-sci/`. */
 export const SCI_ROOT = resolve(import.meta.dir, "../..");

@@ -112,7 +112,7 @@ The markdown AST node types used:
 
 ```bash
 # Validate all objects in a paper (schema + constraints + LaTeX AST)
-bun run cat-harness/content/pipeline/validate.ts content/<paper>   # after setup-folio-assistant.sh
+bun run cat-harness-tools/content/pipeline/validate.ts content/<paper>   # after setup-folio-assistant.sh
 # (legacy form: cd content && bun run pipeline/validate.ts <paper>/)
 
 # Full build with validation

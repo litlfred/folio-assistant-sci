@@ -42,10 +42,10 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "fs";
 import { dirname, join, relative, resolve } from "path";
 import { spawnSync } from "child_process";
-import { parseLeanRef, refToDecl } from "../../../cat-harness/content/pipeline/content-graph";
-import { walkBlocks } from "../../../cat-harness/content/pipeline/qa-utils";
-import { ingestMode } from "../../../cat-harness/content/pipeline/lean-atlas-ingest";
-import { findContentRepoRoot } from "../../../cat-harness/content/pipeline/repo-root";
+import { parseLeanRef, refToDecl } from "../../../cat-harness-tools/content/pipeline/content-graph";
+import { walkBlocks } from "../../../cat-harness-tools/content/pipeline/qa-utils";
+import { ingestMode } from "../../../cat-harness-tools/content/pipeline/lean-atlas-ingest";
+import { findContentRepoRoot } from "../../../cat-harness-tools/content/pipeline/repo-root";
 import { folioDir } from "../../../cat-harness/schemas/cat-harness.js";
 
 /** The placeholder line in the template that the module imports replace. */

@@ -24,7 +24,7 @@ MCP times out at 60 s because no prebuilt oleans are available.
 > source until you have tried this.**
 >
 > ```sh
-> cat-harness/scripts/lake-cache.sh restore
+> cat-harness-tools/scripts/lake-cache.sh restore
 > ```
 >
 > That is the whole procedure — it derives the package and branch from
@@ -37,7 +37,7 @@ MCP times out at 60 s because no prebuilt oleans are available.
 >
 > **This is the single most common wasted hour** — the from-source
 > sections below are a *fallback*, not the default. If you do end up
-> building, run `cat-harness/scripts/lake-cache.sh seed` afterwards so the next
+> building, run `cat-harness-tools/scripts/lake-cache.sh seed` afterwards so the next
 > agent restores in 2 minutes instead of rebuilding.
 >
 > The hand-written git recipe that used to live here has been removed:
@@ -298,7 +298,7 @@ you on switch-back).
 
 **RESTORE first (before any from-source build):**
 ```bash
-cat-harness/scripts/lake-cache.sh restore     # exit 1 = not seeded yet; 3 = corrupt
+cat-harness-tools/scripts/lake-cache.sh restore     # exit 1 = not seeded yet; 3 = corrupt
 ```
 Do not hand-roll this. The earlier hand-written version raced on
 `FETCH_HEAD` and used a cwd-relative `git ls-tree` that returned nothing
@@ -334,7 +334,7 @@ SLUG=$(cut -d: -f2 lean-toolchain | tr -d '\r' | tr . -)
 # The branch NAME is resolved, never spelled: new name if it exists, else a
 # legacy one that does, else the new name (the folio's declared lake-cache family comes first).
 # Writing a hardcoded legacy name would bypass that and block the owner's rename.
-BR=$(cat-harness/scripts/lake-cache.sh resolve-branch --key "<package>-$SLUG") || exit 1
+BR=$(cat-harness-tools/scripts/lake-cache.sh resolve-branch --key "<package>-$SLUG") || exit 1
 # 1. Pack the built oleans (compressed). Create the tarball where the
 #    worktree can `git add` it — git cannot add a path outside its tree.
 #    ⚠ The paper package build lives in the NESTED Lake dir
@@ -369,7 +369,7 @@ git worktree remove --force "$WT"                      # main branch never left
 > # Restore into a scratch Lake root and let the script do the verifying:
 > # it counts oleans and exits 3 if the extract produced none, which is
 > # exactly the paper-oleans-missing bug this step exists to catch.
-> cat-harness/scripts/lake-cache.sh restore --lake-root "$T" --branch "$BR"; echo "exit=$?"
+> cat-harness-tools/scripts/lake-cache.sh restore --lake-root "$T" --branch "$BR"; echo "exit=$?"
 > ```
 > Seeding to a `-test` branch suffix first (then a ref-only force-push
 > cutover to production — the blobs are already on the remote, so the cutover

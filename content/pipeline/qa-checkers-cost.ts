@@ -35,9 +35,9 @@
 import { existsSync, readFileSync } from "fs";
 import type { CheckerResult } from "../../../cat-harness/schemas/block-qa";
 
-import { parseLeanRef, refToDecl } from "../../../cat-harness/content/pipeline/content-graph";
-import { loadProfileCache, entryFresh, type ProfileCache } from "../../../cat-harness/content/pipeline/lean-profile-ingest";
-import { findContentRepoRoot } from "../../../cat-harness/content/pipeline/repo-root";
+import { parseLeanRef, refToDecl } from "../../../cat-harness-tools/content/pipeline/content-graph";
+import { loadProfileCache, entryFresh, type ProfileCache } from "../../../cat-harness-tools/content/pipeline/lean-profile-ingest";
+import { findContentRepoRoot } from "../../../cat-harness-tools/content/pipeline/repo-root";
 
 let _cache: ProfileCache | null = null;
 let _root: string | null = null;
