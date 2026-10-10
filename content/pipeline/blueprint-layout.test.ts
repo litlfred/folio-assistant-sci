@@ -11,7 +11,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { ENV_NAMES } from "../../../cat-harness/content/pipeline/render-latex";
+import { ENV_NAMES } from "../../../cat-harness-tools/content/pipeline/render-latex";
 import { buildBlueprintLayout, macroArity, theoremDeclarations } from "./blueprint-layout";
 import type { FormalView } from "./blueprint-export";
 

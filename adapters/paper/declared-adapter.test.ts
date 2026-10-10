@@ -10,7 +10,7 @@
  */
 import { describe, expect, test } from "bun:test";
 
-import { BUILTIN_ADAPTERS, resolveBuiltinAdapter } from "../../../cat-harness/src/builtin-adapters.ts";
+import { BUILTIN_ADAPTERS, resolveBuiltinAdapter } from "../../../cat-harness-tools/src/builtin-adapters.ts";
 import { PaperContentAdapter } from "./index.ts";
 
 describe("paper adapter declaration", () => {

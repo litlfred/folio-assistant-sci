@@ -22,19 +22,19 @@ PDF documents using the platform's TeX toolchain (`latexmk`, `pdflatex`, and `bi
 ## Mechanisms & Tools
 
 - **Tool Node:** `latexmk-compile` (satisfies `latex-compilation`).
-- **Script:** `cat-harness/scripts/latexmk-compile.sh <tex-file> [latexmk-args...]`
+- **Script:** `cat-harness-tools/scripts/latexmk-compile.sh <tex-file> [latexmk-args...]`
 
 ### Usage
 
 ```bash
 # Monolithic paper compilation
-cat-harness/scripts/latexmk-compile.sh main.tex
+cat-harness-tools/scripts/latexmk-compile.sh main.tex
 
 # Quiet compilation with extra arguments
-cat-harness/scripts/latexmk-compile.sh diff.tex --quiet
+cat-harness-tools/scripts/latexmk-compile.sh diff.tex --quiet
 
 # Standalone glossary / appendix compilation
-cat-harness/scripts/latexmk-compile.sh standalone-glossary.tex
+cat-harness-tools/scripts/latexmk-compile.sh standalone-glossary.tex
 ```
 
 ## Security Boundary — Safe Shell-Escape

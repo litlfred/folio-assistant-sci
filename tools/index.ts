@@ -70,7 +70,7 @@ export function tools(baseUrl?: string): ToolDefinition[] {
       description:
         "Install TeX Live (full) and latexmk where no TeX engine is present, disabling the firewalled launchpad PPAs that otherwise abort `apt-get update`. Idempotent: does nothing when pdflatex and memoize.sty are already present. About 5 GB and 10-20 minutes, so run it in the background. pdflatex unpacks early but is not usable until the post-install format build ends (`kpsewhich memoize.sty` returning a path is the ready signal).",
       install: { none: true },
-      invoke: { shell: "bash cat-harness/scripts/install-tex.sh" },
+      invoke: { shell: "bash cat-harness-tools/scripts/install-tex.sh" },
       io: {
         inputs: [],
         outputs: [
@@ -149,7 +149,7 @@ export function tools(baseUrl?: string): ToolDefinition[] {
     // Moved here from cat-harness/tools/index.ts (bean j9cs, 2026-10-05): the
     // `lake-cache` kind (kinds/lake-cache.json) says this harness owns the kind
     // AND the tool, and the skill it satisfies (`lean-cache-restore`) is this
-    // harness's. The script itself stays in cat-harness/scripts/, where the
+    // harness's. The script itself lives in cat-harness-tools/scripts/, where the
     // folio copies it from; only the declaration moved. A folio's lake-cache
     // directory names it as `storage.tool: "lean-cache"`.
     defineTool({
@@ -158,7 +158,7 @@ export function tools(baseUrl?: string): ToolDefinition[] {
       description:
         "Restore, verify, seed and diagnose the prebuilt `.lake/` artefacts for a Lean package. Always try `restore` first: a from-source Mathlib build is 30–60 minutes, a restore about two.",
       install: { none: true },
-      invoke: { shell: "cat-harness/scripts/lake-cache.sh" },
+      invoke: { shell: "cat-harness-tools/scripts/lake-cache.sh" },
       io: {
         inputs: [
           { name: "action", schema: t("LakeCacheAction"), required: true, arg: { positional: 0 }, description: "The verb. `doctor` exists because a restore that silently missed used to look exactly like one that worked." },

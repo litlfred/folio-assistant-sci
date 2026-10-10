@@ -40,7 +40,7 @@ supplies the template through the renderer contribution; P5: `publish.yml`).
 Until then, pass it explicitly:
 
 ```sh
-bun run cat-harness/content/pipeline/generate-main-tex.ts <paper.ts> \
+bun run cat-harness-tools/content/pipeline/generate-main-tex.ts <paper.ts> \
   --preamble folio-assistant-sci/adapters/paper/latex/paper-preamble.tex
 ```
 

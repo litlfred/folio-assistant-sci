@@ -16,16 +16,16 @@ import {
 import { tmpdir } from "os";
 import { join } from "path";
 
-import { walkBlocks } from "../../../cat-harness/content/pipeline/qa-utils.ts";
-import { checkWallSide } from "../../../cat-harness/content/pipeline/qa-checkers-voice.ts";
-import { checkQUsageArchimedeanInCategoricalChapter } from "../../../cat-harness/content/pipeline/qa-checkers-q-usage.ts";
+import { walkBlocks } from "../../../cat-harness-tools/content/pipeline/qa-utils.ts";
+import { checkWallSide } from "../../../cat-harness-tools/content/pipeline/qa-checkers-voice.ts";
+import { checkQUsageArchimedeanInCategoricalChapter } from "../../../cat-harness-tools/content/pipeline/qa-checkers-q-usage.ts";
 // From `lean-formal-ref`, not `lean-packages`: importing it installs the Lean
 // formalism layer into core's `formal-ref` injection point, and this suite
 // exercises `resolveCanonicalLean` / `listPackageLeanFiles`, which are now
 // core delegations to that layer. Configuring the package LIST alone leaves
 // every resolution `undefined` — measured: 9 of these tests went red.
-import { configureLeanPackages } from "../../../cat-harness/content/pipeline/lean-formal-ref.ts";
-import { usePipelinePluginRegistry } from "../../../cat-harness/content/pipeline/pipeline-plugins";
+import { configureLeanPackages } from "../../../cat-harness-tools/content/pipeline/lean-formal-ref.ts";
+import { usePipelinePluginRegistry } from "../../../cat-harness-tools/content/pipeline/pipeline-plugins";
 import { useSciPipelinePlugins } from "./sci-consumer";
 
 // The Lean lexer the q-usage checker scopes with is sci's contribution: loaded

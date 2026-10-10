@@ -10,10 +10,10 @@
  */
 import { describe, expect, test } from "bun:test";
 import { resolve } from "path";
-import { loadProcessModel } from "../../../cat-harness/src/workflow/process-model";
-import { startInstance } from "../../../cat-harness/src/workflow/instance";
-import { checkGate } from "../../../cat-harness/src/workflow/gate";
-import { workflowFile } from "../../../cat-harness/scripts/known-skills.ts";
+import { loadProcessModel } from "../../../cat-harness-tools/src/workflow/process-model";
+import { startInstance } from "../../../cat-harness-tools/src/workflow/instance";
+import { checkGate } from "../../../cat-harness-tools/src/workflow/gate";
+import { workflowFile } from "../../../cat-harness-tools/scripts/known-skills.ts";
 
 /** This instance's root; its diagrams are found by NAME through its declared `processes` graphs (bean `63wl`). */
 const HERE = resolve(import.meta.dir, "../..");

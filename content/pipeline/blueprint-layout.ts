@@ -44,10 +44,10 @@
 import { mkdirSync, writeFileSync } from "fs";
 import { dirname, join, resolve } from "path";
 import type { Paper } from "../../../cat-harness/schemas/types";
-import { buildContentGraph } from "../../../cat-harness/content/pipeline/content-graph";
-import { stripAnnotations } from "../../../cat-harness/content/pipeline/generate-block-tex";
-import { ENV_NAMES } from "../../../cat-harness/content/pipeline/render-latex";
-import { findContentRepoRoot } from "../../../cat-harness/content/pipeline/repo-root";
+import { buildContentGraph } from "../../../cat-harness-tools/content/pipeline/content-graph";
+import { stripAnnotations } from "../../../cat-harness-tools/content/pipeline/generate-block-tex";
+import { ENV_NAMES } from "../../../cat-harness-tools/content/pipeline/render-latex";
+import { findContentRepoRoot } from "../../../cat-harness-tools/content/pipeline/repo-root";
 import { folioDir } from "../../../cat-harness/schemas/cat-harness.js";
 import { describeExport, exportBlueprint, formalView, type ExportResult, type FormalView } from "./blueprint-export";
 
@@ -212,7 +212,7 @@ if (import.meta.main) {
   }
   const paperPath = resolve(paperArg);
   const out = resolve(opt("--out") ?? join(dirname(paperPath), "lean", "blueprint", "src"));
-  const { buildPaper } = await import("../../../cat-harness/content/pipeline/build");
+  const { buildPaper } = await import("../../../cat-harness-tools/content/pipeline/build");
   const built = await buildPaper(paperPath);
   const paper = (await import(paperPath)).default as Paper;
   const chapters = [...built.chapters.entries()]

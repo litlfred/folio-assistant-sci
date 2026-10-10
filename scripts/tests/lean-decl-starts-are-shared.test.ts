@@ -12,9 +12,9 @@ import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import {
   splitDeclarations,
   stripLeanComments,
-} from "../../../cat-harness/content/pipeline/lean-lexer.js";
-import { usePipelinePluginRegistry } from "../../../cat-harness/content/pipeline/pipeline-plugins";
-import { leanDeclSpans, scopeLeanToDecl } from "../../../cat-harness/content/pipeline/qa-checkers-q-usage.js";
+} from "../../../cat-harness-tools/content/pipeline/lean-lexer.js";
+import { usePipelinePluginRegistry } from "../../../cat-harness-tools/content/pipeline/pipeline-plugins";
+import { leanDeclSpans, scopeLeanToDecl } from "../../../cat-harness-tools/content/pipeline/qa-checkers-q-usage.js";
 import { useSciPipelinePlugins } from "./sci-consumer";
 
 // The lexer is sci's contribution, so it is loaded through a folio that
