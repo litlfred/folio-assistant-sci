@@ -60,7 +60,7 @@ esac; done
 # a hardcoded name: the same answer build.ts gives when run from the folio.
 read -r FOLIODIR PAPER < <(PAPER_ARG="$PAPER" bun -e '
   const { folioDir } = await import(process.argv[1] + "/cat-harness/schemas/cat-harness.ts");
-  const { requirePaper } = await import(process.argv[1] + "/cat-harness/content/pipeline/repo-root.ts");
+  const { requirePaper } = await import(process.argv[1] + "/cat-harness-tools/content/pipeline/repo-root.ts");
   const root = process.cwd();
   let paper;
   try { paper = requirePaper(process.env.PAPER_ARG || undefined, root); }
@@ -88,7 +88,7 @@ if [ -n "$NOTATION" ]; then
 fi
 
 echo "feature-build: [1/3] render chapters + inline main.tex (paper: $PAPER)…"
-bun run "${PRELOAD_ARGS[@]}" "$PLATFORM/cat-harness/content/pipeline/build.ts" "$PAPERDIR/$PAPER.ts" \
+bun run "${PRELOAD_ARGS[@]}" "$PLATFORM/cat-harness-tools/content/pipeline/build.ts" "$PAPERDIR/$PAPER.ts" \
     --out-dir chapters/ --generate-main --main-out main.tex \
     --preamble "$PREAMBLE" >"$OUT/build.log" 2>&1 \
   || echo "feature-build: (content build reported issues — continuing; see $OUT/build.log)"
