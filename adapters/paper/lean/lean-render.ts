@@ -58,7 +58,7 @@
  *
  *   bun run folio-assistant-sci/adapters/paper/lean/lean-render.ts \
  *     --docs <lake-root>/.lake/build/doc --site _site [--route lean] \
- *     [--modules QOU,UGB,Fred2005] [--external-base <url>] \
+ *     [--module qou --module ugb | --modules QOU,UGB] [--external-base <url>] \
  *     [--home-label qou] [--instance <name>] [--platform <index root>] [--no-rail]
  *
  * Exit 0 staged (and railed); 1 the rail pass failed; 2 usage, or the input
@@ -151,6 +151,7 @@ export function moduleRootOf(renderRel: string): string | undefined {
  */
 export function rewriteDroppedLinks(html: string, pageRel: string, keep: ReadonlySet<string>, externalBase: string): { html: string; rewritten: number } {
   let rewritten = 0;
+  const kept = new Set([...keep].map((k) => k.toLowerCase()));
   const base = externalBase.endsWith("/") ? externalBase : `${externalBase}/`;
   const out = html.replace(/\bhref="([^"]*)"/g, (whole, href: string) => {
     if (/^[a-z][a-z0-9+.-]*:/i.test(href) || href.startsWith("#") || href.startsWith("/") || href === "") return whole;
@@ -159,7 +160,7 @@ export function rewriteDroppedLinks(html: string, pageRel: string, keep: Readonl
     const target = posix.normalize(posix.join(posix.dirname(pageRel), path));
     if (target.startsWith("..")) return whole;
     const root = moduleRootOf(target);
-    if (root === undefined || keep.has(root)) return whole;
+    if (root === undefined || kept.has(root.toLowerCase())) return whole;
     rewritten++;
     return `href="${base}${target}${frag}"`;
   });
@@ -178,7 +179,7 @@ export interface StageOptions {
   site: string;
   /** Where under the site the render goes. Default `lean`. */
   route?: string;
-  /** Module roots to keep (`QOU`, `UGB`). Absent: keep everything. */
+  /** Module roots to keep (`QOU`, or its package name `qou`; matched case-insensitively). Absent: keep everything. */
   modules?: readonly string[];
   externalBase?: string;
 }
@@ -202,7 +203,9 @@ export function stageLeanRender(o: StageOptions): StageReport {
   const route = (o.route ?? "lean").replace(/^\/+|\/+$/g, "");
   if (route === "" || route.split("/").includes("..")) throw new Error(`--route must name a directory under the site, got "${o.route}"`);
   const dest = join(resolve(o.site), route);
-  const keep = o.modules && o.modules.length > 0 ? new Set(o.modules) : undefined;
+  // Case-insensitive, so a folio can name its Lake PACKAGES (`qou`, `fred2005`)
+  // and keep the module roots they build (`QOU`, `Fred2005`).
+  const keep = o.modules && o.modules.length > 0 ? new Set(o.modules.map((m) => m.toLowerCase())) : undefined;
   const externalBase = o.externalBase ?? DEFAULT_EXTERNAL_BASE;
   const report: StageReport = { dest, pages: 0, files: 0, bookkeepingSkipped: 0, declined: [], droppedModules: [], linksRewritten: 0 };
   const dropped = new Set<string>();
@@ -213,7 +216,7 @@ export function stageLeanRender(o: StageOptions): StageReport {
       const abs = join(dir, e.name);
       const rel = relative(src, abs).split(sep).join("/");
       const root = moduleRootOf(rel);
-      if (keep && root !== undefined && !keep.has(root)) {
+      if (keep && root !== undefined && !keep.has(root.toLowerCase())) {
         dropped.add(root);
         continue;
       }
@@ -284,11 +287,16 @@ function main(): number {
   const site = at("--site");
   if (!docs || !site) {
     console.error(
-      "usage: lean-render.ts --docs <doc-gen4 out dir> --site <site dir> [--route lean] [--modules A,B] [--external-base <url>] [--home-label <name>] [--instance <name>] [--platform <index root>] [--no-rail]",
+      "usage: lean-render.ts --docs <doc-gen4 out dir> --site <site dir> [--route lean] [--module <pkg>]... [--modules A,B] [--external-base <url>] [--home-label <name>] [--instance <name>] [--platform <index root>] [--no-rail]",
     );
     return 2;
   }
-  const modules = at("--modules")?.split(",").map((s) => s.trim()).filter(Boolean);
+  // `--module <name>`, repeated, is the form the Tool node declares (one shell-safe
+  // token each); `--modules A,B` is the same list for a person typing it.
+  const modules = [
+    ...(at("--modules")?.split(",") ?? []),
+    ...argv.flatMap((a, i) => (a === "--module" && argv[i + 1] ? [argv[i + 1]!] : [])),
+  ].map((s) => s.trim()).filter(Boolean);
   let r: StageReport;
   try {
     r = stageLeanRender({ docs, site, route: at("--route"), modules, externalBase: at("--external-base") });
