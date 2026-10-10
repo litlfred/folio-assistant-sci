@@ -11,4 +11,5 @@ Part of [folio-assistant-sci](../../README.md) 0.1.0, declared as `lean-skills`,
 | file | what it is | used by |
 |---|---|---|
 | [`lean-formal-edges.md`](lean-formal-edges.md) | Extract ELABORATED formal dependencies between a folio's lean.ref declarations — the trustworthy replacement for the lexical `--scan` cache. |  |
+| [`lean-html-docs.md`](lean-html-docs.md) | Build and publish the visualiser of a folio's declared `lean` directory: the package's doc-gen4 HTML render, staged under the folio's site and wrapped in the harness navbar and rail. |  |
 <!-- kg:subgraph:end -->
