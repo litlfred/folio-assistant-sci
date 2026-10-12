@@ -1,7 +1,7 @@
 {
   "$schema": "folio-block-kind/v1",
   "kind": "corollary",
-  "adapter": "paper",
+  "adapter": "mathpaper",
   "profile": "paper",
   "labelPrefix": "cor",
   "provable": true,
