@@ -1,0 +1,526 @@
+{
+  "$schema": "folio-document-images/v1",
+  "doc_id": "arxiv-2003.08005v1",
+  "images": [
+    {
+      "id": "img-p001-1",
+      "file": "images/img-p001-1.png",
+      "role": "figure",
+      "basis": {
+        "method": "inspection",
+        "by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "at": "2026-10-11",
+        "saw": "Scanned excerpt of a math article (Theorem 1 on a BVP, conditions f0/f-infinity, equation (1.1)* u''+f(t,u)=0); it is the image used in Fig. 1 on page 1, where coloured formula boxes are overlaid in the rendered page.",
+        "page": 1
+      },
+      "narrative": {
+        "text": "Fig. 1 base image: scanned text containing 'Theorem 1. Assume (A.1)-(A.3) hold...' with cases (i) superlinear and (ii) sublinear, and the displayed equation (1.1)* u'' + f(t,u) = 0. In the paper the embedded formulas are marked blue and the displayed one red; those overlays are not part of this extracted image.",
+        "state": "draft",
+        "drafted_by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "drafted_at": "2026-10-11"
+      }
+    },
+    {
+      "id": "img-p004-1",
+      "file": "images/img-p004-1.png",
+      "role": "figure",
+      "basis": {
+        "method": "inspection",
+        "by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "at": "2026-10-11",
+        "saw": "Same kind of window crop but tinted grey-mauve with formulas highlighted by red/yellow tint and green boxes; one of the SSD-output heatmap windows in Fig. 2.",
+        "page": 4
+      },
+      "narrative": {
+        "text": "Fig. 2 SSD output window: a page crop overlaid with a detection-confidence heatmap (greyish background, reddish/yellowish highlights) and green boxes around formulas such as u'' = 0 and the boundary conditions; in img-p004-5 the box encloses k(t, s).",
+        "state": "draft",
+        "drafted_by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "drafted_at": "2026-10-11"
+      }
+    },
+    {
+      "id": "img-p004-2",
+      "file": "images/img-p004-2.png",
+      "role": "figure",
+      "basis": {
+        "method": "inspection",
+        "by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "at": "2026-10-11",
+        "saw": "Small square crop of a scanned page (header 'POSITIVE SOLUTIONS OF ORDINARY DIFFERENTIAL...', 'Green's function for the BVP', equations u''=0 and the boundary conditions), plain with no boxes; one of the stacked sliding-window sub-images in Fig. 2.",
+        "page": 4
+      },
+      "narrative": {
+        "text": "Fig. 2 sliding-window sub-image: an unannotated crop of the scanned page showing the BVP text and equations u'' = 0, alpha u(0) - beta u'(0) = 0, gamma u(1) + delta u'(1) = 0 (window offsets differ between the stacked crops).",
+        "state": "draft",
+        "drafted_by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "drafted_at": "2026-10-11"
+      }
+    },
+    {
+      "id": "img-p004-3",
+      "file": "images/img-p004-3.png",
+      "role": "figure",
+      "basis": {
+        "method": "inspection",
+        "by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "at": "2026-10-11",
+        "saw": "Whole scanned page 745 of the ODE article (Green's function k(t,s), equations (2.1)-(2.8)) without overlays; the 'Input Page' at the left of Fig. 2.",
+        "page": 4
+      },
+      "narrative": {
+        "text": "Fig. 2 input page: unannotated scan of a journal page headed 'POSITIVE SOLUTIONS OF ORDINARY DIFFERENTIAL EQUATIONS 745', with numbered equations (2.1)-(2.8) defining k(t,s), the cone K and the operator A.",
+        "state": "draft",
+        "drafted_by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "drafted_at": "2026-10-11"
+      }
+    },
+    {
+      "id": "img-p004-4",
+      "file": "images/img-p004-4.png",
+      "role": "figure",
+      "basis": {
+        "method": "inspection",
+        "by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "at": "2026-10-11",
+        "saw": "Small square crop of a scanned page (header 'POSITIVE SOLUTIONS OF ORDINARY DIFFERENTIAL...', 'Green's function for the BVP', equations u''=0 and the boundary conditions), plain with no boxes; one of the stacked sliding-window sub-images in Fig. 2.",
+        "page": 4
+      },
+      "narrative": {
+        "text": "Fig. 2 sliding-window sub-image: an unannotated crop of the scanned page showing the BVP text and equations u'' = 0, alpha u(0) - beta u'(0) = 0, gamma u(1) + delta u'(1) = 0 (window offsets differ between the stacked crops).",
+        "state": "draft",
+        "drafted_by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "drafted_at": "2026-10-11"
+      }
+    },
+    {
+      "id": "img-p004-5",
+      "file": "images/img-p004-5.png",
+      "role": "figure",
+      "basis": {
+        "method": "inspection",
+        "by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "at": "2026-10-11",
+        "saw": "Same kind of window crop but tinted grey-mauve with formulas highlighted by red/yellow tint and green boxes; one of the SSD-output heatmap windows in Fig. 2.",
+        "page": 4
+      },
+      "narrative": {
+        "text": "Fig. 2 SSD output window: a page crop overlaid with a detection-confidence heatmap (greyish background, reddish/yellowish highlights) and green boxes around formulas such as u'' = 0 and the boundary conditions; in img-p004-5 the box encloses k(t, s).",
+        "state": "draft",
+        "drafted_by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "drafted_at": "2026-10-11"
+      }
+    },
+    {
+      "id": "img-p004-6",
+      "file": "images/img-p004-6.png",
+      "role": "figure",
+      "basis": {
+        "method": "inspection",
+        "by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "at": "2026-10-11",
+        "saw": "Thumbnail of the same page with a grey background and pink/white/yellow heatmap patches over formulas; the stitched heatmap page in Fig. 2.",
+        "page": 4
+      },
+      "narrative": {
+        "text": "Fig. 2 stitched-heatmap page: page 745 thumbnail with greyed background and heatmap highlights (white, pink, yellow) over formula regions, after stitching window-level detections.",
+        "state": "draft",
+        "drafted_by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "drafted_at": "2026-10-11"
+      }
+    },
+    {
+      "id": "img-p004-7",
+      "file": "images/img-p004-7.png",
+      "role": "figure",
+      "basis": {
+        "method": "inspection",
+        "by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "at": "2026-10-11",
+        "saw": "Thumbnail of the same page with many overlapping magenta/purple boxes over formulas; the 'Stitch Patches' stage of Fig. 2.",
+        "page": 4
+      },
+      "narrative": {
+        "text": "Fig. 2 stitched-patches page: page 745 thumbnail covered with dense overlapping purple bounding boxes from window-level detections, before pooling.",
+        "state": "draft",
+        "drafted_by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "drafted_at": "2026-10-11"
+      }
+    },
+    {
+      "id": "img-p004-8",
+      "file": "images/img-p004-8.png",
+      "role": "figure",
+      "basis": {
+        "method": "inspection",
+        "by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "at": "2026-10-11",
+        "saw": "Small square crop of a scanned page (header 'POSITIVE SOLUTIONS OF ORDINARY DIFFERENTIAL...', 'Green's function for the BVP', equations u''=0 and the boundary conditions), plain with no boxes; one of the stacked sliding-window sub-images in Fig. 2.",
+        "page": 4
+      },
+      "narrative": {
+        "text": "Fig. 2 sliding-window sub-image: an unannotated crop of the scanned page showing the BVP text and equations u'' = 0, alpha u(0) - beta u'(0) = 0, gamma u(1) + delta u'(1) = 0 (window offsets differ between the stacked crops).",
+        "state": "draft",
+        "drafted_by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "drafted_at": "2026-10-11"
+      }
+    },
+    {
+      "id": "img-p004-9",
+      "file": "images/img-p004-9.png",
+      "role": "figure",
+      "basis": {
+        "method": "inspection",
+        "by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "at": "2026-10-11",
+        "saw": "Same kind of window crop but tinted grey-mauve with formulas highlighted by red/yellow tint and green boxes; one of the SSD-output heatmap windows in Fig. 2.",
+        "page": 4
+      },
+      "narrative": {
+        "text": "Fig. 2 SSD output window: a page crop overlaid with a detection-confidence heatmap (greyish background, reddish/yellowish highlights) and green boxes around formulas such as u'' = 0 and the boundary conditions; in img-p004-5 the box encloses k(t, s).",
+        "state": "draft",
+        "drafted_by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "drafted_at": "2026-10-11"
+      }
+    },
+    {
+      "id": "img-p004-10",
+      "file": "images/img-p004-10.png",
+      "role": "figure",
+      "basis": {
+        "method": "inspection",
+        "by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "at": "2026-10-11",
+        "saw": "Page 745 scan with single green bounding boxes around each formula; the 'Detected Formulas' output at the right of Fig. 2.",
+        "page": 4
+      },
+      "narrative": {
+        "text": "Fig. 2 output: page 745 with one green bounding box per detected formula (inline items such as k(t,s), [0,1] and displayed equations (2.1)-(2.8)) after pooling.",
+        "state": "draft",
+        "drafted_by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "drafted_at": "2026-10-11"
+      }
+    },
+    {
+      "id": "img-p004-11",
+      "file": "images/img-p004-11.png",
+      "role": "figure",
+      "basis": {
+        "method": "inspection",
+        "by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "at": "2026-10-11",
+        "saw": "Page crop overlaid with a regular grid of blue star markers and red, green and yellow rectangles around a pink-highlighted u''=0; this is Fig. 3.",
+        "page": 4
+      },
+      "narrative": {
+        "text": "Fig. 3: default boxes for a 512x512 window. A grid of blue star box centres covers a page crop; six rectangles (red, green, yellow) of different sizes and aspect ratios surround the pink-highlighted formula u'' = 0.",
+        "state": "draft",
+        "drafted_by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "drafted_at": "2026-10-11"
+      }
+    },
+    {
+      "id": "img-p005-1",
+      "file": "images/img-p005-1.png",
+      "role": "figure",
+      "basis": {
+        "method": "inspection",
+        "by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "at": "2026-10-11",
+        "saw": "Bar chart, x-axis 'Aspect ratio' 1-38, y-axis 'Count' 0-10000; Fig. 4.",
+        "page": 5
+      },
+      "narrative": {
+        "text": "Fig. 4: histogram of formula aspect ratios. Y-axis 'Count' with ticks 0, 2500, 5000, 7500, 10000; x-axis 'Aspect ratio' 1 to 38. Bars peak at ratio 2 (about 9000) and 1 (about 8400), then fall steadily (about 5000 at 3, 4500 at 4, 2900 at 5) to near zero beyond about 20.",
+        "state": "draft",
+        "drafted_by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "drafted_at": "2026-10-11"
+      }
+    },
+    {
+      "id": "img-p005-2",
+      "file": "images/img-p005-2.png",
+      "role": "figure",
+      "basis": {
+        "method": "inspection",
+        "by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "at": "2026-10-11",
+        "saw": "Scan crop with header, 'Here k(t, s) denotes the Green's function for the BVP' and equations (2.1),(2.2); used as panel (a) 'Initial detection' of Fig. 5, where the blue box is a vector overlay.",
+        "page": 5
+      },
+      "narrative": {
+        "text": "Fig. 5(a) base image: scanned excerpt with equations (2.1) u'' = 0 and (2.2) the two boundary conditions. In the rendered figure a blue detection box sits on the first boundary condition; that box is not in this extracted image.",
+        "state": "draft",
+        "drafted_by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "drafted_at": "2026-10-11"
+      }
+    },
+    {
+      "id": "img-p005-3",
+      "file": "images/img-p005-3.png",
+      "role": "figure",
+      "basis": {
+        "method": "inspection",
+        "by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "at": "2026-10-11",
+        "saw": "Visually identical scan crop to img-p005-2, checked separately; used as panel (b) 'After cropping' of Fig. 5.",
+        "page": 5
+      },
+      "narrative": {
+        "text": "Fig. 5(b) base image: the same scanned excerpt (equations (2.1), (2.2)) used for the 'After cropping' panel; the cropped blue box shown in the paper is not part of this extracted image.",
+        "state": "draft",
+        "drafted_by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "drafted_at": "2026-10-11"
+      }
+    },
+    {
+      "id": "img-p006-1",
+      "file": "images/img-p006-1.png",
+      "role": "figure",
+      "basis": {
+        "method": "inspection",
+        "by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "at": "2026-10-11",
+        "saw": "Scanned page 744 (L. H. Erbe and Haiyan Wang), Theorem 1, Corollary 1, Theorem 2, with blue boxes around formulas; fourth panel of Fig. 6 detection results.",
+        "page": 6
+      },
+      "narrative": {
+        "text": "Fig. 6 panel 4: detection results on page 744 of Erbe and Wang ('2. Existence results', Theorem 1, Corollary 1, Theorem 2 of Krasnoselskii), with blue bounding boxes around inline and displayed formulas.",
+        "state": "draft",
+        "drafted_by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "drafted_at": "2026-10-11"
+      }
+    },
+    {
+      "id": "img-p006-2",
+      "file": "images/img-p006-2.png",
+      "role": "figure",
+      "basis": {
+        "method": "inspection",
+        "by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "at": "2026-10-11",
+        "saw": "Typeset page with sums over partitions, equations (3.3)-(3.5) involving I^V_{0,n,beta}, enclosed in blue boxes; first panel of Fig. 6.",
+        "page": 6
+      },
+      "narrative": {
+        "text": "Fig. 6 panel 1: detection results on a page about quadratic relations among codimension-zero classes (equations (3.3)-(3.5)), each formula enclosed in a blue bounding box, wide multi-line sums boxed line by line.",
+        "state": "draft",
+        "drafted_by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "drafted_at": "2026-10-11"
+      }
+    },
+    {
+      "id": "img-p006-3",
+      "file": "images/img-p006-3.png",
+      "role": "figure",
+      "basis": {
+        "method": "inspection",
+        "by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "at": "2026-10-11",
+        "saw": "Typeset page (5.23), sections 5.2.6, 5.3, 5.4 with a matrix equation, formulas in blue boxes; second panel of Fig. 6.",
+        "page": 6
+      },
+      "narrative": {
+        "text": "Fig. 6 panel 2: detection results on a page containing (5.23), 'Nonsingular rational curves', 'Quantum multiplication in H*(P^n)', (5.24) and a matrix D-module equation, with blue bounding boxes around formulas.",
+        "state": "draft",
+        "drafted_by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "drafted_at": "2026-10-11"
+      }
+    },
+    {
+      "id": "img-p006-4",
+      "file": "images/img-p006-4.png",
+      "role": "figure",
+      "basis": {
+        "method": "inspection",
+        "by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "at": "2026-10-11",
+        "saw": "Scanned page 745 (Green's function, (2.1)-(2.8)) with blue boxes around formulas; third panel of Fig. 6.",
+        "page": 6
+      },
+      "narrative": {
+        "text": "Fig. 6 panel 3: detection results on page 745 of the ODE article (equations (2.1)-(2.8)), with blue bounding boxes; per the caption, split formulas are highlighted in pink in this panel, which is not clearly visible in the extracted image.",
+        "state": "draft",
+        "drafted_by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "drafted_at": "2026-10-11"
+      }
+    },
+    {
+      "id": "img-p007-1",
+      "file": "images/img-p007-1.png",
+      "role": "figure",
+      "basis": {
+        "method": "inspection",
+        "by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "at": "2026-10-11",
+        "saw": "Grouped bar chart, y-axis 'f-score' 0.5-0.9, x-axis 'Filename' with 10 documents, legend IOU >= 0.5 (blue) and IOU >= 0.75 (red); Fig. 7.",
+        "page": 7
+      },
+      "narrative": {
+        "text": "Fig. 7: document-level f-scores for 10 test documents (Lorentz48, Jones83, Lusztig89, Kontsevich94, Erbe94, Gidas79, Kazhdan79, Li75, Emden76, Katz99). Blue bars IOU >= 0.5 range 0.6816 (Emden76) to 0.8787 (Erbe94); red bars IOU >= 0.75 range 0.5898 (Emden76) to 0.8518 (Erbe94); y-axis 0.5 to 0.9.",
+        "state": "draft",
+        "drafted_by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "drafted_at": "2026-10-11"
+      }
+    }
+  ]
+}

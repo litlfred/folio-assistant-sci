@@ -1,0 +1,26 @@
+{
+  "@context": [
+    "https://litlfred.github.io/folio-assistant/ns/content/v1.jsonld",
+    {
+      "@base": "https://litlfred.github.io/folio/"
+    }
+  ],
+  "@id": "library/arxiv-2604.00554v1/blocks/figure-img-p007-1",
+  "kind": "figure",
+  "file": "../images/img-p007-1.png",
+  "pageStart": 7,
+  "pageEnd": 7,
+  "narrative": {
+    "text": "Figure 5, 'Logarithmic Plot of Training Losses over Time': training loss (log scale, ~5e-4 to 0.2) against epoch (0-5) for CalmExperiment-7B-slerp (red), Maxine-7B-0401-stock (blue), Mistral-Passthrough-8L-10B (green). All three are noisy and trend downward from about 0.17 (green near 0.04) to about 10^-3.",
+    "state": "draft",
+    "drafted_by": {
+      "kind": "agent",
+      "id": "claude",
+      "model": "claude-opus-5-5"
+    },
+    "drafted_at": "2026-10-11"
+  },
+  "derivedFrom": "library/arxiv-2604.00554v1/sections/sec-019",
+  "sourceDocument": "https://litlfred.github.io/folio-assistant/assets/library/jsonld/folio-assistant-sci/arxiv-2604.00554v1/manifest.jsonld",
+  "provenance": "ingested"
+}

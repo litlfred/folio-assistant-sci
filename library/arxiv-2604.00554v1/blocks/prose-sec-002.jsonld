@@ -1,0 +1,17 @@
+{
+  "@context": [
+    "https://litlfred.github.io/folio-assistant/ns/content/v1.jsonld",
+    {
+      "@base": "https://litlfred.github.io/folio/"
+    }
+  ],
+  "@id": "library/arxiv-2604.00554v1/blocks/prose-sec-002",
+  "kind": "prose",
+  "title": "Document Splitting",
+  "pageStart": 2,
+  "pageEnd": 2,
+  "text": "../sections/sec-002-4-document-splitting.md",
+  "derivedFrom": "https://litlfred.github.io/folio-assistant/assets/library/jsonld/folio-assistant-sci/arxiv-2604.00554v1/manifest.jsonld",
+  "sourceDocument": "https://litlfred.github.io/folio-assistant/assets/library/jsonld/folio-assistant-sci/arxiv-2604.00554v1/manifest.jsonld",
+  "provenance": "ingested"
+}

@@ -1,0 +1,26 @@
+{
+  "@context": [
+    "https://litlfred.github.io/folio-assistant/ns/content/v1.jsonld",
+    {
+      "@base": "https://litlfred.github.io/folio/"
+    }
+  ],
+  "@id": "library/arxiv-2512.09874v3/blocks/figure-img-p005-2",
+  "kind": "figure",
+  "file": "../images/img-p005-2.png",
+  "pageStart": 5,
+  "pageEnd": 5,
+  "narrative": {
+    "text": "Figure 1, parts 1-2: Formula Dataset (Wikipedia → Formula Extraction → Filtering + Deduplication → wikipedia-latex-formulas-319k, with a Hugging Face emoji logo), then Benchmark Dataset: randomized building blocks (Display Formulas, Text Segments, Text + Inline Formulas Mixed) form a Ground Truth JSON, combined with a randomized Layout/Style LaTeX template into an assembled TEX file, compiled by pdflatex into the PDF to be parsed.",
+    "state": "draft",
+    "drafted_by": {
+      "kind": "agent",
+      "id": "claude",
+      "model": "claude-opus-5-5"
+    },
+    "drafted_at": "2026-10-11"
+  },
+  "derivedFrom": "library/arxiv-2512.09874v3/sections/sec-000",
+  "sourceDocument": "https://litlfred.github.io/folio-assistant/assets/library/jsonld/folio-assistant-sci/arxiv-2512.09874v3/manifest.jsonld",
+  "provenance": "ingested"
+}

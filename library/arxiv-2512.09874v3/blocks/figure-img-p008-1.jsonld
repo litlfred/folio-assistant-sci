@@ -1,0 +1,26 @@
+{
+  "@context": [
+    "https://litlfred.github.io/folio-assistant/ns/content/v1.jsonld",
+    {
+      "@base": "https://litlfred.github.io/folio/"
+    }
+  ],
+  "@id": "library/arxiv-2512.09874v3/blocks/figure-img-p008-1",
+  "kind": "figure",
+  "file": "../images/img-p008-1.png",
+  "pageStart": 8,
+  "pageEnd": 8,
+  "narrative": {
+    "text": "Two formula comparisons rendered by the CDM tool (green boxes = matched symbols, red = errors), each with a score table. Left: 778320/2598960 vs 778120/2598960 (one digit red): LLM-Judge 3, CDM 0.929, human scores 1, 3, 9. Right: (1 + r/n)^n vs (1 + r/a)^n (denominator red): LLM-Judge 2, CDM 0.875, human scores 1, 4, 7.",
+    "state": "draft",
+    "drafted_by": {
+      "kind": "agent",
+      "id": "claude",
+      "model": "claude-opus-5-5"
+    },
+    "drafted_at": "2026-10-11"
+  },
+  "derivedFrom": "library/arxiv-2512.09874v3/sections/sec-000",
+  "sourceDocument": "https://litlfred.github.io/folio-assistant/assets/library/jsonld/folio-assistant-sci/arxiv-2512.09874v3/manifest.jsonld",
+  "provenance": "ingested"
+}

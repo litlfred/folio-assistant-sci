@@ -1,0 +1,136 @@
+{
+  "$schema": "folio-document-images/v1",
+  "doc_id": "arxiv-2512.09874v3",
+  "images": [
+    {
+      "id": "img-p005-1",
+      "file": "images/img-p005-1.png",
+      "role": "figure",
+      "basis": {
+        "method": "inspection",
+        "by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "at": "2026-10-11",
+        "saw": "Flowchart panel headed '3. Evaluation Pipeline'; lower part of Figure 1 (continues from img-p005-2).",
+        "page": 5
+      },
+      "narrative": {
+        "text": "Figure 1, part 3 'Evaluation Pipeline': a PDF-Parser produces Parsed Text (TXT); together with Ground Truth (JSON list of text, inline-formula and display-formula items) it feeds 'LLM-Based Matching (+ Rule-Based Post-Verification)', which outputs Formula Pairs (JSON of gt_formula/parsed_formula, e.g. $a+1$ vs $a+I$) and then 'Evaluation for all formula pairs'.",
+        "state": "draft",
+        "drafted_by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "drafted_at": "2026-10-11"
+      }
+    },
+    {
+      "id": "img-p005-2",
+      "file": "images/img-p005-2.png",
+      "role": "figure",
+      "basis": {
+        "method": "inspection",
+        "by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "at": "2026-10-11",
+        "saw": "Flowchart panels '1. Formula Dataset' and '2. Benchmark Dataset'; upper part of Figure 1.",
+        "page": 5
+      },
+      "narrative": {
+        "text": "Figure 1, parts 1-2: Formula Dataset (Wikipedia → Formula Extraction → Filtering + Deduplication → wikipedia-latex-formulas-319k, with a Hugging Face emoji logo), then Benchmark Dataset: randomized building blocks (Display Formulas, Text Segments, Text + Inline Formulas Mixed) form a Ground Truth JSON, combined with a randomized Layout/Style LaTeX template into an assembled TEX file, compiled by pdflatex into the PDF to be parsed.",
+        "state": "draft",
+        "drafted_by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "drafted_at": "2026-10-11"
+      }
+    },
+    {
+      "id": "img-p008-1",
+      "file": "images/img-p008-1.png",
+      "role": "figure",
+      "basis": {
+        "method": "inspection",
+        "by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "at": "2026-10-11",
+        "saw": "Two CDM symbol-matching comparisons with score tables (illustrating rater disagreement).",
+        "page": 8
+      },
+      "narrative": {
+        "text": "Two formula comparisons rendered by the CDM tool (green boxes = matched symbols, red = errors), each with a score table. Left: 778320/2598960 vs 778120/2598960 (one digit red): LLM-Judge 3, CDM 0.929, human scores 1, 3, 9. Right: (1 + r/n)^n vs (1 + r/a)^n (denominator red): LLM-Judge 2, CDM 0.875, human scores 1, 4, 7.",
+        "state": "draft",
+        "drafted_by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "drafted_at": "2026-10-11"
+      }
+    },
+    {
+      "id": "img-p010-1",
+      "file": "images/img-p010-1.png",
+      "role": "figure",
+      "basis": {
+        "method": "inspection",
+        "by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "at": "2026-10-11",
+        "saw": "Four CDM comparison panels with all-green boxes; illustrates CDM false positives (text p.10).",
+        "page": 10
+      },
+      "narrative": {
+        "text": "Four ground-truth/parsed formula pairs separated by a blue line, all symbols boxed green: 7^2 vs 72, 10^{-1} vs 10 − 1, x_{(i−1)} vs x(i − 1), and blackboard ℕ ⊂ ℝ vs italic N ⊂ R. These are the examples of CDM giving matches despite positional or symbol differences.",
+        "state": "draft",
+        "drafted_by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "drafted_at": "2026-10-11"
+      }
+    },
+    {
+      "id": "img-p010-2",
+      "file": "images/img-p010-2.png",
+      "role": "figure",
+      "basis": {
+        "method": "inspection",
+        "by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "at": "2026-10-11",
+        "saw": "Four CDM comparison panels with red-boxed operator symbols; illustrates CDM false negatives.",
+        "page": 10
+      },
+      "narrative": {
+        "text": "Four formula pairs that look equivalent but where CDM boxes the middle symbol in red: A ∧ B, A \\ B = 0, x → y, and x ≠ y, each shown above and below a blue line with the operands boxed green.",
+        "state": "draft",
+        "drafted_by": {
+          "kind": "agent",
+          "id": "claude",
+          "model": "claude-opus-5-5"
+        },
+        "drafted_at": "2026-10-11"
+      }
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "@context": [
+    "https://litlfred.github.io/folio-assistant/ns/content/v1.jsonld",
+    {
+      "@base": "https://litlfred.github.io/folio/"
+    }
+  ],
+  "@id": "library/arxiv-2604.00554v1/blocks/figure-img-p006-1",
+  "kind": "figure",
+  "file": "../images/img-p006-1.png",
+  "pageStart": 6,
+  "pageEnd": 6,
+  "narrative": {
+    "text": "Figure 4 panel 'CalmExperiment 7B slerp': validation loss (log scale, ~10^-2 to 10^1) against epoch (0-10) for lr = 0.00005 (blue), 0.005 (green), 0.0005 (red). Green stays near 10; blue decreases from about 0.45 to about 0.019; red decreases from about 0.09 to about 0.01.",
+    "state": "draft",
+    "drafted_by": {
+      "kind": "agent",
+      "id": "claude",
+      "model": "claude-opus-5-5"
+    },
+    "drafted_at": "2026-10-11"
+  },
+  "derivedFrom": "library/arxiv-2604.00554v1/sections/sec-017",
+  "sourceDocument": "https://litlfred.github.io/folio-assistant/assets/library/jsonld/folio-assistant-sci/arxiv-2604.00554v1/manifest.jsonld",
+  "provenance": "ingested"
+}
