@@ -1,0 +1,26 @@
+{
+  "@context": [
+    "https://litlfred.github.io/folio-assistant/ns/content/v1.jsonld",
+    {
+      "@base": "https://litlfred.github.io/folio/"
+    }
+  ],
+  "@id": "library/arxiv-2604.00554v1/blocks/figure-img-p007-2",
+  "kind": "figure",
+  "file": "../images/img-p007-2.png",
+  "pageStart": 7,
+  "pageEnd": 7,
+  "narrative": {
+    "text": "Figure 6: scan of review page 35 where the computer-vision model has drawn one red box (labelled 'title') around the Fröhlich and Shepherdson title line; the other two titles on the page (Yoshida, Auslander and Buchsbaum) are not boxed.",
+    "state": "draft",
+    "drafted_by": {
+      "kind": "agent",
+      "id": "claude",
+      "model": "claude-opus-5-5"
+    },
+    "drafted_at": "2026-10-11"
+  },
+  "derivedFrom": "library/arxiv-2604.00554v1/sections/sec-019",
+  "sourceDocument": "https://litlfred.github.io/folio-assistant/assets/library/jsonld/folio-assistant-sci/arxiv-2604.00554v1/manifest.jsonld",
+  "provenance": "ingested"
+}

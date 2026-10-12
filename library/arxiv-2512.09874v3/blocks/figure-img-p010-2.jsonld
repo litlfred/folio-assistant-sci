@@ -1,0 +1,26 @@
+{
+  "@context": [
+    "https://litlfred.github.io/folio-assistant/ns/content/v1.jsonld",
+    {
+      "@base": "https://litlfred.github.io/folio/"
+    }
+  ],
+  "@id": "library/arxiv-2512.09874v3/blocks/figure-img-p010-2",
+  "kind": "figure",
+  "file": "../images/img-p010-2.png",
+  "pageStart": 10,
+  "pageEnd": 10,
+  "narrative": {
+    "text": "Four formula pairs that look equivalent but where CDM boxes the middle symbol in red: A ∧ B, A \\ B = 0, x → y, and x ≠ y, each shown above and below a blue line with the operands boxed green.",
+    "state": "draft",
+    "drafted_by": {
+      "kind": "agent",
+      "id": "claude",
+      "model": "claude-opus-5-5"
+    },
+    "drafted_at": "2026-10-11"
+  },
+  "derivedFrom": "library/arxiv-2512.09874v3/sections/sec-000",
+  "sourceDocument": "https://litlfred.github.io/folio-assistant/assets/library/jsonld/folio-assistant-sci/arxiv-2512.09874v3/manifest.jsonld",
+  "provenance": "ingested"
+}

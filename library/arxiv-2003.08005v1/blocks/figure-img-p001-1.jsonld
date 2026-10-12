@@ -1,0 +1,26 @@
+{
+  "@context": [
+    "https://litlfred.github.io/folio-assistant/ns/content/v1.jsonld",
+    {
+      "@base": "https://litlfred.github.io/folio/"
+    }
+  ],
+  "@id": "library/arxiv-2003.08005v1/blocks/figure-img-p001-1",
+  "kind": "figure",
+  "file": "../images/img-p001-1.png",
+  "pageStart": 1,
+  "pageEnd": 1,
+  "narrative": {
+    "text": "Fig. 1 base image: scanned text containing 'Theorem 1. Assume (A.1)-(A.3) hold...' with cases (i) superlinear and (ii) sublinear, and the displayed equation (1.1)* u'' + f(t,u) = 0. In the paper the embedded formulas are marked blue and the displayed one red; those overlays are not part of this extracted image.",
+    "state": "draft",
+    "drafted_by": {
+      "kind": "agent",
+      "id": "claude",
+      "model": "claude-opus-5-5"
+    },
+    "drafted_at": "2026-10-11"
+  },
+  "derivedFrom": "library/arxiv-2003.08005v1/sections/sec-front-matter",
+  "sourceDocument": "https://litlfred.github.io/folio-assistant/assets/library/jsonld/folio-assistant-sci/arxiv-2003.08005v1/manifest.jsonld",
+  "provenance": "ingested"
+}
