@@ -10,7 +10,7 @@ import { describe, test, expect } from "bun:test";
 import { readdirSync } from "fs";
 import { join } from "path";
 import { libraryEntry } from "../../../cat-harness-tools/scripts/tests/library-dirs.ts";
-import { checkEditorializing } from "../../../cat-harness-tools/content/pipeline/qa-checkers-voice.ts";
+import { checkEditorializing } from "../../../cat-harness-tools/pipeline/qa-checkers-voice.ts";
 import { SCI_ROOT } from "./sci-consumer";
 
 // ── b7yo: the two false positives that survived the profile axis ────
