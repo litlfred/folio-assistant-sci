@@ -94,6 +94,56 @@ knowingly.
 The script ends by asserting that every staged page is railed or declined
 the rail; a page with neither fails it.
 
+## 3. Or publish it DYNAMICALLY, from the knowledge graph
+
+Owner, 2026-10-11 (qou): *"can we have it dynamically load from the KG instead
+of static content?"* — the hybrid route. doc-gen4 still elaborates; its static
+HTML is not published. `lean-kg-publish` reads doc-gen4's per-module
+**declaration data** (`.lake/build/doc-data/declaration-data-<Module>.bmp`) and
+writes JSON-LD shards plus one viewer page:
+
+```sh
+bun run folio-assistant/folio-assistant-sci/adapters/paper/lean/lean-kg-publish.ts \
+  --doc-data .lake/build/doc-data --site _site --route lean \
+  --modules QOU,UGB,Fred2005 --content-root folio \
+  --repo litlfred/qou --ref <sha> --content-prefix folio/ --home-label qou
+```
+
+| file | what |
+|---|---|
+| `data/index.json` | modules, declaration counts, chunk counts, a content hash per module |
+| `data/names.json` | every declaration name, for search; fetched on first search |
+| `data/m/<Module>.jsonld` | the module node, `imports` edges, one node per declaration with `formalizes` edges to the blocks whose `lean.ref` names it |
+| `data/m/<Module>.<k>.sig.json` | rendered signatures, 500 per chunk, fetched as cards scroll in |
+
+Measured on qou: 3,011 modules, 53,565 declarations, 651 formalizing a block,
+171 MB in 6,005 files, 13 s. The 12,804-declaration
+`QOU.BraidKnot.AllKnownIsotopesUniqueness` opens on a target declaration in
+about 2 s (it was a 55 MB HTML page in the static render).
+
+doc-gen4's `style.css` styles bare `body`/`header`/`nav`/`main`; the publish
+step keeps only its custom properties and signature rules, scoped under
+`.lkg-sig`, so it cannot lay the viewer out as a doc-gen4 page or reach the rail.
+
+### Cache the doc-gen4 output, iterate per STAGING branch
+
+The doc-gen4 run is the expensive part (qou: about 2 h 20 min on 4 cores, 15,151
+Lake jobs). Its output is cached on an orphan branch, e.g. qou's
+`lake-cache/qou-docgen4-v4-24-0` (doc HTML with Lake `.hash`/`.trace`,
+doc-data, and doc-gen4's own build; ~160 MB in two parts, `MANIFEST.json`).
+Restore it after the olean cache and `lake -R -Kenv=dev build <Lib>:docs`
+re-renders only modules whose traces changed.
+
+For a STAGING branch, publish an overlay against the main graph:
+
+```sh
+… lean-kg-publish.ts … --base https://<site>/lean/data
+```
+
+Only modules whose content hash differs from the base are written, plus
+`data/overlay.json`; the viewer loads changed modules from the branch and the
+rest from the base. A branch with no Lean change writes no module files.
+
 ## Declaring the directory
 
 A folio declares each Lean package directory (or their common parent) with
