@@ -13,10 +13,10 @@
  *
  * @module folio-assistant-sci/content/pipeline/plugin-slots
  */
-import type { PipelinePlugins } from "../../../cat-harness-tools/content/pipeline/pipeline-plugins.js";
-import { declarationStarts, stripLeanComments } from "../../../cat-harness-tools/content/pipeline/lean-lexer.js";
-import { registerDefaultChapterProfiles } from "../../../cat-harness-tools/content/pipeline/_folio-chapter-profiles.qou.js";
-import { runPreflight } from "../../../cat-harness-tools/content/pipeline/latex-preflight.js";
+import type { PipelinePlugins } from "../../../cat-harness-tools/pipeline/pipeline-plugins.js";
+import { declarationStarts, stripLeanComments } from "../../../cat-harness-tools/pipeline/lean-lexer.js";
+import { registerDefaultChapterProfiles } from "../../../cat-harness-tools/pipeline/_folio-chapter-profiles.qou.js";
+import { runPreflight } from "../../../cat-harness-tools/pipeline/latex-preflight.js";
 import { computeStats, leanFileStatus, resolveLeanFile } from "../../../cat-harness-tools/scripts/lean-coverage.js";
 
 export const PIPELINE_IMPLEMENTATIONS: PipelinePlugins = {

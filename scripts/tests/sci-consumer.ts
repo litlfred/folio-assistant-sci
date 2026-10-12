@@ -29,7 +29,7 @@ import { ContributionRegistry, type FolioContribution } from "../../../cat-harne
 import {
   registerDefaultChapterProfiles,
   usePipelinePluginRegistry,
-} from "../../../cat-harness-tools/content/pipeline/pipeline-plugins";
+} from "../../../cat-harness-tools/pipeline/pipeline-plugins";
 
 /** This instance's root: `folio-assistant-sci/`. */
 export const SCI_ROOT = resolve(import.meta.dir, "../..");
