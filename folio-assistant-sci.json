@@ -2,6 +2,8 @@
   "$schema": "cat-harness-declaration/1.0.0",
   "_comment": "The SCIENCE folio instance, staged as a top-level directory ahead of becoming its own repository -- the same pattern as who-iris/ and folio-assistant-core/. Owner, 2026-09-20: 'milnor goes in f-a-sci library/, move all 4 and fix fallout'. It exists because `milnorlink` is source material for mathematics and has nothing to do with the WHO IRIS catalogue, so sending it to who-iris/ alongside the three IRIS items would have put one thing in a place named for another. Bean r1lz. DECLARE ONLY WHAT EXISTS, per the dh4f rule: every entry here is a directory that is present.",
   "name": "folio-assistant-sci",
+  "_skillPrefix_comment": "Skills from this instance install as fa-<name> (bean x4mt; owner ruling 2026-10-11: harnesses have their own prefix, e.g. cat, fa).",
+  "skillPrefix": "fa",
   "repository": "litlfred/folio-assistant-sci",
   "version": "0.1.0",
   "needs": [
