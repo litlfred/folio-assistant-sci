@@ -17,11 +17,11 @@
  *
  * ## A declaration's unit
  *
- * - **id** — `<module>.<qualified name>`, the name a `lean.ref` would use after
- *   the package prefix: `namespace` blocks are tracked so `theorem foo` inside
- *   `namespace QOU.Mass` is `QOU.Mass.foo`. The module is the file's path
- *   under its Lake root (`QOU/Mass/X.lean` → `QOU.Mass.X`), so a name declared
- *   in two files stays two units rather than silently overwriting one another.
+ * - **id** — `<qualified name>@<module>`. The name is what a `lean.ref` uses
+ *   after its package prefix: `namespace` blocks are tracked, so `theorem foo`
+ *   inside `namespace QOU.Mass` is `QOU.Mass.foo`. The module is the file's
+ *   path under its Lean root (`QOU/Mass/X.lean` → `QOU.Mass.X`), so a name
+ *   declared in two files stays two units rather than one overwriting the other.
  * - **text** — the declaration's doc comment (`/-- … -/` immediately above it),
  *   its name split into words (`markovZ_conventionD` → `markov z convention d`),
  *   and its signature. NOT the body: a proof's tactic script is vocabulary
@@ -120,7 +120,7 @@ export function declUnitsOf(raw: string, module: string): LsiUnit[] {
     const name = span.name.startsWith("_root_.") ? span.name.slice(7) : space && !span.name.startsWith(`${space}.`) ? `${space}.${span.name}` : span.name;
     const doc = docCommentBefore(raw, at);
     const text = [doc, nameWords(span.name), span.signature.replace(/\s+/g, " ").trim()].filter(Boolean).join("\n\n");
-    out.push({ id: `${module}.${name}`, text });
+    out.push({ id: `${name}@${module}`, text });
   });
   return out;
 }
