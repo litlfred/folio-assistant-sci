@@ -39,6 +39,13 @@
       "role": "instance-readme",
       "title": "folio-assistant-sci",
       "description": "What is here and why it is not in who-iris."
+    },
+    {
+      "id": "checkout-scripts",
+      "src": "package.json",
+      "role": "checkout-scripts",
+      "title": "package.json — folio-assistant-sci",
+      "description": "The checkout scripts this instance's code runs, under `checkoutScripts`. Each command is relative to the downstream checkout root; a downstream that mounts this instance reads them with `bun run cat`."
     }
   ],
   "directories": [
