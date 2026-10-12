@@ -277,6 +277,23 @@ export function findPlatform(explicit?: string): string | undefined {
   }
 }
 
+/**
+ * Run the platform's rail pass over the whole site, exactly as
+ * `stage-folio-local.ts` does. Returns false (and says so) when it fails.
+ */
+export function runRail(platform: string, site: string, homeLabel?: string, instance?: string): boolean {
+  const args = ["run", join(platform, "cat-harness/scripts/rail-standalone-pages.ts"), "--site", resolve(site), "--built", "cat-harness", "--foreign-site"];
+  if (homeLabel) args.push("--home-label", homeLabel);
+  if (instance) args.push("--instance", instance);
+  try {
+    execFileSync("bun", args, { cwd: platform, stdio: "inherit" });
+    return true;
+  } catch {
+    console.error("✗ the rail pass failed");
+    return false;
+  }
+}
+
 function main(): number {
   const argv = process.argv.slice(2);
   const at = (f: string): string | undefined => {
@@ -320,17 +337,7 @@ function main(): number {
     console.error("? no index checkout with cat-harness/scripts/rail-standalone-pages.ts found (pass --platform or set FOLIO_ASSISTANT_ROOT) — staged but NOT railed, and that is not a pass");
     return 1;
   }
-  const args = ["run", join(platform, "cat-harness/scripts/rail-standalone-pages.ts"), "--site", resolve(site), "--built", "cat-harness", "--foreign-site"];
-  const home = at("--home-label");
-  if (home) args.push("--home-label", home);
-  const inst = at("--instance");
-  if (inst) args.push("--instance", inst);
-  try {
-    execFileSync("bun", args, { cwd: platform, stdio: "inherit" });
-  } catch {
-    console.error("✗ the rail pass failed");
-    return 1;
-  }
+  if (!runRail(platform, site, at("--home-label"), at("--instance"))) return 1;
   // Every staged page must now carry the rail or have declined it.
   const unrailed: string[] = [];
   const check = (dir: string): void => {

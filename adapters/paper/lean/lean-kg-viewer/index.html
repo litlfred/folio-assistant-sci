@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lean declarations</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="viewer.css">
+<script>window.MathJax = { tex: { inlineMath: [["$", "$"]], displayMath: [["$$", "$$"]] }, options: { skipHtmlTags: ["script", "style", "textarea", "pre", "code"] } };</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script type="module" src="viewer.js"></script>
+</head>
+<body class="lkg">
+<header class="lkg-head">
+  <a class="lkg-title" href="#/">Lean declarations</a>
+  <span class="lkg-totals" id="totals"></span>
+  <form id="search" class="lkg-search" role="search" onsubmit="return false">
+    <input id="q" type="search" placeholder="Search declarations…" autocomplete="off" aria-label="Search declarations">
+    <ol id="hits" class="lkg-hits" hidden></ol>
+  </form>
+</header>
+<div class="lkg-body">
+  <nav class="lkg-tree" aria-label="Modules">
+    <input id="filter" type="search" placeholder="Filter modules…" aria-label="Filter modules">
+    <div id="tree"></div>
+  </nav>
+  <main id="main" class="lkg-main"><p class="lkg-note">Loading…</p></main>
+</div>
+</body>
+</html>
