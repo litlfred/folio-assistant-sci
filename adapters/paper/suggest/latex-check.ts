@@ -131,6 +131,22 @@ export function macroTable(paperMacros?: Record<string, { tex: string }>, preamb
   return t;
 }
 
+/**
+ * The macro table from a page's KaTeX macros (`{"\\LM": "\\mathrm{LM}"}`, the
+ * table `katexMacros` in folio-assistant-core's `build-document-site.ts`
+ * publishes with the page): built-ins, then each macro's arity from its body.
+ * The ✍ suggest runtime has the page's KaTeX table and nothing else, so this
+ * is the profile's `macros` role in `editor-checkers/paper-latex.json`.
+ */
+export function macroTableFromKatex(katexMacros: Record<string, string> = {}): MacroTable {
+  const t: MacroTable = { ...BUILTIN_MACROS };
+  for (const [name, tex] of Object.entries(katexMacros)) {
+    const bare = name.replace(/^\\/, "");
+    if (/^[A-Za-z@]+$/.test(bare) && typeof tex === "string") t[bare] = { args: macroArity(tex), optional: false };
+  }
+  return t;
+}
+
 /** What the KG knows that references can name. Leave a field undefined to skip that check. */
 export interface KgReferences {
   /** Block labels, as `gen-block-jsonld` writes them into each block node's `label`. */

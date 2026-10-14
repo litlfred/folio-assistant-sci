@@ -3,6 +3,7 @@
   "id": "paper-latex",
   "contentType": "paper",
   "check": "adapters/paper/suggest/latex-check.ts#checkSuggestion",
+  "macros": "adapters/paper/suggest/latex-check.ts#macroTableFromKatex",
   "crepe": {
     "latexConfig": "adapters/paper/suggest/crepe-latex.ts#crepeLatexConfig",
     "nodeViews": {

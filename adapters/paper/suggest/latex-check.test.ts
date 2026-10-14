@@ -18,6 +18,7 @@ import {
   latexSpans,
   macroArity,
   macroTable,
+  macroTableFromKatex,
   parseNewcommands,
   protectLatex,
   restoreLatex,
@@ -201,5 +202,16 @@ describe("cite keys from the KG", () => {
     const bad = edit("inspired by doc-gen4.", "inspired by doc-gen4~\\cite{nowhere}.");
     expect(checkSuggestion(BLOCK, ok, { macros: MACROS, kg })).toEqual([]);
     expect(checkSuggestion(BLOCK, bad, { macros: MACROS, kg }).map((f) => [f.severity, f.subject])).toEqual([["warning", "nowhere"]]);
+  });
+});
+
+describe("macroTableFromKatex", () => {
+  test("built-ins, then each page macro's arity from its body", () => {
+    const t = macroTableFromKatex({ "\\LM": "\\mathrm{LM}", "\\pair": "\\langle #1, #2 \\rangle", "\\bad name": "x" });
+    expect(t.frac).toEqual({ args: 2, optional: false });
+    expect(t.LM).toEqual({ args: 0, optional: false });
+    expect(t.pair).toEqual({ args: 2, optional: false });
+    expect(t["bad name"]).toBeUndefined();
+    expect(checkLatex("$\\pair{a}$", { macros: t }).map((f) => f.severity)).toEqual(["error"]);
   });
 });
