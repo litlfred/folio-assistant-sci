@@ -8,6 +8,7 @@
  * path written into the runtime.
  *
  * @module folio-assistant-sci/schemas/editor-checker
+ * @graphNode schema
  */
 
 import { z } from "zod";
