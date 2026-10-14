@@ -58,6 +58,22 @@
       ]
     },
     {
+      "id": "folio-assistant-sci-editor-checkers",
+      "path": "editor-checkers/",
+      "description": "The ✍ suggest editor's checks and Crepe settings for this instance's content profiles, one folio-editor-checker/v1 node per profile naming the code (`path.ts#Export`) the editor loads. Today it holds one node: `paper-latex`, the LaTeX syntax checker and the Crepe repairs for paper math (bean folio-assistant-4dx7). The kind is declared in typologies/editor-checkers.json and its validator in validators/editor-checker.json.",
+      "graphTypologies": [
+        "editor-checkers"
+      ]
+    },
+    {
+      "id": "folio-assistant-sci-validators",
+      "path": "validators/",
+      "description": "The validators this instance's code provides, one folio-validator/v1 node each, naming the graph typology and $schema family it checks and the Zod export that checks it (bean riit). Today it holds one node: editor-checker, for folio-editor-checker/v1.",
+      "graphTypologies": [
+        "validators"
+      ]
+    },
+    {
       "id": "folio-assistant-sci-pipeline-plugins",
       "path": "pipeline-plugins/",
       "description": "The generic pipeline slots this instance fills, one folio-pipeline-plugin/v1 node per slot, naming PIPELINE_IMPLEMENTATIONS in content/pipeline/plugin-slots.ts (bean riit, step 3b). Registered for a folio by loadContributions through its dependency tree; they replace the pipelinePlugins array contributions.ts returned.",
