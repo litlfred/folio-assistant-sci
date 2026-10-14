@@ -8,7 +8,9 @@
     "zod": "^4.6.5"
   },
   "checkoutScripts": {
-    "check:lean-dirs": "bun run folio-assistant-sci/scripts/check-lean-dirs.ts"
+    "check:lean-dirs": "bun run folio-assistant-sci/scripts/check-lean-dirs.ts",
+    "extract:references": "bun run folio-assistant-sci/scripts/extract-references.ts",
+    "check:extracted-references": "bun run folio-assistant-sci/scripts/extract-references.ts --check"
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "15.11.7",
