@@ -48,7 +48,7 @@ explicitly.
 ## Run it — CODATA
 
 ```sh
-bun run folio-assistant-sci/content/pipeline/codata-ingest.ts \
+bun run folio-assistant-sci/pipeline/codata-ingest.ts \
   --source <allascii.txt> --out <library>/codata-<year> --edition <year> \
   --obtained-from "<exactly where this copy came from>" [--retrieved-at YYYY-MM-DD]
 ```

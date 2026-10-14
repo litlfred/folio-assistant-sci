@@ -52,7 +52,7 @@
     {
       "id": "folio-assistant-sci-qa-checkers",
       "path": "qa-checkers/",
-      "description": "The QA checkers this instance's Lean tooling provides, one folio-qa-checker/v1 node per criterion, naming COST_AUTOMATED_CHECKERS in content/pipeline/qa-checkers-cost.ts (bean riit, step 3b). Registered for a folio by loadContributions through its dependency tree; they replace the qaCheckers array contributions.ts returned.",
+      "description": "The QA checkers this instance's Lean tooling provides, one folio-qa-checker/v1 node per criterion, naming COST_AUTOMATED_CHECKERS in pipeline/qa-checkers-cost.ts (bean riit, step 3b). Registered for a folio by loadContributions through its dependency tree; they replace the qaCheckers array contributions.ts returned.",
       "graphTypologies": [
         "qa-checkers"
       ]
@@ -76,7 +76,7 @@
     {
       "id": "folio-assistant-sci-pipeline-plugins",
       "path": "pipeline-plugins/",
-      "description": "The generic pipeline slots this instance fills, one folio-pipeline-plugin/v1 node per slot, naming PIPELINE_IMPLEMENTATIONS in content/pipeline/plugin-slots.ts (bean riit, step 3b). Registered for a folio by loadContributions through its dependency tree; they replace the pipelinePlugins array contributions.ts returned.",
+      "description": "The generic pipeline slots this instance fills, one folio-pipeline-plugin/v1 node per slot, naming PIPELINE_IMPLEMENTATIONS in pipeline/plugin-slots.ts (bean riit, step 3b). Registered for a folio by loadContributions through its dependency tree; they replace the pipelinePlugins array contributions.ts returned.",
       "graphTypologies": [
         "pipeline-plugins"
       ]
@@ -170,7 +170,7 @@
     {
       "id": "sci-lean",
       "path": "lean/",
-      "description": "The Lean templates this harness's tooling fills: today `formal-edges.lean.tmpl`, which content/pipeline/formal-edges.ts writes into a folio's own `.lake/` and elaborates there. Declared with graph typology `lean`, the kind this instance owns for Lean sources (typologies/lean.json), on the owner's ruling of 2026-10-10: \"lean/ is a declared directory in folio-asst-sci (it should be) and lean Processes and Tools are around that.\" The Tools (`lean-html-docs`, `lean-render-publish`), the process (`lean-docs-publish`) and the skill (`lean-html-docs`) are what a FOLIO's `lean` directory gets: its doc-gen4 render, published under the folio's site in the harness rail. `.tmpl`, never `.lean`: the platform tracks no Lean content, and lean-decl-starts-are-shared.test.ts holds it to that. Declared WITH its files, per bean dh4f.",
+      "description": "The Lean templates this harness's tooling fills: today `formal-edges.lean.tmpl`, which pipeline/formal-edges.ts writes into a folio's own `.lake/` and elaborates there. Declared with graph typology `lean`, the kind this instance owns for Lean sources (typologies/lean.json), on the owner's ruling of 2026-10-10: \"lean/ is a declared directory in folio-asst-sci (it should be) and lean Processes and Tools are around that.\" The Tools (`lean-html-docs`, `lean-render-publish`), the process (`lean-docs-publish`) and the skill (`lean-html-docs`) are what a FOLIO's `lean` directory gets: its doc-gen4 render, published under the folio's site in the harness rail. `.tmpl`, never `.lean`: the platform tracks no Lean content, and lean-decl-starts-are-shared.test.ts holds it to that. Declared WITH its files, per bean dh4f.",
       "graphTypologies": [
         "lean"
       ],
@@ -238,8 +238,8 @@
           "extensions": [
             ".md"
           ],
-          "extractModule": "content/pipeline/pot-extract.ts",
-          "injectModule": "content/pipeline/po-inject.ts"
+          "extractModule": "pipeline/pot-extract.ts",
+          "injectModule": "pipeline/po-inject.ts"
         },
         {
           "id": "latex",

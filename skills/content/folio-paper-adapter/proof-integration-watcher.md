@@ -330,7 +330,7 @@ grep -rlE '^export default (theorem|lemma|proposition|corollary|conjecture|defin
 #    is NOT sufficient (the ref may resolve via the grep fallback).
 #
 #    Note: there is no automated `lean-ref-resolves` rule in
-#    `content/pipeline/validate.ts` today (it only enforces schema
+#    `cat-harness-tools/pipeline/validate.ts` today (it only enforces schema
 #    shape + constraint rules). The watcher implements this
 #    resolution test in-session as documented below; if the
 #    pipeline later adopts the same test as a constraint rule,

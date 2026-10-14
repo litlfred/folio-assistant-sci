@@ -38,11 +38,11 @@
  * NIST truncates with `...` keeps the marker in `truncated: true`.
  *
  * Usage:
- *   bun run folio-assistant-sci/content/pipeline/codata-ingest.ts \
+ *   bun run folio-assistant-sci/pipeline/codata-ingest.ts \
  *     --source <allascii.txt> --out <library>/codata-2022 --edition 2022 \
  *     --obtained-from <url or description> [--check]
  *
- * @module folio-assistant-sci/content/pipeline/codata-ingest
+ * @module folio-assistant-sci/pipeline/codata-ingest
  */
 
 import { createHash } from "node:crypto";

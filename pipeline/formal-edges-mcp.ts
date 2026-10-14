@@ -13,7 +13,7 @@
  * so the two cannot drift. It reports `could-not-determine` as such, never as
  * an empty edge set.
  *
- * @module folio-assistant-sci/content/pipeline/formal-edges-mcp
+ * @module folio-assistant-sci/pipeline/formal-edges-mcp
  */
 
 import { z } from "zod";

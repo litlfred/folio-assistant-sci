@@ -38,7 +38,7 @@ the extractor elaborates against the `.olean`s that build produced.
 
 ```sh
 # CLI — writes <lake-dir>/.lake/formal-edges/edges.jsonl
-bun run folio-assistant-sci/content/pipeline/formal-edges.ts \
+bun run folio-assistant-sci/pipeline/formal-edges.ts \
   --lake-dir <folio Lake project> [--root <content root>] [--ingest]
 ```
 
@@ -79,7 +79,7 @@ measurements of a tool, not mathematical claims about the folio.
 document whose markers are generated, never hand-synced:
 
 ```sh
-bun run folio-assistant-sci/content/pipeline/blueprint-export.ts \
+bun run folio-assistant-sci/pipeline/blueprint-export.ts \
   --tex main-flat.tex --out blueprint.tex [--root <content root>] [--check]
 ```
 
@@ -102,7 +102,7 @@ bun run folio-assistant-sci/content/pipeline/blueprint-export.ts \
 `docgen-action` with `blueprint: true`) builds from, from the paper manifest:
 
 ```sh
-bun run folio-assistant-sci/content/pipeline/blueprint-layout.ts \
+bun run folio-assistant-sci/pipeline/blueprint-layout.ts \
   --paper <folio>/<paper>/<paper>.ts [--out <folio>/<paper>/lean/blueprint/src]
 ```
 

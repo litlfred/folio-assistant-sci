@@ -6,10 +6,10 @@
  */
 import { describe, expect, test } from "bun:test";
 
-import { ContributionRegistry } from "../../../cat-harness/schemas/contributions";
-import { OwnCodeRefSchema, QaCheckerNodeSchema } from "../../../cat-harness/schemas/contribution-nodes";
-import { loadContributionsSync, orderedDependencies } from "../../../cat-harness/schemas/harness-config";
-import { SCI_ROOT, sciRegistrySync } from "../../scripts/tests/sci-consumer";
+import { ContributionRegistry } from "../../cat-harness/schemas/contributions";
+import { OwnCodeRefSchema, QaCheckerNodeSchema } from "../../cat-harness/schemas/contribution-nodes";
+import { loadContributionsSync, orderedDependencies } from "../../cat-harness/schemas/harness-config";
+import { SCI_ROOT, sciRegistrySync } from "../scripts/tests/sci-consumer";
 import { COST_AUTOMATED_CHECKERS } from "./qa-checkers-cost";
 import { PIPELINE_IMPLEMENTATIONS } from "./plugin-slots";
 
@@ -30,7 +30,7 @@ describe("sci's contributions arrive as nodes, through the dependency tree", () 
     for (const [criterion, check] of Object.entries(COST_AUTOMATED_CHECKERS)) {
       const entry = withSci.qaCheckerEntry(criterion);
       expect(entry?.check).toBe(check);
-      expect(entry?.sourceFile).toBe("content/pipeline/qa-checkers-cost.ts");
+      expect(entry?.sourceFile).toBe("pipeline/qa-checkers-cost.ts");
     }
   });
 
@@ -42,10 +42,10 @@ describe("sci's contributions arrive as nodes, through the dependency tree", () 
 
 describe("a contribution's code ref is its own", () => {
   test("an instance prefix, an escaping path and a missing export are refused", () => {
-    expect(OwnCodeRefSchema.safeParse("content/pipeline/x.ts#TABLE").success).toBe(true);
-    expect(OwnCodeRefSchema.safeParse("cat-harness:content/pipeline/x.ts#TABLE").success).toBe(false);
+    expect(OwnCodeRefSchema.safeParse("pipeline/x.ts#TABLE").success).toBe(true);
+    expect(OwnCodeRefSchema.safeParse("cat-harness:pipeline/x.ts#TABLE").success).toBe(false);
     expect(OwnCodeRefSchema.safeParse("../cat-harness/x.ts#TABLE").success).toBe(false);
-    expect(OwnCodeRefSchema.safeParse("content/pipeline/x.ts").success).toBe(false);
+    expect(OwnCodeRefSchema.safeParse("pipeline/x.ts").success).toBe(false);
     expect(QaCheckerNodeSchema.safeParse({ $schema: "folio-qa-checker/v1", criterion: "c", check: "x.ts#T", extra: 1 }).success).toBe(false);
   });
 });

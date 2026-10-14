@@ -34,10 +34,10 @@
  *
  * ## Usage
  *
- *   bun run folio-assistant-sci/content/pipeline/blueprint-export.ts \
+ *   bun run folio-assistant-sci/pipeline/blueprint-export.ts \
  *     --tex main-flat.tex --out blueprint.tex [--root <content root>] [--check]
  *
- * @module folio-assistant-sci/content/pipeline/blueprint-export
+ * @module folio-assistant-sci/pipeline/blueprint-export
  */
 
 import { readFileSync, writeFileSync } from "fs";
@@ -46,9 +46,9 @@ import {
   buildContentGraph,
   isElaborated,
   type ContentGraph,
-} from "../../../cat-harness-tools/pipeline/content-graph";
-import { findContentRepoRoot } from "../../../cat-harness-tools/pipeline/repo-root";
-import { folioDir } from "../../../cat-harness/schemas/cat-harness.js";
+} from "../../cat-harness-tools/pipeline/content-graph";
+import { findContentRepoRoot } from "../../cat-harness-tools/pipeline/repo-root";
+import { folioDir } from "../../cat-harness/schemas/cat-harness.js";
 
 /** Lean status buckets the render writes into `\blockannot[…]`. */
 export type LeanBucket = "stubbed" | "drafted" | "compiled";

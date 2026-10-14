@@ -17,7 +17,7 @@ propagates to every place the value is mentioned.
 **Since 2026-09-30 (bean `kott`, issue #1564) a value is written as Liquid**, one
 syntax for every target: the PDF, the blueprint, the just-the-docs site and IG
 pages all print the same number, because one resolver
-(`content/pipeline/liquid-values.ts`) substitutes it before Jekyll, the IG
+(`cat-harness-tools/pipeline/liquid-values.ts`) substitutes it before Jekyll, the IG
 Publisher or LaTeX sees the text.
 
 ```markdown

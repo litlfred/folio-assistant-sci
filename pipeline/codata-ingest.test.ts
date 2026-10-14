@@ -52,7 +52,7 @@ describe("parsing NIST's table", () => {
 });
 
 describe("the committed library/codata-2022 entry", () => {
-  const dir = join(import.meta.dir, "..", "..", "library", "codata-2022");
+  const dir = join(import.meta.dir, "..", "library", "codata-2022");
   const values = JSON.parse(readFileSync(join(dir, "values.json"), "utf-8")) as Record<string, { value: string; quantity: string }>;
   const tabular = JSON.parse(readFileSync(join(dir, "tabular.jsonld"), "utf-8")) as {
     source: { sha256: string; edition: string; primaryUrl: string; obtainedFrom: string };

@@ -29,7 +29,7 @@ allowed-tools: Read Edit Write Bash Grep Glob Agent Monitor Skill
 >
 > Without that, `q-usage` criteria are absent from the registry and this
 > watcher has nothing to run. See `folioOptionalAxes()` in
-> `content/pipeline/qa-criteria-registry.ts`.
+> `cat-harness-tools/pipeline/qa-criteria-registry.ts`.
 
 
 A concrete instance of [`local/integration-watcher`](../../../../cat-harness/skills/sdlc/sdlc-core/integration-watcher.md).
@@ -119,7 +119,7 @@ echo "$changed" | grep -qE 'content/quantum-observable-universe/.*\.(md|ts|lean)
   && is_q_usage_event=true
 
 # (ii) the checker module or registry itself changed (sweep all blocks)
-echo "$changed" | grep -qE 'content/pipeline/(qa-checkers-q-usage|qa-criteria-registry|q-usage-audit)\.ts$' \
+echo "$changed" | grep -qE 'cat-harness-tools/pipeline/(qa-checkers-q-usage|qa-criteria-registry|q-usage-audit)\.ts$' \
   && is_q_usage_event=true
 
 # (iii) the chapter-regime table or notation register changed
@@ -276,7 +276,7 @@ Per-violation template:
 
 ```bash
 # Run the audit, read the witness, queue every fail + warn
-bun run content/pipeline/q-usage-audit.ts --no-write --json \
+bun run cat-harness-tools/pipeline/q-usage-audit.ts --no-write --json \
   | jq -r '.findings[] | "\(.severity)\t\(.criterion)\t\(.chapter)/\(.label)\t\(.result)"'
 ```
 
@@ -301,19 +301,19 @@ bun run content/pipeline/q-usage-audit.ts --no-write --json \
 
 ```bash
 # Full sweep, write sidecars + witness
-bun run content/pipeline/q-usage-audit.ts
+bun run cat-harness-tools/pipeline/q-usage-audit.ts
 
 # Dry run (report only, no writes)
-bun run content/pipeline/q-usage-audit.ts --no-write
+bun run cat-harness-tools/pipeline/q-usage-audit.ts --no-write
 
 # Single chapter
-bun run content/pipeline/q-usage-audit.ts --chapter braids-and-knots
+bun run cat-harness-tools/pipeline/q-usage-audit.ts --chapter braids-and-knots
 
 # JSON output (for piping into jq / queue)
-bun run content/pipeline/q-usage-audit.ts --no-write --json
+bun run cat-harness-tools/pipeline/q-usage-audit.ts --no-write --json
 
 # Strict (exit 1 on any fail — for CI)
-bun run content/pipeline/q-usage-audit.ts --no-write --strict
+bun run cat-harness-tools/pipeline/q-usage-audit.ts --no-write --strict
 ```
 
 ## Cross-references
@@ -326,8 +326,8 @@ bun run content/pipeline/q-usage-audit.ts --no-write --strict
   [`one-voice-integration-watcher`](../../../../cat-harness/skills/authoring/authoring-core/one-voice-integration-watcher.md).
 - Skill for placement decisions:
   [`production-vs-exploratory-discipline`](../../../../cat-harness/skills/authoring/authoring-core/production-vs-exploratory-discipline.md).
-- Checker source: [`content/pipeline/qa-checkers-q-usage.ts`](../../../../cat-harness-tools/pipeline/qa-checkers-q-usage.ts).
-- CLI runner: [`content/pipeline/q-usage-audit.ts`](../../../../cat-harness-tools/pipeline/q-usage-audit.ts).
+- Checker source: [`cat-harness-tools/pipeline/qa-checkers-q-usage.ts`](../../../../cat-harness-tools/pipeline/qa-checkers-q-usage.ts).
+- CLI runner: [`cat-harness-tools/pipeline/q-usage-audit.ts`](../../../../cat-harness-tools/pipeline/q-usage-audit.ts).
 - Criterion registry entries:
-  [`content/pipeline/qa-criteria-registry.ts`](../../../../cat-harness-tools/pipeline/qa-criteria-registry.ts)
+  [`cat-harness-tools/pipeline/qa-criteria-registry.ts`](../../../../cat-harness-tools/pipeline/qa-criteria-registry.ts)
   (search for the `Q_USAGE` const array).

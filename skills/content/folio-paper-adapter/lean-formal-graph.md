@@ -27,14 +27,14 @@ questions and diverge legitimately in both directions.
 `atlas` and `elaborated` are elaborated and their type/value split can be
 trusted. To produce elaborated edges, run the science layer's extractor:
 skill `lean-formal-edges` (`folio-assistant-sci/skills/lean/`), CLI
-`folio-assistant-sci/content/pipeline/formal-edges.ts`, MCP tool
+`folio-assistant-sci/pipeline/formal-edges.ts`, MCP tool
 `lean_formal_edges`. It is tooling, so it lives there, not here.
 
 ## Get a graph
 
 ```sh
 # Does one exist yet?
-bun run content/pipeline/content-graph.ts content/<paper>
+bun run cat-harness-tools/pipeline/content-graph.ts content/<paper>
 ```
 
 If it reports `cache ABSENT — formal graph unavailable`, populate it:
@@ -44,11 +44,11 @@ If it reports `cache ABSENT — formal graph unavailable`, populate it:
 cat-harness-tools/scripts/install-lean-atlas.sh          # provisions the Lake require
 lake exe atlas graph-data --output /tmp/atlas.json --pretty
 # → adapt to folio's JSONL, then:
-bun run content/pipeline/lean-atlas-ingest.ts --ingest /tmp/deps.jsonl
+bun run cat-harness-tools/pipeline/lean-atlas-ingest.ts --ingest /tmp/deps.jsonl
 
 # Fallback: no Lean toolchain needed
-bun run content/pipeline/lean-atlas-ingest.ts --scan content/<paper>
-bun run content/pipeline/lean-atlas-ingest.ts --stale
+bun run cat-harness-tools/pipeline/lean-atlas-ingest.ts --scan content/<paper>
+bun run cat-harness-tools/pipeline/lean-atlas-ingest.ts --stale
 ```
 
 ## Know which source you have — it changes what you may claim

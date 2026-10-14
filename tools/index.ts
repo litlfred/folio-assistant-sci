@@ -131,7 +131,7 @@ export function tools(baseUrl?: string): ToolDefinition[] {
       description:
         "Extract ELABORATED formal dependencies between a folio's lean.ref declarations (LeanArchitect's rule over the folio's own lean.ref set). Needs a Lean toolchain and a built Lake project. Tagged declarations missing from the build are reported, never recorded as dependency-free; with ingest the result is recorded in the formal cache as source \"elaborated\".",
       install: { none: true },
-      invoke: { inProcess: { module: "content/pipeline/formal-edges-mcp.ts" }, mcp: { tool: "lean_formal_edges" } },
+      invoke: { inProcess: { module: "pipeline/formal-edges-mcp.ts" }, mcp: { tool: "lean_formal_edges" } },
       io: {
         inputs: [
           { name: "lake_dir", schema: t("RepoPath"), required: true, description: "The folio's Lake project directory (holds lakefile.* and .lake/)." },

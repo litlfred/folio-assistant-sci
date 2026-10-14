@@ -43,7 +43,7 @@
 % KNOWN RESIDUAL: xurl/hyperref only break URLs typeset via \url{}/\href{} — e.g.
 % author-note `see` links and the margin-annotation macros below. Bare URLs in
 % running prose are emitted as PLAIN TEXT by the renderer (gfm-autolink-literal is
-% disabled in content/pipeline/render-latex.ts to avoid OOM on dotted identifiers),
+% disabled in cat-harness-tools/pipeline/render-latex.ts to avoid OOM on dotted identifiers),
 % so they are NOT broken here and remain a residual Overfull \hbox source. Folded in
 % with the deeper residuals (wide display math, long \texttt identifiers) for a
 % follow-up pass — to cover them, wrap bare prose URLs in \url{} at render time.
@@ -248,7 +248,7 @@
 
 % ── Book-style chapter / section formatting ────────────────────────────────
 % Chapter page breaks are handled by the renderer (it prepends \clearpage
-% to every \input chapter — see content/pipeline/render-latex.ts
+% to every \input chapter — see cat-harness-tools/pipeline/render-latex.ts
 % renderChapter). The chapter numeral here is rendered very large,
 % left-aligned, with whitespace to the right — book convention. The
 % chapter title sits below the numeral. Sections and subsections stay
@@ -353,7 +353,7 @@
 %     Statement here.
 %   \end{theorem}
 % Repository identity — content-agnostic. A real build MUST inject the folio's
-% own repo/pages base; the content pipeline (content/pipeline/render-latex.ts)
+% own repo/pages base; the content pipeline (cat-harness-tools/pipeline/render-latex.ts)
 % does this per paper, or override at compile time via \renewcommand. The
 % defaults below are deliberate placeholders, never a specific paper's repo.
 \providecommand{\foliorepobase}{https://github.com/OWNER/REPO}
@@ -428,7 +428,7 @@
 %   +  → "Add comment / open new issue" pre-filled with the block label
 %
 % The macros below are pure LaTeX, no font dependencies. They are
-% emitted by content/pipeline/render-latex.ts after each \label{}.
+% emitted by cat-harness-tools/pipeline/render-latex.ts after each \label{}.
 % Empty arguments hide the corresponding icon, so a block without a
 % Lean ref still gets ∇ # +, etc.
 
@@ -593,7 +593,7 @@
 % The MCP render tool writes print-mode.tex to set this flag automatically.
 \newif\ifshowaffiliations
 % The per-render print-mode flag (the read of print-mode.tex) is emitted by
-% content/pipeline/generate-main-tex.ts into the per-document section, NOT here.
+% cat-harness-tools/pipeline/generate-main-tex.ts into the per-document section, NOT here.
 % Keeping only \newif here (shared, static) leaves this preamble fully dumpable
 % into a precompiled .fmt format; the flag must be set live per render, not
 % frozen at format-dump time.

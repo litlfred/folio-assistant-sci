@@ -180,13 +180,13 @@ objects, not across unrelated blocks.
 ## Common anti-patterns — use the strategy database
 
 The table below is now **data**, not prose:
-`content/pipeline/refactor-strategies/*.json`, typed by
+`cat-harness-tools/pipeline/refactor-strategies/*.json`, typed by
 `schemas/refactor-strategy.ts`. Query it instead of reading the table,
 because the data knows two things the table cannot:
 
 ```sh
 # What may I safely apply to this corpus?
-bun run content/pipeline/refactor-strategy.ts --lean 4.24.0 --applicable
+bun run cat-harness-tools/pipeline/refactor-strategy.ts --lean 4.24.0 --applicable
 ```
 
 1. **Version gating.** A rewrite sound on one Mathlib release can
