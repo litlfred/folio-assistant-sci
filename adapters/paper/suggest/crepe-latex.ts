@@ -43,6 +43,15 @@ export function crepeLatexConfig(macros: KatexMacros): { katexOptions: { macros:
   return { katexOptions: { macros: { ...macros }, throwOnError: false } };
 }
 
+/**
+ * Crepe's `featureConfigs` for a paper, keyed by Crepe's own feature names
+ * (the runtime hands in `Crepe.Feature`, so it names no feature itself): the
+ * math feature's settings from {@link crepeLatexConfig}.
+ */
+export function crepeFeatureConfigs(feature: { Latex: string }, macros: KatexMacros): Record<string, ReturnType<typeof crepeLatexConfig>> {
+  return { [feature.Latex]: crepeLatexConfig(macros) };
+}
+
 /** The part of KaTeX the node view calls. */
 export interface KatexLike {
   render(tex: string, el: HTMLElement, opts: { throwOnError?: boolean; displayMode?: boolean; macros?: KatexMacros }): void;

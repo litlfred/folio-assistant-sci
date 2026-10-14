@@ -9,6 +9,8 @@ needs from it and no other profile does.
 | [`latex-check.ts`](latex-check.ts) | Pure checks over a block's Markdown: syntax (braces, `\begin`/`\end`, macro arity, `$$`), and references against the KG. |
 | [`latex-check.test.ts`](latex-check.test.ts) | Held against a real block of this library — LeanArchitect §3.4, `prose-sec-006`. |
 | [`crepe-latex.ts`](crepe-latex.ts) | The paper's settings for Crepe's math editor, and two repairs Crepe 7.22.2 needs for paper math. |
+| [`latex-tokens.ts`](latex-tokens.ts) | The LaTeX references the runtime keeps intact and checks while this profile's module is not loaded: the token rules the shared runtime used to hold itself. |
+| [`latex-tokens.test.ts`](latex-tokens.test.ts) | The same verdicts the runtime gave before the move. |
 | [`crepe-latex.test.ts`](crepe-latex.test.ts) | Real Crepe 7.22.2 (KaTeX 0.18), headless under happy-dom, over every library section with math. |
 
 ## Crepe's math editor on paper blocks
@@ -77,6 +79,10 @@ Markdown, not the editor's document.
 
 ## How the runtime uses it
 
+The shared runtime knows no LaTeX (owner: *"cat-harness should not know
+about LaTeX"*, *"latex should be in f-a-sci"*). Everything LaTeX it does, it
+does through this profile.
+
 cat-harness-tools `pipeline/editor-profiles.ts` finds
 [`editor-checkers/paper-latex.json`](../../../editor-checkers/paper-latex.json)
 through this instance's declaration. It bundles the code that node names into
@@ -87,13 +93,20 @@ runtime calls:
 |---|---|---|
 | `check` | `checkSuggestion` | `check(before, after, { macros, kg })` live, and before submit; an error blocks it |
 | `macros` | `macroTableFromKatex` | `macros(katexMacros)`, with the page's KaTeX table |
-| `latexConfig` | `crepeLatexConfig` | Crepe's latex feature config |
+| `featureConfigs` | `crepeFeatureConfigs` | `featureConfigs(Crepe.Feature, katexMacros)`: Crepe's latex feature config, under the feature name the runtime hands in |
 | `nodeViews.math_inline` | `inlineMathNodeView` | `(katex, katexMacros)` |
 | `remarkFirst` | `useLatexAtoms` | `remarkFirst(macros)`, after Crepe's own `InitReady` |
 
 The site builders (folio-assistant-core `build-folio-site.ts` and
 `build-document-site.ts`) publish the bundle and name it in the page config.
 The runtime then chooses this profile for every block of a paper. It offers
-the raw pane first for the kinds in `rawLatexFirstFor`, and the visual one
+the raw pane first for the kinds in `rawFirstFor`, and the visual one
 beside it. It reads labels and citation keys from the page's `graph.jsonld`
 when the site publishes one.
+
+Two fields are data in the page config rather than module roles, so they hold
+even when the bundle fails to load: `rawFirstFor`, and `tokens`. The bundler
+calls `latexReferenceTokens()` at build time and writes each pattern as its
+`/source/flags` string. The runtime shields and checks those LaTeX references
+only while this profile's module is not loaded. Once it is, `useLatexAtoms`
+keeps the LaTeX verbatim and `checkSuggestion` checks it.
