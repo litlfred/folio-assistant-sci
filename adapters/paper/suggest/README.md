@@ -35,7 +35,15 @@ not blamed on the reader.
   site renderer does, `katexMacros(manifest.macros)` in folio-assistant-core's
   `build-document-site.ts`, published with the page config.
 
-## What the runtime still needs (cat-harness-tools, not here)
+## Editing surface (owner decision, 2026-10-14)
+
+**Both.** Crepe's math node edits `$…$` / `$$…$$` in place, and a "raw LaTeX"
+toggle opens the whole block in a CodeMirror LaTeX pane. For equation, proof
+and theorem-family blocks, the toggle is offered up front. The runtime builds
+both. The same checks run on either surface, because they read the block's
+Markdown, not the editor's document.
+
+## What the runtime still needs (cat-harness-tools, not here — the sibling suggest-editor session's)
 
 A checker hook: the page config names checker modules, the runtime imports
 them lazily beside Crepe and calls `checkSuggestion(before, after, ctx)`,
