@@ -11,9 +11,12 @@ Part of [folio-assistant-sci](../README.md) 0.1.0, declared as `library`, holdin
 | file | what it is | used by |
 |---|---|---|
 | [`image-verdicts.json`](image-verdicts.json) | data |  |
+| [`arxiv-2003.08005v1/`](arxiv-2003.08005v1/README.md) | described in its own README | |
 | [`arxiv-2406.01940v2/`](arxiv-2406.01940v2/README.md) | described in its own README | |
+| [`arxiv-2512.09874v3/`](arxiv-2512.09874v3/README.md) | described in its own README | |
 | [`arxiv-2601.22554v1/`](arxiv-2601.22554v1/README.md) | described in its own README | |
 | [`arxiv-2602.16554v1/`](arxiv-2602.16554v1/README.md) | described in its own README | |
+| [`arxiv-2604.00554v1/`](arxiv-2604.00554v1/README.md) | described in its own README | |
 | [`codata-2022/`](codata-2022/README.md) | described in its own README | |
 | [`milnorlink/`](milnorlink/README.md) | described in its own README | |
 <!-- kg:subgraph:end -->

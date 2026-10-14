@@ -4,11 +4,11 @@
 
 # folio-assistant-sci-content-adapters
 
-The paper block VOCABULARY's node, folio-content-adapter/v1 (bean riit, step 5): its name, its companion roles (md, ts, lean) and that cat-harness's code types it. cat-harness/schemas/block-kinds.ts derives CONTENT_ADAPTERS from the typed nodes, and block-qa.ts derives ADAPTER_COMPANION_ROLES. Owner, 2026-10-05, option 1: the vocabulary is a node; the server adapter class stays in contentAdapters.
+The `mathpaper` block VOCABULARY's node, folio-content-adapter/v1 (bean riit, step 5; renamed from `paper`, bean bzwk, 2026-10-12): its name, its companion roles (md, ts, lean) and that cat-harness's code types it. The seven formal-claim kinds in block-kinds/ name it; core's document kinds name core's own `document` adapter. cat-harness/schemas/block-kinds.ts derives CONTENT_ADAPTERS from the typed nodes, and block-qa.ts derives ADAPTER_COMPANION_ROLES. Owner, 2026-10-05, option 1: the vocabulary is a node; the server adapter class stays in contentAdapters.
 
 Part of [folio-assistant-sci](../README.md) 0.1.0, declared as `folio-assistant-sci-content-adapters`, holding `content-adapters`.
 
 | file | what it is | used by |
 |---|---|---|
-| [`paper.json`](paper.json) | data |  |
+| [`mathpaper.json`](mathpaper.json) | data |  |
 <!-- kg:subgraph:end -->
