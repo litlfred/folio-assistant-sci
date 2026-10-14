@@ -43,8 +43,12 @@ export const EditorCheckerNodeSchema = z
     /** Crepe settings for the profile. */
     crepe: z
       .object({
-        /** `(katexMacros) => featureConfigs[Crepe.Feature.Latex]`. */
-        latexConfig: OwnCodeRefSchema.optional(),
+        /**
+         * `(Crepe.Feature, katexMacros) => featureConfigs`: Crepe's feature
+         * settings, keyed by the feature names the runtime hands in, so the
+         * shared runtime names no content type's feature.
+         */
+        featureConfigs: OwnCodeRefSchema.optional(),
         /** ProseMirror node-view factories, by node name. */
         nodeViews: z.record(z.string(), OwnCodeRefSchema).optional(),
         /** A `remarkPluginsCtx` updater that puts a transformer first. */
@@ -52,8 +56,15 @@ export const EditorCheckerNodeSchema = z
       })
       .strict()
       .optional(),
-    /** Block kinds whose raw-LaTeX pane is offered up front (owner, 2026-10-14: "both"). */
-    rawLatexFirstFor: z.array(Name).optional(),
+    /** Block kinds whose raw pane (for a paper, the raw-LaTeX pane) is offered up front (owner, 2026-10-14: "both"). */
+    rawFirstFor: z.array(Name).optional(),
+    /**
+     * `() => TokenRule[]`: the profile's own syntax, for the runtime to keep
+     * intact and check while the profile's module is not loaded
+     * (`adapters/paper/suggest/latex-tokens.ts`). Called at build time by
+     * cat-harness-tools' editor-profiles bundler, which serialises each pattern.
+     */
+    tokens: OwnCodeRefSchema.optional(),
     rationale: z.string().optional(),
   })
   .strict();
@@ -62,6 +73,6 @@ export type EditorCheckerNode = z.infer<typeof EditorCheckerNodeSchema>;
 
 /** Every code ref a node names. */
 export function codeRefs(node: EditorCheckerNode): string[] {
-  return [node.check, node.macros, node.crepe?.latexConfig, ...Object.values(node.crepe?.nodeViews ?? {}), node.crepe?.remarkFirst]
+  return [node.check, node.macros, node.tokens, node.crepe?.featureConfigs, ...Object.values(node.crepe?.nodeViews ?? {}), node.crepe?.remarkFirst]
     .filter((r): r is string => typeof r === "string");
 }

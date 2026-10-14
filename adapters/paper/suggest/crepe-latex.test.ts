@@ -14,7 +14,7 @@ import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import { crepeLatexConfig, inlineMathNodeView, useLatexAtoms } from "./crepe-latex";
+import { crepeFeatureConfigs, inlineMathNodeView, useLatexAtoms } from "./crepe-latex";
 import { checkSuggestion, macroTable } from "./latex-check";
 
 GlobalRegistrator.register({ url: "http://localhost/" });
@@ -47,7 +47,7 @@ interface Run { markdown: string; html: string }
 async function crepe(md: string, repaired: boolean): Promise<Run> {
   const root = document.createElement("div");
   document.body.appendChild(root);
-  const c = new Crepe({ root, defaultValue: md, featureConfigs: { [Crepe.Feature.Latex]: crepeLatexConfig(KATEX_MACROS) } });
+  const c = new Crepe({ root, defaultValue: md, featureConfigs: crepeFeatureConfigs(Crepe.Feature, KATEX_MACROS) });
   if (repaired) {
     // When `$remark` plugins register (after InitReady, before the schema builds the parser), placed first.
     c.editor.use((ctx) => async () => {
