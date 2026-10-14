@@ -89,7 +89,7 @@ if [ "$TEX_ONLY" = false ]; then
     --preamble ../latex/preamble.tex
 
   echo "    Exporting BibTeX..."
-  npx tsx pipeline/export-bibtex.ts
+  npx tsx "$REPO_ROOT/cat-harness-tools/pipeline/export-bibtex.ts"
 
   cd "$REPO_ROOT"
   echo "==> Content pipeline complete."
