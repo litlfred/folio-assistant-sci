@@ -33,6 +33,12 @@ export const EditorCheckerNodeSchema = z
     kinds: z.array(Name).nonempty().optional(),
     /** `checkSuggestion(before, after, ctx)` → findings. Errors are syntax errors; warnings never block. */
     check: OwnCodeRefSchema,
+    /**
+     * `(katexMacros) => macros`: the profile's macro table from the page's KaTeX
+     * macros, passed to `check` (as `macros`) and to `crepe.remarkFirst`.
+     * Absent: the checker's own defaults.
+     */
+    macros: OwnCodeRefSchema.optional(),
     /** Crepe settings for the profile. */
     crepe: z
       .object({
@@ -55,6 +61,6 @@ export type EditorCheckerNode = z.infer<typeof EditorCheckerNodeSchema>;
 
 /** Every code ref a node names. */
 export function codeRefs(node: EditorCheckerNode): string[] {
-  return [node.check, node.crepe?.latexConfig, ...Object.values(node.crepe?.nodeViews ?? {}), node.crepe?.remarkFirst]
+  return [node.check, node.macros, node.crepe?.latexConfig, ...Object.values(node.crepe?.nodeViews ?? {}), node.crepe?.remarkFirst]
     .filter((r): r is string => typeof r === "string");
 }

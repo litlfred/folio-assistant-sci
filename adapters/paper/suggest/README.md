@@ -75,10 +75,25 @@ and theorem-family blocks, the toggle is offered up front. The runtime builds
 both. The same checks run on either surface, because they read the block's
 Markdown, not the editor's document.
 
-## What the runtime still needs (cat-harness-tools, not here — the sibling suggest-editor session's)
+## How the runtime uses it
 
-A checker hook: the page config names checker modules, the runtime imports
-them lazily beside Crepe and calls `checkSuggestion(before, after, ctx)`,
-showing errors and warnings in its panel. `latexSpans` / `protectLatex` give
-the spans (environments, argument-taking commands outside math) to keep
-verbatim with the runtime's ⟦ ⟧ convention.
+cat-harness-tools `pipeline/editor-profiles.ts` finds
+[`editor-checkers/paper-latex.json`](../../../editor-checkers/paper-latex.json)
+through this instance's declaration. It bundles the code that node names into
+one browser module, `assets/suggest/paper-latex.js`, under the roles the
+runtime calls:
+
+| role | here | the runtime calls |
+|---|---|---|
+| `check` | `checkSuggestion` | `check(before, after, { macros, kg })` live, and before submit; an error blocks it |
+| `macros` | `macroTableFromKatex` | `macros(katexMacros)`, with the page's KaTeX table |
+| `latexConfig` | `crepeLatexConfig` | Crepe's latex feature config |
+| `nodeViews.math_inline` | `inlineMathNodeView` | `(katex, katexMacros)` |
+| `remarkFirst` | `useLatexAtoms` | `remarkFirst(macros)`, after Crepe's own `InitReady` |
+
+The site builders (folio-assistant-core `build-folio-site.ts` and
+`build-document-site.ts`) publish the bundle and name it in the page config.
+The runtime then chooses this profile for every block of a paper. It offers
+the raw pane first for the kinds in `rawLatexFirstFor`, and the visual one
+beside it. It reads labels and citation keys from the page's `graph.jsonld`
+when the site publishes one.
