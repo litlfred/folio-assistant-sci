@@ -33,3 +33,10 @@ jobs:
       tools-ref: main
       # folio-assistant main pins pre-70lx layers until folio-assistant#2529 merges.
       index-ref: claude/nifty-johnson-w3mspn
+      # This layer imports nothing by package name, so `auto` would take no
+      # lower layer at main. But its declaration uses the `references` graph
+      # typology (extracted-references/, bean 63q4), which folio-assistant-core
+      # registers from 9c9b99c, a commit newer than the core the index pins.
+      # So core is taken at main, with the layers core itself imports by
+      # package name, which its main tracks.
+      layers-at-main: bootstrap-tools cat-harness cat-harness-tools folio-assistant-core
