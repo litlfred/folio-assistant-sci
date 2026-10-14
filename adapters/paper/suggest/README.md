@@ -8,6 +8,38 @@ needs from it and no other profile does.
 |---|---|
 | [`latex-check.ts`](latex-check.ts) | Pure checks over a block's Markdown: syntax (braces, `\begin`/`\end`, macro arity, `$$`), and references against the KG. |
 | [`latex-check.test.ts`](latex-check.test.ts) | Held against a real block of this library — LeanArchitect §3.4, `prose-sec-006`. |
+| [`crepe-latex.ts`](crepe-latex.ts) | The paper's settings for Crepe's math editor, and two repairs Crepe 7.22.2 needs for paper math. |
+| [`crepe-latex.test.ts`](crepe-latex.test.ts) | Real Crepe 7.22.2 (KaTeX 0.18), headless under happy-dom, over every library section with math. |
+
+## Crepe's math editor on paper blocks
+
+Run headless over this library, unrepaired Crepe 7.22.2 has three faults:
+
+1. **Inline math ignores the paper's macros.** `katexOptions.macros` reaches
+   only the `$$…$$` preview, so `$\LM(x)$` renders as a KaTeX error.
+   `inlineMathNodeView(katex, macros)` replaces the `math_inline` node view.
+2. **LaTeX outside math is escaped into broken LaTeX.** `\begin{theorem}[Fermat]`
+   becomes `\begin{theorem}\[Fermat]`, and `\cite[p.~3]{k}` becomes
+   `\cite\[p.\~3]{k}`. Wrapping in ⟦ ⟧ does not stop this. `latexAtoms` turns
+   each span `latexSpans` finds into a raw `html` atom, which Crepe writes back
+   byte for byte. It must be the first remark transformer, so register it with
+   `ctx.update(remarkPluginsCtx, useLatexAtoms(macros))` after `InitReady`.
+   Without the line-break handling, an atom joined `% Statement` and
+   `\begin{theorem}` into one comment line. The syntax check caught that.
+3. **Inline `$$x$$` comes back as `$x$`.** remark-math reads both as inline
+   math, so the meaning is the same. Left as Crepe writes it.
+
+With the repairs:
+- every math span in the library comes back unchanged;
+- LeanArchitect §3.4 round-trips byte for byte;
+- Crepe's output passes the syntax checks.
+
+Two things the runtime must do itself:
+- **Front matter:** strip a block's YAML front matter before editing. Crepe
+  rewrites it as `***` and a setext heading.
+- **Diffing:** Crepe escapes `[` and `|` in prose (Lean attributes, citation
+  brackets), so an untouched paragraph can differ from its source. Diff the
+  edit against Crepe's round-trip of the original, not the raw source.
 
 ## The rule it keeps
 
