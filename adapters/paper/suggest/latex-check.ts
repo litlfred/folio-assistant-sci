@@ -146,6 +146,24 @@ export function labelsFromBlockNodes(nodes: Iterable<{ label?: unknown }>): Set<
   return s;
 }
 
+/**
+ * The bibliography keys among a set of KG nodes. A reference node is one
+ * whose `@id` is `references/<key>`, the IRI cat-harness `resolveReferenceKey`
+ * gives a cited key, absolute or relative. A CSL-JSON entry (`{ id }` with no
+ * `@id`, as in a folio's `references.ts`) counts by its `id`.
+ */
+export function citeKeysFromReferenceNodes(nodes: Iterable<{ "@id"?: unknown; id?: unknown }>): Set<string> {
+  const s = new Set<string>();
+  for (const n of nodes) {
+    const iri = n["@id"];
+    if (typeof iri === "string") {
+      const m = /(?:^|\/)references\/([^/#?]+)$/.exec(iri);
+      if (m) s.add(decodeURIComponent(m[1]!));
+    } else if (typeof n.id === "string" && n.id) s.add(n.id);
+  }
+  return s;
+}
+
 export interface CheckOptions {
   macros?: MacroTable;
   kg?: KgReferences;

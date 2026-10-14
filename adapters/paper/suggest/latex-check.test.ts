@@ -12,6 +12,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import {
   checkLatex,
+  citeKeysFromReferenceNodes,
   checkSuggestion,
   labelsFromBlockNodes,
   latexSpans,
@@ -180,5 +181,25 @@ describe("the macro table", () => {
 
   test("the paper's own macros win over the preamble and built-ins", () => {
     expect(macroTable({ frac: { tex: "#1/#2/#3" } }).frac).toEqual({ args: 3, optional: false });
+  });
+});
+
+describe("cite keys from the KG", () => {
+  test("reference nodes by their `references/<key>` IRI, and CSL entries by id", () => {
+    const keys = citeKeysFromReferenceNodes([
+      { "@id": "references/milnor1965" },
+      { "@id": "https://litlfred.github.io/folio/references/garoufalidis2004" },
+      { "@id": "library/arxiv-2601.22554v1/blocks/prose-sec-006" },
+      { id: "kassel1995" },
+    ]);
+    expect([...keys].sort()).toEqual(["garoufalidis2004", "kassel1995", "milnor1965"]);
+  });
+
+  test("a key the bibliography holds is not warned about; one it lacks is", () => {
+    const kg = { citeKeys: citeKeysFromReferenceNodes([{ "@id": "references/docgen4" }]) };
+    const ok = edit("inspired by doc-gen4.", "inspired by doc-gen4~\\cite{docgen4}.");
+    const bad = edit("inspired by doc-gen4.", "inspired by doc-gen4~\\cite{nowhere}.");
+    expect(checkSuggestion(BLOCK, ok, { macros: MACROS, kg })).toEqual([]);
+    expect(checkSuggestion(BLOCK, bad, { macros: MACROS, kg }).map((f) => [f.severity, f.subject])).toEqual([["warning", "nowhere"]]);
   });
 });
