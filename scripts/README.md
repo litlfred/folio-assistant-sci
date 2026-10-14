@@ -10,6 +10,9 @@ Part of [folio-assistant-sci](../README.md) 0.1.0, declared as `sci-scripts`, ho
 
 | file | what it is | used by |
 |---|---|---|
+| [`check-lean-dirs.test.ts`](check-lean-dirs.test.ts) | a file |  |
+| [`check-lean-dirs.ts`](check-lean-dirs.ts) | a file |  |
+| [`lsi-lean-decls.ts`](lsi-lean-decls.ts) | a file |  |
 | [`docker-latex-build/`](docker-latex-build/) | _nothing declares what this holds_ | |
 | [`tests/`](tests/) | _nothing declares what this holds_ | |
 <!-- kg:subgraph:end -->
