@@ -59,7 +59,7 @@ gratuitous `(q : ℝ)` compiles fine.
    evaluated at some `q₀ ∈ ℝ` — the fibre-level statement is generic
    (`ℚ(q)` / `ℤ[q,q⁻¹]`); only the evaluation is archimedean.
 2. **Run the mechanical checker** on touched **content-block** Lean:
-   `bun run content/pipeline/q-usage-audit.ts --no-write` (q-regime +
+   `bun run cat-harness-tools/pipeline/q-usage-audit.ts --no-write` (q-regime +
    `q-usage-archimedean-in-categorical-chapter`) and the
    `wall-side-correct` checker (`checkWallSide` flags `: ℝ`, `(ℝ)`,
    `linarith`, `positivity`, `norm_num`, `LinearOrderedField`).
@@ -91,7 +91,7 @@ discussion, `q ∈ ℝ` only when the archimedean evaluation is needed.
 
 ### Wall-side QA checker — tactic constraints
 
-The `wall-side-correct` QA checker (`content/pipeline/qa-checkers-voice.ts`,
+The `wall-side-correct` QA checker (`cat-harness-tools/pipeline/qa-checkers-voice.ts`,
 `checkWallSide`) enforces this convention mechanically. It **strips `/- -/`
 + `--` comments and `import` lines**, then scans the *code body* for
 archimedean markers — `Real.sqrt|rpow|log|exp|cos|sin|pi`, `linarith`,

@@ -36,7 +36,7 @@ ls content/*/[!.]*.ts | xargs -n1 dirname | sort -u
 1. Generate `main.tex` and the per-chapter `.tex` files:
 
    ```bash
-   bun run --preload ../scripts/preload-registry.ts "$FA/content/pipeline/build.ts" \
+   bun run --preload ../scripts/preload-registry.ts "$FA/cat-harness-tools/pipeline/build.ts" \
      "content/$PAPER/$PAPER.ts" \
      --out-dir chapters/ \
      --generate-main \

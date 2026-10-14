@@ -33,25 +33,25 @@
  *
  * ## Usage
  *
- *   bun run folio-assistant-sci/content/pipeline/formal-edges.ts \
+ *   bun run folio-assistant-sci/pipeline/formal-edges.ts \
  *     --lake-dir <folio Lake project> [--root <content root>] [--out <jsonl>] [--ingest]
  *
- * @module folio-assistant-sci/content/pipeline/formal-edges
+ * @module folio-assistant-sci/pipeline/formal-edges
  */
 
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "fs";
 import { dirname, join, relative, resolve } from "path";
 import { spawnSync } from "child_process";
-import { parseLeanRef, refToDecl } from "../../../cat-harness-tools/pipeline/content-graph";
-import { walkBlocks } from "../../../cat-harness-tools/pipeline/qa-utils";
-import { ingestMode } from "../../../cat-harness-tools/pipeline/lean-atlas-ingest";
-import { findContentRepoRoot } from "../../../cat-harness-tools/pipeline/repo-root";
-import { folioDir } from "../../../cat-harness/schemas/cat-harness.js";
+import { parseLeanRef, refToDecl } from "../../cat-harness-tools/pipeline/content-graph";
+import { walkBlocks } from "../../cat-harness-tools/pipeline/qa-utils";
+import { ingestMode } from "../../cat-harness-tools/pipeline/lean-atlas-ingest";
+import { findContentRepoRoot } from "../../cat-harness-tools/pipeline/repo-root";
+import { folioDir } from "../../cat-harness/schemas/cat-harness.js";
 
 /** The placeholder line in the template that the module imports replace. */
 export const IMPORTS_MARKER = "-- FORMAL_EDGES_IMPORTS";
 
-export const TEMPLATE_PATH = resolve(import.meta.dir, "../../lean/formal-edges.lean.tmpl");
+export const TEMPLATE_PATH = resolve(import.meta.dir, "../lean/formal-edges.lean.tmpl");
 
 /** A tagged declaration and the `.lean` a block ties it to, if any. */
 export interface Tagged {

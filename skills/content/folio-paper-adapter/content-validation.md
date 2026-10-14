@@ -16,9 +16,9 @@ for structural integrity, constraint compliance, and LaTeX AST correctness.
 | `content/schema/types.ts` | TypeScript types for all block kinds |
 | `content/schema/constraints.ts` | Zod schemas + constraint rules |
 | `content/schema/builders.ts` | Builder functions (`definition()`, `theorem()`, etc.) |
-| `content/pipeline/validate.ts` | Validation pipeline (schema + constraints + AST) |
-| `content/pipeline/render-latex.ts` | Block → LaTeX rendering + AST validation |
-| `content/pipeline/build.ts` | Full document build (all chapters) |
+| `cat-harness-tools/pipeline/validate.ts` | Validation pipeline (schema + constraints + AST) |
+| `cat-harness-tools/pipeline/render-latex.ts` | Block → LaTeX rendering + AST validation |
+| `cat-harness-tools/pipeline/build.ts` | Full document build (all chapters) |
 
 ## Directory convention
 
@@ -69,7 +69,7 @@ When you spot a hard-coded computed literal in **any** block
 kind (a numeric bound in a proposition, a constant in a conjecture, a
 calibration value in a definition, a quoted intermediate in a proof,
 etc.), flag it as drift risk and migrate it to `:val[name]`.  The
-`content/pipeline/codemod-val.ts` codemod handles bulk migration.
+`cat-harness-tools/pipeline/codemod-val.ts` codemod handles bulk migration.
 See [`witnessed-values.md`](witnessed-values.md) for full details.
 
 ### Level 3: LaTeX AST validation
@@ -106,7 +106,7 @@ The markdown AST node types used:
 > [`scripts/setup-folio-assistant.sh`](../../../scripts/setup-folio-assistant.sh)
 > **once** (clones the platform as a sibling + symlinks `folio-assistant/`), then
 > validate via the standalone entry `bun run scripts/run-validate.ts content/<paper>`.
-> The `pipeline/*.ts` paths live under `folio-assistant/content/pipeline/`; the
+> The `pipeline/*.ts` paths live under `cat-harness-tools/pipeline/`; the
 > `bun run <name>` package.json shortcuts below (`validate`, `validate-tex`,
 > `build-glossary`, `migrate-lean-refs`) are retained for their flags/semantics.
 
@@ -286,7 +286,7 @@ The content-validation skill produces `ValidationResult` objects that the
 test-engineer skill can consume in unit tests:
 
 ```typescript
-import { validateObjects } from "../../content/pipeline/validate";
+import { validateObjects } from "../../cat-harness-tools/pipeline/validate";
 
 test("all content objects valid", async () => {
   const result = await validateObjects("content/<paper>/<chapter>/");

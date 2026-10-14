@@ -25,7 +25,7 @@ There are two render paths in this repo and they are not alternatives:
 | **LaTeX** | a **paper** folio: math kinds, `.lean` siblings, typeset output | this skill → `build-pdf` |
 | **pandoc** | a **document** folio, and any folio being drafted on a machine with no TeX | `document_render_{md,html,pdf}` |
 
-`content/pipeline/render-markdown.ts` assembles a document folio to one
+`cat-harness-tools/pipeline/render-markdown.ts` assembles a document folio to one
 Markdown file and takes it through pandoc, the PDF via
 weasyprint/prince/wkhtmltopdf. **It never falls back to `latexmk`, and that is
 deliberate**: a PDF that silently came out of LaTeX misreports what the folio

@@ -1,6 +1,6 @@
 /**
  * `lean_formal_edges` reaches a server through its Tool node: the node in
- * folio-assistant-sci's `tools/` names `content/pipeline/formal-edges-mcp.ts`,
+ * folio-assistant-sci's `tools/` names `pipeline/formal-edges-mcp.ts`,
  * and both MCP servers register every Tool node in the folio's dependency
  * tree (`registerServedToolGroups`, bean riit 3c). It was a `contributes` tool
  * group until then (folio-assistant#1492); this test pins the path that
@@ -11,9 +11,9 @@
 
 import { describe, expect, test } from "bun:test";
 import { join } from "path";
-import { registerServedToolGroups, servedToolGroups } from "../../../cat-harness-tools/src/tool-groups";
+import { registerServedToolGroups, servedToolGroups } from "../../cat-harness-tools/src/tool-groups";
 import { FORMAL_EDGES_TOOL } from "./formal-edges-mcp";
-import { sciConsumerRoot } from "../../scripts/tests/sci-consumer";
+import { sciConsumerRoot } from "../scripts/tests/sci-consumer";
 
 // The FOLIO root, which is what the server walks from: a folio whose
 // dependency tree includes folio-assistant-sci. Not the checkout root above
@@ -37,7 +37,7 @@ function recordingServer() {
 describe("lean_formal_edges is served from its Tool node", () => {
   test("the folio's dependency tree yields sci's group for it", () => {
     const sci = servedToolGroups(FOLIO_ROOT).sets.find((s) => s.instance === "folio-assistant-sci");
-    expect(sci?.groups.map((g) => g.module)).toContain("content/pipeline/formal-edges-mcp.ts");
+    expect(sci?.groups.map((g) => g.module)).toContain("pipeline/formal-edges-mcp.ts");
   });
 
   test("registerServedToolGroups puts it on the server", async () => {

@@ -251,7 +251,7 @@ Parameterising alone is not enough: it stops the class choosing its own shadow,
 but a consumer can still instantiate at the zero datum. The pair is what closes
 that.
 
-Detected mechanically by **two** criteria in `content/pipeline/qa-checkers-vacuity.ts`,
+Detected mechanically by **two** criteria in `cat-harness-tools/pipeline/qa-checkers-vacuity.ts`,
 which partition the defect rather than overlap — a decl the first flags is
 skipped by the second:
 
@@ -375,7 +375,7 @@ Mirrors the existing `proof-statement-integrity` model (Agent-checked,
 
 **Minimal wiring:**
 
-1. `content/pipeline/qa-criteria-registry.ts` — add a `QaCriterionDefinition`
+1. `cat-harness-tools/pipeline/qa-criteria-registry.ts` — add a `QaCriterionDefinition`
    to the `PROOF` array (it auto-flows into `QA_CRITERIA_REGISTRY`,
    `PROOF_WATCHER_CRITERIA`, and the `proof` watcher axis). Use:
    `domain: "proof"`, `default_severity: "critical"`, `depends_on: ["lean"]`,
@@ -386,7 +386,7 @@ Mirrors the existing `proof-statement-integrity` model (Agent-checked,
    `needs-agent`; `proof-integration-watcher` dispatches an agent that runs this
    skill and writes the `reviewer.kind="agent"` sidecar entry.
 
-`bun run content/pipeline/qa-sweep.ts <block-path> --only proof-no-self-assuming-projection`
+`bun run cat-harness-tools/pipeline/qa-sweep.ts <block-path> --only proof-no-self-assuming-projection`
 marks the entry `needs-agent`; the agent then fills the verdict.
 
 ## Audit + drain workflow

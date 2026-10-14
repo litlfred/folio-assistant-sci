@@ -29,15 +29,15 @@
  * it is what `QaCheckerContribution` models, criterion id plus function plus
  * the file that defines it.
  *
- * @module folio-assistant-sci/content/pipeline/qa-checkers-cost
+ * @module folio-assistant-sci/pipeline/qa-checkers-cost
  */
 
 import { existsSync, readFileSync } from "fs";
-import type { CheckerResult } from "../../../cat-harness/schemas/block-qa";
+import type { CheckerResult } from "../../cat-harness/schemas/block-qa";
 
-import { parseLeanRef, refToDecl } from "../../../cat-harness-tools/pipeline/content-graph";
-import { loadProfileCache, entryFresh, type ProfileCache } from "../../../cat-harness-tools/pipeline/lean-profile-ingest";
-import { findContentRepoRoot } from "../../../cat-harness-tools/pipeline/repo-root";
+import { parseLeanRef, refToDecl } from "../../cat-harness-tools/pipeline/content-graph";
+import { loadProfileCache, entryFresh, type ProfileCache } from "../../cat-harness-tools/pipeline/lean-profile-ingest";
+import { findContentRepoRoot } from "../../cat-harness-tools/pipeline/repo-root";
 
 let _cache: ProfileCache | null = null;
 let _root: string | null = null;
