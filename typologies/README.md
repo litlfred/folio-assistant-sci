@@ -10,6 +10,7 @@ Part of [folio-assistant-sci](../README.md) 0.1.0, declared as `folio-assistant-
 
 | file | what it is | used by |
 |---|---|---|
+| [`editor-checkers.json`](editor-checkers.json) | Editor checkers |  |
 | [`lake-cache.json`](lake-cache.json) | Lake build cache |  |
 | [`lean.json`](lean.json) | Lean packages |  |
 <!-- kg:subgraph:end -->
