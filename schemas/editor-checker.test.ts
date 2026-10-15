@@ -29,7 +29,7 @@ describe("editor-checkers", () => {
     expect(Object.keys(kind.nodeSchemas)).toEqual(["folio-editor-checker/v1"]);
     const v = JSON.parse(readFileSync(join(SCI, dirOf("validators")!, "editor-checker.json"), "utf8"));
     expect(v.validates).toEqual({ kind: "editor-checkers", family: "folio-editor-checker/v1" });
-    expect(v.schema).toBe(`${declaration.name}:schemas/editor-checker.ts#EditorCheckerNodeSchema`);
+    expect(v.schema).toBe(`${declaration.name}:schemas/editor-checker.ts#EditorCheckerKind`);
   });
 
   test("there is at least one, and each passes its schema", () => {
