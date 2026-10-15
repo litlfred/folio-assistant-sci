@@ -16,4 +16,5 @@ Held in the library [`folio-assistant-sci/library/`](../README.md) as `milnorlin
 | [sections](sections/) | 40 |
 | [blocks](blocks/) | 20 |
 | images | 1 |
+
 <!-- kg:subgraph:end -->

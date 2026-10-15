@@ -16,4 +16,5 @@ Held in the library [`folio-assistant-sci/library/`](../README.md) as `codata-20
 | [sections](sections/) | 0 |
 | [blocks](blocks/) | 1 |
 | images | 0 |
+
 <!-- kg:subgraph:end -->
