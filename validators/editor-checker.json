@@ -5,5 +5,5 @@
     "kind": "editor-checkers",
     "family": "folio-editor-checker/v1"
   },
-  "schema": "folio-assistant-sci:schemas/editor-checker.ts#EditorCheckerNodeSchema"
+  "schema": "folio-assistant-sci:schemas/editor-checker.ts#EditorCheckerKind"
 }
