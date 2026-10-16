@@ -12,6 +12,7 @@
  */
 
 import { z } from "zod";
+import { nodeKind } from "../../cat-harness/schemas/node-kind.ts";
 
 export const EDITOR_CHECKER_NODE_SCHEMA = "folio-editor-checker/v1" as const;
 
@@ -70,6 +71,14 @@ export const EditorCheckerNodeSchema = z
   .strict();
 
 export type EditorCheckerNode = z.infer<typeof EditorCheckerNodeSchema>;
+
+/**
+ * `folio-editor-checker/v1` as a node kind (issue #2195), so `validators/editor-checker.json`
+ * names a kind and `node-kinds:check` files the family under it. Unversioned: the family's tag is not SemVer, so the `$schema` literal stays a
+ * field of the shape rather than one `nodeKind()` generates.
+ * Strict, as {@link EditorCheckerNodeSchema} is.
+ */
+export const EditorCheckerKind = nodeKind("folio-editor-checker", [], EditorCheckerNodeSchema.shape, { strict: true });
 
 /** Every code ref a node names. */
 export function codeRefs(node: EditorCheckerNode): string[] {

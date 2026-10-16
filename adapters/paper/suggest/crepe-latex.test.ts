@@ -13,7 +13,9 @@
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import { readFileSync, readdirSync } from "node:fs";
+import { createRequire } from "node:module";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { crepeFeatureConfigs, inlineMathNodeView, useLatexAtoms } from "./crepe-latex";
 import { checkSuggestion, macroTable } from "./latex-check";
 
@@ -23,7 +25,13 @@ Object.defineProperty(document, "compatMode", { value: "CSS1Compat" });
 
 const { Crepe } = await import("@milkdown/crepe");
 const { InitReady, nodeViewCtx, remarkPluginsCtx } = await import("@milkdown/kit/core");
-const katex = (await import("katex")).default;
+// The KaTeX Crepe itself depends on (`^0.18`), resolved from Crepe's own
+// package, not a KaTeX of this instance's: the root's hoisted KaTeX is
+// folio-assistant-core's 0.16, the version the published site renders with,
+// and declaring a second one here put a nested `node_modules` in this
+// directory that check-environment refuses (bean 3vc1).
+const CREPE_ENTRY = fileURLToPath(import.meta.resolve("@milkdown/crepe"));
+const katex = (await import(createRequire(CREPE_ENTRY).resolve("katex"))).default;
 
 afterAll(() => GlobalRegistrator.unregister());
 
