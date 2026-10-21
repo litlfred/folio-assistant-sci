@@ -15,16 +15,19 @@
   "file": "../images/img-p006-4.png",
   "pageStart": 6,
   "pageEnd": 6,
-  "narrative": {
-    "text": "Fig. 6 panel 3: detection results on page 745 of the ODE article (equations (2.1)-(2.8)), with blue bounding boxes; per the caption, split formulas are highlighted in pink in this panel, which is not clearly visible in the extracted image.",
-    "state": "draft",
-    "drafted_by": {
-      "kind": "agent",
-      "id": "claude",
-      "model": "claude-opus-5-5"
-    },
-    "drafted_at": "2026-10-11"
-  },
+  "narrative": [
+    {
+      "text": "Fig. 6 panel 3: detection results on page 745 of the ODE article (equations (2.1)-(2.8)), with blue bounding boxes; per the caption, split formulas are highlighted in pink in this panel, which is not clearly visible in the extracted image.",
+      "state": "draft",
+      "drafted_by": {
+        "kind": "agent",
+        "id": "claude",
+        "model": "claude-opus-5-5"
+      },
+      "drafted_at": "2026-10-11",
+      "lang": "en"
+    }
+  ],
   "derivedFrom": "library/arxiv-2003.08005v1/sections/sec-front-matter",
   "sourceDocument": "https://litlfred.github.io/folio-assistant/assets/library/jsonld/folio-assistant-sci/arxiv-2003.08005v1/manifest.jsonld",
   "provenance": "ingested"
