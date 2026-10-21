@@ -15,16 +15,19 @@
   "file": "../images/img-p006-3.png",
   "pageStart": 6,
   "pageEnd": 6,
-  "narrative": {
-    "text": "Fig. 6 panel 2: detection results on a page containing (5.23), 'Nonsingular rational curves', 'Quantum multiplication in H*(P^n)', (5.24) and a matrix D-module equation, with blue bounding boxes around formulas.",
-    "state": "draft",
-    "drafted_by": {
-      "kind": "agent",
-      "id": "claude",
-      "model": "claude-opus-5-5"
-    },
-    "drafted_at": "2026-10-11"
-  },
+  "narrative": [
+    {
+      "text": "Fig. 6 panel 2: detection results on a page containing (5.23), 'Nonsingular rational curves', 'Quantum multiplication in H*(P^n)', (5.24) and a matrix D-module equation, with blue bounding boxes around formulas.",
+      "state": "draft",
+      "drafted_by": {
+        "kind": "agent",
+        "id": "claude",
+        "model": "claude-opus-5-5"
+      },
+      "drafted_at": "2026-10-11",
+      "lang": "en"
+    }
+  ],
   "derivedFrom": "library/arxiv-2003.08005v1/sections/sec-front-matter",
   "sourceDocument": "https://litlfred.github.io/folio-assistant/assets/library/jsonld/folio-assistant-sci/arxiv-2003.08005v1/manifest.jsonld",
   "provenance": "ingested"

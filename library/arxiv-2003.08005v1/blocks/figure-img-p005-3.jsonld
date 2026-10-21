@@ -15,16 +15,19 @@
   "file": "../images/img-p005-3.png",
   "pageStart": 5,
   "pageEnd": 5,
-  "narrative": {
-    "text": "Fig. 5(b) base image: the same scanned excerpt (equations (2.1), (2.2)) used for the 'After cropping' panel; the cropped blue box shown in the paper is not part of this extracted image.",
-    "state": "draft",
-    "drafted_by": {
-      "kind": "agent",
-      "id": "claude",
-      "model": "claude-opus-5-5"
-    },
-    "drafted_at": "2026-10-11"
-  },
+  "narrative": [
+    {
+      "text": "Fig. 5(b) base image: the same scanned excerpt (equations (2.1), (2.2)) used for the 'After cropping' panel; the cropped blue box shown in the paper is not part of this extracted image.",
+      "state": "draft",
+      "drafted_by": {
+        "kind": "agent",
+        "id": "claude",
+        "model": "claude-opus-5-5"
+      },
+      "drafted_at": "2026-10-11",
+      "lang": "en"
+    }
+  ],
   "derivedFrom": "library/arxiv-2003.08005v1/sections/sec-front-matter",
   "sourceDocument": "https://litlfred.github.io/folio-assistant/assets/library/jsonld/folio-assistant-sci/arxiv-2003.08005v1/manifest.jsonld",
   "provenance": "ingested"
