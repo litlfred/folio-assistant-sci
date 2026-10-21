@@ -17,16 +17,19 @@
         "saw": "an empty white rectangle with a soft grey drop shadow and nothing drawn inside it -- the background panel of one of Figure 1's boxes; the figure's text and arrows are vector graphics the image extractor does not capture",
         "page": 2
       },
-      "narrative": {
-        "text": "An empty white rectangular panel with a soft grey drop shadow and no content of its own: the background of one of the boxes in Figure 1, the overview of the Process-Driven Autoformalization loop. The box's text and arrows are drawn as vector graphics on top of it and are not part of this image.",
-        "state": "draft",
-        "drafted_by": {
-          "kind": "agent",
-          "id": "claude",
-          "model": "claude-opus-5"
-        },
-        "drafted_at": "2026-09-20"
-      }
+      "narrative": [
+        {
+          "text": "An empty white rectangular panel with a soft grey drop shadow and no content of its own: the background of one of the boxes in Figure 1, the overview of the Process-Driven Autoformalization loop. The box's text and arrows are drawn as vector graphics on top of it and are not part of this image.",
+          "state": "draft",
+          "drafted_by": {
+            "kind": "agent",
+            "id": "claude",
+            "model": "claude-opus-5"
+          },
+          "drafted_at": "2026-09-20",
+          "lang": "en"
+        }
+      ]
     },
     {
       "id": "img-p002-2",
@@ -43,16 +46,19 @@
         "saw": "an empty white rectangle with a soft grey drop shadow and nothing drawn inside it -- the background panel of one of Figure 1's boxes; the figure's text and arrows are vector graphics the image extractor does not capture",
         "page": 2
       },
-      "narrative": {
-        "text": "An empty white rectangular panel with a soft grey drop shadow and no content of its own: the background of one of the boxes in Figure 1, the overview of the Process-Driven Autoformalization loop. The box's text and arrows are drawn as vector graphics on top of it and are not part of this image.",
-        "state": "draft",
-        "drafted_by": {
-          "kind": "agent",
-          "id": "claude",
-          "model": "claude-opus-5"
-        },
-        "drafted_at": "2026-09-20"
-      }
+      "narrative": [
+        {
+          "text": "An empty white rectangular panel with a soft grey drop shadow and no content of its own: the background of one of the boxes in Figure 1, the overview of the Process-Driven Autoformalization loop. The box's text and arrows are drawn as vector graphics on top of it and are not part of this image.",
+          "state": "draft",
+          "drafted_by": {
+            "kind": "agent",
+            "id": "claude",
+            "model": "claude-opus-5"
+          },
+          "drafted_at": "2026-09-20",
+          "lang": "en"
+        }
+      ]
     },
     {
       "id": "img-p002-3",
@@ -69,16 +75,19 @@
         "saw": "an empty white rectangle with a soft grey drop shadow and nothing drawn inside it -- the background panel of one of Figure 1's boxes; the figure's text and arrows are vector graphics the image extractor does not capture",
         "page": 2
       },
-      "narrative": {
-        "text": "An empty white rectangular panel with a soft grey drop shadow and no content of its own: the background of one of the boxes in Figure 1, the overview of the Process-Driven Autoformalization loop. The box's text and arrows are drawn as vector graphics on top of it and are not part of this image.",
-        "state": "draft",
-        "drafted_by": {
-          "kind": "agent",
-          "id": "claude",
-          "model": "claude-opus-5"
-        },
-        "drafted_at": "2026-09-20"
-      }
+      "narrative": [
+        {
+          "text": "An empty white rectangular panel with a soft grey drop shadow and no content of its own: the background of one of the boxes in Figure 1, the overview of the Process-Driven Autoformalization loop. The box's text and arrows are drawn as vector graphics on top of it and are not part of this image.",
+          "state": "draft",
+          "drafted_by": {
+            "kind": "agent",
+            "id": "claude",
+            "model": "claude-opus-5"
+          },
+          "drafted_at": "2026-09-20",
+          "lang": "en"
+        }
+      ]
     },
     {
       "id": "img-p002-4",
@@ -95,16 +104,19 @@
         "saw": "an empty white rectangle with a soft grey drop shadow and nothing drawn inside it -- the background panel of one of Figure 1's boxes; the figure's text and arrows are vector graphics the image extractor does not capture",
         "page": 2
       },
-      "narrative": {
-        "text": "An empty white rectangular panel with a soft grey drop shadow and no content of its own: the background of one of the boxes in Figure 1, the overview of the Process-Driven Autoformalization loop. The box's text and arrows are drawn as vector graphics on top of it and are not part of this image.",
-        "state": "draft",
-        "drafted_by": {
-          "kind": "agent",
-          "id": "claude",
-          "model": "claude-opus-5"
-        },
-        "drafted_at": "2026-09-20"
-      }
+      "narrative": [
+        {
+          "text": "An empty white rectangular panel with a soft grey drop shadow and no content of its own: the background of one of the boxes in Figure 1, the overview of the Process-Driven Autoformalization loop. The box's text and arrows are drawn as vector graphics on top of it and are not part of this image.",
+          "state": "draft",
+          "drafted_by": {
+            "kind": "agent",
+            "id": "claude",
+            "model": "claude-opus-5"
+          },
+          "drafted_at": "2026-09-20",
+          "lang": "en"
+        }
+      ]
     },
     {
       "id": "img-p002-5",
@@ -121,16 +133,19 @@
         "saw": "an empty white rectangle with a soft grey drop shadow and nothing drawn inside it -- the background panel of one of Figure 1's boxes; the figure's text and arrows are vector graphics the image extractor does not capture",
         "page": 2
       },
-      "narrative": {
-        "text": "An empty white rectangular panel with a soft grey drop shadow and no content of its own: the background of one of the boxes in Figure 1, the overview of the Process-Driven Autoformalization loop. The box's text and arrows are drawn as vector graphics on top of it and are not part of this image.",
-        "state": "draft",
-        "drafted_by": {
-          "kind": "agent",
-          "id": "claude",
-          "model": "claude-opus-5"
-        },
-        "drafted_at": "2026-09-20"
-      }
+      "narrative": [
+        {
+          "text": "An empty white rectangular panel with a soft grey drop shadow and no content of its own: the background of one of the boxes in Figure 1, the overview of the Process-Driven Autoformalization loop. The box's text and arrows are drawn as vector graphics on top of it and are not part of this image.",
+          "state": "draft",
+          "drafted_by": {
+            "kind": "agent",
+            "id": "claude",
+            "model": "claude-opus-5"
+          },
+          "drafted_at": "2026-09-20",
+          "lang": "en"
+        }
+      ]
     },
     {
       "id": "img-p002-6",
@@ -147,16 +162,19 @@
         "saw": "an empty white rectangle with a soft grey drop shadow and nothing drawn inside it -- the background panel of one of Figure 1's boxes; the figure's text and arrows are vector graphics the image extractor does not capture",
         "page": 2
       },
-      "narrative": {
-        "text": "An empty white rectangular panel with a soft grey drop shadow and no content of its own: the background of one of the boxes in Figure 1, the overview of the Process-Driven Autoformalization loop. The box's text and arrows are drawn as vector graphics on top of it and are not part of this image.",
-        "state": "draft",
-        "drafted_by": {
-          "kind": "agent",
-          "id": "claude",
-          "model": "claude-opus-5"
-        },
-        "drafted_at": "2026-09-20"
-      }
+      "narrative": [
+        {
+          "text": "An empty white rectangular panel with a soft grey drop shadow and no content of its own: the background of one of the boxes in Figure 1, the overview of the Process-Driven Autoformalization loop. The box's text and arrows are drawn as vector graphics on top of it and are not part of this image.",
+          "state": "draft",
+          "drafted_by": {
+            "kind": "agent",
+            "id": "claude",
+            "model": "claude-opus-5"
+          },
+          "drafted_at": "2026-09-20",
+          "lang": "en"
+        }
+      ]
     },
     {
       "id": "img-p002-7",
@@ -173,16 +191,19 @@
         "saw": "a network glyph placed on the Figure 1 overview beside the verifier box",
         "page": 2
       },
-      "narrative": {
-        "text": "A dark navy line icon of a small layered network: two nodes on the left, three in the middle column and three on the right, joined by straight edges that cross between the columns, two of the left-hand edges drawn with a small gap as if passing under another. In the paper's Figure 1 it stands for the Process-Supervised Verifier, the trained model that scores autoformalization candidates.",
-        "state": "draft",
-        "drafted_by": {
-          "kind": "agent",
-          "id": "claude",
-          "model": "claude-opus-5"
-        },
-        "drafted_at": "2026-09-20"
-      },
+      "narrative": [
+        {
+          "text": "A dark navy line icon of a small layered network: two nodes on the left, three in the middle column and three on the right, joined by straight edges that cross between the columns, two of the left-hand edges drawn with a small gap as if passing under another. In the paper's Figure 1 it stands for the Process-Supervised Verifier, the trained model that scores autoformalization candidates.",
+          "state": "draft",
+          "drafted_by": {
+            "kind": "agent",
+            "id": "claude",
+            "model": "claude-opus-5"
+          },
+          "drafted_at": "2026-09-20",
+          "lang": "en"
+        }
+      ],
       "placements": [
         {
           "page": 2,
