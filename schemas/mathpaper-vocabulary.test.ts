@@ -26,7 +26,7 @@ describe("the mathpaper vocabulary module", () => {
   test("types exactly the kinds this layer declares, and keeps the contract", () => {
     const v = readVocabulary("mathpaper", adapter.vocabulary!, mathpaper, declared);
     expect([...v.schemas.keys()].sort()).toEqual([...declared].sort());
-    expect(v.constraintRules.map((r) => r.id).sort()).toEqual(["lean-file-exists", "lean-stub-conjecture-kind-check", "provable-lean-warning"]);
+    expect(v.constraintRules.map((r) => r.id).sort()).toEqual(["lean-file-exists", "lean-stub-conjecture-kind-check", "mathpaper-md-exists", "provable-lean-warning"]);
   });
 
   test("each builder builds a block its schema accepts, and a label of the wrong kind is refused", () => {

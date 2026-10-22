@@ -210,10 +210,20 @@ export const builders = { definition, theorem, lemma, proposition, corollary, co
 /**
  * The rules that concern only this vocabulary's kinds, under the ids they had
  * in cat-harness, so each replaces its old copy there rather than running
- * twice. `md-exists` is not here: it spans both vocabularies, and this layer's
- * kinds join it when cat-harness's copy lists only its own.
+ * twice; and `mathpaper-md-exists`, cat-harness's `md-exists` for these kinds,
+ * which it covered until its copy listed only cat-harness's own.
  */
 export const constraintRules: ConstraintRule[] = [
+  {
+    id: "mathpaper-md-exists",
+    description: "Every block must have a companion .md file",
+    // The six md-exists always covered; `proof` never was (bean j19q).
+    appliesTo: ["definition", "theorem", "lemma", "proposition", "corollary", "conjecture"],
+    check: (_block, ctx) => {
+      const mdPath = `${ctx.dir}/${ctx.rootName}.md`;
+      return ctx.fileExists(mdPath) ? null : `Missing companion: ${mdPath}`;
+    },
+  },
   {
     id: "lean-file-exists",
     description: "Definitions must have a Lean formalization: sibling .lean OR a resolvable Lake-tree file via lean.ref",
