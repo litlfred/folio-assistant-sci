@@ -4,7 +4,7 @@
 
 # folio-assistant-sci-qa-checkers
 
-The QA checkers this instance's Lean tooling provides, one folio-qa-checker/v1 node per criterion, naming COST_AUTOMATED_CHECKERS in content/pipeline/qa-checkers-cost.ts (bean riit, step 3b). Registered for a folio by loadContributions through its dependency tree; they replace the qaCheckers array contributions.ts returned.
+The QA checkers this instance's Lean tooling provides, one folio-qa-checker/v1 node per criterion, naming COST_AUTOMATED_CHECKERS in pipeline/qa-checkers-cost.ts (bean riit, step 3b). Registered for a folio by loadContributions through its dependency tree; they replace the qaCheckers array contributions.ts returned.
 
 Part of [folio-assistant-sci](../README.md) 0.1.0, declared as `folio-assistant-sci-qa-checkers`, holding `qa-checkers`.
 

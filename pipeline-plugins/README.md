@@ -4,7 +4,7 @@
 
 # folio-assistant-sci-pipeline-plugins
 
-The generic pipeline slots this instance fills, one folio-pipeline-plugin/v1 node per slot, naming PIPELINE_IMPLEMENTATIONS in content/pipeline/plugin-slots.ts (bean riit, step 3b). Registered for a folio by loadContributions through its dependency tree; they replace the pipelinePlugins array contributions.ts returned.
+The generic pipeline slots this instance fills, one folio-pipeline-plugin/v1 node per slot, naming PIPELINE_IMPLEMENTATIONS in pipeline/plugin-slots.ts (bean riit, step 3b). Registered for a folio by loadContributions through its dependency tree; they replace the pipelinePlugins array contributions.ts returned.
 
 Part of [folio-assistant-sci](../README.md) 0.1.0, declared as `folio-assistant-sci-pipeline-plugins`, holding `pipeline-plugins`.
 

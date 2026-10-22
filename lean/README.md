@@ -12,7 +12,7 @@ holds Lean 4 sources. In a folio that is its formalisation: Lake packages
 (each a `lakefile.toml` or `lakefile.lean` with its modules beneath it), the
 modules, and the declarations a block's `lean.ref` points at. In this harness
 it is the templates its Lean tooling fills — this directory holds one,
-`formal-edges.lean.tmpl`, which `content/pipeline/formal-edges.ts` writes into
+`formal-edges.lean.tmpl`, which `pipeline/formal-edges.ts` writes into
 a folio's own `.lake/` and runs there. It is a `.tmpl`, not a `.lean`, because
 the platform tracks no Lean content
 (`scripts/tests/lean-decl-starts-are-shared.test.ts`).
@@ -67,7 +67,7 @@ typology fails to parse as a whole.
 
 # sci-lean
 
-The Lean templates this harness's tooling fills: today `formal-edges.lean.tmpl`, which content/pipeline/formal-edges.ts writes into a folio's own `.lake/` and elaborates there. Declared with graph typology `lean`, the kind this instance owns for Lean sources (typologies/lean.json), on the owner's ruling of 2026-10-10: "lean/ is a declared directory in folio-asst-sci (it should be) and lean Processes and Tools are around that." The Tools (`lean-html-docs`, `lean-render-publish`), the process (`lean-docs-publish`) and the skill (`lean-html-docs`) are what a FOLIO's `lean` directory gets: its doc-gen4 render, published under the folio's site in the harness rail. `.tmpl`, never `.lean`: the platform tracks no Lean content, and lean-decl-starts-are-shared.test.ts holds it to that. Declared WITH its files, per bean dh4f.
+The Lean templates this harness's tooling fills: today `formal-edges.lean.tmpl`, which pipeline/formal-edges.ts writes into a folio's own `.lake/` and elaborates there. Declared with graph typology `lean`, the kind this instance owns for Lean sources (typologies/lean.json), on the owner's ruling of 2026-10-10: "lean/ is a declared directory in folio-asst-sci (it should be) and lean Processes and Tools are around that." The Tools (`lean-html-docs`, `lean-render-publish`), the process (`lean-docs-publish`) and the skill (`lean-html-docs`) are what a FOLIO's `lean` directory gets: its doc-gen4 render, published under the folio's site in the harness rail. `.tmpl`, never `.lean`: the platform tracks no Lean content, and lean-decl-starts-are-shared.test.ts holds it to that. Declared WITH its files, per bean dh4f.
 
 Part of [folio-assistant-sci](../README.md) 0.1.0, declared as `sci-lean`, holding `lean`.
 

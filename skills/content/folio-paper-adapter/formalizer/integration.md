@@ -169,7 +169,7 @@ content/<paper>/<chapter>/
 4. **Update the `.ts` manifest**: set `lean.ref` to the package-qualified
    URI `"<pkg>:<Decl.Path>"` (per the project authoring conventions; legacy `lean.decl` /
    `lean.file` shape is removed)
-5. **Run validation**: `bun run content/pipeline/validate.ts` to check
+5. **Run validation**: `bun run cat-harness-tools/pipeline/validate.ts` to check
    cross-references and constraint rules
 
 ### Glossary terms in narrative `.md`

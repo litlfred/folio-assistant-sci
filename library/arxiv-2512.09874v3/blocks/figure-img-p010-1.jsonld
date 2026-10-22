@@ -1,0 +1,34 @@
+{
+  "@context": [
+    "https://litlfred.github.io/folio-assistant-sci/ns/context/v1.jsonld",
+    {
+      "@base": "https://litlfred.github.io/folio/",
+      "folio-assistant-core": "https://litlfred.github.io/folio-assistant-core/0.1.0/ns#"
+    }
+  ],
+  "@id": "library/arxiv-2512.09874v3/blocks/figure-img-p010-1",
+  "@type": [
+    "folio-assistant-core:Figure",
+    "doco:Figure"
+  ],
+  "kind": "figure",
+  "file": "../images/img-p010-1.png",
+  "pageStart": 10,
+  "pageEnd": 10,
+  "narrative": [
+    {
+      "text": "Four ground-truth/parsed formula pairs separated by a blue line, all symbols boxed green: 7^2 vs 72, 10^{-1} vs 10 − 1, x_{(i−1)} vs x(i − 1), and blackboard ℕ ⊂ ℝ vs italic N ⊂ R. These are the examples of CDM giving matches despite positional or symbol differences.",
+      "state": "draft",
+      "drafted_by": {
+        "kind": "agent",
+        "id": "claude",
+        "model": "claude-opus-5-5"
+      },
+      "drafted_at": "2026-10-11",
+      "lang": "en"
+    }
+  ],
+  "derivedFrom": "library/arxiv-2512.09874v3/sections/sec-000",
+  "sourceDocument": "https://litlfred.github.io/folio-assistant/assets/library/jsonld/folio-assistant-sci/arxiv-2512.09874v3/manifest.jsonld",
+  "provenance": "ingested"
+}

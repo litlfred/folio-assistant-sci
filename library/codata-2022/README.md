@@ -1,5 +1,5 @@
 <!-- kg:subgraph:begin -->
-# codata-2022
+# CODATA 2022 Recommended Values of the Fundamental Physical Constants
 
 _No disposition is recorded for `codata-2022`._
 
@@ -16,4 +16,5 @@ Held in the library [`folio-assistant-sci/library/`](../README.md) as `codata-20
 | [sections](sections/) | 0 |
 | [blocks](blocks/) | 1 |
 | images | 0 |
+
 <!-- kg:subgraph:end -->

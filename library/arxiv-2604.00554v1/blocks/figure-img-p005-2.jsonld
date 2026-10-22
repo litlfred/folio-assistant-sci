@@ -1,0 +1,34 @@
+{
+  "@context": [
+    "https://litlfred.github.io/folio-assistant-sci/ns/context/v1.jsonld",
+    {
+      "@base": "https://litlfred.github.io/folio/",
+      "folio-assistant-core": "https://litlfred.github.io/folio-assistant-core/0.1.0/ns#"
+    }
+  ],
+  "@id": "library/arxiv-2604.00554v1/blocks/figure-img-p005-2",
+  "@type": [
+    "folio-assistant-core:Figure",
+    "doco:Figure"
+  ],
+  "kind": "figure",
+  "file": "../images/img-p005-2.png",
+  "pageStart": 5,
+  "pageEnd": 5,
+  "narrative": [
+    {
+      "text": "Figure 3: two monospaced text boxes. The upper shows the prompt asking the model to extract the review between a given title and the following title from a LaTeX text chunk; the lower shows the model output, a German review text containing LaTeX-escaped mathematics.",
+      "state": "draft",
+      "drafted_by": {
+        "kind": "agent",
+        "id": "claude",
+        "model": "claude-opus-5-5"
+      },
+      "drafted_at": "2026-10-11",
+      "lang": "en"
+    }
+  ],
+  "derivedFrom": "library/arxiv-2604.00554v1/sections/sec-015",
+  "sourceDocument": "https://litlfred.github.io/folio-assistant/assets/library/jsonld/folio-assistant-sci/arxiv-2604.00554v1/manifest.jsonld",
+  "provenance": "ingested"
+}

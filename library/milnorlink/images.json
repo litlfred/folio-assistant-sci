@@ -17,16 +17,19 @@
         "saw": "the JSTOR publisher mark",
         "page": 1
       },
-      "narrative": {
-        "text": "The JSTOR logo: an ornate decorated capital J in a black square, above the word STOR, with a registered-trademark symbol.",
-        "state": "draft",
-        "drafted_by": {
-          "kind": "agent",
-          "id": "claude",
-          "model": "claude-opus-5"
-        },
-        "drafted_at": "2026-09-20"
-      }
+      "narrative": [
+        {
+          "text": "The JSTOR logo: an ornate decorated capital J in a black square, above the word STOR, with a registered-trademark symbol.",
+          "state": "draft",
+          "drafted_by": {
+            "kind": "agent",
+            "id": "claude",
+            "model": "claude-opus-5"
+          },
+          "drafted_at": "2026-09-20",
+          "lang": "en"
+        }
+      ]
     },
     {
       "id": "img-p002-1",

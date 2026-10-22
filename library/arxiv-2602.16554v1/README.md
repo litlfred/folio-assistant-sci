@@ -18,4 +18,5 @@ Held in the library [`folio-assistant-sci/library/`](../README.md) as `arxiv-260
 | [sections](sections/) | 30 |
 | [blocks](blocks/) | 15 |
 | images | 1 |
+
 <!-- kg:subgraph:end -->

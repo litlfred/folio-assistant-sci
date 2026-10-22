@@ -153,10 +153,10 @@ the result, and skips only the PDFs. By hand, from the folio:
 P=folio-assistant
 cat $P/folio-assistant-sci/adapters/paper/latex/paper-preamble.tex \
     <paper dir>/latex/notation-preamble.tex > /tmp/fb/preamble.tex
-bun run --preload scripts/preload-registry.ts $P/cat-harness-tools/content/pipeline/build.ts \
+bun run --preload scripts/preload-registry.ts $P/cat-harness-tools/pipeline/build.ts \
   <paper dir>/<paper>.ts --out-dir /tmp/fb/chapters \
   --generate-main --main-out /tmp/fb/main.tex --preamble /tmp/fb/preamble.tex
-bun run $P/cat-harness-tools/content/pipeline/latex-preflight.ts /tmp/fb/main.tex   # exit 0 = no fatal classes
+bun run $P/cat-harness-tools/pipeline/latex-preflight.ts /tmp/fb/main.tex   # exit 0 = no fatal classes
 ```
 
 For a real compile, install TeX (above) and run

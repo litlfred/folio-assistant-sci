@@ -1,0 +1,34 @@
+{
+  "@context": [
+    "https://litlfred.github.io/folio-assistant-sci/ns/context/v1.jsonld",
+    {
+      "@base": "https://litlfred.github.io/folio/",
+      "folio-assistant-core": "https://litlfred.github.io/folio-assistant-core/0.1.0/ns#"
+    }
+  ],
+  "@id": "library/arxiv-2003.08005v1/blocks/figure-img-p004-6",
+  "@type": [
+    "folio-assistant-core:Figure",
+    "doco:Figure"
+  ],
+  "kind": "figure",
+  "file": "../images/img-p004-6.png",
+  "pageStart": 4,
+  "pageEnd": 4,
+  "narrative": [
+    {
+      "text": "Fig. 2 stitched-heatmap page: page 745 thumbnail with greyed background and heatmap highlights (white, pink, yellow) over formula regions, after stitching window-level detections.",
+      "state": "draft",
+      "drafted_by": {
+        "kind": "agent",
+        "id": "claude",
+        "model": "claude-opus-5-5"
+      },
+      "drafted_at": "2026-10-11",
+      "lang": "en"
+    }
+  ],
+  "derivedFrom": "library/arxiv-2003.08005v1/sections/sec-front-matter",
+  "sourceDocument": "https://litlfred.github.io/folio-assistant/assets/library/jsonld/folio-assistant-sci/arxiv-2003.08005v1/manifest.jsonld",
+  "provenance": "ingested"
+}

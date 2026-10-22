@@ -24,11 +24,11 @@ trace the **union** of both dependency relations — not `uses[]` alone:
 A critical path built from `uses[]` alone is missing every formal
 dependency the narrative never introduces, and will understate what
 breaks when a block changes. Build the union with
-`content/pipeline/content-graph.ts` — its accessors (`out`, `in`,
+`cat-harness-tools/pipeline/content-graph.ts` — its accessors (`out`, `in`,
 `cone`) default to the union and take an optional `EdgeKind` filter:
 
 ```sh
-bun run content/pipeline/content-graph.ts content/<paper>
+bun run cat-harness-tools/pipeline/content-graph.ts content/<paper>
 ```
 
 Check `hasFormal` before trusting a union result. When the Lean Atlas

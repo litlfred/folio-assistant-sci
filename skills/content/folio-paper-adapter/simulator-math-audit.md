@@ -31,7 +31,7 @@ restating them.
    its `uses[]` and in the surrounding narrative. Note that `uses[]` is
    the *editorial* relation; if the simulator has a `lean.ref`, the
    formal dependencies are in the content graph
-   (`content/pipeline/content-graph.ts`).
+   (`cat-harness-tools/pipeline/content-graph.ts`).
 
 3. **Verify formulas and constants.**
    - Check each displayed formula against the block that defines it.

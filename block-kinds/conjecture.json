@@ -1,7 +1,7 @@
 {
   "$schema": "folio-block-kind/v1",
   "kind": "conjecture",
-  "adapter": "paper",
+  "adapter": "mathpaper",
   "profile": "paper",
   "labelPrefix": "conj",
   "provable": true,

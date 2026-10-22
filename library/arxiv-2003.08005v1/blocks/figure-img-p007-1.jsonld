@@ -1,0 +1,34 @@
+{
+  "@context": [
+    "https://litlfred.github.io/folio-assistant-sci/ns/context/v1.jsonld",
+    {
+      "@base": "https://litlfred.github.io/folio/",
+      "folio-assistant-core": "https://litlfred.github.io/folio-assistant-core/0.1.0/ns#"
+    }
+  ],
+  "@id": "library/arxiv-2003.08005v1/blocks/figure-img-p007-1",
+  "@type": [
+    "folio-assistant-core:Figure",
+    "doco:Figure"
+  ],
+  "kind": "figure",
+  "file": "../images/img-p007-1.png",
+  "pageStart": 7,
+  "pageEnd": 7,
+  "narrative": [
+    {
+      "text": "Fig. 7: document-level f-scores for 10 test documents (Lorentz48, Jones83, Lusztig89, Kontsevich94, Erbe94, Gidas79, Kazhdan79, Li75, Emden76, Katz99). Blue bars IOU >= 0.5 range 0.6816 (Emden76) to 0.8787 (Erbe94); red bars IOU >= 0.75 range 0.5898 (Emden76) to 0.8518 (Erbe94); y-axis 0.5 to 0.9.",
+      "state": "draft",
+      "drafted_by": {
+        "kind": "agent",
+        "id": "claude",
+        "model": "claude-opus-5-5"
+      },
+      "drafted_at": "2026-10-11",
+      "lang": "en"
+    }
+  ],
+  "derivedFrom": "library/arxiv-2003.08005v1/sections/sec-front-matter",
+  "sourceDocument": "https://litlfred.github.io/folio-assistant/assets/library/jsonld/folio-assistant-sci/arxiv-2003.08005v1/manifest.jsonld",
+  "provenance": "ingested"
+}
