@@ -1,0 +1,39 @@
+/**
+ * The `mathpaper` vocabulary module keeps cat-harness's contract
+ * (`vocabulary-modules.ts`): one schema per kind this layer's block-kind
+ * nodes declare, and its builders build blocks those schemas accept.
+ */
+import { describe, expect, test } from "bun:test";
+import { readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+
+import { readVocabulary } from "@litlfred/cat-harness/schemas/vocabulary-modules.ts";
+import * as mathpaper from "./mathpaper-vocabulary.ts";
+
+const ROOT = join(import.meta.dir, "..");
+const declared = readdirSync(join(ROOT, "block-kinds"))
+  .filter((f) => f.endsWith(".json"))
+  .map((f) => JSON.parse(readFileSync(join(ROOT, "block-kinds", f), "utf-8")) as { kind: string; adapter: string })
+  .filter((n) => n.adapter === "mathpaper")
+  .map((n) => n.kind);
+const adapter = JSON.parse(readFileSync(join(ROOT, "content-adapters", "mathpaper.json"), "utf-8")) as { vocabulary?: string };
+
+describe("the mathpaper vocabulary module", () => {
+  test("is the module the adapter node names", () => {
+    expect(adapter.vocabulary).toBe("schemas/mathpaper-vocabulary.ts");
+  });
+
+  test("types exactly the kinds this layer declares, and keeps the contract", () => {
+    const v = readVocabulary("mathpaper", adapter.vocabulary!, mathpaper, declared);
+    expect([...v.schemas.keys()].sort()).toEqual([...declared].sort());
+    expect(v.constraintRules.map((r) => r.id).sort()).toEqual(["lean-file-exists", "lean-stub-conjecture-kind-check", "provable-lean-warning"]);
+  });
+
+  test("each builder builds a block its schema accepts, and a label of the wrong kind is refused", () => {
+    expect(mathpaper.theorem({ label: "thm:x", title: "X" }).kind).toBe("theorem");
+    expect(mathpaper.proof({ label: "prf:x", of: "thm:x" }).of).toBe("thm:x");
+    expect(mathpaper.definition({ label: "def:widget" }).lean.ref).toBe("qou:QOU.Widget");
+    expect(() => mathpaper.lemma({ label: "thm:x" })).toThrow();
+    for (const name of Object.keys(mathpaper.builders)) expect(declared).toContain(name);
+  });
+});
