@@ -112,7 +112,7 @@ runs:
         LAKE_ROOT: ${{ inputs.lake-root }}
         PACKAGE: ${{ inputs.package }}
       run: |
-        # Delegates to scripts/lake-cache.sh so CI and agents run the
+        # Delegates to the platform's lake-cache.sh so CI and agents run the
         # SAME restore. They previously diverged: this step read a
         # committed `.lake/` tree via `git archive`, while the branches
         # actually carry split `lake-oleans.tgz.part*` tarballs. The
@@ -123,9 +123,11 @@ runs:
         #
         # No `set -e`: a miss must fall through to Tier 3, not abort.
         # The service script is the PLATFORM's, at the path `folio_init`
-        # wrote when it scaffolded this folio. The cache branches live in
-        # this (the folio's) repository.
-        SVC="{{assistant}}/cat-harness-tools/scripts/lake-cache.sh"
+        # wrote when it scaffolded this folio: the Lean layer's `scripts/`
+        # (it moved there from the tools layer, folio-assistant#2598; a folio
+        # scaffolded before that is re-scaffolded to pick the path up). The
+        # cache branches live in this (the folio's) repository.
+        SVC="{{assistant}}/folio-assistant-sci/scripts/lake-cache.sh"
         if [ ! -f "$SVC" ]; then
           echo "::warning::$SVC not found (is the platform checked out?) — skipping Tier 2"
           echo "hit=false" >> "$GITHUB_OUTPUT"

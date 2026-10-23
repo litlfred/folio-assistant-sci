@@ -8,7 +8,7 @@
  *    job silently never runs (folio-assistant#1492: `blueprint.yml` and
  *    `lean_ci.yml` were exactly that).
  * 2. The lake-cache restore action names the cache-branch family's built-in
- *    names newest first, the same list the tools layer's `lake-cache.sh`
+ *    names newest first, the same list this layer's `scripts/lake-cache.sh`
  *    carries; a fallback list that lost or reordered a name resolves a
  *    different branch from the script it delegates to.
  *

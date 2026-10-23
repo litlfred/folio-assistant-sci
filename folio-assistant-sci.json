@@ -162,7 +162,7 @@
     {
       "id": "sci-scripts",
       "path": "scripts/",
-      "description": "Tests that hold the harness's code against what this instance owns or contributes: its paper processes and decision tables, its pipeline plugins and contributed checkers. The code under test is imported down from cat-harness.",
+      "description": "Tests that hold the harness's code against what this instance owns or contributes: its paper processes and decision tables, its pipeline plugins and contributed checkers. The code under test is imported down from cat-harness. Also the Lean cache service and its tests: `lake-cache.sh` (the `lean-cache` tool), `reseed-lean-cache.sh`, `lake-cache-fetch.sh`, `lake-cache-produce.py`, `lake-cache-fetch-multi.py` and their `.bat` entry points, moved here from cat-harness-tools `scripts/` (folio-assistant#2598; owner 2026-10-23, \"C ok\"): only a Lean folio runs them, and the `lake-cache` kind is this layer's. The cache branch family they read and write keeps its name, `cat/folio-assistant-sci/lake-cache/<pkg>` (owner, 2026-10-02).",
       "_comment": "Declared 2026-10-06 WITH its files (bean `dh4f`), when these tests moved up out of `cat-harness/scripts/tests/` (bean `ho66`): standing alone, cat-harness has no paper diagram, no `lean-lexer` and no contributed checker to read, so a test pinning one belongs to the instance that owns it. Same shape as folio-assistant-core's `scripts/`.",
       "graphTypologies": [
         "code"

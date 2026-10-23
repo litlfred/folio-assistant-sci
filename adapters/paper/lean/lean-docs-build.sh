@@ -96,9 +96,11 @@ for d in "$LAKE_ROOT" "$(git -C "$LAKE_ROOT" rev-parse --show-toplevel 2>/dev/nu
 done
 
 # 3. Warm cache.
+# This layer's own copy (it moved here from the tools layer,
+# folio-assistant#2598), else the one in the index checkout --platform names.
 CACHE_SH=""
-for c in "$PLATFORM/cat-harness/scripts/lake-cache.sh" "$PLATFORM/cat-harness-tools/scripts/lake-cache.sh"; do
-  [ -n "$PLATFORM" ] && [ -f "$c" ] && CACHE_SH="$c" && break
+for c in "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)/scripts/lake-cache.sh" "${PLATFORM:+$PLATFORM/folio-assistant-sci/scripts/lake-cache.sh}"; do
+  [ -n "$c" ] && [ -f "$c" ] && CACHE_SH="$c" && break
 done
 if [ -n "$CACHE_SH" ]; then
   if [ "$RESTORE" = 1 ]; then

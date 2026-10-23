@@ -4,8 +4,8 @@ import { defineTool } from "../../../cat-harness/schemas/tool.js";
 // Moved here from cat-harness/tools/index.ts (bean j9cs, 2026-10-05): the
 // `lake-cache` kind (kinds/lake-cache.json) says this harness owns the kind
 // AND the tool, and the skill it satisfies (`lean-cache-restore`) is this
-// harness's. The script itself lives in cat-harness-tools/scripts/, where the
-// folio copies it from; only the declaration moved. A folio's lake-cache
+// harness's. The script followed it into this layer's scripts/ (from
+// cat-harness-tools/scripts/, folio-assistant#2598). A folio's lake-cache
 // directory names it as `storage.tool: "lean-cache"`.
 export default toolFactory((t) =>
   defineTool({
@@ -14,7 +14,7 @@ export default toolFactory((t) =>
     description:
       "Restore, verify, seed and diagnose the prebuilt `.lake/` artefacts for a Lean package. Always try `restore` first: a from-source Mathlib build is 30–60 minutes, a restore about two.",
     install: { none: true },
-    invoke: { shell: "cat-harness-tools/scripts/lake-cache.sh" },
+    invoke: { shell: "folio-assistant-sci/scripts/lake-cache.sh" },
     io: {
       inputs: [
         { name: "action", schema: t("LakeCacheAction"), required: true, arg: { positional: 0 }, description: "The verb. `doctor` exists because a restore that silently missed used to look exactly like one that worked." },
