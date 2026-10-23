@@ -172,7 +172,6 @@ async function modulePage(name, target) {
   }
   const [mod, ...decls] = g["@graph"];
   observer?.disconnect();
-  const pending = new Map();
   observer = new IntersectionObserver((entries) => {
     for (const en of entries) {
       if (!en.isIntersecting) continue;
