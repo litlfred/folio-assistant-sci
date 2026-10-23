@@ -10,6 +10,9 @@ Part of [folio-assistant-sci](../../README.md) 0.1.0, declared as `voices`, hold
 
 | file | what it is | used by |
 |---|---|---|
+| [`address-compute-authoring-agent/`](address-compute-authoring-agent/) | _nothing declares what this holds_ | |
+| [`address-lean-authoring-agent/`](address-lean-authoring-agent/) | _nothing declares what this holds_ | |
+| [`address-proof-review-agent/`](address-proof-review-agent/) | _nothing declares what this holds_ | |
 | [`milnor/`](milnor/) | _nothing declares what this holds_ | |
 <!-- kg:subgraph:end -->
 
