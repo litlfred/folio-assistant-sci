@@ -78,7 +78,7 @@
     {
       "id": "folio-assistant-sci-validators",
       "path": "validators/",
-      "description": "The validators this instance's code provides, one folio-validator/v1 node each, naming the graph typology and $schema family it checks and the Zod export that checks it (bean riit). Today it holds one node: editor-checker, for folio-editor-checker/v1.",
+      "description": "The validators this instance's code provides, one folio-validator/v1 node each, naming the graph typology and $schema family it checks and the Zod export that checks it (bean riit): `conjecture-register` for `folio-conjecture-register/v1` and `editor-checker` for `folio-editor-checker/v1`.",
       "graphTypologies": [
         "validators"
       ]

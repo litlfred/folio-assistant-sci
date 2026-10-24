@@ -36,4 +36,41 @@ describe("the mathpaper vocabulary module", () => {
     expect(() => mathpaper.lemma({ label: "thm:x" })).toThrow();
     for (const name of Object.keys(mathpaper.builders)) expect(declared).toContain(name);
   });
+
+  test("conjecture() supports formal | identification classification and rejects conflicts", () => {
+    const bare = mathpaper.conjecture({ label: "conj:bare", title: "Bare" });
+    expect(bare.kind).toBe("conjecture");
+    expect(bare.conjectureKind).toBeUndefined();
+
+    const formal = mathpaper.conjecture({
+      label: "conj:spectral-gap",
+      title: "Spectral gap",
+      conjectureKind: "formal",
+      lean: { ref: "qou:QOU.SpectralGap" },
+    });
+    expect(formal.conjectureKind).toBe("formal");
+
+    const viaAlias = mathpaper.conjecture({
+      label: "conj:mass-match",
+      title: "Numerical mass identification",
+      formality: "identification",
+    });
+    expect(viaAlias.conjectureKind).toBe("identification");
+    expect(viaAlias.formality).toBe("identification");
+
+    expect(() =>
+      mathpaper.conjecture({
+        label: "conj:conflict",
+        conjectureKind: "formal",
+        formality: "identification",
+      }),
+    ).toThrow(/conflicting conjectureKind/);
+
+    expect(() =>
+      mathpaper.conjecture({
+        label: "conj:bad-kind",
+        conjectureKind: "speculative" as never,
+      }),
+    ).toThrow();
+  });
 });
