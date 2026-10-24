@@ -383,3 +383,11 @@ imports in Phase 2.
 - [ ] External deps pinned to commit hashes in `lakefile.toml`
 - [ ] Resolved proofs committed with descriptive messages
 - [ ] Summary table generated
+
+## Harness skills that dispatch here
+
+This layer sits above cat-harness, so the link points down from here. The
+harness skills below describe the slot generically ("the content type's …")
+and name no science skill (bean `syiq`).
+
+- `todo-review`: as the gap-triage skill: formal-layer gap stubs become high-priority feedback.

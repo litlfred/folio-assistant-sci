@@ -180,3 +180,11 @@ python3 script.py --args ...
 # RIGHT — unbuffered + teed + verbose
 python3 -u script.py --args ... 2>&1 | tee /tmp/script.log
 ```
+
+## Harness skills that dispatch here
+
+This layer sits above cat-harness, so the link points down from here. The
+harness skills below describe the slot generically ("the content type's …")
+and name no science skill (bean `syiq`).
+
+- `canonical-watcher`: as the compute-audit scanner, on any changed compute script.
