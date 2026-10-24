@@ -22,8 +22,8 @@ Moved here 2026-10-01 from the harness layer's voices guide, which may not link
 up the dependency arrow to the instances that ship voices (bean `rfuq`, issue
 #1770). What a voice *is*, how to activate one and how review works stay
 there: [`cat-harness/docs/guides/voices.md`](../../../cat-harness/docs/guides/voices.md);
-the author-facing rubric is the harness skill
-[`milnor-exposition-standard`](../../../cat-harness/skills/authoring/authoring-core/milnor-exposition-standard.md).
+the author-facing rubric is this layer's skill
+[`milnor-exposition-standard`](../content/authoring-math/milnor-exposition-standard.md).
 
 A scoring gate derived from John Milnor's "Link Groups" paper
 ([`library/milnorlink/`](../../library/milnorlink/)) covering the eight
