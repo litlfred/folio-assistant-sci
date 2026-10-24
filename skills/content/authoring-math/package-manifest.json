@@ -7,6 +7,7 @@
     "formal-layer-editing",
     "latex-authoring",
     "lean-formalization",
+    "lean-toolchain-contract",
     "math-md-authoring",
     "milnor-exposition-standard",
     "proof-verification"
