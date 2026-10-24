@@ -25,10 +25,10 @@
 #   scripts/lake-cache.sh doctor   [--lake-root DIR]
 #   scripts/lake-cache.sh resolve-branch --key <pkg>-<slug>
 #
-# Cache branches are `cat/folio-assistant-sci/lake-cache/<pkg>-<slug>`;
-# the legacy `cat-lake-cache/<pkg>-<slug>` and `lake-cache/<pkg>-<slug>`
-# are still read AND written where one of them is what exists, until the
-# remotes are renamed (beans folio-assistant-32f6, folio-assistant-9io2).
+# Cache branches are `cat/folio-assistant-sci/lake-cache/<pkg>-<slug>`.
+# The legacy `cat-lake-cache/` and `lake-cache/` names are no longer read:
+# every remote was renamed on 2026-10-24 (beans folio-assistant-qr4n,
+# folio-assistant-oycs).
 #
 # The package and branch are derived automatically from
 # `.github/lake-packages.json` + `lean-toolchain`; pass them only to
@@ -72,14 +72,13 @@ PRIVATE_REF="refs/lake-cache-restore"
 # The family is `cat/folio-assistant-sci/lake-cache/` (owner, 2026-10-02:
 # special branches are `cat/<harness>/<name>`; bean folio-assistant-9io2).
 # It was `lake-cache/`, then the interim `cat-lake-cache/` (bean
-# folio-assistant-32f6). Until every remote is renamed, a branch is
-# resolved new-name-first, then each legacy name in order, newest first —
-# for WRITES as well as reads, so nothing creates a new-name branch beside
-# a legacy one and blocks the rename. LEGACY_CACHE_PREFIXES is a
-# space-separated list (no prefix contains a space) and empties when bean
-# folio-assistant-oycs says.
+# folio-assistant-32f6). Every remote was renamed through the rename API on
+# 2026-10-24 (bean folio-assistant-qr4n), so the built-in legacy list is
+# empty (bean folio-assistant-oycs). LEGACY_CACHE_PREFIXES stays as a
+# space-separated list (no prefix contains a space) because a folio that
+# declares its own family still falls back to the built-in name below.
 CACHE_PREFIX="cat/folio-assistant-sci/lake-cache"
-LEGACY_CACHE_PREFIXES="cat-lake-cache lake-cache"
+LEGACY_CACHE_PREFIXES=""
 
 die()  { printf '%s: %s\n' "$PROG" "$*" >&2; exit 2; }
 info() { printf '  %s\n' "$*"; }

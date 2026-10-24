@@ -51,20 +51,10 @@ describe("dispatch-only paper workflow templates never gate on push", () => {
   }
 });
 
-/** Newest first: the name written when nothing exists, then the legacy names in resolution order. */
-const LAKE_CACHE_NAMES = ["cat/folio-assistant-sci/lake-cache", "cat-lake-cache", "lake-cache"];
-
-const esc = (n: string) => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-/** Index of the first whole-token occurrence of `name` in `text`, or -1. */
-function tokenAt(text: string, name: string): number {
-  const m = new RegExp(`(?<![\\w/-])${esc(name)}(?![\\w.-])`).exec(text);
-  return m ? m.index : -1;
-}
-
-describe("the lake-cache restore template carries the family's built-in names", () => {
-  test("every lake-cache name, newest first", () => {
+describe("the lake-cache restore template probes the new family name only (bean oycs)", () => {
+  test("its fallback loop names cat/folio-assistant-sci/lake-cache and no retired name", () => {
     const text = readFileSync(join(TEMPLATES, "paper/github/actions/lake-cache-restore/action.yml"), "utf-8");
-    for (const n of LAKE_CACHE_NAMES) expect(tokenAt(text, n), `action.yml names ${n}`).toBeGreaterThanOrEqual(0);
-    expect(text).toContain(`for p in ${LAKE_CACHE_NAMES.join(" ")}; do`);
+    expect(text).toContain("for p in cat/folio-assistant-sci/lake-cache; do");
+    expect(text).not.toMatch(/for p in [^;\n]*(?<![\w/-])(cat-lake-cache|lake-cache)(?=[ ;])/);
   });
 });

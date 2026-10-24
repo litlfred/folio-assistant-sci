@@ -7,7 +7,7 @@ description: |
   Restore Lake `.lake/` build artifacts via a 3-tier fallback chain:
     1. actions/cache (fastest; warm-runner hit ~30s)
     2. orphan branch cat/folio-assistant-sci/lake-cache/<pkg>-<lean-toolchain-short>
-       (legacy cat-lake-cache/… or lake-cache/… until renamed; durable; ~2-3 min)
+       (durable; ~2-3 min)
     3. `lake exe cache get` (Mathlib upstream Reservoir; ~1-2 min, Mathlib-only)
   The composite reports which tier hit, and any later workflow step
   can run `lake build` on whatever artifacts arrived.
@@ -67,8 +67,8 @@ runs:
         # The cache-branch family is `cat/folio-assistant-sci/lake-cache/`
         # (bean folio-assistant-9io2; it was `lake-cache/`, then the interim
         # `cat-lake-cache/`; names declared in
-        # the declaring folio's `storage`; special-branches.json is gone). Tier 2 resolves the key
-        # new-name-first, then each legacy name, newest first.
+        # the declaring folio's `storage`; special-branches.json is gone). The
+        # legacy names were retired on 2026-10-24 (bean folio-assistant-oycs).
         echo "orphan-key=${PACKAGE}-$slug" >> "$GITHUB_OUTPUT"
         echo "orphan-branch=cat/folio-assistant-sci/lake-cache/${PACKAGE}-$slug" >> "$GITHUB_OUTPUT"
 
@@ -133,16 +133,14 @@ runs:
           echo "hit=false" >> "$GITHUB_OUTPUT"
           exit 0
         fi
-        # The script resolves `cat/folio-assistant-sci/lake-cache/<key>`
-        # first, then the legacy `cat-lake-cache/<key>`, then `lake-cache/<key>`.
+        # The script resolves `cat/folio-assistant-sci/lake-cache/<key>`.
         # A platform checkout older than `resolve-branch` cannot, so this
-        # step applies the same rule itself: the first name that exists on
-        # origin (each probe is the FULL ref, so `lake-cache/` never matches
-        # inside a newer name), else the new name. Bean
-        # folio-assistant-oycs removes the fallback.
+        # step applies the same rule itself. The legacy `cat-lake-cache/`
+        # and `lake-cache/` names were retired on 2026-10-24, once every
+        # remote was renamed (bean folio-assistant-oycs).
         if ! BRANCH=$(bash "$SVC" resolve-branch --key "$KEY" 2>/dev/null) || [ -z "$BRANCH" ]; then
           BRANCH="cat/folio-assistant-sci/lake-cache/$KEY"
-          for p in cat/folio-assistant-sci/lake-cache cat-lake-cache lake-cache; do
+          for p in cat/folio-assistant-sci/lake-cache; do
             if timeout 30 git ls-remote --exit-code --heads origin "refs/heads/$p/$KEY" >/dev/null 2>&1; then
               BRANCH="$p/$KEY"; break
             fi
