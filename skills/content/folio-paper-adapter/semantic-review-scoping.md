@@ -82,3 +82,11 @@ statement-level criteria.
 | `proof-triage` | Cone membership is a triage input alongside complexity |
 | `lean-proof-vacuity-audit`, `lean-proof-review` | The adjudicators this rations |
 | `delivery-summary` | Report coverage against headline theorems, not raw block counts |
+
+## Harness skills that dispatch here
+
+This layer sits above cat-harness, so the link points down from here. The
+harness skills below describe this one generically and name no science skill
+(bean `syiq`).
+
+- `review-task (process)`: the harness review task binds `content-review`; a paper process that wants semantic scoping adds this skill by calling that process.

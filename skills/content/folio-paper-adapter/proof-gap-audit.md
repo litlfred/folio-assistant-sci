@@ -388,3 +388,11 @@ Each finding **must** include the Phase-0 verification metadata
 - [ ] Every `sorry`/gap classified `routine` | `core` | `restates-target`; **no `restates-target` gaps**
 - [ ] Report produced with severity levels and remediation suggestions
 - [ ] No edits made — handoff to `proof-editor` or author
+
+## Harness skills that dispatch here
+
+This layer sits above cat-harness, so the link points down from here. The
+harness skills below describe this one generically and name no science skill
+(bean `syiq`).
+
+- `domain-fencing`: §J is the example of a rationale that survives translation.

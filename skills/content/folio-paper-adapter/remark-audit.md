@@ -174,3 +174,11 @@ The following constraint is added to `constraints.ts`:
 - Feeds into `formalizer` (dangling remarks become formalization targets)
 - Feeds into `proof-triage` (prioritize provable content extraction)
 - Complements `content-validation` (which checks schema + AST)
+
+## Harness skills that dispatch here
+
+This layer sits above cat-harness, so the link points down from here. The
+harness skills below describe the slot generically ("the content type's …")
+and name no science skill (bean `syiq`).
+
+- `one-voice-integration-watcher`: as the remark audit, when a `remark` block fires `fit-section-chapter`.

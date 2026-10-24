@@ -163,6 +163,39 @@ export function declUnits(roots: string[]): DeclUnits {
   return res;
 }
 
+/** The index options this script builds with, shared with the `lsi:near` provider so both index the same way. */
+export const DECL_INDEX_OPTIONS = { k: 100, weighting: "log-entropy", minDf: 2, maxDfShare: 0.5, powerIterations: 4, seed: 1990 } as const;
+
+/**
+ * The `lsiUnitProviders` entry `lean-decl` (bean `ec2a` step 3): every
+ * declaration under the Lean roots given as `--root lean-decl=<dir>`, for
+ * cross-graph `lsi:near` in cat-harness-tools (`pipeline/lsi-near-across.ts`,
+ * which owns the contract). With no root it is not searched: no Lean root is
+ * declared anywhere, and guessing one would index whatever happened to be
+ * there.
+ *
+ * Explicit references: the full id `<name>@<module>`, and the qualified
+ * name alone when it has a namespace (`QOU.Mass.foo`). A bare top-level name
+ * is too short to stand for one declaration, so it is not a key.
+ */
+export function lsiNearUnits(ctx: { checkoutRoot: string; roots: string[] }): {
+  units: LsiUnit[];
+  unreadable: Array<{ file: string; reason: string }>;
+  notSearched?: string;
+  buildOptions?: typeof DECL_INDEX_OPTIONS;
+  refKeys?: Array<[string, string]>;
+} {
+  if (ctx.roots.length === 0) return { units: [], unreadable: [], notSearched: "no Lean root given (--root lean-decl=<dir>)" };
+  const d = declUnits(ctx.roots.map((r) => resolve(r)));
+  const refKeys: Array<[string, string]> = [];
+  for (const u of d.units) {
+    refKeys.push([u.id, u.id]);
+    const name = u.id.slice(0, u.id.lastIndexOf("@"));
+    if (name.includes(".")) refKeys.push([name, u.id]);
+  }
+  return { units: d.units, unreadable: d.unreadable, buildOptions: DECL_INDEX_OPTIONS, refKeys };
+}
+
 if (import.meta.main) {
   const argv = process.argv.slice(2);
   const roots = argv.flatMap((a, i) => (argv[i - 1] === "--lean-root" ? [resolve(a)] : []));
@@ -176,7 +209,7 @@ if (import.meta.main) {
     console.error(`UNKNOWN — no declaration found under ${roots.join(", ")}; nothing to index.`);
     process.exit(2);
   }
-  const ix = buildLsi(d.units, { k: 100, weighting: "log-entropy", minDf: 2, maxDfShare: 0.5, powerIterations: 4, seed: 1990 });
+  const ix = buildLsi(d.units, DECL_INDEX_OPTIONS);
   const ms = Math.round(performance.now() - t0);
   const at = argv.indexOf("--near");
   const top = argv.includes("--top") ? Number(argv[argv.indexOf("--top") + 1]) : 10;

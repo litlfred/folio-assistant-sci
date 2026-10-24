@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "description": "Formal mathematics authoring skills for Lean 4 proofs, LaTeX documents, and category theory formalization",
   "skills": [
+    "formal-accuracy",
     "latex-authoring",
     "lean-formalization",
+    "milnor-exposition-standard",
     "proof-verification"
   ],
   "docker": {

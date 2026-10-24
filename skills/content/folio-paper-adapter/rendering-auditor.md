@@ -415,3 +415,11 @@ If rendering-auditor finds issues it cannot diagnose:
 - **Lean-related issues** → defer to `lean-generation` or `lean-build-fix`
 - **Scientific notation questions** → defer to `scientific-accuracy` + `ontologist`
 - **Complex layout problems** → defer to `latex-validation` with the specific `.tex` output
+
+## Harness skills that dispatch here
+
+This layer sits above cat-harness, so the link points down from here. The
+harness skills below describe the slot generically ("the content type's …")
+and name no science skill (bean `syiq`).
+
+- `block-density`: when a table is extracted from a block.

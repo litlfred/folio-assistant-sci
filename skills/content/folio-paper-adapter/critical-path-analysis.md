@@ -154,3 +154,12 @@ Produce a table with columns:
 Follow with specific recommendations, using AskUserQuestion for
 mathematical strategy decisions (with structured options, not
 free-text questions).
+
+## Harness skills that dispatch here
+
+This layer sits above cat-harness, so the link points down from here. The
+harness skills below describe the slot generically ("the content type's …")
+and name no science skill (bean `syiq`).
+
+- `one-voice-integration-watcher`: as the dependency-trace skill, when `domain-boundary-correct` fires.
+- `domain-fencing`: the example of a rule that splits cleanly; its union-of-two-relations model now lives in `edge-kinds-and-blast-radius`.

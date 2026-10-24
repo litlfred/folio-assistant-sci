@@ -264,3 +264,11 @@ If any box is unchecked, **stop and resolve before writing code**.
 - Shortcut identities without algebraic preflight.
 - Inline external-data literals — always route through the registry.
 - A hidden extra calibration input.
+
+## Harness skills that dispatch here
+
+This layer sits above cat-harness, so the link points down from here. The
+harness skills below describe this one generically and name no science skill
+(bean `syiq`).
+
+- `production-vs-exploratory-discipline`: as the content type's compute-authoring skill, the sibling pre-work skill.

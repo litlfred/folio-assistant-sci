@@ -166,3 +166,11 @@ Skip severity=info and severity=warning. Only report errors.
   structural compliance)
 - Feeds into `proof-triage` (violations of §4–§5 indicate formalization gaps)
 - Glossary blocks are reviewed under §9 for terminology consistency
+
+## Harness skills that dispatch here
+
+This layer sits above cat-harness, so the link points down from here. The
+harness skills below describe the slot generically ("the content type's …")
+and name no science skill (bean `syiq`).
+
+- `todo-review`: as the block-review skill: cross-reference issues become feedback.

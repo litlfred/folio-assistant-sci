@@ -66,11 +66,28 @@ export interface CorollaryBlock extends ProvableBase {
   kind: "corollary";
 }
 
+/**
+ * Distinguishes a formal mathematical conjecture (`"formal"`) from an
+ * identification (`"identification"`, a numerical or structural match awaiting
+ * proof). Bean `folio-assistant-ckej`.
+ */
+export const CONJECTURE_KINDS = ["formal", "identification"] as const;
+export type ConjectureClaimKind = (typeof CONJECTURE_KINDS)[number];
+export const ConjectureClaimKindSchema = z.enum(CONJECTURE_KINDS);
+
 /** Conjecture — an unproven statement. Lean stub optional. */
 export interface ConjectureBlock extends BlockBase {
   kind: "conjecture";
   /** Optional Lean stub for the conjecture statement. */
   lean?: LeanRef;
+  /**
+   * Distinguishes a formal mathematical conjecture (`"formal"`) from an
+   * identification (`"identification"`, a numerical or structural match
+   * awaiting proof). Bean `folio-assistant-ckej`.
+   */
+  conjectureKind?: ConjectureClaimKind;
+  /** Alias for {@link conjectureKind}: `"formal"` | `"identification"`. */
+  formality?: ConjectureClaimKind;
 }
 
 /**
@@ -135,6 +152,8 @@ export const ConjectureSchema = BlockBaseSchema.extend({
   kind: z.literal("conjecture"),
   label: labelForKind("conjecture"),
   lean: LeanRefSchema.optional(),
+  conjectureKind: ConjectureClaimKindSchema.optional(),
+  formality: ConjectureClaimKindSchema.optional(),
 });
 
 export const ProofSchema = BlockBaseSchema.extend({
@@ -195,7 +214,17 @@ export function corollary(data: Omit<CorollaryBlock, "kind">): CorollaryBlock {
 }
 
 export function conjecture(data: Omit<ConjectureBlock, "kind">): ConjectureBlock {
-  return validated(ConjectureSchema, { kind: "conjecture" as const, ...data });
+  if (data.conjectureKind && data.formality && data.conjectureKind !== data.formality) {
+    throw new Error(
+      `conjecture "${data.label}": conflicting conjectureKind "${data.conjectureKind}" and formality "${data.formality}"`,
+    );
+  }
+  const conjectureKind = data.conjectureKind ?? data.formality;
+  return validated(ConjectureSchema, {
+    kind: "conjecture" as const,
+    ...data,
+    ...(conjectureKind !== undefined ? { conjectureKind } : {}),
+  });
 }
 
 export function proof(data: Omit<ProofBlock, "kind">): ProofBlock {

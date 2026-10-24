@@ -11,6 +11,10 @@
     "folio-assistant-core"
   ],
   "_contentAdapters_comment": "Declared HERE, by the instance that ships the adapter, so cat-harness's composition root (`src/builtin-adapters.ts`) finds it by reading declarations instead of holding a `../folio-assistant-sci/…` path into a layer above it (bean p11x, `check:import-direction`). `extends: document` is what puts paper FIRST in the fallback order: it is the superset, so falling back to it loses nothing, while falling back from it loses Lean and TeX. That order was the position of a row in a table until 2026-09-30; it is a fact about the adapter, so it is declared beside it.",
+  "_lsiUnitProviders_comment": "Declared HERE, by the instance that ships the provider, so `lsi:near` in cat-harness-tools finds it by reading declarations instead of importing a layer above it (bean ec2a step 3, owner decision A: one list per graph). It needs `--root lean-decl=<dir>`: no Lean root is declared.",
+  "lsiUnitProviders": [
+    { "graphKind": "lean-decl", "module": "scripts/lsi-lean-decls.ts", "export": "lsiNearUnits" }
+  ],
   "contentAdapters": [
     {
       "contentType": "paper",
@@ -78,7 +82,7 @@
     {
       "id": "folio-assistant-sci-validators",
       "path": "validators/",
-      "description": "The validators this instance's code provides, one folio-validator/v1 node each, naming the graph typology and $schema family it checks and the Zod export that checks it (bean riit). Today it holds one node: editor-checker, for folio-editor-checker/v1.",
+      "description": "The validators this instance's code provides, one folio-validator/v1 node each, naming the graph typology and $schema family it checks and the Zod export that checks it (bean riit): `conjecture-register` for `folio-conjecture-register/v1` and `editor-checker` for `folio-editor-checker/v1`.",
       "graphTypologies": [
         "validators"
       ]

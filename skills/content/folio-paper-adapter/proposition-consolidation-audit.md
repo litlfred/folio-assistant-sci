@@ -310,3 +310,12 @@ User: /proposition-consolidation-audit chapter-A
   □ Apply both
   □ Defer to follow-up branch
 ```
+
+## Harness skills that dispatch here
+
+This layer sits above cat-harness, so the link points down from here. The
+harness skills below describe this one generically and name no science skill
+(bean `syiq`).
+
+- `domain-fencing`: H3 and H2 are the examples of domain in the vocabulary only, and of a shape that generalizes when the detection does not.
+- `integration-backlog`: one of the routed improvers re-rated in the rate→improve loop.

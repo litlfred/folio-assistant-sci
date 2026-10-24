@@ -85,7 +85,8 @@
         "content-block-review",
         "content-validation",
         "rendering-auditor",
-        "semantic-review-scoping"
+        "semantic-review-scoping",
+        "milnor-exposition-standard"
       ]
     },
     {
@@ -123,7 +124,34 @@
       "role": "integration-watcher",
       "skills": [
         "proof-integration-watcher",
-        "q-usage-watcher"
+        "q-usage-watcher",
+        "compute-integration-watcher",
+        "detangler-integration-watcher"
+      ]
+    },
+    {
+      "role": "author",
+      "skills": [
+        "milnor-exposition-standard"
+      ]
+    },
+    {
+      "role": "editor",
+      "skills": [
+        "milnor-exposition-standard"
+      ]
+    },
+    {
+      "role": "narrative-reviewer",
+      "skills": [
+        "milnor-exposition-standard",
+        "uses-formal-comparison"
+      ]
+    },
+    {
+      "role": "editorial-authoring-agent",
+      "skills": [
+        "formal-accuracy"
       ]
     }
   ]

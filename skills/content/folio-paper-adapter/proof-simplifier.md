@@ -239,3 +239,11 @@ database contains:
 - Keep all label/ref identifiers stable (or update all cross-references)
 - Prefer fewer, simpler lemmas over clever one-liners
 - Document the simplification in a `% Simplified from ...` comment
+
+## Harness skills that dispatch here
+
+This layer sits above cat-harness, so the link points down from here. The
+harness skills below describe this one generically and name no science skill
+(bean `syiq`).
+
+- `integration-backlog`: one of the routed improvers re-rated in the rate→improve loop.
