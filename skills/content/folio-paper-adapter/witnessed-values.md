@@ -263,3 +263,11 @@ numerical invariant tracked by a witness JSON. **When not** — opaque
 constants computed inline by formal tactics (`1/2`, `√2` from a
 decision procedure); the codemod is a drift safety net, not a generic
 literal rewriter.
+
+## Harness skills that dispatch here
+
+This layer sits above cat-harness, so the link points down from here. The
+harness skills below describe the slot generically ("the content type's …")
+and name no science skill (bean `syiq`).
+
+- `canonical-watcher`: as the value-citation check, on any changed block quoting numerical literals.

@@ -214,3 +214,11 @@ w.save()
 **Staleness detection:**
 - `python3 witness_base.py check-all` — check all Python witnesses
 - `bun run scripts/witness-audit.ts` — unified Lean + Python audit
+
+## Harness skills that dispatch here
+
+This layer sits above cat-harness, so the link points down from here. The
+harness skills below describe the slot generically ("the content type's …")
+and name no science skill (bean `syiq`).
+
+- `todo-review`: the feedback it raises tracks formalization gaps.

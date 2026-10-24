@@ -293,3 +293,12 @@ test("all content objects valid", async () => {
   expect(result.valid).toBe(true);
 });
 ```
+
+## Harness skills that dispatch here
+
+This layer sits above cat-harness, so the link points down from here. The
+harness skills below describe the slot generically ("the content type's …")
+and name no science skill (bean `syiq`).
+
+- `block-density`: when a block is split or a table extracted, to check the new blocks validate.
+- `todo-review`: its validation errors seed feedback.

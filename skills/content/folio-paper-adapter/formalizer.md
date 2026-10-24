@@ -228,3 +228,10 @@ link would put the gate after the work.
 
 ---
 
+## Harness skills that dispatch here
+
+This layer sits above cat-harness, so the link points down from here. The
+harness skills below describe the slot generically ("the content type's …")
+and name no science skill (bean `syiq`).
+
+- `todo-review`: it creates feedback when formal-layer gaps need attention.
