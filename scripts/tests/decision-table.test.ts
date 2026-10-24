@@ -48,7 +48,15 @@ describe("computed gateways in a running process", () => {
   const upToLeanGate = async () => {
     const model = await paper();
     const state = startInstance(model, { id: "d1", subject: "paper" });
-    for (const n of ["Task_Plan", "Task_SeedPlan", "Task_Scaffold", "Task_AuthorBlocks", "Task_Formalize"]) {
+    complete(model, state, "Task_Plan");
+    // Process_BeanOpen (bean `m8gz`): no bean yet, so create and claim one,
+    // then take the caller's `claimed` branch.
+    complete(model, state, "Open_CheckExists");
+    complete(model, state, "Open_Exists", { outcome: "no" });
+    complete(model, state, "Open_Create");
+    complete(model, state, "Open_Claim");
+    complete(model, state, "GW_BeanYours", { outcome: "claimed" });
+    for (const n of ["Task_SeedPlan", "Task_Scaffold", "Task_AuthorBlocks", "Task_Formalize"]) {
       complete(model, state, n);
     }
     return { model, state };
