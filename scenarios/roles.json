@@ -146,6 +146,12 @@
       "skills": [
         "milnor-exposition-standard"
       ]
+    },
+    {
+      "role": "editorial-authoring-agent",
+      "skills": [
+        "math-render-check"
+      ]
     }
   ]
 }

@@ -32,6 +32,7 @@
     "lean-proof-vacuity-audit",
     "lean-substantive-pass",
     "lean-witness-audit",
+    "math-render-check",
     "paper-importer",
     "proof-conciseness",
     "proof-editor",
