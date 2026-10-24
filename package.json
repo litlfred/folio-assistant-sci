@@ -5,6 +5,17 @@
   "type": "module",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",
+    "@unified-latex/unified-latex-util-parse": "^1.8.4",
+    "@unified-latex/unified-latex-util-print-raw": "^1.8.4",
+    "csl-json": "^0.1.0",
+    "mdast-util-gfm-strikethrough": "^2.0.0",
+    "mdast-util-gfm-table": "^2.0.0",
+    "micromark-extension-gfm-strikethrough": "^2.1.0",
+    "micromark-extension-gfm-table": "^2.1.1",
+    "remark": "^15.0.1",
+    "remark-directive": "^4.0.0",
+    "remark-math": "^6.0.0",
+    "unist-util-visit": "^5.1.0",
     "zod": "^4.6.5"
   },
   "checkoutScripts": {
@@ -18,6 +29,7 @@
   "devDependencies": {
     "@happy-dom/global-registrator": "15.11.7",
     "@milkdown/crepe": "7.22.2",
-    "@milkdown/kit": "7.22.2"
+    "@milkdown/kit": "7.22.2",
+    "@unified-latex/unified-latex-types": "^1.8.4"
   }
 }
