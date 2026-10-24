@@ -244,3 +244,11 @@ If the author says "apply all" or "go ahead":
 - [ ] Glossary-term findings (defterm/refterm violations) routed to the
       authoring skill (`md-authoring` or `scientific-accuracy`) plus
       `local/glossary-build` for the codemod/build pass
+
+## Harness skills that dispatch here
+
+This layer sits above cat-harness, so the link points down from here. The
+harness skills below describe this one generically and name no science skill
+(bean `syiq`).
+
+- `integration-watcher`: its lifecycle §4c applies the synthesis rules of §3 here, which hold in every domain.

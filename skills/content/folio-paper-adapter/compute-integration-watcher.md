@@ -219,3 +219,11 @@ files; never close/resolve TodoItems (human-only); cite the matching
 I-pattern for every recommended fix; for dual paths (probe-only vs
 production), preserve the probe-only path as an opt-out — never delete
 it.
+
+## Harness skills that dispatch here
+
+This layer sits above cat-harness, so the link points down from here. The
+harness skills below describe this one generically and name no science skill
+(bean `syiq`).
+
+- `integration-watcher`: a child of this abstract parent.

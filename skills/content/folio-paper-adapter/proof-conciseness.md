@@ -274,3 +274,11 @@ If any of these shift unexpectedly, re-audit the diff.
 - [ ] GitHub blob URL for the affected `.md` (default `.md` per
       AGENTS.md)
 - [ ] Edits applied only after author approves
+
+## Harness skills that dispatch here
+
+This layer sits above cat-harness, so the link points down from here. The
+harness skills below describe this one generically and name no science skill
+(bean `syiq`).
+
+- `one-voice-audit`: as the content type's proof-trimming skill.

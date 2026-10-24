@@ -162,3 +162,4 @@ harness skills below describe the slot generically ("the content type's …")
 and name no science skill (bean `syiq`).
 
 - `one-voice-integration-watcher`: as the dependency-trace skill, when `domain-boundary-correct` fires.
+- `domain-fencing`: the example of a rule that splits cleanly; its union-of-two-relations model now lives in `edge-kinds-and-blast-radius`.

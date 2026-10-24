@@ -329,3 +329,11 @@ migrated to use `witness_base.py` when the computation is next modified.
 - [ ] All Lean witnesses are current (not stale)
 - [ ] All Python computation witnesses are current (not stale)
 - [ ] Legacy Python witnesses identified for migration to witness_base.py
+
+## Harness skills that dispatch here
+
+This layer sits above cat-harness, so the link points down from here. The
+harness skills below describe this one generically and name no science skill
+(bean `syiq`).
+
+- `domain-fencing`: the example of a rule that needs the domain installed to run.
