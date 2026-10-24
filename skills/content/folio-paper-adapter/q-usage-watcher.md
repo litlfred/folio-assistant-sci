@@ -331,3 +331,11 @@ bun run cat-harness-tools/pipeline/q-usage-audit.ts --no-write --strict
 - Criterion registry entries:
   [`cat-harness-tools/pipeline/qa-criteria-registry.ts`](../../../../cat-harness-tools/pipeline/qa-criteria-registry.ts)
   (search for the `Q_USAGE` const array).
+
+## Harness skills that dispatch here
+
+This layer sits above cat-harness, so the link points down from here. The
+harness skills below describe this one generically and name no science skill
+(bean `syiq`).
+
+- `domain-fencing`: its first paragraph is the model of a folio-optional axis fencing itself.

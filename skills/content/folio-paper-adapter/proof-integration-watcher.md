@@ -447,3 +447,11 @@ parent §6).
 - [ ] Conditional-class violations (Slot D
       `conditional-class-violation`) block the commit per
       Slot I invariants
+
+## Harness skills that dispatch here
+
+This layer sits above cat-harness, so the link points down from here. The
+harness skills below describe this one generically and name no science skill
+(bean `syiq`).
+
+- `integration-watcher`: a child of this abstract parent.

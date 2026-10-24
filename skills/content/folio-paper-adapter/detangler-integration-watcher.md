@@ -343,3 +343,11 @@ author (per parent §6).
   counting*.
 - Auto-fix a `missing-chapter-intro` without surfacing the draft — the
   arc is editorial, not mechanical.
+
+## Harness skills that dispatch here
+
+This layer sits above cat-harness, so the link points down from here. The
+harness skills below describe this one generically and name no science skill
+(bean `syiq`).
+
+- `integration-watcher`: a child of this abstract parent.

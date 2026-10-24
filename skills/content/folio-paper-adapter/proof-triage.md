@@ -391,3 +391,4 @@ harness skills below describe the slot generically ("the content type's …")
 and name no science skill (bean `syiq`).
 
 - `todo-review`: as the gap-triage skill: formal-layer gap stubs become high-priority feedback.
+- `integration-backlog`: one of the routed improvers re-rated in the rate→improve loop.
