@@ -153,6 +153,12 @@
       "skills": [
         "formal-accuracy"
       ]
+    },
+    {
+      "role": "editorial-authoring-agent",
+      "skills": [
+        "math-render-check"
+      ]
     }
   ]
 }
