@@ -2,9 +2,9 @@
 # scripts/lake-cache-fetch.sh — agent-side Tier-2 cache fetch
 #
 # Fetches the pre-built `.lake/` artifacts from the populated orphan
-# branch `cat/folio-assistant-sci/lake-cache/qou-v<toolchain-slug>` (or,
-# until the remotes are renamed, the legacy `cat-lake-cache/qou-…` or
-# `lake-cache/qou-…`, in that order) and extracts them into the
+# branch `cat/folio-assistant-sci/lake-cache/qou-v<toolchain-slug>` (the
+# legacy `cat-lake-cache/` and `lake-cache/` names were retired on
+# 2026-10-24, bean oycs) and extracts them into the
 # repo root. The CI-side equivalent lives at
 # `.github/actions/lake-cache-restore/action.yml` (Tier 2 step); this
 # script is the local-agent equivalent for sessions in ephemeral
@@ -20,7 +20,7 @@
 # Usage:
 #   ./scripts/lake-cache-fetch.sh           # default: qou package, toolchain auto-detected
 #   ./scripts/lake-cache-fetch.sh --force   # re-extract even if .lake/build/lib/ exists
-#   ./scripts/lake-cache-fetch.sh --branch lake-cache/qou-v4-24-0   # explicit branch
+#   ./scripts/lake-cache-fetch.sh --branch cat/folio-assistant-sci/lake-cache/qou-v4-24-0   # explicit branch
 #
 # Exit codes:
 #   0 = cache restored OR already warm
@@ -65,9 +65,9 @@ if [ -z "$BRANCH" ]; then
   slug=$(echo "$toolchain" | tr '.' '-')
   # Family names: the BUILT-IN fallbacks (special-branches.json is gone)
   # (id `lake-cache`) and checked against this copy by
-  # tests/cache-family-fallbacks.test.ts. New name first, then each legacy one,
-  # newest first, until bean folio-assistant-oycs removes the fallback.
-  CANDIDATES="cat/folio-assistant-sci/lake-cache/qou-${slug} cat-lake-cache/qou-${slug} lake-cache/qou-${slug}"
+  # tests/lake-cache-family-fallbacks.test.ts. Only the new name: the legacy
+  # ones were retired on 2026-10-24 (bean folio-assistant-oycs).
+  CANDIDATES="cat/folio-assistant-sci/lake-cache/qou-${slug}"
   # The folio's own declaration goes first (bean rva2): a directory with
   # graphTypology `lake-cache` and `storage.keyedBy: "family"` in its
   # <instance>.json. Same reader as lake-cache.sh; no python3 or no

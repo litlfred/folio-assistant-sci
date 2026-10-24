@@ -9,7 +9,6 @@ lake-cache/qou-<toolchain> format).
 For each git-installed package in `lake-manifest.json`:
 
   1. Shallow-fetch its orphan branch `cat/folio-assistant-sci/lake-cache/<pkg>-<toolchain>`
-     (legacy `cat-lake-cache/…`, then `lake-cache/…`, until renamed)
      (or `<branch-suffix>` variant when --branch-suffix is given)
   2. git archive extract the .lake/ subtree into a staging dir
   3. Run the regen recipe from `cache-index.json`:
@@ -165,11 +164,11 @@ def regen_from_index(staging_lake: Path, index_path: Path) -> int:
 
 # Family prefixes: the BUILT-IN fallbacks (special-branches.json is gone; the folio's declaration, read below, comes first) (id
 # `lake-cache`) and checked against this copy by
-# tests/cache-family-fallbacks.test.ts. New name first, then each legacy one,
-# newest first, until bean folio-assistant-oycs removes the fallback. A
-# candidate is always a WHOLE branch name (prefix + key), so `lake-cache/`
-# never matches inside `cat-lake-cache/` or `cat/folio-assistant-sci/lake-cache/`.
-CACHE_PREFIXES = ("cat/folio-assistant-sci/lake-cache/", "cat-lake-cache/", "lake-cache/")
+# tests/lake-cache-family-fallbacks.test.ts. Only the new name: the legacy
+# `cat-lake-cache/` and `lake-cache/` were retired on 2026-10-24, once every
+# remote was renamed (beans folio-assistant-qr4n, folio-assistant-oycs). A
+# candidate is always a WHOLE branch name (prefix + key).
+CACHE_PREFIXES = ("cat/folio-assistant-sci/lake-cache/",)
 
 
 def _declared_cache_prefix(root: Path) -> str | None:

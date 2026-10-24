@@ -17,7 +17,7 @@ import { join, resolve } from "path";
 const SCRIPT = resolve(import.meta.dir, "..", "lake-cache.sh");
 const SLUG = "v4-24-0";
 const PKG = "testpkg";
-const BRANCH = `lake-cache/${PKG}-${SLUG}`;
+const BRANCH = `cat/folio-assistant-sci/lake-cache/${PKG}-${SLUG}`;
 
 let root = "";
 let lakeRoot = "";
@@ -188,7 +188,7 @@ describe("lake-cache.sh — restore", () => {
     writeFileSync(join(fresh, "lakefile.toml"), `name = "${PKG}"\n`);
     writeFileSync(join(fresh, "lean-toolchain"), "leanprover/lean4:v4.24.0\n");
     const r = run(
-      ["restore", "--package", PKG, "--branch", "lake-cache/nope-v9-9-9", "--lake-root", fresh],
+      ["restore", "--package", PKG, "--branch", "cat/folio-assistant-sci/lake-cache/nope-v9-9-9", "--lake-root", fresh],
       lakeRoot,
     );
     expect(r.code).toBe(1);
@@ -536,14 +536,11 @@ describe("lake-cache.sh — contribute (agentic loop)", () => {
   });
 });
 
-describe("lake-cache.sh — cat/folio-assistant-sci/lake-cache/ rename (beans 32f6, 9io2)", () => {
+describe("lake-cache.sh — cat/folio-assistant-sci/lake-cache/ only (beans 32f6, 9io2, oycs)", () => {
   // The family is `cat/folio-assistant-sci/lake-cache/`; it was
-  // `lake-cache/`, then the interim `cat-lake-cache/`. Until the remotes are
-  // renamed a key resolves new-name-first, then each legacy name, newest
-  // first — for writes as well as reads, so nothing creates a new-name
-  // branch beside a legacy one and blocks the owner's rename. The fixture
-  // branch above is the OLDEST legacy name, so every earlier test in this
-  // file is the legacy-read case.
+  // `lake-cache/`, then the interim `cat-lake-cache/`. Every remote was
+  // renamed on 2026-10-24 (bean qr4n), so the legacy names are no longer
+  // read or written (bean oycs): a branch left under one is not a cache.
   const NEW = "cat/folio-assistant-sci/lake-cache";
   const INTERIM = "cat-lake-cache";
   const OLDEST = "lake-cache";
@@ -555,7 +552,7 @@ describe("lake-cache.sh — cat/folio-assistant-sci/lake-cache/ rename (beans 32
     git(["push", "-q", "origin", "--delete", ...prefixes.map((p) => `${p}/${KEY}`)], cacheWt());
   const resolveKey = () => run(["resolve-branch", "--key", KEY], lakeRoot).out.trim();
 
-  test("a key that exists only under the oldest legacy name resolves to it", () => {
+  test("the fixture's key resolves to its branch under the new name", () => {
     const r = run(["resolve-branch", "--key", `${PKG}-${SLUG}`], lakeRoot);
     expect(r.code).toBe(0);
     expect(r.out.trim()).toBe(BRANCH);
@@ -566,25 +563,18 @@ describe("lake-cache.sh — cat/folio-assistant-sci/lake-cache/ rename (beans 32
     expect(r.out.trim()).toBe(`${NEW}/nope-v9-9-9`);
   });
 
-  test("a key that exists only under the interim cat- name resolves to it, not to the new name", () => {
-    push(INTERIM);
-    try {
-      expect(resolveKey()).toBe(`${INTERIM}/${KEY}`);
-    } finally {
-      drop(INTERIM);
-    }
-  });
-
-  // `lake-cache/` is a substring of both newer prefixes; a resolver that
-  // matched it unanchored, or tried the names in the wrong order, fails here.
-  test("both legacy names exist: the interim cat- name wins over the oldest", () => {
-    push(OLDEST, INTERIM);
-    try {
-      expect(resolveKey()).toBe(`${INTERIM}/${KEY}`);
-    } finally {
-      drop(OLDEST, INTERIM);
-    }
-  });
+  // `lake-cache/` is a substring of the new prefix; a resolver that still
+  // matched it, anchored or not, would return the legacy branch here.
+  for (const legacy of [INTERIM, OLDEST]) {
+    test(`a key that exists only under the retired ${legacy}/ resolves to the new name`, () => {
+      push(legacy);
+      try {
+        expect(resolveKey()).toBe(`${NEW}/${KEY}`);
+      } finally {
+        drop(legacy);
+      }
+    });
+  }
 
   test("all three exist: the new name wins, and status reports it", () => {
     push(OLDEST, INTERIM, NEW);
@@ -599,21 +589,33 @@ describe("lake-cache.sh — cat/folio-assistant-sci/lake-cache/ rename (beans 32
     }
   });
 
-  for (const prefix of [NEW, INTERIM]) {
-    test(`restore reads a cache that exists only under ${prefix}/`, () => {
-      push(prefix);
-      const fresh = mkdtempSync(join(tmpdir(), "lakecache-cat-"));
-      try {
-        execFileSync("bash", ["-c", `cp '${lakeRoot}'/lakefile.toml '${lakeRoot}'/lean-toolchain '${fresh}/'`], { stdio: "pipe" });
-        const r = run(["restore", "--package", "otherpkg", "--lake-root", fresh], lakeRoot);
-        expect(r.code).toBe(0);
-        expect(existsSync(join(fresh, ".lake"))).toBe(true);
-      } finally {
-        drop(prefix);
-        rmSync(fresh, { recursive: true, force: true });
-      }
-    });
-  }
+  test(`restore reads a cache under ${NEW}/`, () => {
+    push(NEW);
+    const fresh = mkdtempSync(join(tmpdir(), "lakecache-cat-"));
+    try {
+      execFileSync("bash", ["-c", `cp '${lakeRoot}'/lakefile.toml '${lakeRoot}'/lean-toolchain '${fresh}/'`], { stdio: "pipe" });
+      const r = run(["restore", "--package", "otherpkg", "--lake-root", fresh], lakeRoot);
+      expect(r.code).toBe(0);
+      expect(existsSync(join(fresh, ".lake"))).toBe(true);
+    } finally {
+      drop(NEW);
+      rmSync(fresh, { recursive: true, force: true });
+    }
+  });
+
+  test(`restore does not read a cache left only under the retired ${INTERIM}/`, () => {
+    push(INTERIM);
+    const fresh = mkdtempSync(join(tmpdir(), "lakecache-cat-"));
+    try {
+      execFileSync("bash", ["-c", `cp '${lakeRoot}'/lakefile.toml '${lakeRoot}'/lean-toolchain '${fresh}/'`], { stdio: "pipe" });
+      const r = run(["restore", "--package", "otherpkg", "--lake-root", fresh], lakeRoot);
+      expect(r.code).not.toBe(0);
+      expect(existsSync(join(fresh, ".lake"))).toBe(false);
+    } finally {
+      drop(INTERIM);
+      rmSync(fresh, { recursive: true, force: true });
+    }
+  });
 
   test("resolve-branch without --key is a usage error", () => {
     expect(run(["resolve-branch"], lakeRoot).code).toBe(2);

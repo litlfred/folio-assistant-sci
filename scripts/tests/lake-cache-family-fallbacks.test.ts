@@ -24,36 +24,29 @@ import { resolve } from "node:path";
 
 const SCRIPTS = resolve(import.meta.dir, "..");
 
-/** Newest first: the name a script writes when nothing exists, then its legacy names in resolution order. */
-const NAMES = ["cat/folio-assistant-sci/lake-cache", "cat-lake-cache", "lake-cache"] as const;
-const FILES = [
-  "lake-cache.sh",
-  "lake-cache-fetch.sh",
-  "lake-cache-fetch-multi.py",
-  "lake-cache-produce.py",
-  "reseed-lean-cache.sh",
-] as const;
+/**
+ * Each script's built-in candidate list, as the literal a reader would copy.
+ * Every remote was renamed on 2026-10-24 (bean qr4n), so each list names the
+ * new family only (bean oycs): `cat-lake-cache/` and `lake-cache/` are retired.
+ */
+const LITERALS: Record<string, string> = {
+  "lake-cache.sh": 'LEGACY_CACHE_PREFIXES=""',
+  "lake-cache-fetch.sh": 'CANDIDATES="cat/folio-assistant-sci/lake-cache/qou-${slug}"',
+  "lake-cache-fetch-multi.py": 'CACHE_PREFIXES = ("cat/folio-assistant-sci/lake-cache/",)',
+  "lake-cache-produce.py": 'CACHE_PREFIXES = ("cat/folio-assistant-sci/lake-cache/",)',
+  "reseed-lean-cache.sh": '_cands="cat/folio-assistant-sci/lake-cache"',
+};
 
-const esc = (n: string) => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-/** Index of the first whole-token occurrence of `name` in `text`, or -1. */
-function tokenAt(text: string, name: string): number {
-  const m = new RegExp(`(?<![\\w/-])${esc(name)}(?![\\w.-])`).exec(text);
-  return m ? m.index : -1;
-}
-
-describe("the Lean cache scripts carry the same built-in fallback names, in the same order", () => {
-  for (const file of FILES) {
-    test(`${file}: every lake-cache name, newest first`, () => {
+describe("the Lean cache scripts carry the same built-in family name, and no retired one", () => {
+  for (const [file, literal] of Object.entries(LITERALS)) {
+    test(`${file}: the new family only`, () => {
       const text = readFileSync(resolve(SCRIPTS, file), "utf-8");
-      for (const n of NAMES) expect(tokenAt(text, n), `${file} names ${n}`).toBeGreaterThanOrEqual(0);
+      expect(text).toContain(literal);
     });
   }
 
-  // The order matters where the list is written as one literal. Pinned on the
-  // literal a reader would copy: lake-cache.sh's.
-  test("lake-cache.sh's fallback list is newest first", () => {
+  test("lake-cache.sh writes the new name when nothing is declared", () => {
     const text = readFileSync(resolve(SCRIPTS, "lake-cache.sh"), "utf-8");
     expect(text).toContain('CACHE_PREFIX="cat/folio-assistant-sci/lake-cache"');
-    expect(text).toContain('LEGACY_CACHE_PREFIXES="cat-lake-cache lake-cache"');
   });
 });
