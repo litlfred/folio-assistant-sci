@@ -110,7 +110,8 @@
         "build-pdf",
         "latex-build-cache",
         "latex-compilation",
-        "latex-validation"
+        "latex-validation",
+        "lean-content-test"
       ]
     },
     {
@@ -158,6 +159,18 @@
       "role": "editorial-authoring-agent",
       "skills": [
         "math-render-check"
+      ]
+    },
+    {
+      "role": "validation-pipeline",
+      "skills": [
+        "lean-content-test"
+      ]
+    },
+    {
+      "role": "tester",
+      "skills": [
+        "lean-content-test"
       ]
     }
   ]
