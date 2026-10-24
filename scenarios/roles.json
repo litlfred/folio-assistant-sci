@@ -127,7 +127,8 @@
         "proof-integration-watcher",
         "q-usage-watcher",
         "compute-integration-watcher",
-        "detangler-integration-watcher"
+        "detangler-integration-watcher",
+        "devils-advocate-paper"
       ]
     },
     {
@@ -172,6 +173,12 @@
       "role": "tester",
       "skills": [
         "lean-content-test"
+      ]
+    },
+    {
+      "role": "docs-authoring-agent",
+      "skills": [
+        "formal-layer-editing"
       ]
     }
   ]

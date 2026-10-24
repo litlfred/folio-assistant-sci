@@ -15,6 +15,7 @@
     "critical-path-analysis",
     "definition-clarity-audit",
     "detangler-integration-watcher",
+    "devils-advocate-paper",
     "ffi-roundtrip-audit",
     "formalizer",
     "groebner-basis",
