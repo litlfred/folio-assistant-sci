@@ -5,6 +5,7 @@
   "skills": [
     "latex-authoring",
     "lean-formalization",
+    "milnor-exposition-standard",
     "proof-verification"
   ],
   "docker": {
