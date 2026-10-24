@@ -151,7 +151,8 @@
     {
       "role": "editorial-authoring-agent",
       "skills": [
-        "formal-accuracy"
+        "formal-accuracy",
+        "math-readability-editing"
       ]
     },
     {
