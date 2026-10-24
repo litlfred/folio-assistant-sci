@@ -97,6 +97,24 @@ those are copy-paste errors, and they are worth fixing on sight: a real
 corpus had a "Unital subset" definition pointing at a Gröbner-basis
 declaration.
 
+## Drawing it
+
+The harness skill `graph-rendering` holds the rules for drawing any graph. For
+a paper folio, `gen-content-graph-uml.ts` (Tool `content-graph-uml`) draws the
+editorial relation (`uses[]`, `interprets`) solid and the formal one (Lean
+`type` / `value` edges) dashed purple, over the chapters of
+`buildContentGraph`, with status from `proof-objects.json`. A human review
+outranks an agentic one, which outranks the Lean status: the order the CI
+graph used.
+
+**Papers and Lean are one drawing, not two.** The two drawings it supersedes
+each re-parsed the sources and drew only one relation:
+`content-graph-analysis.py` (blocks) and
+`.github/scripts/generate_dependency_graph.py` (Lean, still `qou`-specific: it
+imports `qou_lib`). Neither has been removed: `qou` still runs the second in
+CI, and retiring it is the owner's call. Ask the owner before a PR in a
+mathematics repository.
+
 ## Interaction with other skills
 
 | Skill | Interaction |
@@ -106,3 +124,4 @@ declaration.
 | `detangler-integration-watcher` | Editorial-only by design — do not feed it formal edges |
 | `critical-path-analysis` | Uses the union; impact is a union question |
 | `lean-cache-restore` | Restore oleans before any Lean work |
+| `graph-rendering` (harness) | The drawing rules the content-graph UML meets |
