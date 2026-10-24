@@ -24,6 +24,7 @@
     "lean-build-fix",
     "lean-cache-restore",
     "lean-completeness-audit",
+    "lean-content-test",
     "lean-environment-setup",
     "lean-formal-graph",
     "lean-generation",
