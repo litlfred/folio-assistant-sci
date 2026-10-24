@@ -60,8 +60,39 @@ $$
 `\;` controls the spacing; `,`/`;` after the operator are also fine.
 The rule: never start a line inside `$$...$$` with `+`, `-`, or `*`.
 
+## In the HTML viewer
+
+The harness skill `html-rendering-qc` audits the HTML viewer's `mdToHtml()`.
+These are the rows a paper folio adds to its known limitations:
+
+| Pattern | Issue | Fix |
+|---------|-------|-----|
+| `` ```tex `` without rendered SVG | Shows raw LaTeX code | Run `bun run render-tex` then `bun run export-json` |
+| `\operatorname{X}` | KaTeX error | Use `\mathrm{X}` |
+| `$$` without preceding blank line | May parse as inline | Add blank line before `$$` |
+| `$...$` with newlines inside | Works (regex allows it) | OK |
+| Raw LaTeX outside math | Renders as text | Wrap in `$...$` |
+| `&` in prose (outside math) | LaTeX error in pipeline | Use `and` or wrap in math |
+
+The viewer's copy button treats `has_sorry`, and a provable kind with no
+formal source, as stub states; the stub it copies is the formal one.
+
+Bulk greps over a folio's blocks:
+
+```bash
+# \operatorname usage
+grep -rn '\\operatorname' content/**/*.md
+
+# $$ without preceding blank line
+grep -B1 '^\$\$' content/**/*.md | grep -v '^--$' | grep -v '^$'
+
+# raw LaTeX outside math
+grep -Pn '\\(?:mathrm|textbf|emph)\{' content/**/*.md | grep -v '\$'
+```
+
 ## Cross-references
 
 - `markdown-render-check` (harness) — the generic checks these sit beside.
+- `html-rendering-qc` (harness) — the HTML viewer audit the "In the HTML viewer" rows extend.
 - `latex-validation` — LaTeX-side render checks (complementary).
 - `rendering-auditor` — full pass over rendered LaTeX/HTML output.
