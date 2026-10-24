@@ -50,6 +50,7 @@
     "semantic-review-scoping",
     "simulator",
     "simulator-math-audit",
+    "uses-formal-comparison",
     "verify-local-substrate",
     "witnessed-values"
   ],

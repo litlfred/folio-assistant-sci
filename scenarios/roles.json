@@ -144,7 +144,8 @@
     {
       "role": "narrative-reviewer",
       "skills": [
-        "milnor-exposition-standard"
+        "milnor-exposition-standard",
+        "uses-formal-comparison"
       ]
     },
     {
