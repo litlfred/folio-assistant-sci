@@ -165,7 +165,8 @@
       "role": "editorial-authoring-agent",
       "skills": [
         "formal-accuracy",
-        "math-md-authoring"
+        "math-md-authoring",
+        "math-readability-editing"
       ]
     },
     {

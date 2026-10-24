@@ -9,6 +9,7 @@
     "lean-formalization",
     "lean-toolchain-contract",
     "math-md-authoring",
+    "math-readability-editing",
     "milnor-exposition-standard",
     "proof-verification"
   ],
