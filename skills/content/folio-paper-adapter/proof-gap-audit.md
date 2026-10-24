@@ -236,6 +236,23 @@ candidate is large enough that a categorical resolution could
 plausibly exist (heuristically: any gap that would warrant a
 follow-up `prop:` or `conj:` block).
 
+**The cases behind the rule.** The harness skill `corpus-grep` states the
+checklist for any content type. It was written after three consecutive items
+in May 2026 (qou PRs
+[#1515](https://github.com/litlfred/qou/pull/1515),
+[#1532](https://github.com/litlfred/qou/pull/1532),
+[#1543](https://github.com/litlfred/qou/pull/1543)) were declared open
+against a source file's status note, and each was found on reanalysis to be
+already implemented:
+
+- Track B Gap #2 in `canonical_tr_m_via_branching.py`
+- α_shift A=4 in `lightNucleiForceCarrierKnot`
+- ρ_F derivation in `conj:kashaev-density-equals-sdp-multiplicity`
+- p/n asymmetry in `closed_form_tau_M.py::bring_color_weighted`
+
+Post-mortem: `docs/audits/2026-05-31-binding-magic-A-wireup.md` §"Why was the
+resolution missed?".
+
 ## Workflow
 
 ### Phase 0 — Anti-hallucination protocol (REQUIRED)

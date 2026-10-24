@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: authoring-a-paper\n"
-"POT-Creation-Date: 2026-10-07T18:45:27.420Z\n"
+"POT-Creation-Date: 2026-10-24T08:43:21.874Z\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language: fr\n"
@@ -14,57 +14,57 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:81
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:85
 #. Diagram label
 msgid "1 · Plan the paper [content-plan]"
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:89
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:93
 #. Diagram label
 msgid "2 · Seed the work plan [todo-manager]"
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:98
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:102
 #. Diagram label
 msgid "3 · Scaffold the folio repo [content-plan]"
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:106
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:110
 #. Diagram label
 msgid "4 · Author blocks [content-author]"
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:115
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:119
 #. Diagram label
 msgid "5 · Formalise in Lean [lean-formalization]"
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:134
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:138
 #. Diagram label
 msgid "6 · Validate [content-validate]"
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:142
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:146
 #. Diagram label
 msgid "7 · Render PDF / HTML [latex-authoring]"
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:150
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:154
 #. Diagram label
 msgid "8 · Review and feedback [content-review]"
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:164
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:168
 #. Diagram label
 msgid "9 · Publish [content-publish]"
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:126
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:130
 #. Diagram element documentation
 msgid "Answered by the Lean build after step 5: is it green with no `sorry` left? `not yet` loops on formalisation; `green` goes on to validation. A build that passes with a `sorry` is not green."
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:187
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:213
 #. Diagram label
 msgid "approved"
 msgstr ""
@@ -84,42 +84,57 @@ msgstr ""
 msgid "Authoring a paper — plan to published"
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:51
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:54
 #. Diagram label
 msgid "Authoring agent (system)"
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:125
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:185
+#. Diagram label
+msgid "Bean claimed?"
+msgstr ""
+
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:129
 #. Diagram label
 msgid "Build green, no sorries?"
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:63
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:66
 #. Diagram label
 msgid "Build pipeline — validate · render · publish"
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:99
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:215
+#. Diagram label
+msgid "claimed"
+msgstr ""
+
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:195
+#. Diagram label
+msgid "Close the bean [bean-close]"
+msgstr ""
+
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:103
 #. Diagram element documentation
 msgid "Create the folio repository with `bun run cat init-folio` (or the folio_init tool): content/, the document, chapter and first block manifests, the builder shim, AGENTS.md, .mcp.json, the session-start hook and the beans store, with the platform linked rather than copied."
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:107
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:111
 #. Diagram element documentation
 msgid "Every block edit runs the HCI validation gate — see editing-hci-validation.bpmn."
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:72
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:76
 #. Diagram element documentation
 msgid "Gateway_ReviewOutcome sits in this lane rather than a separate editor's, so in this diagram the reviewer's finding and its disposition are the same decision — iterate back to Task_AuthorBlocks or clear Task_Publish — because paper authoring has no editor lane to hold the accept/reject split modelled elsewhere in this corpus."
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:116
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:120
 #. Diagram element documentation
 msgid "Give each formal block (definition, theorem, lemma, proposition, corollary, conjecture, proof) a .lean sibling that Lean 4 accepts, in the order lean-formalization sets out. A compiling declaration is not a formalised claim: check vacuity and narrative drift before calling it done, and record the status with proof-verification."
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:182
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:208
 #. Diagram label
 msgid "green"
 msgstr ""
@@ -129,72 +144,102 @@ msgstr ""
 msgid "How a scientific paper or book folio is authored end to end, with Lean for its formal claims and LaTeX for its typesetting. folio-assistant — authoring a scientific paper end to end (Lean + LaTeX). Source of truth: this file. Open it in bpmn.io, Camunda Modeler, or any other BPMN 2.0 tool. The SVG under docs/assets/img/workflows/ is generated from it by `bun run cat render:bpmn` — never hand-edit the SVG. The <bootstrap.processes:skill> extension on an activity names the folio-assistant skill that implements it; <cat-harness.processes:bean> marks a step that reads or writes the shared work plan in beans/."
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:186
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:212
 #. Diagram label
 msgid "iterate"
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:64
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:67
 #. Diagram element documentation
 msgid "Its three tasks bracket the human review rather than replace it: Validate and Render turn the Lean-green manuscript into the artefact Task_Review actually reads, and Publish only fires once Gateway_ReviewOutcome has said 'approved' — this lane builds what gets judged and executes what was decided, and decides nothing itself."
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:57
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:60
 #. Diagram label
 msgid "Lean toolchain (lean-mcp)"
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:78
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:82
 #. Diagram label
 msgid "New paper"
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:181
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:207
 #. Diagram label
 msgid "not yet"
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:58
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:217
+#. Diagram label
+msgid "not yours"
+msgstr ""
+
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:191
+#. Diagram label
+msgid "Not yours — left alone"
+msgstr ""
+
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:179
+#. Diagram label
+msgid "Open the bean [bean-open]"
+msgstr ""
+
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:61
 #. Diagram element documentation
 msgid "Owns its own loop: Gateway_LeanGreen's 'not yet' branch returns straight to Task_Formalize rather than out to a person, and the gateway itself is DMN-computed off the build result rather than argued, so nothing downstream can proceed on a proof that merely looks close enough. The paper does not reach Task_Validate until this lane's own gate says green."
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:172
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:176
 #. Diagram label
 msgid "Paper published"
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:158
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:196
+#. Diagram element documentation
+msgid "Process_BeanClose: end the bean in a state that says why — complete and archive it, scrap it with its reasons and archive it, or record the blocker and hand it back. The one place resolve and archive are drawn (bean m8gz, owner 2026-10-24); placed straight before the end so the engine's resolve sees nothing left but the archive step."
+msgstr ""
+
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:180
+#. Diagram element documentation
+msgid "Process_BeanOpen: check before you create, find out whose the bean is, and claim it — or leave it alone when it is someone else's. The one place a claim is drawn (bean m8gz, owner 2026-10-24); the gateway after this reads which end it reached."
+msgstr ""
+
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:186
+#. Diagram element documentation
+msgid "Reads which end Process_BeanOpen reached. `claimed`: the bean is in progress and this process works it. `not yours`: a sibling session or a human holds it, nothing was written to it, and this process stops here rather than work a bean it does not own (bean-coordination)."
+msgstr ""
+
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:162
 #. Diagram label
 msgid "Ready to publish?"
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:151
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:155
 #. Diagram element documentation
 msgid "Review the rendered paper, not a description of it, and record the feedback. The outcome is iterate — back to authoring — or approved for the publication path."
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:71
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:75
 #. Diagram label
 msgid "Reviewer / SME"
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:135
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:139
 #. Diagram element documentation
 msgid "Run content validation over the folio: schemas, the content profile (formal kinds only in a paper), cross-block consistency and that the Lean builds. Loop back rather than rendering over a failure."
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:52
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:55
 #. Diagram element documentation
 msgid "Scaffolds the repo from the author's plan and then writes every block — including every revision, since Gateway_ReviewOutcome's 'iterate' branch re-enters Task_AuthorBlocks directly rather than sending the change back to Lane_Author to be re-scoped. The plan is the author's decision; executing against it, first draft through every rewrite, is this lane's."
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:82
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:86
 #. Diagram element documentation
 msgid "Scope the paper: chapters, the blocks each needs, what gets formalised."
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:165
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:169
 #. Diagram element documentation
 msgid "See draft-to-publication.bpmn for the review and release path this expands into."
 msgstr ""
@@ -204,7 +249,12 @@ msgstr ""
 msgid "Sits between Task_Plan and Task_Scaffold as the one conversion point in this diagram: the author's plan becomes beans here, which is what lets a resumed session or a different agent pick up Task_Scaffold without having sat through Task_Plan itself."
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:90
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:192
+#. Diagram element documentation
+msgid "Someone else holds the bean; this run stops without touching it."
+msgstr ""
+
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:94
 #. Diagram element documentation
 msgid "The plan becomes beans, so a resumed session or a sibling agent can pick it up."
 msgstr ""
@@ -214,12 +264,12 @@ msgstr ""
 msgid "The plan set here — chapters, the blocks each needs, what gets formalised — is upstream of everything else in the diagram and is never revisited: Gateway_ReviewOutcome's 'iterate' branch re-enters Lane_Agent's Task_AuthorBlocks directly, not this lane, so a scoping mistake made here surfaces only as churn several lanes downstream."
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:159
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:163
 #. Diagram element documentation
 msgid "The reviewer's call after step 8. `iterate` returns to authoring with the feedback; `approved` goes to publish."
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:143
+#: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:147
 #. Diagram element documentation
 msgid "Typeset the paper through LaTeX to PDF and HTML. Run latex_preflight first — missing packages, fonts or engine — rather than discovering them twenty minutes in. The preamble, class and macros belong to the folio, never to the platform."
 msgstr ""

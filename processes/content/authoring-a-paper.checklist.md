@@ -18,9 +18,24 @@ How a scientific paper or book folio is authored end to end, with Lean for its f
 - Skill: `content-plan`.
 - What: Scope the paper: chapters, the blocks each needs, what gets formalised.
 - Record it: `workflow_complete` with `node: "Task_Plan"`.
-- next: → `Task_SeedPlan` (2 · Seed the work plan)
+- next: → `Call_BeanOpen` (Open the bean)
 
-### 2. 2 · Seed the work plan (`Task_SeedPlan`)
+### 2. Open the bean (`Call_BeanOpen`)
+
+- Who: the `Work plan — beans (shared by humans and agents)` lane (role `work-plan`).
+- Skill: `bean-coordination`.
+- What: Process_BeanOpen: check before you create, find out whose the bean is, and claim it — or leave it alone when it is someone else's.
+- A subprocess (`Process_BeanOpen`): `workflow_next` reports its own steps; complete those — this call activity itself is not completable.
+- next: → `GW_BeanYours` (Bean claimed?)
+
+### Decide — Bean claimed? (`GW_BeanYours`)
+
+- Reads which end Process_BeanOpen reached.
+- Call `workflow_complete` with `node: "GW_BeanYours"` and `outcome` set to the label that holds:
+  - «claimed» → `Task_SeedPlan` (2 · Seed the work plan)
+  - «not yours» → `End_BeanNotYours` (Not yours — left alone)
+
+### 3. 2 · Seed the work plan (`Task_SeedPlan`)
 
 - Who: the `Work plan — beans (shared by humans and agents)` lane (role `work-plan`).
 - Skill: `todo-manager`.
@@ -28,7 +43,11 @@ How a scientific paper or book folio is authored end to end, with Lean for its f
 - Record it: `workflow_complete` with `node: "Task_SeedPlan"`.
 - next: → `Task_Scaffold` (3 · Scaffold the folio repo)
 
-### 3. 3 · Scaffold the folio repo (`Task_Scaffold`)
+## Done — Not yours — left alone (`End_BeanNotYours`)
+
+- The instance completes here: Someone else holds the bean; this run stops without touching it. `workflow_next` then reports nothing enabled — that, not this line, is the record of completion.
+
+### 4. 3 · Scaffold the folio repo (`Task_Scaffold`)
 
 - Who: the `Authoring agent (system)` lane (role `authoring-agent`).
 - Skill: `content-plan`.
@@ -36,7 +55,7 @@ How a scientific paper or book folio is authored end to end, with Lean for its f
 - Record it: `workflow_complete` with `node: "Task_Scaffold"`.
 - next: → `Task_AuthorBlocks` (4 · Author blocks)
 
-### 4. 4 · Author blocks (`Task_AuthorBlocks`)
+### 5. 4 · Author blocks (`Task_AuthorBlocks`)
 
 - Who: the `Authoring agent (system)` lane (role `authoring-agent`).
 - Skill: `content-author`.
@@ -44,7 +63,7 @@ How a scientific paper or book folio is authored end to end, with Lean for its f
 - Record it: `workflow_complete` with `node: "Task_AuthorBlocks"`.
 - next: → `Task_Formalize` (5 · Formalise in Lean)
 
-### 5. 5 · Formalise in Lean (`Task_Formalize`)
+### 6. 5 · Formalise in Lean (`Task_Formalize`)
 
 - Who: the `Lean toolchain (lean-mcp)` lane (role `lean-toolchain`).
 - Skill: `lean-formalization`, `proof-verification`.
@@ -59,7 +78,7 @@ How a scientific paper or book folio is authored end to end, with Lean for its f
   - «not yet» → `Task_Formalize` (5 · Formalise in Lean)
   - «green» → `Task_Validate` (6 · Validate)
 
-### 6. 6 · Validate (`Task_Validate`)
+### 7. 6 · Validate (`Task_Validate`)
 
 - Who: the `Build pipeline — validate · render · publish` lane (role `build-pipeline`).
 - Skill: `content-validate`.
@@ -67,7 +86,7 @@ How a scientific paper or book folio is authored end to end, with Lean for its f
 - Record it: `workflow_complete` with `node: "Task_Validate"`.
 - next: → `Task_Render` (7 · Render PDF / HTML)
 
-### 7. 7 · Render PDF / HTML (`Task_Render`)
+### 8. 7 · Render PDF / HTML (`Task_Render`)
 
 - Who: the `Build pipeline — validate · render · publish` lane (role `build-pipeline`).
 - Skill: `latex-authoring`.
@@ -75,7 +94,7 @@ How a scientific paper or book folio is authored end to end, with Lean for its f
 - Record it: `workflow_complete` with `node: "Task_Render"`.
 - next: → `Task_Review` (8 · Review and feedback)
 
-### 8. 8 · Review and feedback (`Task_Review`)
+### 9. 8 · Review and feedback (`Task_Review`)
 
 - Who: the `Reviewer / SME` lane (role `reviewer`).
 - Skill: `content-review`.
@@ -90,12 +109,20 @@ How a scientific paper or book folio is authored end to end, with Lean for its f
   - «iterate» → `Task_AuthorBlocks` (4 · Author blocks)
   - «approved» → `Task_Publish` (9 · Publish)
 
-### 9. 9 · Publish (`Task_Publish`)
+### 10. 9 · Publish (`Task_Publish`)
 
 - Who: the `Build pipeline — validate · render · publish` lane (role `build-pipeline`).
 - Skill: `content-publish`.
 - What: See draft-to-publication.bpmn for the review and release path this expands into.
 - Record it: `workflow_complete` with `node: "Task_Publish"`.
+- next: → `Call_BeanClose` (Close the bean)
+
+### 11. Close the bean (`Call_BeanClose`)
+
+- Who: the `Build pipeline — validate · render · publish` lane (role `build-pipeline`).
+- Skill: `todo-manager`.
+- What: Process_BeanClose: end the bean in a state that says why — complete and archive it, scrap it with its reasons and archive it, or record the blocker and hand it back.
+- A subprocess (`Process_BeanClose`): `workflow_next` reports its own steps; complete those — this call activity itself is not completable.
 - next: → `EndEvent_Published` (Paper published)
 
 ## Done — Paper published (`EndEvent_Published`)

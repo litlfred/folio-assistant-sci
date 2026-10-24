@@ -4,8 +4,10 @@
   "description": "Formal mathematics authoring skills for Lean 4 proofs, LaTeX documents, and category theory formalization",
   "skills": [
     "formal-accuracy",
+    "formal-layer-editing",
     "latex-authoring",
     "lean-formalization",
+    "lean-toolchain-contract",
     "math-md-authoring",
     "math-readability-editing",
     "milnor-exposition-standard",
