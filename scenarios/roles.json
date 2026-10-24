@@ -124,7 +124,9 @@
       "role": "integration-watcher",
       "skills": [
         "proof-integration-watcher",
-        "q-usage-watcher"
+        "q-usage-watcher",
+        "compute-integration-watcher",
+        "detangler-integration-watcher"
       ]
     },
     {
