@@ -6,7 +6,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { declUnits, declUnitsOf, docCommentBefore, nameWords } from "../lsi-lean-decls.ts";
+import { DECL_INDEX_OPTIONS, declUnits, declUnitsOf, docCommentBefore, lsiNearUnits, nameWords } from "../lsi-lean-decls.ts";
 
 const dirs: string[] = [];
 afterEach(() => {
@@ -72,5 +72,27 @@ describe("a Lean root", () => {
     expect(d.units.map((u) => u.id)).toContain("topLevelFact@QOU.Mass.Markov");
     expect(d.units.some((u) => u.id.includes("skipped"))).toBe(false);
     expect(d.duplicates).toEqual(["topLevelFact@QOU.Mass.Markov"]);
+  });
+});
+
+describe("lsiNearUnits (the `lean-decl` provider for cross-graph lsi:near)", () => {
+  test("with no Lean root it is not searched, never an empty index", () => {
+    const r = lsiNearUnits({ checkoutRoot: "/nowhere", roots: [] });
+    expect(r.notSearched).toBe("no Lean root given (--root lean-decl=<dir>)");
+    expect(r.units).toEqual([]);
+  });
+
+  test("a namespaced name and the full id are explicit references; a bare top-level name is not", () => {
+    const root = mkdtempSync(join(tmpdir(), "lsi-decl-near-"));
+    dirs.push(root);
+    mkdirSync(join(root, "QOU", "Mass"), { recursive: true });
+    writeFileSync(join(root, "QOU", "Mass", "X.lean"), SRC);
+    const r = lsiNearUnits({ checkoutRoot: "/nowhere", roots: [root] });
+    expect(r.buildOptions).toBe(DECL_INDEX_OPTIONS);
+    const keys = new Map(r.refKeys!.map(([k, id]) => [k, id]));
+    expect(keys.get("QOU.Mass.markovZ_pos")).toBe("QOU.Mass.markovZ_pos@QOU.Mass.X");
+    expect(keys.get("QOU.Mass.markovZ_pos@QOU.Mass.X")).toBe("QOU.Mass.markovZ_pos@QOU.Mass.X");
+    const top = r.units.map((u) => u.id).find((id) => !id.slice(0, id.lastIndexOf("@")).includes("."));
+    if (top) expect(keys.get(top.slice(0, top.lastIndexOf("@")))).toBeUndefined();
   });
 });
