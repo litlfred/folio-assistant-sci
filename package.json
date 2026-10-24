@@ -11,7 +11,9 @@
     "check:lean-dirs": "bun run folio-assistant-sci/scripts/check-lean-dirs.ts",
     "extract:references": "bun run folio-assistant-sci/scripts/extract-references.ts",
     "check:extracted-references": "bun run folio-assistant-sci/scripts/extract-references.ts --check",
-    "check:editor-checkers": "bun run folio-assistant-sci/scripts/check-editor-checkers.ts"
+    "check:editor-checkers": "bun run folio-assistant-sci/scripts/check-editor-checkers.ts",
+    "latex:validate": "bun run folio-assistant-sci/pipeline/validate-tex.ts",
+    "latex:audit-source": "bun run folio-assistant-sci/pipeline/audit-tex-source.ts"
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "15.11.7",

@@ -22,8 +22,8 @@ about.
 ## Use it
 
 ```sh
-bun run cat-harness-tools/pipeline/semantic-cone.ts --targets thm:a,thm:b
-bun run cat-harness-tools/pipeline/semantic-cone.ts --targets thm:a --coverage
+bun run folio-assistant-sci/pipeline/semantic-cone.ts --targets thm:a,thm:b
+bun run folio-assistant-sci/pipeline/semantic-cone.ts --targets thm:a --coverage
 ```
 
 `--coverage` is the useful one: it lists cone members that lack a
