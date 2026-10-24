@@ -121,18 +121,16 @@ TOOLCHAIN=$(cat "$ABS_LAKE/lean-toolchain" 2>/dev/null || cat "$REPO/lean-toolch
 TOOLCHAIN="$(printf '%s' "$TOOLCHAIN" | tr -d '[:space:]')"
 SLUG="$(printf '%s' "${TOOLCHAIN##*:}" | tr . -)"
 # Family names: the BUILT-IN fallbacks (special-branches.json is gone) (id
-# `lake-cache`), kept in step with the other scripts by tests/cache-family-fallbacks.test.ts.
-# Resolve new-name-first, then each legacy name, newest first, for the WRITE
-# too: publishing a new-name branch beside a live legacy one would block the
-# owner's rename (beans folio-assistant-32f6, folio-assistant-9io2). Each
-# probe names the FULL ref, so `lake-cache/` cannot match inside a newer
-# name. The fallback goes with bean folio-assistant-oycs.
+# `lake-cache`), kept in step with the other scripts by
+# tests/lake-cache-family-fallbacks.test.ts. Only the new name: the legacy
+# `cat-lake-cache/` and `lake-cache/` were retired on 2026-10-24, once every
+# remote was renamed (beans folio-assistant-qr4n, folio-assistant-oycs).
 #
 # The folio's own declaration goes first (bean rva2): a directory with
 # graphTypology `lake-cache` and `storage.keyedBy: "family"` in $REPO's
 # <instance>.json names the default and the first probe. Same reader as
 # lake-cache.sh; no python3 or no declaration leaves the built-in order.
-_cands="cat/folio-assistant-sci/lake-cache cat-lake-cache lake-cache"
+_cands="cat/folio-assistant-sci/lake-cache"
 _decl=$(python3 - "$REPO" <<'PY' 2>/dev/null
 import glob, json, os, sys
 for path in sorted(glob.glob(os.path.join(sys.argv[1], "*.json"))):

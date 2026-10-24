@@ -64,7 +64,7 @@ describe("lake-cache-fetch.sh candidate order (bean rva2)", () => {
 // The two Python mirrors, loaded as modules (their `main` is guarded) from a
 // copy in `<folio>/scripts/`, so REPO_ROOT is the folio exactly as in use.
 describe("the Python mirrors read the same declaration (bean rva2)", () => {
-  const BUILT_INS = ["cat/folio-assistant-sci/lake-cache/", "cat-lake-cache/", "lake-cache/"];
+  const BUILT_INS = ["cat/folio-assistant-sci/lake-cache/"];
   const prefixes = (f: string, script: string): string[] => {
     copyFileSync(resolve(import.meta.dir, "..", script), join(f, "scripts", script));
     const py =

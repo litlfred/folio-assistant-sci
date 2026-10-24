@@ -6,9 +6,9 @@ docs/audits/2026-06-07-lake-cache-only-new-content-design.md:
 
   - Walk `lake-manifest.json` to discover dependency packages
   - For each package: create the orphan branch
-    `cat/folio-assistant-sci/lake-cache/<pkg>-<toolchain>` (or keep writing a
-    legacy `cat-lake-cache/…` or `lake-cache/…` branch where that is what
-    exists, until the remotes are renamed — beans folio-assistant-32f6, 9io2)
+    `cat/folio-assistant-sci/lake-cache/<pkg>-<toolchain>` (the legacy
+    `cat-lake-cache/` and `lake-cache/` names were retired on 2026-10-24,
+    bean folio-assistant-oycs)
     containing ONLY that package's `.olean` files + a `cache-index.json`
     master index for regenerating small metadata at restore time
   - Strip the non-essential derivable artefacts (.c codegen, .ilean
@@ -70,11 +70,11 @@ def run(cmd: list[str], cwd: Path | None = None, check: bool = True,
 
 # Family prefixes: the BUILT-IN fallbacks (special-branches.json is gone; the folio's declaration, read below, comes first) (id
 # `lake-cache`) and checked against this copy by
-# tests/cache-family-fallbacks.test.ts. New name first, then each legacy one,
-# newest first, until bean folio-assistant-oycs removes the fallback. A
-# candidate is always a WHOLE branch name (prefix + key), so `lake-cache/`
-# never matches inside `cat-lake-cache/` or `cat/folio-assistant-sci/lake-cache/`.
-CACHE_PREFIXES = ("cat/folio-assistant-sci/lake-cache/", "cat-lake-cache/", "lake-cache/")
+# tests/lake-cache-family-fallbacks.test.ts. Only the new name: the legacy
+# `cat-lake-cache/` and `lake-cache/` were retired on 2026-10-24, once every
+# remote was renamed (beans folio-assistant-qr4n, folio-assistant-oycs). A
+# candidate is always a WHOLE branch name (prefix + key).
+CACHE_PREFIXES = ("cat/folio-assistant-sci/lake-cache/",)
 
 
 def _declared_cache_prefix(root: Path) -> str | None:
