@@ -15,11 +15,16 @@
  * as "new skill/tools". It has four steps, governed by the `latex-build-cache`
  * skill:
  *
- * 1. `latex-preflight` (cat-harness), a static check that needs no TeX;
+ * 1. `latex-preflight`, a static check that needs no TeX;
  * 2. `tex-install`, to get an engine into a sandbox that has none;
  * 3. `paper-feature-build`, which compiles only the changed chapters plus a
  *    latexdiff of each, with margin notes off;
- * 4. `paper-latex-build` (cat-harness), the full render.
+ * 4. `paper-latex-build`, the full render.
+ *
+ * Steps 1 and 4 were declared in cat-harness until bean `bbza` moved them
+ * here with the rest of the LaTeX, Lean-audit and proof-status Tools: the
+ * skills they satisfy already lived in this layer, so a harness Tool naming
+ * them pointed up a layer.
  *
  * Steps 2 and 3 had no Tool node, so an agent searching the tools graph could
  * not find the loop; and step 3 could not run anywhere, because it read the
