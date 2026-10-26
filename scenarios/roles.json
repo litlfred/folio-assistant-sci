@@ -85,7 +85,9 @@
         "system"
       ],
       "skills": [
-        "lean-toolchain-contract"
+        "lean-toolchain-contract",
+        "lean-formalization",
+        "proof-verification"
       ]
     }
   ],
@@ -123,13 +125,6 @@
         "latex-compilation",
         "latex-validation",
         "lean-content-test"
-      ]
-    },
-    {
-      "role": "lean-toolchain",
-      "skills": [
-        "lean-formalization",
-        "proof-verification"
       ]
     },
     {
