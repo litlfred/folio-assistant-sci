@@ -5,7 +5,7 @@
     "id": "proof-objects-extract",
     "path": null
   },
-  "source_hash": "a223b187da1a",
+  "source_hash": "90c29608a5bd",
   "criteria": {
     "tool-invoke-path-resolves": {
       "result": "pass",

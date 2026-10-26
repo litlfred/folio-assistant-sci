@@ -5,7 +5,7 @@
     "id": "tex-snippet-validate",
     "path": null
   },
-  "source_hash": "ff1e8d1fe4e0",
+  "source_hash": "8f88ace92b9d",
   "criteria": {
     "tool-invoke-path-resolves": {
       "result": "pass",

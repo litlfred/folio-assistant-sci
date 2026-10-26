@@ -5,7 +5,7 @@
     "id": "tex-source-audit",
     "path": null
   },
-  "source_hash": "53a6e458e59b",
+  "source_hash": "288884884b55",
   "criteria": {
     "tool-invoke-path-resolves": {
       "result": "pass",
