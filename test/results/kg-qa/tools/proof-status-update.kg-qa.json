@@ -5,7 +5,7 @@
     "id": "proof-status-update",
     "path": null
   },
-  "source_hash": "a236bc07d98b",
+  "source_hash": "3dbcf327f70b",
   "criteria": {
     "tool-invoke-path-resolves": {
       "result": "pass",
