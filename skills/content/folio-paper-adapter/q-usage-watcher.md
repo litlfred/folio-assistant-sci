@@ -321,8 +321,8 @@ bun run cat-harness-tools/pipeline/q-usage-audit.ts --no-write --strict
 - Parent: [`local/integration-watcher`](../../../../cat-harness/skills/sdlc/sdlc-core/integration-watcher.md)
 - Sibling watchers: [`canonical-watcher`](../../../../cat-harness/skills/authoring/authoring-core/canonical-watcher.md),
   [`proof-integration-watcher`](proof-integration-watcher.md),
-  [`compute-integration-watcher`](../../../../cat-harness/skills/authoring/authoring-core/compute-integration-watcher.md),
-  [`detangler-integration-watcher`](../../../../cat-harness/skills/authoring/authoring-core/detangler-integration-watcher.md),
+  [`compute-integration-watcher`](compute-integration-watcher.md),
+  [`detangler-integration-watcher`](detangler-integration-watcher.md),
   [`one-voice-integration-watcher`](../../../../cat-harness/skills/authoring/authoring-core/one-voice-integration-watcher.md).
 - Skill for placement decisions:
   [`production-vs-exploratory-discipline`](../../../../cat-harness/skills/authoring/authoring-core/production-vs-exploratory-discipline.md).
