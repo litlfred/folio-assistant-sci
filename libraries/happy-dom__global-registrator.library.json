@@ -1,0 +1,20 @@
+{
+  "$schema": "software-library/1.0.0",
+  "name": "@happy-dom/global-registrator",
+  "version": "15.11.7",
+  "range": "15.11.7",
+  "dev": true,
+  "digest": {
+    "algorithm": "sha512",
+    "digest": "99f3a8525230f150622583eb9794597ccce45c2ff3ee06d2a62d9e73272b8ff81158bab608c57e43ed06f893e378e9ae345820d2c90423391517355814fe9447"
+  },
+  "source": {
+    "type": "url",
+    "url": "https://registry.npmjs.org/@happy-dom/global-registrator/-/global-registrator-15.11.7.tgz"
+  },
+  "licence": "MIT",
+  "licenceSource": "the installed package's own package.json (`license`)",
+  "usedBy": [
+    "adapters/paper/suggest/crepe-latex.test.ts"
+  ]
+}
