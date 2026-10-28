@@ -28,6 +28,66 @@
           },
           "drafted_at": "2026-09-20",
           "lang": "en"
+        },
+        {
+          "text": "Le logo JSTOR : une majuscule J ornée et décorée inscrite dans un carré noir, au-dessus du mot STOR, accompagnée d'un symbole de marque déposée.",
+          "state": "draft",
+          "drafted_by": {
+            "kind": "agent",
+            "id": "claude-code",
+            "model": "not-disclosed",
+            "session": "conversation://8772c82d-f59e-4bd6-ac09-719b38967fbc"
+          },
+          "drafted_at": "2026-10-28",
+          "lang": "fr"
+        },
+        {
+          "text": "El logotipo de JSTOR: una letra J mayúscula ornamentada dentro de un cuadrado negro, sobre la palabra STOR, con un símbolo de marca registrada.",
+          "state": "draft",
+          "drafted_by": {
+            "kind": "agent",
+            "id": "claude-code",
+            "model": "not-disclosed",
+            "session": "conversation://8772c82d-f59e-4bd6-ac09-719b38967fbc"
+          },
+          "drafted_at": "2026-10-28",
+          "lang": "es"
+        },
+        {
+          "text": "شعار JSTOR: حرف J كبير مزخرف داخل مربع أسود فوق كلمة STOR، مع رمز العلامة التجارية المسجلة.",
+          "state": "draft",
+          "drafted_by": {
+            "kind": "agent",
+            "id": "claude-code",
+            "model": "not-disclosed",
+            "session": "conversation://8772c82d-f59e-4bd6-ac09-719b38967fbc"
+          },
+          "drafted_at": "2026-10-28",
+          "lang": "ar"
+        },
+        {
+          "text": "Логотип JSTOR: орнаментированная заглавная буква J в чёрном квадрате над словом STOR со знаком зарегистрированного товарного знака.",
+          "state": "draft",
+          "drafted_by": {
+            "kind": "agent",
+            "id": "claude-code",
+            "model": "not-disclosed",
+            "session": "conversation://8772c82d-f59e-4bd6-ac09-719b38967fbc"
+          },
+          "drafted_at": "2026-10-28",
+          "lang": "ru"
+        },
+        {
+          "text": "JSTOR 标志：黑色方块内饰有雕花纹样的大写字母 J，下方为单词 STOR，并带有注册商标符号。",
+          "state": "draft",
+          "drafted_by": {
+            "kind": "agent",
+            "id": "claude-code",
+            "model": "not-disclosed",
+            "session": "conversation://8772c82d-f59e-4bd6-ac09-719b38967fbc"
+          },
+          "drafted_at": "2026-10-28",
+          "lang": "zh"
         }
       ]
     },
