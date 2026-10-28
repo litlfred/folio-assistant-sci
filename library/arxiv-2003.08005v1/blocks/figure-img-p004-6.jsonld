@@ -26,6 +26,66 @@
       },
       "drafted_at": "2026-10-11",
       "lang": "en"
+    },
+    {
+      "text": "Page de carte thermique assemblée de la Fig. 2 : vignette de la page 745 avec fond grisé et reflets de carte thermique (blanc, rose, jaune) sur les régions de formules, après assemblage des détections au niveau des fenêtres.",
+      "state": "draft",
+      "drafted_by": {
+        "kind": "agent",
+        "id": "claude-code",
+        "model": "not-disclosed",
+        "session": "conversation://51f04081-7a6c-4ae1-9e5a-7c6ff6e436e1"
+      },
+      "drafted_at": "2026-10-27",
+      "lang": "fr"
+    },
+    {
+      "text": "Página de mapa de calor ensamblado de la Fig. 2: miniatura de la página 745 con fondo grisáceo y resaltados de mapa de calor (blanco, rosa, amarillo) sobre las regiones de fórmulas, tras ensamblar las detecciones a nivel de ventana.",
+      "state": "draft",
+      "drafted_by": {
+        "kind": "agent",
+        "id": "claude-code",
+        "model": "not-disclosed",
+        "session": "conversation://51f04081-7a6c-4ae1-9e5a-7c6ff6e436e1"
+      },
+      "drafted_at": "2026-10-27",
+      "lang": "es"
+    },
+    {
+      "text": "صفحة الخريطة الحرارية المجمعة في الشكل 2: مصغّر للصفحة 745 بخلفية رمادية وإضاءات خريطة حرارية (بالأبيض والوردي والأصفر) فوق مناطق الصيغ، بعد تجميع نتائج الكشف على مستوى النوافذ.",
+      "state": "draft",
+      "drafted_by": {
+        "kind": "agent",
+        "id": "claude-code",
+        "model": "not-disclosed",
+        "session": "conversation://51f04081-7a6c-4ae1-9e5a-7c6ff6e436e1"
+      },
+      "drafted_at": "2026-10-27",
+      "lang": "ar"
+    },
+    {
+      "text": "Страница сшитой тепловой карты на рис. 2: миниатюра страницы 745 с затемнённым серым фоном и подсветкой тепловой карты (белой, розовой, жёлтой) над областями формул после сшивки оконных детекций.",
+      "state": "draft",
+      "drafted_by": {
+        "kind": "agent",
+        "id": "claude-code",
+        "model": "not-disclosed",
+        "session": "conversation://51f04081-7a6c-4ae1-9e5a-7c6ff6e436e1"
+      },
+      "drafted_at": "2026-10-27",
+      "lang": "ru"
+    },
+    {
+      "text": "图 2 拼接热力图页面：拼接窗口级检测结果后的第 745 页缩略图，背景呈灰色，公式区域带有（白、粉、黄色）热力图高亮。",
+      "state": "draft",
+      "drafted_by": {
+        "kind": "agent",
+        "id": "claude-code",
+        "model": "not-disclosed",
+        "session": "conversation://51f04081-7a6c-4ae1-9e5a-7c6ff6e436e1"
+      },
+      "drafted_at": "2026-10-27",
+      "lang": "zh"
     }
   ],
   "derivedFrom": "library/arxiv-2003.08005v1/sections/sec-front-matter",

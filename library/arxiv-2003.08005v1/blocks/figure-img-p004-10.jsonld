@@ -26,6 +26,66 @@
       },
       "drafted_at": "2026-10-11",
       "lang": "en"
+    },
+    {
+      "text": "Sortie de la Fig. 2 : page 745 avec une boîte englobante verte par formule détectée (éléments en ligne tels que k(t,s), [0,1] et équations hors texte (2.1)-(2.8)) après regroupement (pooling).",
+      "state": "draft",
+      "drafted_by": {
+        "kind": "agent",
+        "id": "claude-code",
+        "model": "not-disclosed",
+        "session": "conversation://51f04081-7a6c-4ae1-9e5a-7c6ff6e436e1"
+      },
+      "drafted_at": "2026-10-27",
+      "lang": "fr"
+    },
+    {
+      "text": "Salida de la Fig. 2: página 745 con un recuadro delimitador verde por cada fórmula detectada (elementos en línea como k(t,s), [0,1] y ecuaciones destacadas (2.1)-(2.8)) tras la agrupación (pooling).",
+      "state": "draft",
+      "drafted_by": {
+        "kind": "agent",
+        "id": "claude-code",
+        "model": "not-disclosed",
+        "session": "conversation://51f04081-7a6c-4ae1-9e5a-7c6ff6e436e1"
+      },
+      "drafted_at": "2026-10-27",
+      "lang": "es"
+    },
+    {
+      "text": "مخرجات الشكل 2: الصفحة 745 مع مربع إحاطة أخضر واحد لكل صيغة مكتشفة (العناصر المضمنة مثل k(t,s) و[0,1] والمعادلات المعروضة (2.1)-(2.8)) بعد التجميع (pooling).",
+      "state": "draft",
+      "drafted_by": {
+        "kind": "agent",
+        "id": "claude-code",
+        "model": "not-disclosed",
+        "session": "conversation://51f04081-7a6c-4ae1-9e5a-7c6ff6e436e1"
+      },
+      "drafted_at": "2026-10-27",
+      "lang": "ar"
+    },
+    {
+      "text": "Выход рис. 2: страница 745 с одной зелёной ограничивающей рамкой на каждую обнаруженную формулу (строчные элементы, такие как k(t,s), [0,1], и выносные уравнения (2.1)–(2.8)) после объединения (pooling).",
+      "state": "draft",
+      "drafted_by": {
+        "kind": "agent",
+        "id": "claude-code",
+        "model": "not-disclosed",
+        "session": "conversation://51f04081-7a6c-4ae1-9e5a-7c6ff6e436e1"
+      },
+      "drafted_at": "2026-10-27",
+      "lang": "ru"
+    },
+    {
+      "text": "图 2 输出结果：池化（pooling）后的第 745 页，每个检测到的公式（如 k(t,s)、[0,1] 等行内项以及行间公式 (2.1)-(2.8)）各有一个绿色边界框。",
+      "state": "draft",
+      "drafted_by": {
+        "kind": "agent",
+        "id": "claude-code",
+        "model": "not-disclosed",
+        "session": "conversation://51f04081-7a6c-4ae1-9e5a-7c6ff6e436e1"
+      },
+      "drafted_at": "2026-10-27",
+      "lang": "zh"
     }
   ],
   "derivedFrom": "library/arxiv-2003.08005v1/sections/sec-front-matter",

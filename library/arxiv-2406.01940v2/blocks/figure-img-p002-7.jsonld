@@ -26,6 +26,66 @@
       },
       "drafted_at": "2026-09-20",
       "lang": "en"
+    },
+    {
+      "text": "Une icône linéaire bleu marine foncé représentant un petit réseau en couches : deux nœuds à gauche, trois dans la colonne centrale et trois à droite, reliés par des arêtes droites qui se croisent entre les colonnes, deux des arêtes de gauche étant tracées avec une petite interruption comme si elles passaient sous une autre. Dans la Figure 1 de l'article, elle représente le vérificateur supervisé par le processus (Process-Supervised Verifier), le modèle entraîné qui évalue les candidats d'autoformalisation.",
+      "state": "draft",
+      "drafted_by": {
+        "kind": "agent",
+        "id": "claude-code",
+        "model": "not-disclosed",
+        "session": "conversation://51f04081-7a6c-4ae1-9e5a-7c6ff6e436e1"
+      },
+      "drafted_at": "2026-10-27",
+      "lang": "fr"
+    },
+    {
+      "text": "Un icono lineal azul marino oscuro de una pequeña red en capas: dos nodos a la izquierda, tres en la columna central y tres a la derecha, unidos por aristas rectas que se cruzan entre las columnas, con dos de las aristas de la izquierda dibujadas con una pequeña interrupción como si pasaran por debajo de otra. En la Figura 1 del artículo representa el verificador supervisado por procesos (Process-Supervised Verifier), el modelo entrenado que puntúa los candidatos de autoformalización.",
+      "state": "draft",
+      "drafted_by": {
+        "kind": "agent",
+        "id": "claude-code",
+        "model": "not-disclosed",
+        "session": "conversation://51f04081-7a6c-4ae1-9e5a-7c6ff6e436e1"
+      },
+      "drafted_at": "2026-10-27",
+      "lang": "es"
+    },
+    {
+      "text": "أيقونة خطية باللون الكحلي الداكن لشبكة طبقية صغيرة: عقدتان على اليسار، وثلاث في العمود الأوسط، وثلاث على اليمين، تصل بينها حواف مستقيمة تتقاطع بين الأعمدة، وقد رُسمت اثنتان من الحواف اليسرى بفجوة صغيرة كما لو كانتا تمران تحت حافة أخرى. وترمز في الشكل 1 من الورقة إلى المدقق المُشرَف عليه بالعمليات (Process-Supervised Verifier)، وهو النموذج المدرَّب الذي يقيّم مرشحي الصياغة الصورية الآلية.",
+      "state": "draft",
+      "drafted_by": {
+        "kind": "agent",
+        "id": "claude-code",
+        "model": "not-disclosed",
+        "session": "conversation://51f04081-7a6c-4ae1-9e5a-7c6ff6e436e1"
+      },
+      "drafted_at": "2026-10-27",
+      "lang": "ar"
+    },
+    {
+      "text": "Тёмно-синяя контурная иконка небольшой слоистой сети: два узла слева, три в среднем столбце и три справа, соединённые прямыми рёбрами, пересекающимися между столбцами, причём два левых ребра изображены с небольшим разрывом, словно проходят под другим ребром. На рисунке 1 статьи она обозначает верификатор с процессуальным контролем (Process-Supervised Verifier) — обученную модель, оценивающую кандидатов автоформализации.",
+      "state": "draft",
+      "drafted_by": {
+        "kind": "agent",
+        "id": "claude-code",
+        "model": "not-disclosed",
+        "session": "conversation://51f04081-7a6c-4ae1-9e5a-7c6ff6e436e1"
+      },
+      "drafted_at": "2026-10-27",
+      "lang": "ru"
+    },
+    {
+      "text": "深海军蓝线条图标，描绘了一个小型分层网络：左侧两个节点、中间列三个节点、右侧三个节点，列与列之间由交叉的直线边连接，左侧有两条边带有微小断口以表示从另一条边下方穿过。在论文图 1 中，该图标代表过程监督验证器（Process-Supervised Verifier），即对自动形式化候选结果进行打分的训练模型。",
+      "state": "draft",
+      "drafted_by": {
+        "kind": "agent",
+        "id": "claude-code",
+        "model": "not-disclosed",
+        "session": "conversation://51f04081-7a6c-4ae1-9e5a-7c6ff6e436e1"
+      },
+      "drafted_at": "2026-10-27",
+      "lang": "zh"
     }
   ],
   "derivedFrom": "library/arxiv-2406.01940v2/sections/sec-000",
