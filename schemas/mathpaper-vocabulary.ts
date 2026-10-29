@@ -3,7 +3,7 @@
  * types, schemas, builders and constraint rules.
  *
  * `content-adapters/mathpaper.json` names this module as its `vocabulary`, and
- * cat-harness's `schemas/vocabulary-modules.ts` loads it. The kinds were typed
+ * cat-harness's `schemas/content/vocabulary-modules.ts` loads it. The kinds were typed
  * in cat-harness's `BlockSchema` until the owner's ruling of 2026-10-22
  * (option C): a composition that did not mount this layer then had seven kinds
  * typed in code and declared by no node. The vocabulary had already moved here
