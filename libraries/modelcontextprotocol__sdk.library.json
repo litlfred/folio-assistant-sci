@@ -16,7 +16,10 @@
   "licenceSource": "the installed package's own package.json (`license`)",
   "usedBy": [
     "adapters/paper/index.ts",
+    "adapters/paper/tools/check-deps.ts",
     "adapters/paper/tools/lean.ts",
+    "adapters/paper/tools/preferences.ts",
+    "adapters/paper/tools/preview.ts",
     "pipeline/formal-edges-mcp.ts"
   ]
 }
