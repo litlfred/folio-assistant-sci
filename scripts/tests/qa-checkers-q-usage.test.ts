@@ -2,16 +2,16 @@
  * `qa-checkers-q-usage` tests whose subject is folio-assistant-sci's
  * contribution — the chapter profiles and the `lean-lexer` plugin this
  * instance contributes — moved here from
- * `cat-harness/scripts/tests/qa-checkers-q-usage.test.ts` (bean `ho66`). The
- * code under test is cat-harness's, imported DOWN; what it is held against is
- * this instance's, so standing alone cat-harness has nothing for these to
- * read. The rest of that file's tests stay there.
+ * `cat-harness/scripts/tests/qa-checkers-q-usage.test.ts` (bean `ho66`). Since
+ * bean `saqd` (2026-10-30) the checker itself is this instance's too
+ * (`pipeline/qa-checkers-q-usage.ts`); the na-guard tests that need no
+ * contribution are in `qa-checkers-q-usage-na-guard.test.ts`.
  */
 import { describe, test, expect, afterAll, beforeAll } from "bun:test";
 import { writeFileSync, mkdtempSync, mkdirSync, rmSync } from "fs";
 import { join } from "path";
 import { tmpdir } from "os";
-import { checkQUsageArchimedeanInCategoricalChapter } from "../../../cat-harness-tools/pipeline/qa-checkers-q-usage.ts";
+import { checkQUsageArchimedeanInCategoricalChapter } from "../../pipeline/qa-checkers-q-usage.ts";
 import { usePipelinePluginRegistry } from "../../../cat-harness-tools/pipeline/pipeline-plugins";
 import { resetChapterProfiles } from "../../../cat-harness-tools/pipeline/chapter-profile-registry-di";
 import { useCategoricalChapters, useSciPipelinePlugins } from "./sci-consumer";

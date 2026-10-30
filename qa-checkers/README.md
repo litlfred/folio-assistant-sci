@@ -7,7 +7,7 @@ generated: "scripts/subgraph-readmes.ts of the bootstrap toolset (https://github
 
 # folio-assistant-sci-qa-checkers
 
-The QA checkers this instance's Lean tooling provides, one folio-qa-checker/v1 node per criterion, naming COST_AUTOMATED_CHECKERS in pipeline/qa-checkers-cost.ts (bean riit, step 3b), and the maths checkers moved here from cat-harness-tools (bean saqd): VACUITY_AUTOMATED_CHECKERS (Lean vacuity, four criteria), RENDER_AUTOMATED_CHECKERS (render-math-mode-envelope), TRIVIALITY_AUTOMATED_CHECKERS (proof-not-machine-trivial), EXTENDED_AUTOMATED_CHECKERS (the paper proof-*, canonical-* and compute-* criteria), USES_AUTOMATED_CHECKERS (uses-formal-coverage, lean-ref-owns-decl) and WALL_AUTOMATED_CHECKERS in pipeline/qa-checkers-wall.ts (framework-canonical and the §7c archimedean wall: wall-side-correct, wall-base-ring-minimal). Registered for a folio by loadContributions through its dependency tree; they replace the qaCheckers array contributions.ts returned.
+The QA checkers this instance's Lean tooling provides, one folio-qa-checker/v1 node per criterion, naming COST_AUTOMATED_CHECKERS in pipeline/qa-checkers-cost.ts (bean riit, step 3b), and the maths checkers moved here from cat-harness-tools (bean saqd): VACUITY_AUTOMATED_CHECKERS (Lean vacuity, four criteria), RENDER_AUTOMATED_CHECKERS (render-math-mode-envelope), TRIVIALITY_AUTOMATED_CHECKERS (proof-not-machine-trivial), EXTENDED_AUTOMATED_CHECKERS (the paper proof-*, canonical-* and compute-* criteria), USES_AUTOMATED_CHECKERS (uses-formal-coverage, lean-ref-owns-decl), Q_USAGE_AUTOMATED_CHECKERS in pipeline/qa-checkers-q-usage.ts (the seven q-usage-* criteria, run on their own by pipeline/q-usage-audit.ts) and WALL_AUTOMATED_CHECKERS in pipeline/qa-checkers-wall.ts (framework-canonical and the §7c archimedean wall: wall-side-correct, wall-base-ring-minimal). Registered for a folio by loadContributions through its dependency tree; they replace the qaCheckers array contributions.ts returned.
 
 Part of [folio-assistant-sci](../README.md) 0.1.0, declared as `folio-assistant-sci-qa-checkers`, holding `qa-checkers`.
 
@@ -43,6 +43,13 @@ Part of [folio-assistant-sci](../README.md) 0.1.0, declared as `folio-assistant-
 | [`proof-no-trivial-skeleton.json`](proof-no-trivial-skeleton.json) | data |  |
 | [`proof-not-machine-trivial.json`](proof-not-machine-trivial.json) | data |  |
 | [`proof-substantive.json`](proof-substantive.json) | data |  |
+| [`q-usage-archimedean-in-categorical-chapter.json`](q-usage-archimedean-in-categorical-chapter.json) | data |  |
+| [`q-usage-fixed-q0-leak.json`](q-usage-fixed-q0-leak.json) | data |  |
+| [`q-usage-modulus-vs-real-mismatch.json`](q-usage-modulus-vs-real-mismatch.json) | data |  |
+| [`q-usage-narrative-chapter-mismatch.json`](q-usage-narrative-chapter-mismatch.json) | data |  |
+| [`q-usage-positivity-implicit.json`](q-usage-positivity-implicit.json) | data |  |
+| [`q-usage-regime-detected.json`](q-usage-regime-detected.json) | data |  |
+| [`q-usage-root-of-unity-undeclared.json`](q-usage-root-of-unity-undeclared.json) | data |  |
 | [`render-math-mode-envelope.json`](render-math-mode-envelope.json) | data |  |
 | [`uses-formal-coverage.json`](uses-formal-coverage.json) | data |  |
 | [`wall-base-ring-minimal.json`](wall-base-ring-minimal.json) | data |  |
