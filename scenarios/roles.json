@@ -134,7 +134,8 @@
         "q-usage-watcher",
         "compute-integration-watcher",
         "detangler-integration-watcher",
-        "devils-advocate-paper"
+        "devils-advocate-paper",
+        "paper-voice-audit"
       ]
     },
     {
@@ -161,7 +162,9 @@
       "skills": [
         "formal-accuracy",
         "math-md-authoring",
-        "math-readability-editing"
+        "math-readability-editing",
+        "paper-chapter-complexity",
+        "paper-voice-audit"
       ]
     },
     {
