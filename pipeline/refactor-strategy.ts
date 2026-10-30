@@ -25,7 +25,7 @@ import {
   isApplicableAt,
   type RefactorStrategy,
   type RefactorStrategyFile,
-} from "@litlfred/cat-harness/schemas/refactor-strategy.ts";
+} from "../schemas/refactor-strategy.ts";
 import { findContentRepoRoot } from "@litlfred/cat-harness-tools/pipeline/repo-root.ts";
 
 const STRATEGY_DIR_REL = "pipeline/refactor-strategies";

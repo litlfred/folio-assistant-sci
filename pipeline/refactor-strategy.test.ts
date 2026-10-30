@@ -3,7 +3,7 @@ import {
   compareLeanVersions,
   isApplicableAt,
   type RefactorStrategy,
-} from "@litlfred/cat-harness/schemas/refactor-strategy.ts";
+} from "../schemas/refactor-strategy.ts";
 import { loadStrategies } from "./refactor-strategy";
 
 const strat = (over: Partial<RefactorStrategy> = {}): RefactorStrategy => ({
