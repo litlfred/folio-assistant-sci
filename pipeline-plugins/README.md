@@ -10,6 +10,7 @@ Part of [folio-assistant-sci](../README.md) 0.1.0, declared as `folio-assistant-
 
 | file | what it is | used by |
 |---|---|---|
+| [`block-status-overlay.json`](block-status-overlay.json) | data |  |
 | [`latex-preflight.json`](latex-preflight.json) | data |  |
 | [`lean-coverage.json`](lean-coverage.json) | data |  |
 | [`lean-lexer.json`](lean-lexer.json) | data |  |

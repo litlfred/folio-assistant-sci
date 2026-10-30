@@ -4,7 +4,8 @@
  * nodes declare, and its builders build blocks those schemas accept.
  */
 import { describe, expect, test } from "bun:test";
-import { readdirSync, readFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 import { readVocabulary } from "@litlfred/cat-harness-tools/schemas/content/vocabulary-modules.ts";
@@ -72,5 +73,24 @@ describe("the mathpaper vocabulary module", () => {
         conjectureKind: "speculative" as never,
       }),
     ).toThrow();
+  });
+
+  test("contributes the Lean constraint context its rules read (bean saqd)", () => {
+    const tmp = mkdtempSync(join(tmpdir(), "mathpaper-ctx-"));
+    try {
+      mkdirSync(join(tmp, "ch"), { recursive: true });
+      mkdirSync(join(tmp, "lake", "Pkg", "Deep"), { recursive: true });
+      writeFileSync(join(tmp, "ch", "def-a.lean"), "-- conjectural sibling stub\n");
+      writeFileSync(join(tmp, "lake", "Pkg", "Deep", "Widget.lean"), "def w := 1\n");
+      const perBlock = mathpaper.constraintContext({ repoRoot: tmp });
+      const a = perBlock({ rootName: "def-a", dir: join(tmp, "ch") });
+      expect(a.leanContent).toBe("-- conjectural sibling stub\n");
+      expect(perBlock({ rootName: "def-b", dir: join(tmp, "ch") }).leanContent).toBeUndefined();
+      expect(a.lakeTreeContainsBasename?.("lake", "Widget.lean")).toBe(true);
+      expect(a.lakeTreeContainsBasename?.("lake", "Gadget.lean")).toBe(false);
+      expect(a.lakeTreeContainsBasename?.("no-such-root", "Widget.lean")).toBe(false);
+    } finally {
+      rmSync(tmp, { recursive: true, force: true });
+    }
   });
 });

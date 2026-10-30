@@ -18,10 +18,25 @@ import { declarationStarts, stripLeanComments } from "../../cat-harness-tools/pi
 import "./lean-formal-ref.js";
 import { runPreflight } from "./latex-preflight.js";
 import { computeStats, leanFileStatus, resolveLeanFile } from "../scripts/lean-coverage.js";
+import type { Block } from "@litlfred/cat-harness-tools/schemas/types.ts";
+import { overlayBlockStatus } from "./lean-status-overlay.js";
+
+/**
+ * The `block-status-overlay` slot's shape (bean `saqd`, row `pipeline/build.ts`).
+ * Restated here because this PR lands BEFORE the cat-harness-tools PR that adds
+ * the slot to `PipelinePlugins`; once that has merged this becomes
+ * `PipelinePlugins["block-status-overlay"]` like the others.
+ */
+interface BlockStatusOverlaySlot {
+  overlay(block: Block, tsPath: string, paperDir: string): void;
+}
 
 /** Only the slots this instance fills; the rest are filled elsewhere or left empty. */
-export const PIPELINE_IMPLEMENTATIONS: Pick<PipelinePlugins, "lean-lexer" | "latex-preflight" | "lean-coverage"> = {
+export const PIPELINE_IMPLEMENTATIONS: Pick<PipelinePlugins, "lean-lexer" | "latex-preflight" | "lean-coverage"> & {
+  "block-status-overlay": BlockStatusOverlaySlot;
+} = {
   "lean-lexer": { stripLeanComments, declarationStarts },
   "latex-preflight": { runPreflight },
   "lean-coverage": { resolveLeanFile, leanFileStatus, computeStats },
+  "block-status-overlay": { overlay: overlayBlockStatus },
 };
