@@ -22,6 +22,7 @@
     "pipeline/formal-edges-mcp.ts",
     "schemas/conjecture-register.ts",
     "schemas/editor-checker.ts",
-    "schemas/mathpaper-vocabulary.ts"
+    "schemas/mathpaper-vocabulary.ts",
+    "schemas/precision-scalar.ts"
   ]
 }
