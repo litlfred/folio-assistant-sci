@@ -15,8 +15,8 @@
  */
 import type { PipelinePlugins } from "../../cat-harness-tools/pipeline/pipeline-plugins.js";
 import { declarationStarts, stripLeanComments } from "../../cat-harness-tools/pipeline/lean-lexer.js";
-import { runPreflight } from "../../cat-harness-tools/pipeline/latex-preflight.js";
-import { computeStats, leanFileStatus, resolveLeanFile } from "../../cat-harness-tools/scripts/lean-coverage.js";
+import { runPreflight } from "./latex-preflight.js";
+import { computeStats, leanFileStatus, resolveLeanFile } from "../scripts/lean-coverage.js";
 
 /** Only the slots this instance fills; the rest are filled elsewhere or left empty. */
 export const PIPELINE_IMPLEMENTATIONS: Pick<PipelinePlugins, "lean-lexer" | "latex-preflight" | "lean-coverage"> = {

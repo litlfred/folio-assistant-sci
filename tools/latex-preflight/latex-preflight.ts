@@ -27,7 +27,7 @@ export default toolFactory((t) =>
     description:
       "Lint TeX source for the pdflatex-compile failure classes a permissive AST parser accepts — the ones that pass validation and then break the build.",
     install: { none: true },
-    invoke: { shell: "bun run cat latex:preflight" },
+    invoke: { shell: "bun run folio-assistant-sci/pipeline/latex-preflight.ts" },
     io: {
       inputs: [
         { name: "json", schema: t("Flag"), required: false, arg: { flag: "--json" } },
