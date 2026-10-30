@@ -17,7 +17,7 @@ import {
   stripLeanComments,
 } from "../../../cat-harness-tools/pipeline/lean-lexer.js";
 import { usePipelinePluginRegistry } from "../../../cat-harness-tools/pipeline/pipeline-plugins";
-import { leanDeclSpans, scopeLeanToDecl } from "../../../cat-harness-tools/pipeline/qa-checkers-q-usage.js";
+import { leanDeclSpans, scopeLeanToDecl } from "../../pipeline/qa-checkers-q-usage.js";
 import { useSciPipelinePlugins } from "./sci-consumer";
 
 // The lexer is sci's contribution, so it is loaded through a folio that

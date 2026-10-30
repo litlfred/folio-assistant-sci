@@ -46,7 +46,7 @@ and `beans/q-usage-watcher-ledger.md`.
   (generic `R` vs archimedean `ℝ`).
 - `notation-collisions.md` (in the FOLIO, not the platform)
   — base-ring convention notation row.
-- [`qa-checkers-q-usage.ts`](../../../../cat-harness-tools/pipeline/qa-checkers-q-usage.ts)
+- [`qa-checkers-q-usage.ts`](../../../pipeline/qa-checkers-q-usage.ts)
   — the checker implementation, with the chapter → expected-regime
   registry.
 
@@ -119,7 +119,7 @@ echo "$changed" | grep -qE 'content/quantum-observable-universe/.*\.(md|ts|lean)
   && is_q_usage_event=true
 
 # (ii) the checker module or registry itself changed (sweep all blocks)
-echo "$changed" | grep -qE 'cat-harness-tools/pipeline/(qa-checkers-q-usage|qa-criteria-registry|q-usage-audit)\.ts$' \
+echo "$changed" | grep -qE '(cat-harness-tools/pipeline/qa-criteria-registry|folio-assistant-sci/pipeline/(qa-checkers-q-usage|q-usage-audit))\.ts$' \
   && is_q_usage_event=true
 
 # (iii) the chapter-regime table or notation register changed
@@ -138,7 +138,7 @@ mentions: `q regime`, `q usage`, `q_0`, `Real.sqrt`, `|q|`, `q > 1`,
 |-----------|--------------|-----------------|
 | `q-usage-audit.ts` | Any changed block | Runs the full 7-criterion suite, updates `<block>.qa.json`, emits witness |
 | `q-usage-audit.ts --chapter <dir>` | Chapter-scoped change | Same but on one chapter |
-| `qa-checkers-q-usage.ts` (direct call from `qa-sweep`) | Any sweep run | Per-criterion checker function for the new q-usage axis |
+| `qa-checkers-q-usage.ts` (contributed to `qa-sweep` through `qa-checkers/q-usage-*.json`) | Any sweep run | Per-criterion checker function for the new q-usage axis |
 | `production-vs-exploratory-discipline` | Fixed-q_0 leak finding | Cross-axis — fixed-q_0 leak in a categorical chapter often signals an exploratory block that needs the production-vs-exploratory decision |
 | `compute-audit` (existing skill) | Real.* leak finding | Cross-axis — Real.* in a Lean block flags archimedean specialisation; compute-audit verifies the archimedean side actually consumes it |
 
@@ -276,7 +276,7 @@ Per-violation template:
 
 ```bash
 # Run the audit, read the witness, queue every fail + warn
-bun run cat-harness-tools/pipeline/q-usage-audit.ts --no-write --json \
+bun run folio-assistant-sci/pipeline/q-usage-audit.ts --no-write --json \
   | jq -r '.findings[] | "\(.severity)\t\(.criterion)\t\(.chapter)/\(.label)\t\(.result)"'
 ```
 
@@ -301,19 +301,19 @@ bun run cat-harness-tools/pipeline/q-usage-audit.ts --no-write --json \
 
 ```bash
 # Full sweep, write sidecars + witness
-bun run cat-harness-tools/pipeline/q-usage-audit.ts
+bun run folio-assistant-sci/pipeline/q-usage-audit.ts
 
 # Dry run (report only, no writes)
-bun run cat-harness-tools/pipeline/q-usage-audit.ts --no-write
+bun run folio-assistant-sci/pipeline/q-usage-audit.ts --no-write
 
 # Single chapter
-bun run cat-harness-tools/pipeline/q-usage-audit.ts --chapter braids-and-knots
+bun run folio-assistant-sci/pipeline/q-usage-audit.ts --chapter braids-and-knots
 
 # JSON output (for piping into jq / queue)
-bun run cat-harness-tools/pipeline/q-usage-audit.ts --no-write --json
+bun run folio-assistant-sci/pipeline/q-usage-audit.ts --no-write --json
 
 # Strict (exit 1 on any fail — for CI)
-bun run cat-harness-tools/pipeline/q-usage-audit.ts --no-write --strict
+bun run folio-assistant-sci/pipeline/q-usage-audit.ts --no-write --strict
 ```
 
 ## Cross-references
@@ -326,8 +326,8 @@ bun run cat-harness-tools/pipeline/q-usage-audit.ts --no-write --strict
   [`one-voice-integration-watcher`](../../../../cat-harness/skills/authoring/authoring-core/one-voice-integration-watcher.md).
 - Skill for placement decisions:
   [`production-vs-exploratory-discipline`](../../../../cat-harness/skills/authoring/authoring-core/production-vs-exploratory-discipline.md).
-- Checker source: [`cat-harness-tools/pipeline/qa-checkers-q-usage.ts`](../../../../cat-harness-tools/pipeline/qa-checkers-q-usage.ts).
-- CLI runner: [`cat-harness-tools/pipeline/q-usage-audit.ts`](../../../../cat-harness-tools/pipeline/q-usage-audit.ts).
+- Checker source: [`folio-assistant-sci/pipeline/qa-checkers-q-usage.ts`](../../../pipeline/qa-checkers-q-usage.ts).
+- CLI runner: [`folio-assistant-sci/pipeline/q-usage-audit.ts`](../../../pipeline/q-usage-audit.ts).
 - Criterion registry entries:
   [`cat-harness-tools/pipeline/qa-criteria-registry.ts`](../../../../cat-harness-tools/pipeline/qa-criteria-registry.ts)
   (search for the `Q_USAGE` const array).

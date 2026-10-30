@@ -59,7 +59,7 @@ gratuitous `(q : ℝ)` compiles fine.
    evaluated at some `q₀ ∈ ℝ` — the fibre-level statement is generic
    (`ℚ(q)` / `ℤ[q,q⁻¹]`); only the evaluation is archimedean.
 2. **Run the mechanical checker** on touched **content-block** Lean:
-   `bun run cat-harness-tools/pipeline/q-usage-audit.ts --no-write` (q-regime +
+   `bun run folio-assistant-sci/pipeline/q-usage-audit.ts --no-write` (q-regime +
    `q-usage-archimedean-in-categorical-chapter`) and the
    `wall-side-correct` checker (`checkWallSide` flags `: ℝ`, `(ℝ)`,
    `linarith`, `positivity`, `norm_num`, `LinearOrderedField`).
