@@ -38,7 +38,7 @@ import {
   checkQUsagePositivityImplicit,
   type QUsageResult,
 } from "./qa-checkers-q-usage.ts";
-import { checkWallSide, checkBaseRingMinimal } from "../../cat-harness-tools/pipeline/qa-checkers-voice.ts";
+import { checkWallSide, checkBaseRingMinimal } from "./qa-checkers-wall.ts";
 // Single source of truth for block discovery + candidate-1→candidate-2
 // `lean.ref` resolution + library-tree enumeration. q-usage-audit MUST
 // NOT reimplement these (it used to carry a private copy — removed so the
