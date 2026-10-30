@@ -34,12 +34,12 @@ current (not stale).
 ### Deep Lean audit (chapter-by-chapter)
 
 ```bash
-bun run cat-harness-tools/scripts/lean-audit.ts            # console report
-bun run cat-harness-tools/scripts/lean-audit.ts --json     # JSON for programmatic use
-bun run cat-harness-tools/scripts/lean-audit.ts --chapter ch5  # filter to one chapter
-bun run cat-harness-tools/scripts/lean-audit.ts --strict   # exit 1 on uncited sorry
-bun run cat-harness-tools/scripts/lean-audit.ts --strict --check-axioms  # also fail on axioms
-bun run cat-harness-tools/scripts/lean-audit.ts --help     # full CLI reference
+bun run folio-assistant-sci/scripts/lean-audit.ts            # console report
+bun run folio-assistant-sci/scripts/lean-audit.ts --json     # JSON for programmatic use
+bun run folio-assistant-sci/scripts/lean-audit.ts --chapter ch5  # filter to one chapter
+bun run folio-assistant-sci/scripts/lean-audit.ts --strict   # exit 1 on uncited sorry
+bun run folio-assistant-sci/scripts/lean-audit.ts --strict --check-axioms  # also fail on axioms
+bun run folio-assistant-sci/scripts/lean-audit.ts --help     # full CLI reference
 ```
 
 This script produces:

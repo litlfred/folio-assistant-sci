@@ -9,8 +9,8 @@ export default toolFactory((t) =>
       "Install the toolchain pinned in `lean-toolchain`, fetching it from the GitHub release rather than through elan's downloader. Idempotent, and it detects partial state rather than re-downloading.",
     // It IS the install step, so `install.cli` names itself: an agent that needs
     // Lean runs this, and `install.none` would say no step exists.
-    install: { cli: "scripts/setup-lean-toolchain.sh" },
-    invoke: { shell: "bun run cat lean:setup-toolchain" },
+    install: { cli: "folio-assistant-sci/scripts/setup-lean-toolchain.sh" },
+    invoke: { shell: "folio-assistant-sci/scripts/setup-lean-toolchain.sh" },
     io: {
       inputs: [],
       outputs: [{ name: "toolchain", schema: t("Text"), description: "The linked toolchain name, and the per-repo override that selects it." }],
