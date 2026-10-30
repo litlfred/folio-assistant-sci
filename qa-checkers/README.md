@@ -4,12 +4,18 @@
 
 # folio-assistant-sci-qa-checkers
 
-The QA checkers this instance's Lean tooling provides, one folio-qa-checker/v1 node per criterion, naming COST_AUTOMATED_CHECKERS in pipeline/qa-checkers-cost.ts (bean riit, step 3b). Registered for a folio by loadContributions through its dependency tree; they replace the qaCheckers array contributions.ts returned.
+The QA checkers this instance's Lean tooling provides, one folio-qa-checker/v1 node per criterion, naming COST_AUTOMATED_CHECKERS in pipeline/qa-checkers-cost.ts (bean riit, step 3b), and the maths checkers moved here from cat-harness-tools (bean saqd): VACUITY_AUTOMATED_CHECKERS (Lean vacuity, four criteria), RENDER_AUTOMATED_CHECKERS (render-math-mode-envelope) and TRIVIALITY_AUTOMATED_CHECKERS (proof-not-machine-trivial). Registered for a folio by loadContributions through its dependency tree; they replace the qaCheckers array contributions.ts returned.
 
 Part of [folio-assistant-sci](../README.md) 0.1.0, declared as `folio-assistant-sci-qa-checkers`, holding `qa-checkers`.
 
 | file | what it is | used by |
 |---|---|---|
+| [`lean-docstring-honesty.json`](lean-docstring-honesty.json) | data |  |
+| [`lean-no-definitional-laundering.json`](lean-no-definitional-laundering.json) | data |  |
+| [`lean-no-vacuous-instance-data.json`](lean-no-vacuous-instance-data.json) | data |  |
 | [`proof-compile-cost.json`](proof-compile-cost.json) | data |  |
 | [`proof-no-cost-regression.json`](proof-no-cost-regression.json) | data |  |
+| [`proof-no-placeholder-stub.json`](proof-no-placeholder-stub.json) | data |  |
+| [`proof-not-machine-trivial.json`](proof-not-machine-trivial.json) | data |  |
+| [`render-math-mode-envelope.json`](render-math-mode-envelope.json) | data |  |
 <!-- kg:subgraph:end -->
