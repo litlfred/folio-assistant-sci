@@ -59,7 +59,7 @@ esac; done
 # The folio's content directory and paper come from its own declaration, never
 # a hardcoded name: the same answer build.ts gives when run from the folio.
 read -r FOLIODIR PAPER < <(PAPER_ARG="$PAPER" bun -e '
-  const { folioDir } = await import(process.argv[1] + "/cat-harness/schemas/cat-harness.ts");
+  const { folioDir } = await import(process.argv[1] + "/cat-harness-tools/schemas/kg/cat-harness.ts");
   const { requirePaper } = await import(process.argv[1] + "/cat-harness-tools/pipeline/repo-root.ts");
   const root = process.cwd();
   let paper;

@@ -54,7 +54,7 @@
 
 import { readFileSync, existsSync } from "fs";
 import { declarationStarts, stripLeanComments } from "../../cat-harness-tools/pipeline/lean-lexer.js";
-import type { CheckerResult, CheckerHit } from "../../cat-harness/schemas/sdlc/block-qa";
+import type { CheckerResult, CheckerHit } from "../../cat-harness-tools/schemas/sdlc/block-qa";
 
 /** A field assignment inside a structure-instance body. */
 interface FieldAssign {
