@@ -98,13 +98,13 @@ Chapters are partitioned into three groups in the implementation:
 - **mixed** — `models-of-qous`, `quantum-observable-universes`,
   `stochastic-mechanics`, `information-theory`, `mass-endomorphism`,
   `brings-surface`, `q-geometric-langlands`. The expected set is
-  documented in `CHAPTER_EXPECTED_REGIMES` in `qa-checkers-q-usage.ts`.
+  the folio's own data (see below).
 
-The complete per-chapter map is in
-[`qa-checkers-q-usage.ts`](../../../../cat-harness-tools/pipeline/qa-checkers-q-usage.ts)
-under `CHAPTER_EXPECTED_REGIMES`. To update a chapter's expected set,
-edit that registry — the watcher reads it directly, no extra wiring
-required.
+The complete per-chapter map is the folio's own data, passed to
+`configureChapterProfiles` (in cat-harness-tools'
+`pipeline/chapter-profile-registry-di.ts`) before the checker runs. To
+update a chapter's expected set, edit the folio's chapter-profiles file.
+A folio that configures none gets `n/a` for every chapter check.
 
 ## Slot B — §3 trigger filter
 

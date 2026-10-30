@@ -1,5 +1,0 @@
-{
-  "$schema": "folio-pipeline-plugin/v1",
-  "slot": "chapter-profile-defaults",
-  "implementation": "pipeline/plugin-slots.ts#PIPELINE_IMPLEMENTATIONS"
-}

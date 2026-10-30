@@ -26,12 +26,20 @@ import { checkQUsageArchimedeanInCategoricalChapter } from "../../../cat-harness
 // every resolution `undefined` — measured: 9 of these tests went red.
 import { configureLeanPackages } from "../../../cat-harness-tools/pipeline/lean-formal-ref.ts";
 import { usePipelinePluginRegistry } from "../../../cat-harness-tools/pipeline/pipeline-plugins";
-import { useSciPipelinePlugins } from "./sci-consumer";
+import { resetChapterProfiles } from "../../../cat-harness-tools/pipeline/chapter-profile-registry-di";
+import { useCategoricalChapters, useSciPipelinePlugins } from "./sci-consumer";
 
 // The Lean lexer the q-usage checker scopes with is sci's contribution: loaded
 // through a folio that depends on sci, not from whatever checkout is running.
-beforeAll(useSciPipelinePlugins);
-afterAll(() => usePipelinePluginRegistry(undefined));
+// The fixture's chapter is configured categorical here: no layer ships one.
+beforeAll(() => {
+  useSciPipelinePlugins();
+  useCategoricalChapters("braids-and-knots");
+});
+afterAll(() => {
+  usePipelinePluginRegistry(undefined);
+  resetChapterProfiles();
+});
 
 // ── Fixture helpers ─────────────────────────────────────────────
 
