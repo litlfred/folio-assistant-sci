@@ -251,7 +251,7 @@ Parameterising alone is not enough: it stops the class choosing its own shadow,
 but a consumer can still instantiate at the zero datum. The pair is what closes
 that.
 
-Detected mechanically by **two** criteria in `cat-harness-tools/pipeline/qa-checkers-vacuity.ts`,
+Detected mechanically by **two** criteria in `folio-assistant-sci/pipeline/qa-checkers-vacuity.ts`,
 which partition the defect rather than overlap — a decl the first flags is
 skipped by the second:
 

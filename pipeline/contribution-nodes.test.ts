@@ -11,6 +11,9 @@ import { OwnCodeRefSchema, QaCheckerNodeSchema } from "../../cat-harness/schemas
 import { loadContributionsSync, orderedDependencies } from "../../cat-harness/schemas/kg/harness-config";
 import { SCI_ROOT, sciRegistrySync } from "../scripts/tests/sci-consumer";
 import { COST_AUTOMATED_CHECKERS } from "./qa-checkers-cost";
+import { RENDER_AUTOMATED_CHECKERS } from "./qa-checkers-render";
+import { TRIVIALITY_AUTOMATED_CHECKERS } from "./qa-checkers-triviality";
+import { VACUITY_AUTOMATED_CHECKERS } from "./qa-checkers-vacuity";
 import { PIPELINE_IMPLEMENTATIONS } from "./plugin-slots";
 
 // A folio that depends on sci, and one whose tree stops at core — found
@@ -19,6 +22,14 @@ const withSci = sciRegistrySync();
 const coreRoot = orderedDependencies(SCI_ROOT).find((d) => d.dependency.name === "folio-assistant-core")!.rootPath;
 const withoutSci = loadContributionsSync(coreRoot, new ContributionRegistry());
 
+const CHECKER_TABLES = [
+
+  [COST_AUTOMATED_CHECKERS, "pipeline/qa-checkers-cost.ts"],
+  [RENDER_AUTOMATED_CHECKERS, "pipeline/qa-checkers-render.ts"],
+  [TRIVIALITY_AUTOMATED_CHECKERS, "pipeline/qa-checkers-triviality.ts"],
+  [VACUITY_AUTOMATED_CHECKERS, "pipeline/qa-checkers-vacuity.ts"],
+] as const;
+
 describe("sci's contributions arrive as nodes, through the dependency tree", () => {
   test("every slot in the table is filled, with the table's own implementation", () => {
     for (const [slot, impl] of Object.entries(PIPELINE_IMPLEMENTATIONS)) {
@@ -26,17 +37,22 @@ describe("sci's contributions arrive as nodes, through the dependency tree", () 
     }
   });
 
-  test("every checker in the table is registered, hashed over the file that defines it", () => {
-    for (const [criterion, check] of Object.entries(COST_AUTOMATED_CHECKERS)) {
-      const entry = withSci.qaCheckerEntry(criterion);
-      expect(entry?.check).toBe(check);
-      expect(entry?.sourceFile).toBe("pipeline/qa-checkers-cost.ts");
+  test("every checker in the tables is registered, hashed over the file that defines it", () => {
+    for (const [table, sourceFile] of CHECKER_TABLES) {
+      for (const [criterion, check] of Object.entries(table)) {
+        const entry = withSci.qaCheckerEntry(criterion);
+        expect<unknown>(entry?.check).toBe(check);
+        expect(entry?.sourceFile).toBe(sourceFile);
+        expect(entry?.root).toBe(SCI_ROOT);
+      }
     }
   });
 
   test("a folio whose tree does not include sci gets none of them", () => {
     for (const slot of Object.keys(PIPELINE_IMPLEMENTATIONS)) expect(withoutSci.pipelinePlugin(slot)).toBeUndefined();
-    for (const criterion of Object.keys(COST_AUTOMATED_CHECKERS)) expect(withoutSci.qaCheckerEntry(criterion)).toBeUndefined();
+    for (const [table] of CHECKER_TABLES) {
+      for (const criterion of Object.keys(table)) expect(withoutSci.qaCheckerEntry(criterion)).toBeUndefined();
+    }
   });
 });
 
