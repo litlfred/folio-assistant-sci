@@ -8,6 +8,9 @@
  * for these to read. The rest of that file's tests stay there.
  */
 import { afterAll, beforeAll, describe, expect, test } from "bun:test";
+import { Glob } from "bun";
+import { readFileSync } from "node:fs";
+import { relative, resolve } from "node:path";
 
 import {
   splitDeclarations,
@@ -138,5 +141,36 @@ def AlgElement.sub {G} {k} [Ring k] (f g : AlgElement G k) : AlgElement G k :=
     expect(kept.some((l) => l.includes("abbrev Monomial"))).toBe(true);
     expect(kept.some((l) => l.includes("structure AlgElement"))).toBe(true);
     expect(kept.some((l) => l.includes("AlgElement.sub"))).toBe(false);
+  });
+});
+
+describe("non-canonical declaration patterns in folio-assistant-sci/pipeline", () => {
+  // Moved here with their subjects in `saqd` group 2: the three sci pipeline
+  // modules that still carry a local `theorem|lemma|def` regex (`bqrg`). The
+  // list may only shrink.
+  const sciRoot = resolve(import.meta.dir, "../..");
+  const files = [...new Glob("**/*.ts").scanSync({ cwd: sciRoot, absolute: true })]
+    .filter((f) => !f.includes("/node_modules/") && !f.endsWith(".test.ts"))
+    .sort();
+
+  function patternFiles(): string[] {
+    const LEAN_KEYWORDS = /theorem\|lemma\|def\b/;
+    const hits = new Set<string>();
+    for (const f of files) {
+      const rel = relative(sciRoot, f);
+      for (const line of readFileSync(f, "utf-8").split("\n")) {
+        if (/^\s*(\*|\/\/|#)/.test(line)) continue;
+        if (LEAN_KEYWORDS.test(line)) hits.add(rel);
+      }
+    }
+    return [...hits].sort();
+  }
+
+  test("only the three pre-existing modules carry a local pattern, and the list may only shrink", () => {
+    expect(patternFiles()).toEqual([
+      "pipeline/conjectural-propagation-audit.ts",
+      "pipeline/generate-lean-stubs.ts",
+      "pipeline/proof-narrative-lean-equiv-sweep.ts",
+    ]);
   });
 });
