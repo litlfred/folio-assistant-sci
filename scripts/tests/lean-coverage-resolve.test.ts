@@ -33,3 +33,25 @@ describe("resolveLeanFile follows lean.ref for any package", () => {
     expect(resolveLeanFile(ts, src, leanRoot)).toBe(lib);
   });
 });
+
+describe("the block-status-overlay slot overlays live Lean status (bean saqd)", () => {
+  test("a block with a lean field takes sorryFree and validation from its resolved .lean", async () => {
+    const { overlayBlockStatus } = await import("../../pipeline/lean-status-overlay");
+    // The overlay resolves under <paperDir>/lean; `dir` is the paper here.
+    writeFileSync(ts, `export default theorem({ label: "thm:lagrange", lean: { ref: "demo:Demo.Algebra.Groups.lagrange" } });`);
+    const block = { kind: "theorem", label: "thm:lagrange", lean: { ref: "demo:Demo.Algebra.Groups.lagrange", validation: "not_checked" } };
+    overlayBlockStatus(block as never, ts, dir);
+    expect(block.lean).toMatchObject({ sorryFree: true, validation: "leanok" });
+  });
+
+  test("a stronger recorded verdict is kept, and a block with no lean field is left alone", async () => {
+    const { overlayBlockStatus } = await import("../../pipeline/lean-status-overlay");
+    writeFileSync(ts, `export default theorem({ label: "thm:lagrange", lean: { ref: "demo:Demo.Algebra.Groups.lagrange" } });`);
+    const ci = { kind: "theorem", label: "thm:lagrange", lean: { ref: "demo:Demo.Algebra.Groups.lagrange", validation: "stub" } };
+    overlayBlockStatus(ci as never, ts, dir);
+    expect(ci.lean.validation).toBe("stub");
+    const bare = { kind: "remark", label: "rem:x" };
+    overlayBlockStatus(bare as never, ts, dir);
+    expect(bare).toEqual({ kind: "remark", label: "rem:x" });
+  });
+});
