@@ -1,4 +1,4 @@
-import type { SkillDefinition } from "@litlfred/cat-harness/schemas/conduct/assistant-types.js";
+import type { SkillDefinition } from "@litlfred/cat-harness-tools/schemas/conduct/assistant-types.js";
 
 export const leanGeneration: SkillDefinition = {
   id: "lean-generation",

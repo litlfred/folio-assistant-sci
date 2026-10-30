@@ -8,14 +8,14 @@ import { mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSy
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
-import { instanceDeclarationFilename } from "@litlfred/cat-harness/schemas/kg/cat-harness.js";
+import { instanceDeclarationFilename } from "@litlfred/cat-harness-tools/schemas/kg/cat-harness.js";
 import {
   blockAttestationKey,
   entryIdentity,
   readCriteriaAttestations as readAttestations,
   writeCriteriaAttestations as writeAttestations,
   type CriteriaMap,
-} from "@litlfred/cat-harness/schemas/sdlc/qa-attestations.ts";
+} from "@litlfred/cat-harness-tools/schemas/sdlc/qa-attestations.ts";
 import { blockQaPath } from "@litlfred/cat-harness-tools/pipeline/qa-paths.ts";
 
 import {

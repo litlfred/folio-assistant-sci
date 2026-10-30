@@ -1,5 +1,5 @@
-import { toolFactory } from "../../../cat-harness/schemas/tools/tool-folders.js";
-import { defineTool } from "../../../cat-harness/schemas/tools/tool.js";
+import { toolFactory } from "@litlfred/cat-harness-tools/schemas/tools/tool-folders.js";
+import { defineTool } from "@litlfred/cat-harness-tools/schemas/tools/tool.js";
 
 // Moved here from cat-harness/tools/index.ts (bean j9cs, 2026-10-05): the
 // `lake-cache` kind (kinds/lake-cache.json) says this harness owns the kind

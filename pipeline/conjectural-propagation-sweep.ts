@@ -12,7 +12,7 @@
  */
 import { readdirSync, readFileSync, statSync, writeFileSync, mkdirSync } from "fs";
 import { join, basename, dirname, relative } from "path";
-import { BLOCK_KIND_ALT } from "@litlfred/cat-harness/schemas/types.ts";
+import { BLOCK_KIND_ALT } from "@litlfred/cat-harness-tools/schemas/types.ts";
 import { requirePaper } from "@litlfred/cat-harness-tools/pipeline/repo-root.ts";
 import { paperArg } from "@litlfred/cat-harness-tools/pipeline/cli-args.ts";
 

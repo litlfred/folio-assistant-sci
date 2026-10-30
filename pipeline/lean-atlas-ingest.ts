@@ -62,7 +62,7 @@
  * @module pipeline/lean-atlas-ingest
  */
 
-import { folioDir } from "@litlfred/cat-harness/schemas/kg/cat-harness.js";
+import { folioDir } from "@litlfred/cat-harness-tools/schemas/kg/cat-harness.js";
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from "fs";
 import { join, dirname, extname, resolve, sep } from "path";
 import { hashFile, walkBlocks } from "@litlfred/cat-harness-tools/pipeline/qa-utils.ts";

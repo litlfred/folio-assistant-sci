@@ -11,7 +11,7 @@
  *   bun run folio-assistant-sci/pipeline/generate-lean-stubs.ts <chapter-dir> --dry-run
  */
 
-import { folioDir } from "@litlfred/cat-harness/schemas/kg/cat-harness.js";
+import { folioDir } from "@litlfred/cat-harness-tools/schemas/kg/cat-harness.js";
 import { readFileSync, writeFileSync, existsSync } from "fs";
 import { resolve, dirname, relative, join } from "path";
 import { fileURLToPath } from "url";

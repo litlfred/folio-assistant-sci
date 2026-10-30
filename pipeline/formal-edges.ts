@@ -46,7 +46,7 @@ import { parseLeanRef, refToDecl } from "../../cat-harness-tools/pipeline/conten
 import { walkBlocks } from "../../cat-harness-tools/pipeline/qa-utils";
 import { ingestMode } from "./lean-atlas-ingest";
 import { findContentRepoRoot } from "../../cat-harness-tools/pipeline/repo-root";
-import { folioDir } from "../../cat-harness/schemas/kg/cat-harness.js";
+import { folioDir } from "@litlfred/cat-harness-tools/schemas/kg/cat-harness.js";
 
 /** The placeholder line in the template that the module imports replace. */
 export const IMPORTS_MARKER = "-- FORMAL_EDGES_IMPORTS";

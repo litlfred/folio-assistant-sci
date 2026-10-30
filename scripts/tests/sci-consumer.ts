@@ -24,8 +24,8 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
 import { writeInstanceConfig } from "../../../cat-harness-tools/test/support/instance-fixture";
-import { loadContributions, loadContributionsSync } from "../../../cat-harness/schemas/kg/harness-config";
-import { ContributionRegistry, type FolioContribution } from "../../../cat-harness/schemas/content/contributions";
+import { loadContributions, loadContributionsSync } from "@litlfred/cat-harness-tools/schemas/kg/harness-config";
+import { ContributionRegistry, type FolioContribution } from "@litlfred/cat-harness-tools/schemas/content/contributions";
 import { usePipelinePluginRegistry } from "../../../cat-harness-tools/pipeline/pipeline-plugins";
 import { configureChapterProfiles } from "../../../cat-harness-tools/pipeline/chapter-profile-registry-di";
 

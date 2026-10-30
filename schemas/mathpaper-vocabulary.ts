@@ -25,9 +25,9 @@ import {
   LeanRefSchema,
   labelForKind,
   ProvableBaseSchema,
-} from "@litlfred/cat-harness/schemas/constraints.ts";
-import { resolveFormalRef } from "@litlfred/cat-harness/schemas/formal-ref.ts";
-import type { BlockBase, Computation, LeanRef, ProvableBase } from "@litlfred/cat-harness/schemas/types.ts";
+} from "@litlfred/cat-harness-tools/schemas/constraints.ts";
+import { resolveFormalRef } from "@litlfred/cat-harness-tools/schemas/formal-ref.ts";
+import type { BlockBase, Computation, LeanRef, ProvableBase } from "@litlfred/cat-harness-tools/schemas/types.ts";
 
 // ── Types ─────────────────────────────────────────────────────────
 

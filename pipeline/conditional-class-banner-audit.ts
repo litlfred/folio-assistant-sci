@@ -26,17 +26,17 @@
  * conditional-on-class block missing either component (when run
  * with `--strict`).
  */
-import { folioDir, deferResolution} from "@litlfred/cat-harness/schemas/kg/cat-harness.js";
+import { folioDir, deferResolution} from "@litlfred/cat-harness-tools/schemas/kg/cat-harness.js";
 import { stripLeanComments } from "@litlfred/cat-harness-tools/pipeline/lean-lexer.ts";
 import { readFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
-import { leanPackageByName } from "@litlfred/cat-harness/schemas/lean-packages.ts";
+import { leanPackageByName } from "@litlfred/cat-harness-tools/schemas/lean-packages.ts";
 import { findContentRepoRoot } from "@litlfred/cat-harness-tools/pipeline/repo-root.ts";
 import { requirePaper } from "@litlfred/cat-harness-tools/pipeline/repo-root.ts";
 import { loadBlocksUnder, reportLoadFailures } from "@litlfred/cat-harness-tools/pipeline/block-module.ts";
 import type { BlockLoadFailure } from "@litlfred/cat-harness-tools/pipeline/block-module.ts";
 import { paperArg } from "@litlfred/cat-harness-tools/pipeline/cli-args.ts";
-import { siteDirFor } from "@litlfred/cat-harness/schemas/kg/cat-harness.ts";
+import { siteDirFor } from "@litlfred/cat-harness-tools/schemas/kg/cat-harness.ts";
 // Was rooted at this file's own location, which is the PLATFORM — but every
 // path below is folio content. `findContentRepoRoot()` walks up from cwd;
 // it must not use `import.meta.dir`, which resolves back through a folio's

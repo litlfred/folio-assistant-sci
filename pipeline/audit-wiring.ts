@@ -34,11 +34,11 @@
  * @module pipeline/audit-wiring
  */
 
-import { folioDir, deferResolution} from "@litlfred/cat-harness/schemas/kg/cat-harness.js";
+import { folioDir, deferResolution} from "@litlfred/cat-harness-tools/schemas/kg/cat-harness.js";
 import { readdirSync, readFileSync, existsSync } from "fs";
 import { resolve, join, basename } from "path";
-import { parseBlock } from "@litlfred/cat-harness/schemas/content/vocabulary-modules.ts";
-import type { Block } from "@litlfred/cat-harness/schemas/types.ts";
+import { parseBlock } from "@litlfred/cat-harness-tools/schemas/content/vocabulary-modules.ts";
+import type { Block } from "@litlfred/cat-harness-tools/schemas/types.ts";
 import { requirePaper, findContentRepoRoot } from "@litlfred/cat-harness-tools/pipeline/repo-root.ts";
 import { paperArg } from "@litlfred/cat-harness-tools/pipeline/cli-args.ts";
 
