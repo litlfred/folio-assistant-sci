@@ -70,13 +70,13 @@
  */
 
 import { existsSync, readFileSync } from "fs";
-import type { CheckerResult } from "../../cat-harness/schemas/sdlc/block-qa";
+import type { CheckerResult } from "@litlfred/cat-harness-tools/schemas/sdlc/block-qa.ts";
 import { join, resolve, extname, sep } from "path";
 
 import { parseLeanRef, refToDecl } from "../../cat-harness-tools/pipeline/content-graph";
 import { hashFile } from "../../cat-harness-tools/pipeline/qa-utils";
 import { findContentRepoRoot } from "../../cat-harness-tools/pipeline/repo-root";
-import { siteDirFor } from "../../cat-harness/schemas/kg/cat-harness";
+import { siteDirFor } from "@litlfred/cat-harness-tools/schemas/kg/cat-harness.ts";
 
 /**
  * Relative to the instance root, and composed rather than written out: the
