@@ -77,7 +77,7 @@
  * @module pipeline/lean-triviality-probe
  */
 
-import { folioDir } from "@litlfred/cat-harness/schemas/kg/cat-harness.js";
+import { folioDir } from "@litlfred/cat-harness-tools/schemas/kg/cat-harness.js";
 import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync } from "fs";
 import { join, dirname, resolve } from "path";
 import { execFileSync } from "child_process";
@@ -87,7 +87,7 @@ import { walkBlocks } from "@litlfred/cat-harness-tools/pipeline/qa-utils.ts";
 import { parseLeanRef, refToDecl } from "@litlfred/cat-harness-tools/pipeline/content-graph.ts";
 import { splitDeclarations, stripLeanComments } from "@litlfred/cat-harness-tools/pipeline/lean-lexer.ts";
 import { findContentRepoRoot } from "@litlfred/cat-harness-tools/pipeline/repo-root.ts";
-import { siteDirFor } from "@litlfred/cat-harness/schemas/kg/cat-harness.ts";
+import { siteDirFor } from "@litlfred/cat-harness-tools/schemas/kg/cat-harness.ts";
 
 /** Cheapest-first. Position in this list becomes `steps`. */
 export const TACTIC_LADDER = ["trivial", "rfl", "simp", "decide", "omega", "aesop"];

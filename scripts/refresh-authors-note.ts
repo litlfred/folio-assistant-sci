@@ -17,7 +17,7 @@
  *   bun run folio-assistant-sci/scripts/refresh-authors-note.ts --check     # exit 1 if stale
  */
 
-import { folioDir } from "@litlfred/cat-harness/schemas/kg/cat-harness.js";
+import { folioDir } from "@litlfred/cat-harness-tools/schemas/kg/cat-harness.js";
 import { readFileSync, writeFileSync } from "fs";
 import { join } from "path";
 import { computeStats } from "../../cat-harness-tools/scripts/lean-coverage";

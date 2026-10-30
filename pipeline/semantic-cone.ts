@@ -60,7 +60,7 @@
  * @module pipeline/semantic-cone
  */
 
-import { folioDir } from "@litlfred/cat-harness/schemas/kg/cat-harness.js";
+import { folioDir } from "@litlfred/cat-harness-tools/schemas/kg/cat-harness.js";
 import { join } from "path";
 import { buildContentGraph, isElaborated, type ContentGraph, type FormalSource } from "@litlfred/cat-harness-tools/pipeline/content-graph.ts";
 import { findContentRepoRoot } from "@litlfred/cat-harness-tools/pipeline/repo-root.ts";

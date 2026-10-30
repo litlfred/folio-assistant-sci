@@ -16,7 +16,7 @@
  * @module pipeline/export-json
  */
 
-import { folioDirDeferred } from "@litlfred/cat-harness/schemas/kg/cat-harness.js";
+import { folioDirDeferred } from "@litlfred/cat-harness-tools/schemas/kg/cat-harness.js";
 import { readFileSync, writeFileSync, existsSync, mkdirSync, statSync } from "fs";
 import { join } from "path";
 import { createHash } from "crypto";
@@ -27,7 +27,7 @@ import type {
   Block,
   RenderedAsset,
   LeanRef,
-} from "@litlfred/cat-harness/schemas/types.ts";
+} from "@litlfred/cat-harness-tools/schemas/types.ts";
 import type { Data as CSLData } from "csl-json";
 import {
   references,
@@ -37,7 +37,7 @@ import {
 import { findContentRepoRoot, findPapers, soleFolioPaper } from "@litlfred/cat-harness-tools/pipeline/repo-root.ts";
 import { mergeCitations } from "@litlfred/cat-harness-tools/pipeline/citations.ts";
 import { isWitnessed } from "@litlfred/cat-harness-tools/pipeline/witness-address.ts";
-import { leanPackageByName, parseLeanRef } from "@litlfred/cat-harness/schemas/lean-packages.ts";
+import { leanPackageByName, parseLeanRef } from "@litlfred/cat-harness-tools/schemas/lean-packages.ts";
 
 // The FOLIO's root, not the platform's. `resolve(HARNESS_ROOT)`
 // lands in folio-assistant, which holds no papers — and the symlinked

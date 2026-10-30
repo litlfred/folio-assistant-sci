@@ -1,6 +1,6 @@
-import { toolFactory } from "../../../cat-harness/schemas/tools/tool-folders.js";
-import { defineTool } from "../../../cat-harness/schemas/tools/tool.js";
-import { bundled, inProcess } from "../../../cat-harness/tools/lib.js";
+import { toolFactory } from "@litlfred/cat-harness-tools/schemas/tools/tool-folders.js";
+import { defineTool } from "@litlfred/cat-harness-tools/schemas/tools/tool.js";
+import { bundled, inProcess } from "@litlfred/cat-harness-tools/schemas/tools/tool-helpers.js";
 
 export default toolFactory((t) =>
   defineTool({

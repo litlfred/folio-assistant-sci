@@ -39,8 +39,8 @@
  */
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
-import type { ToolDefinition } from "../../cat-harness/schemas/tools/tool.js";
-import { toolsFromFolders } from "../../cat-harness/schemas/tools/tool-folders.js";
+import type { ToolDefinition } from "@litlfred/cat-harness-tools/schemas/tools/tool.js";
+import { toolsFromFolders } from "@litlfred/cat-harness-tools/schemas/tools/tool-folders.js";
 
 export function tools(baseUrl?: string): ToolDefinition[] {
   return toolsFromFolders(dirname(fileURLToPath(import.meta.url)), baseUrl ?? "");

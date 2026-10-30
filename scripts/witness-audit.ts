@@ -23,7 +23,7 @@ import { readFileSync, existsSync } from "fs";
 import { resolve, basename, dirname } from "path";
 import { createHash } from "crypto";
 import { execSync } from "child_process";
-import type { ComputationWitness } from "@litlfred/cat-harness/schemas/types.ts";
+import type { ComputationWitness } from "@litlfred/cat-harness-tools/schemas/types.ts";
 import { findContentRepoRoot } from "@litlfred/cat-harness-tools/pipeline/repo-root.ts";
 
 /**

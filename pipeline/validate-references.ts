@@ -19,7 +19,7 @@
  * @module pipeline/validate-references
  */
 
-import { folioDir, folioDirDeferred, deferResolution} from "@litlfred/cat-harness/schemas/kg/cat-harness.js";
+import { folioDir, folioDirDeferred, deferResolution} from "@litlfred/cat-harness-tools/schemas/kg/cat-harness.js";
 import { readFileSync, existsSync, readdirSync } from "fs";
 import { join } from "path";
 import { references, referenceMap, CSLEntrySchema } from "@litlfred/cat-harness-tools/pipeline/references-registry-di.ts";
