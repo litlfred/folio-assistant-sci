@@ -180,13 +180,13 @@ objects, not across unrelated blocks.
 ## Common anti-patterns — use the strategy database
 
 The table below is now **data**, not prose:
-`cat-harness-tools/pipeline/refactor-strategies/*.json`, typed by
+`folio-assistant-sci/pipeline/refactor-strategies/*.json`, typed by
 `schemas/refactor-strategy.ts`. Query it instead of reading the table,
 because the data knows two things the table cannot:
 
 ```sh
 # What may I safely apply to this corpus?
-bun run cat-harness-tools/pipeline/refactor-strategy.ts --lean 4.24.0 --applicable
+bun run folio-assistant-sci/pipeline/refactor-strategy.ts --lean 4.24.0 --applicable
 ```
 
 1. **Version gating.** A rewrite sound on one Mathlib release can
@@ -211,7 +211,7 @@ rewrites to normal form).
 
 Adding a strategy: append to the JSON with an id, objectives, a Lean
 range, a worked example, and — if `proposed` — the caveat that makes
-it proposed. `scripts/tests/refactor-strategy.test.ts` enforces those
+it proposed. `pipeline/refactor-strategy.test.ts` enforces those
 invariants. A content repo may shadow a shipped strategy by declaring
 the same id in its own `refactor-strategies/`.
 

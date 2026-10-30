@@ -44,7 +44,7 @@ import { dirname, join, relative, resolve } from "path";
 import { spawnSync } from "child_process";
 import { parseLeanRef, refToDecl } from "../../cat-harness-tools/pipeline/content-graph";
 import { walkBlocks } from "../../cat-harness-tools/pipeline/qa-utils";
-import { ingestMode } from "../../cat-harness-tools/pipeline/lean-atlas-ingest";
+import { ingestMode } from "./lean-atlas-ingest";
 import { findContentRepoRoot } from "../../cat-harness-tools/pipeline/repo-root";
 import { folioDir } from "../../cat-harness/schemas/kg/cat-harness.js";
 

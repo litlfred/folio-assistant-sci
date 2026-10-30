@@ -44,11 +44,11 @@ If it reports `cache ABSENT — formal graph unavailable`, populate it:
 cat-harness-tools/scripts/install-lean-atlas.sh          # provisions the Lake require
 lake exe atlas graph-data --output /tmp/atlas.json --pretty
 # → adapt to folio's JSONL, then:
-bun run cat-harness-tools/pipeline/lean-atlas-ingest.ts --ingest /tmp/deps.jsonl
+bun run folio-assistant-sci/pipeline/lean-atlas-ingest.ts --ingest /tmp/deps.jsonl
 
 # Fallback: no Lean toolchain needed
-bun run cat-harness-tools/pipeline/lean-atlas-ingest.ts --scan content/<paper>
-bun run cat-harness-tools/pipeline/lean-atlas-ingest.ts --stale
+bun run folio-assistant-sci/pipeline/lean-atlas-ingest.ts --scan content/<paper>
+bun run folio-assistant-sci/pipeline/lean-atlas-ingest.ts --stale
 ```
 
 ## Know which source you have — it changes what you may claim

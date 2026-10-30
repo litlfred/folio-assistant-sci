@@ -34,12 +34,12 @@ current (not stale).
 ### Deep Lean audit (chapter-by-chapter)
 
 ```bash
-bun run cat-harness-tools/scripts/lean-audit.ts            # console report
-bun run cat-harness-tools/scripts/lean-audit.ts --json     # JSON for programmatic use
-bun run cat-harness-tools/scripts/lean-audit.ts --chapter ch5  # filter to one chapter
-bun run cat-harness-tools/scripts/lean-audit.ts --strict   # exit 1 on uncited sorry
-bun run cat-harness-tools/scripts/lean-audit.ts --strict --check-axioms  # also fail on axioms
-bun run cat-harness-tools/scripts/lean-audit.ts --help     # full CLI reference
+bun run folio-assistant-sci/scripts/lean-audit.ts            # console report
+bun run folio-assistant-sci/scripts/lean-audit.ts --json     # JSON for programmatic use
+bun run folio-assistant-sci/scripts/lean-audit.ts --chapter ch5  # filter to one chapter
+bun run folio-assistant-sci/scripts/lean-audit.ts --strict   # exit 1 on uncited sorry
+bun run folio-assistant-sci/scripts/lean-audit.ts --strict --check-axioms  # also fail on axioms
+bun run folio-assistant-sci/scripts/lean-audit.ts --help     # full CLI reference
 ```
 
 This script produces:
@@ -52,10 +52,10 @@ This script produces:
 ### Unified witness staleness audit (Lean + Python)
 
 ```bash
-bun run cat-harness-tools/scripts/witness-audit.ts             # full audit
-bun run cat-harness-tools/scripts/witness-audit.ts --lean-only # only Lean witnesses
-bun run cat-harness-tools/scripts/witness-audit.ts --py-only   # only Python witnesses
-bun run cat-harness-tools/scripts/witness-audit.ts --json      # JSON output
+bun run folio-assistant-sci/scripts/witness-audit.ts             # full audit
+bun run folio-assistant-sci/scripts/witness-audit.ts --lean-only # only Lean witnesses
+bun run folio-assistant-sci/scripts/witness-audit.ts --py-only   # only Python witnesses
+bun run folio-assistant-sci/scripts/witness-audit.ts --json      # JSON output
 ```
 
 ### Lean witness management
@@ -254,7 +254,7 @@ After a successful build, stamp witnesses and check for staleness:
 bun run cat-harness-tools/scripts/lean-witness.ts stamp <lean-file>
 
 # Check if witnesses are current
-bun run cat-harness-tools/scripts/witness-audit.ts
+bun run folio-assistant-sci/scripts/witness-audit.ts
 ```
 
 **Staleness criteria for Lean witnesses:**

@@ -82,11 +82,10 @@ if [ "$TEX_ONLY" = false ]; then
   fi
 
   echo "    Building LaTeX from content objects..."
-  npx tsx ../cat-harness-tools/scripts/docker-latex-build/run-build.ts \
+  npx tsx ../folio-assistant-sci/scripts/docker-latex-build/run-build.ts \
     "$PAPER/$PAPER.ts" \
     --out-dir ../chapters/ \
-    --generate-main --main-out ../main.tex \
-    --preamble ../latex/preamble.tex
+    --generate-main --main-out ../main.tex
 
   echo "    Exporting BibTeX..."
   npx tsx "$REPO_ROOT/cat-harness-tools/pipeline/export-bibtex.ts"
