@@ -30,6 +30,7 @@
  * @module folio-assistant-sci/adapters/paper
  */
 
+import { join } from "node:path";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
 import { DocumentContentAdapter } from "../../../folio-assistant-core/adapters/document/index.js";
@@ -40,7 +41,18 @@ import { registerPaperQaTools } from "../../../folio-assistant-core/adapters/doc
 import { registerPaperBuildTools } from "../../../folio-assistant-core/adapters/document/tools/validate.js";
 import { registerPaperTransformTools } from "../../../folio-assistant-core/adapters/document/tools/transform.js";
 
+/**
+ * The generic LaTeX print preamble template for a paper folio
+ * (`adapters/paper/latex/paper-preamble.tex`), supplied by
+ * {@link PaperContentAdapter} so `generate-main-tex` and
+ * `build.ts --generate-main` resolve it through adapter discovery without a
+ * lower layer naming this instance's path (bean `4dj5`, #2117 P2).
+ */
+export const PAPER_PREAMBLE_PATH: string = join(import.meta.dir, "latex", "paper-preamble.tex");
+
 export class PaperContentAdapter extends DocumentContentAdapter {
+  static readonly preamblePath: string = PAPER_PREAMBLE_PATH;
+  readonly preamblePath: string = PAPER_PREAMBLE_PATH;
   readonly type: string = "paper";
   readonly name: string = "Paper Assistant";
 
