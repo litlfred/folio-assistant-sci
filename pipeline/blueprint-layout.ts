@@ -43,7 +43,7 @@
 
 import { mkdirSync, writeFileSync } from "fs";
 import { dirname, join, resolve } from "path";
-import type { Paper } from "@litlfred/cat-harness-tools/schemas/types";
+import type { Paper } from "@litlfred/cat-harness-tools/schemas/types.js";
 import { buildContentGraph } from "../../cat-harness-tools/pipeline/content-graph";
 import { stripAnnotations } from "../../cat-harness-tools/pipeline/generate-block-tex";
 import { ENV_NAMES } from "../../cat-harness-tools/pipeline/render-latex";
