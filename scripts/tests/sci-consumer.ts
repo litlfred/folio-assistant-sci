@@ -26,10 +26,7 @@ import { join, resolve } from "node:path";
 import { writeInstanceConfig } from "../../../cat-harness-tools/test/support/instance-fixture";
 import { loadContributions, loadContributionsSync } from "../../../cat-harness/schemas/harness-config";
 import { ContributionRegistry, type FolioContribution } from "../../../cat-harness/schemas/contributions";
-import {
-  registerDefaultChapterProfiles,
-  usePipelinePluginRegistry,
-} from "../../../cat-harness-tools/pipeline/pipeline-plugins";
+import { usePipelinePluginRegistry } from "../../../cat-harness-tools/pipeline/pipeline-plugins";
 
 /** This instance's root: `folio-assistant-sci/`. */
 export const SCI_ROOT = resolve(import.meta.dir, "../..");
@@ -65,13 +62,7 @@ export function sciRegistrySync(): ContributionRegistry {
  * cat-harness code whose behaviour sci fills (the Lean lexer, above all).
  * Left unset, the slots load lazily from the RUNNING folio, which standing
  * alone is no folio that depends on sci.
- *
- * The chapter-profile defaults are registered again too: that slot is
- * OPTIONAL and runs at module load of `qa-checkers-q-usage.ts`, before any
- * hook, so standing alone it found nothing to register and every
- * categorical-chapter check read `n/a`.
- */
+ * */
 export function useSciPipelinePlugins(): void {
   usePipelinePluginRegistry(sciRegistrySync());
-  registerDefaultChapterProfiles();
 }

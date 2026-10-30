@@ -15,13 +15,12 @@
  */
 import type { PipelinePlugins } from "../../cat-harness-tools/pipeline/pipeline-plugins.js";
 import { declarationStarts, stripLeanComments } from "../../cat-harness-tools/pipeline/lean-lexer.js";
-import { registerDefaultChapterProfiles } from "../../cat-harness-tools/pipeline/_folio-chapter-profiles.qou.js";
 import { runPreflight } from "../../cat-harness-tools/pipeline/latex-preflight.js";
 import { computeStats, leanFileStatus, resolveLeanFile } from "../../cat-harness-tools/scripts/lean-coverage.js";
 
-export const PIPELINE_IMPLEMENTATIONS: PipelinePlugins = {
+/** Only the slots this instance fills; the rest are filled elsewhere or left empty. */
+export const PIPELINE_IMPLEMENTATIONS: Pick<PipelinePlugins, "lean-lexer" | "latex-preflight" | "lean-coverage"> = {
   "lean-lexer": { stripLeanComments, declarationStarts },
-  "chapter-profile-defaults": { registerDefaults: registerDefaultChapterProfiles },
   "latex-preflight": { runPreflight },
   "lean-coverage": { resolveLeanFile, leanFileStatus, computeStats },
 };
