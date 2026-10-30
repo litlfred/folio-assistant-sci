@@ -1,4 +1,4 @@
-import type { SkillDefinition } from "../../../../cat-harness/skills/framework/types.js";
+import type { SkillDefinition } from "@litlfred/cat-harness/schemas/conduct/assistant-types.js";
 
 export const proofSimplifier: SkillDefinition = {
   id: "proof-simplifier",
