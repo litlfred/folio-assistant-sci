@@ -7,7 +7,7 @@ import { describe, expect, test } from "bun:test";
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { readVocabulary } from "@litlfred/cat-harness/schemas/vocabulary-modules.ts";
+import { readVocabulary } from "@litlfred/cat-harness/schemas/content/vocabulary-modules.ts";
 import * as mathpaper from "./mathpaper-vocabulary.ts";
 
 const ROOT = join(import.meta.dir, "..");

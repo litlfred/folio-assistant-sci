@@ -62,7 +62,7 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { basename, join, relative, resolve } from "node:path";
 
-import { instanceDirectoryForGraph } from "../../cat-harness/schemas/cat-harness.ts";
+import { instanceDirectoryForGraph } from "../../cat-harness/schemas/kg/cat-harness.ts";
 
 export const REFERENCE_SCHEMA_TAG = "folio-reference/v1";
 export const INSTANCE_ROOT = resolve(import.meta.dir, "..");

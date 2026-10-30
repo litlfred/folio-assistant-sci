@@ -21,7 +21,7 @@
 import { join } from "node:path";
 import { z } from "zod";
 import { LeanRefSchema, labelForKind } from "@litlfred/cat-harness/schemas/constraints.ts";
-import { nodeKind } from "../../cat-harness/schemas/node-kind.ts";
+import { nodeKind } from "../../cat-harness/schemas/kg/node-kind.ts";
 import {
   type DecisionTable,
   evaluate,

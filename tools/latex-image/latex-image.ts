@@ -1,5 +1,5 @@
-import { toolFactory } from "../../../cat-harness/schemas/tool-folders.js";
-import { defineTool } from "../../../cat-harness/schemas/tool.js";
+import { toolFactory } from "../../../cat-harness/schemas/tools/tool-folders.js";
+import { defineTool } from "../../../cat-harness/schemas/tools/tool.js";
 
 // The LaTeX image is part of THIS Tool (bean `ar1s`, phase 2): the
 // Dockerfile sits beside it under `scripts/docker-latex-build/`, and

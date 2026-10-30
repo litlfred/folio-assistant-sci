@@ -10,8 +10,8 @@
  *   bun run folio-assistant-sci/pipeline/generate-index.ts [paper-name]
  */
 
-import { BLOCK_KIND_NODES } from "@litlfred/cat-harness/schemas/block-kinds.js";
-import { folioDirDeferred } from "@litlfred/cat-harness/schemas/cat-harness.js";
+import { BLOCK_KIND_NODES } from "@litlfred/cat-harness/schemas/content/block-kinds.js";
+import { folioDirDeferred } from "@litlfred/cat-harness/schemas/kg/cat-harness.js";
 import { writeFileSync } from "fs";
 import { join} from "path";
 import { findContentRepoRoot } from "@litlfred/cat-harness-tools/pipeline/repo-root.ts";

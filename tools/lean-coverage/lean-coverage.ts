@@ -1,5 +1,5 @@
-import { toolFactory } from "../../../cat-harness/schemas/tool-folders.js";
-import { defineTool } from "../../../cat-harness/schemas/tool.js";
+import { toolFactory } from "../../../cat-harness/schemas/tools/tool-folders.js";
+import { defineTool } from "../../../cat-harness/schemas/tools/tool.js";
 
 // ── The Lean audit half, and the one skill still without a mechanism ──
 //

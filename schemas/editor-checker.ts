@@ -12,7 +12,7 @@
  */
 
 import { z } from "zod";
-import { nodeKind } from "../../cat-harness/schemas/node-kind.ts";
+import { nodeKind } from "../../cat-harness/schemas/kg/node-kind.ts";
 
 export const EDITOR_CHECKER_NODE_SCHEMA = "folio-editor-checker/v1" as const;
 

@@ -28,8 +28,8 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 
-import { directoriesForGraph } from "../../cat-harness/schemas/cat-harness.ts";
-import { instanceRootsIn, repoRootFor } from "../../cat-harness/schemas/instance-roots.ts";
+import { directoriesForGraph } from "../../cat-harness/schemas/kg/cat-harness.ts";
+import { instanceRootsIn, repoRootFor } from "../../cat-harness/schemas/kg/instance-roots.ts";
 import { EditorCheckerNodeSchema, codeRefs } from "../schemas/editor-checker.ts";
 
 /** Does `source` export `name` — a declaration, or a name in an `export { … }` list? */

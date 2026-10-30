@@ -1,5 +1,5 @@
-import { toolFactory } from "../../../cat-harness/schemas/tool-folders.js";
-import { defineTool } from "../../../cat-harness/schemas/tool.js";
+import { toolFactory } from "../../../cat-harness/schemas/tools/tool-folders.js";
+import { defineTool } from "../../../cat-harness/schemas/tools/tool.js";
 
 // ── The Lean family, which is a FAMILY and not one command ────────────
 //

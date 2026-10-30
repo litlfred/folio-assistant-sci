@@ -30,7 +30,7 @@
  * @module pipeline/audit-tex-source
  */
 
-import { folioDirDeferred } from "@litlfred/cat-harness/schemas/cat-harness.js";
+import { folioDirDeferred } from "@litlfred/cat-harness/schemas/kg/cat-harness.js";
 import { FOLIO_PAGE } from "@litlfred/cat-harness/folio-render/file-list.js";
 import { readFileSync, readdirSync, statSync, existsSync, writeFileSync } from "fs";
 import { resolve, join, relative, basename } from "path";
