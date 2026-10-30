@@ -10,17 +10,17 @@
  * @module folio-assistant-sci/pipeline/qa-checkers-uses
  */
 
-import { folioDir } from "@litlfred/cat-harness/schemas/kg/cat-harness.js";
+import { folioDir } from "../../cat-harness-tools/schemas/kg/cat-harness.js";
 import { existsSync, readFileSync } from "fs";
-import type { CheckerResult } from "@litlfred/cat-harness/schemas/sdlc/block-qa.ts";
+import type { CheckerResult } from "../../cat-harness-tools/schemas/sdlc/block-qa.ts";
 
 import {
   buildContentGraph,
   isStatementKind,
   refToDecl,
   type ContentGraph,
-} from "@litlfred/cat-harness-tools/pipeline/content-graph.ts";
-import { findContentRepoRoot } from "@litlfred/cat-harness-tools/pipeline/repo-root.ts";
+} from "../../cat-harness-tools/pipeline/content-graph.ts";
+import { findContentRepoRoot } from "../../cat-harness-tools/pipeline/repo-root.ts";
 
 // ── Shared graph (built once per process) ───────────────────────
 //

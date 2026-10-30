@@ -42,13 +42,13 @@
  *   - publish.yml (per-build coverage badge)
  */
 
-import { folioDir } from "@litlfred/cat-harness/schemas/kg/cat-harness.js";
+import { folioDir } from "@litlfred/cat-harness-tools/schemas/kg/cat-harness.js";
 import { stripLeanComments } from "@litlfred/cat-harness-tools/pipeline/lean-lexer.js";
 import { refToDecl } from "@litlfred/cat-harness-tools/pipeline/content-graph.js";
 import { readdirSync, readFileSync, existsSync, writeFileSync } from "fs";
 import { join, resolve, relative, dirname, basename } from "path";
 import { findContentRepoRoot, requirePaper } from "@litlfred/cat-harness-tools/pipeline/repo-root.ts";
-import { inputSiteReached } from "@litlfred/cat-harness/schemas/sdlc/input-trace.ts";
+import { inputSiteReached } from "@litlfred/cat-harness-tools/schemas/sdlc/input-trace.ts";
 
 // Was `import.meta.dir`-relative, i.e. the PLATFORM — but every path below is
 // folio content (`content/**`, `computations/**`), and this is used as the cwd

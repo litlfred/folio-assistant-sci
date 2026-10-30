@@ -16,14 +16,14 @@
  * @module folio-assistant-sci/pipeline/qa-checkers-extended
  */
 
-import { siteDirFor } from "@litlfred/cat-harness/schemas/kg/cat-harness.js";
-import { stripLeanComments } from "@litlfred/cat-harness-tools/pipeline/lean-lexer.js";
+import { siteDirFor } from "../../cat-harness-tools/schemas/kg/cat-harness.js";
+import { stripLeanComments } from "../../cat-harness-tools/pipeline/lean-lexer.js";
 import { existsSync, readFileSync } from "fs";
-import type { CheckerPaths, CheckerHit, CheckerResult } from "@litlfred/cat-harness/schemas/sdlc/block-qa.ts";
+import type { CheckerPaths, CheckerHit, CheckerResult } from "../../cat-harness-tools/schemas/sdlc/block-qa.ts";
 import { resolve, join, relative } from "path";
-import { hashFile } from "@litlfred/cat-harness-tools/pipeline/qa-utils.ts";
-import { findContentRepoRoot } from "@litlfred/cat-harness-tools/pipeline/repo-root.ts";
-import { parseStringField, stripArrayField } from "@litlfred/cat-harness-tools/pipeline/uses-field.ts";
+import { hashFile } from "../../cat-harness-tools/pipeline/qa-utils.ts";
+import { findContentRepoRoot } from "../../cat-harness-tools/pipeline/repo-root.ts";
+import { parseStringField, stripArrayField } from "../../cat-harness-tools/pipeline/uses-field.ts";
 
 const REPO_ROOT = findContentRepoRoot();
 const COMPUTATIONS_DIR = join(REPO_ROOT, "computations");

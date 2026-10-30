@@ -18,7 +18,7 @@
  * @module pipeline/validate-tex
  */
 
-import { folioDirDeferred } from "@litlfred/cat-harness/schemas/kg/cat-harness.js";
+import { folioDirDeferred } from "@litlfred/cat-harness-tools/schemas/kg/cat-harness.js";
 import { readFileSync, existsSync, writeFileSync } from "fs";
 import { join } from "path";
 import { Glob } from "bun";

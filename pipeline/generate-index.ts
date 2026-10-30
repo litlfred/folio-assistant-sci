@@ -10,13 +10,13 @@
  *   bun run folio-assistant-sci/pipeline/generate-index.ts [paper-name]
  */
 
-import { BLOCK_KIND_NODES } from "@litlfred/cat-harness/schemas/content/block-kinds.js";
-import { folioDirDeferred } from "@litlfred/cat-harness/schemas/kg/cat-harness.js";
+import { BLOCK_KIND_NODES } from "@litlfred/cat-harness-tools/schemas/content/block-kinds.js";
+import { folioDirDeferred } from "@litlfred/cat-harness-tools/schemas/kg/cat-harness.js";
 import { writeFileSync } from "fs";
 import { join} from "path";
 import { findContentRepoRoot } from "@litlfred/cat-harness-tools/pipeline/repo-root.ts";
 import { requirePaper } from "@litlfred/cat-harness-tools/pipeline/repo-root.ts";
-import type { Section, SectionRef } from "@litlfred/cat-harness/schemas/types.ts";
+import type { Section, SectionRef } from "@litlfred/cat-harness-tools/schemas/types.ts";
 import { paperArg } from "@litlfred/cat-harness-tools/pipeline/cli-args.ts";
 
 // Was rooted at this file's own location, which is the PLATFORM — but every

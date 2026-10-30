@@ -68,7 +68,7 @@
  *
  * @module pipeline/language-trap-audit
  */
-import { folioDir } from "@litlfred/cat-harness/schemas/kg/cat-harness.js";
+import { folioDir } from "@litlfred/cat-harness-tools/schemas/kg/cat-harness.js";
 import { createHash } from "node:crypto";
 import {
   existsSync,
@@ -81,7 +81,7 @@ import {
 import { execFileSync } from "node:child_process";
 import { join, relative, resolve, dirname, basename } from "node:path";
 import { blockQaPath, existingBlockQaPath } from "@litlfred/cat-harness-tools/pipeline/qa-paths.ts";
-import { blockAttestationKey, composeCriteria, finalizeCriteria, refusalLine, resolvePrior } from "@litlfred/cat-harness/schemas/sdlc/qa-attestations.ts";
+import { blockAttestationKey, composeCriteria, finalizeCriteria, refusalLine, resolvePrior } from "@litlfred/cat-harness-tools/schemas/sdlc/qa-attestations.ts";
 import { findContentRepoRoot } from "@litlfred/cat-harness-tools/pipeline/repo-root.ts";
 import { loadPriorBlockReport, priorRefusalLine } from "@litlfred/cat-harness-tools/pipeline/qa-utils.ts";
 import { PRIOR_FROM_FLAG, priorFromOrExit } from "@litlfred/cat-harness-tools/scripts/qa-results.ts";

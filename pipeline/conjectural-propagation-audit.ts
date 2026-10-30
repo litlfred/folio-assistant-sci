@@ -19,16 +19,16 @@
  * Definitions are exempt — they name constructions, not logical
  * claims.
  */
-import { folioDir, deferResolution} from "@litlfred/cat-harness/schemas/kg/cat-harness.js";
+import { folioDir, deferResolution} from "@litlfred/cat-harness-tools/schemas/kg/cat-harness.js";
 import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
-import { leanPackageByName } from "@litlfred/cat-harness/schemas/lean-packages.ts";
+import { leanPackageByName } from "@litlfred/cat-harness-tools/schemas/lean-packages.ts";
 import { findContentRepoRoot } from "@litlfred/cat-harness-tools/pipeline/repo-root.ts";
 import { requirePaper } from "@litlfred/cat-harness-tools/pipeline/repo-root.ts";
 import { loadBlocksUnder, reportLoadFailures } from "@litlfred/cat-harness-tools/pipeline/block-module.ts";
 import type { BlockLoadFailure } from "@litlfred/cat-harness-tools/pipeline/block-module.ts";
 import { paperArg } from "@litlfred/cat-harness-tools/pipeline/cli-args.ts";
-import { siteDirFor } from "@litlfred/cat-harness/schemas/kg/cat-harness.ts";
+import { siteDirFor } from "@litlfred/cat-harness-tools/schemas/kg/cat-harness.ts";
 
 /** Blocks that would not import. Surfaced, never silently dropped. */
 const LOAD_FAILURES: BlockLoadFailure[] = [];

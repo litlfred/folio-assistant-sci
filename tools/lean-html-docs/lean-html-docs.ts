@@ -1,5 +1,5 @@
-import { toolFactory } from "../../../cat-harness/schemas/tools/tool-folders.js";
-import { defineTool } from "../../../cat-harness/schemas/tools/tool.js";
+import { toolFactory } from "@litlfred/cat-harness-tools/schemas/tools/tool-folders.js";
+import { defineTool } from "@litlfred/cat-harness-tools/schemas/tools/tool.js";
 
 // The `lean` directory's visualiser (owner, 2026-10-10: "there should be a
 // lean/ visualizer which is then the lean html render (but wrapped w/

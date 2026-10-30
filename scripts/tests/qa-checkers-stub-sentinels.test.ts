@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import type { CheckerResult } from "@litlfred/cat-harness/schemas/sdlc/block-qa.ts";
+import type { CheckerResult } from "../../../cat-harness-tools/schemas/sdlc/block-qa.ts";
 import {
   checkProofNoAxiomGrowth,
   checkProofBuildGreen,

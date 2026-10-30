@@ -6,7 +6,7 @@ import {
   checkLeanRefOwnsDecl,
   resetUsesGraphCache,
 } from "../../pipeline/qa-checkers-uses";
-import { buildContentGraph } from "@litlfred/cat-harness-tools/pipeline/content-graph.ts";
+import { buildContentGraph } from "../../../cat-harness-tools/pipeline/content-graph.ts";
 
 interface Blk {
   slug: string;
