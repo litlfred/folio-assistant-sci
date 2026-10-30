@@ -23,7 +23,7 @@ import type { CheckerPaths, CheckerHit, CheckerResult } from "../../cat-harness-
 import { resolve, join, relative } from "path";
 import { hashFile } from "../../cat-harness-tools/pipeline/qa-utils.ts";
 import { findContentRepoRoot } from "../../cat-harness-tools/pipeline/repo-root.ts";
-import { parseStringField, stripArrayField } from "../../cat-harness-tools/pipeline/uses-field.ts";
+import { stripArrayField } from "../../cat-harness-tools/pipeline/uses-field.ts";
 
 const REPO_ROOT = findContentRepoRoot();
 const COMPUTATIONS_DIR = join(REPO_ROOT, "computations");
