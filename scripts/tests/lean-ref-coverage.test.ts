@@ -20,9 +20,9 @@ import {
   resolveCanonicalLean,
   listPackageLeanFiles,
 } from "../../../cat-harness-tools/pipeline/qa-utils.ts";
-import { scanOrphanLeanFiles } from "../../../cat-harness-tools/pipeline/q-usage-audit.ts";
+import { scanOrphanLeanFiles } from "../../pipeline/q-usage-audit.ts";
 import { checkWallSide } from "../../../cat-harness-tools/pipeline/qa-checkers-voice.ts";
-import { checkQUsageArchimedeanInCategoricalChapter } from "../../../cat-harness-tools/pipeline/qa-checkers-q-usage.ts";
+import { checkQUsageArchimedeanInCategoricalChapter } from "../../pipeline/qa-checkers-q-usage.ts";
 // From `lean-formal-ref`, not `lean-packages`: importing it installs the Lean
 // formalism layer into core's `formal-ref` injection point, and this suite
 // exercises `resolveCanonicalLean` / `listPackageLeanFiles`, which are now
