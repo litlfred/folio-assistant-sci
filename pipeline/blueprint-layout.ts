@@ -48,7 +48,7 @@ import { buildContentGraph } from "../../cat-harness-tools/pipeline/content-grap
 import { stripAnnotations } from "../../cat-harness-tools/pipeline/generate-block-tex";
 import { ENV_NAMES } from "../../cat-harness-tools/pipeline/render-latex";
 import { findContentRepoRoot } from "../../cat-harness-tools/pipeline/repo-root";
-import { folioDir } from "../../cat-harness/schemas/cat-harness.js";
+import { folioDir } from "../../cat-harness/schemas/kg/cat-harness.js";
 import { describeExport, exportBlueprint, formalView, type ExportResult, type FormalView } from "./blueprint-export";
 
 export interface LayoutInput {

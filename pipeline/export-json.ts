@@ -16,7 +16,7 @@
  * @module pipeline/export-json
  */
 
-import { folioDirDeferred } from "@litlfred/cat-harness/schemas/cat-harness.js";
+import { folioDirDeferred } from "@litlfred/cat-harness/schemas/kg/cat-harness.js";
 import { readFileSync, writeFileSync, existsSync, mkdirSync, statSync } from "fs";
 import { join } from "path";
 import { createHash } from "crypto";

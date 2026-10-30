@@ -48,7 +48,7 @@ import {
   type ContentGraph,
 } from "../../cat-harness-tools/pipeline/content-graph";
 import { findContentRepoRoot } from "../../cat-harness-tools/pipeline/repo-root";
-import { folioDir } from "../../cat-harness/schemas/cat-harness.js";
+import { folioDir } from "../../cat-harness/schemas/kg/cat-harness.js";
 
 /** Lean status buckets the render writes into `\blockannot[…]`. */
 export type LeanBucket = "stubbed" | "drafted" | "compiled";

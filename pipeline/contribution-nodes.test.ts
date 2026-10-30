@@ -6,9 +6,9 @@
  */
 import { describe, expect, test } from "bun:test";
 
-import { ContributionRegistry } from "../../cat-harness/schemas/contributions";
-import { OwnCodeRefSchema, QaCheckerNodeSchema } from "../../cat-harness/schemas/contribution-nodes";
-import { loadContributionsSync, orderedDependencies } from "../../cat-harness/schemas/harness-config";
+import { ContributionRegistry } from "../../cat-harness/schemas/content/contributions";
+import { OwnCodeRefSchema, QaCheckerNodeSchema } from "../../cat-harness/schemas/kg/contribution-nodes";
+import { loadContributionsSync, orderedDependencies } from "../../cat-harness/schemas/kg/harness-config";
 import { SCI_ROOT, sciRegistrySync } from "../scripts/tests/sci-consumer";
 import { COST_AUTOMATED_CHECKERS } from "./qa-checkers-cost";
 import { PIPELINE_IMPLEMENTATIONS } from "./plugin-slots";

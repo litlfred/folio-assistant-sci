@@ -32,8 +32,8 @@
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { basename, join, relative, resolve } from "node:path";
 
-import { directoriesForGraph } from "../../cat-harness/schemas/cat-harness.ts";
-import { instanceRootsIn, repoRootFor } from "../../cat-harness/schemas/instance-roots.ts";
+import { directoriesForGraph } from "../../cat-harness/schemas/kg/cat-harness.ts";
+import { instanceRootsIn, repoRootFor } from "../../cat-harness/schemas/kg/instance-roots.ts";
 
 const CODE = /\.(?:m?[jt]s)$/;
 const SKIP = new Set(["node_modules", ".git", ".lake", "docs", "test", "translations"]);
