@@ -32,5 +32,13 @@
     "@milkdown/crepe": "7.22.2",
     "@milkdown/kit": "7.22.2",
     "@unified-latex/unified-latex-types": "^1.8.4"
-  }
+  },
+  "workspaces": [
+    "cat-harnes[s]",
+    "../cat-harnes[s]",
+    "cat-harness-tool[s]",
+    "../cat-harness-tool[s]",
+    "bootstrap-tool[s]",
+    "../bootstrap-tool[s]"
+  ]
 }

@@ -33,7 +33,7 @@
  */
 
 import { existsSync, readFileSync } from "fs";
-import type { CheckerResult } from "@litlfred/cat-harness-tools/schemas/sdlc/block-qa";
+import type { CheckerResult } from "@litlfred/cat-harness-tools/schemas/sdlc/block-qa.js";
 
 import { parseLeanRef, refToDecl } from "../../cat-harness-tools/pipeline/content-graph";
 import { loadProfileCache, entryFresh, type ProfileCache } from "../../cat-harness-tools/pipeline/lean-profile-ingest";
