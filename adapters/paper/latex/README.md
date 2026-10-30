@@ -31,18 +31,16 @@ original as a line multiset (796 + 32). Plan and inventory: qou
 `docs/audits/2026-10-04-workplan-and-migration/PDF_report.md` (story P1), issue
 #2117.
 
-## Not yet wired
+## How it is wired
 
-`generate-main-tex.ts` still defaults `--preamble` to the deleted path. Pointing
-that default at this file from cat-harness would make the core depend on sci,
-which inverts the layering, so the wiring is its own step (P2: the paper adapter
-supplies the template through the renderer contribution; P5: `publish.yml`).
-Until then, pass it explicitly:
+`PaperContentAdapter` (`../index.ts`) exports `PAPER_PREAMBLE_PATH` and exposes
+it as `PaperContentAdapter.preamblePath`. When `generate-main-tex.ts` or
+`build.ts --generate-main` runs without `--preamble`, it obtains this template
+from the paper adapter through `resolveRenderTarget("paper")` /
+`resolveAdapterPreamble("paper")` (bean `4dj5`, issue #2117 P2/P5):
 
 ```sh
-bun run cat-harness-tools/pipeline/generate-main-tex.ts <paper.ts> \
-  --preamble folio-assistant-sci/adapters/paper/latex/paper-preamble.tex
+bun run cat-harness-tools/pipeline/generate-main-tex.ts <paper.ts>
 ```
 
-A folio's own notation fragment is not yet read by the pipeline either (qou
-story Q1).
+A folio's own notation fragment is not yet read by the pipeline (qou story Q1).
