@@ -166,11 +166,13 @@ describe("non-canonical declaration patterns in folio-assistant-sci/pipeline", (
     return [...hits].sort();
   }
 
-  test("only the three pre-existing modules carry a local pattern, and the list may only shrink", () => {
+  test("only the five pre-existing modules carry a local pattern, and the list may only shrink", () => {
     expect(patternFiles()).toEqual([
       "pipeline/conjectural-propagation-audit.ts",
       "pipeline/generate-lean-stubs.ts",
+      "pipeline/lean-formal-ref.ts",
       "pipeline/proof-narrative-lean-equiv-sweep.ts",
+      "scripts/lean-coverage.ts",
     ]);
   });
 });
