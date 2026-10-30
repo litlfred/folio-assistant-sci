@@ -21,7 +21,7 @@ import {
   listPackageLeanFiles,
 } from "../../../cat-harness-tools/pipeline/qa-utils.ts";
 import { scanOrphanLeanFiles } from "../../../cat-harness-tools/pipeline/q-usage-audit.ts";
-import { checkWallSide } from "../../../cat-harness-tools/pipeline/qa-checkers-voice.ts";
+import { checkWallSide } from "../../pipeline/qa-checkers-wall.ts";
 import { checkQUsageArchimedeanInCategoricalChapter } from "../../../cat-harness-tools/pipeline/qa-checkers-q-usage.ts";
 // From `lean-formal-ref`, not `lean-packages`: importing it installs the Lean
 // formalism layer into core's `formal-ref` injection point, and this suite

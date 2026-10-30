@@ -7,7 +7,7 @@ generated: "scripts/subgraph-readmes.ts of the bootstrap toolset (https://github
 
 # folio-assistant-sci-qa-checkers
 
-The QA checkers this instance's Lean tooling provides, one folio-qa-checker/v1 node per criterion, naming COST_AUTOMATED_CHECKERS in pipeline/qa-checkers-cost.ts (bean riit, step 3b), and the maths checkers moved here from cat-harness-tools (bean saqd): VACUITY_AUTOMATED_CHECKERS (Lean vacuity, four criteria), RENDER_AUTOMATED_CHECKERS (render-math-mode-envelope), TRIVIALITY_AUTOMATED_CHECKERS (proof-not-machine-trivial), EXTENDED_AUTOMATED_CHECKERS (the paper proof-*, canonical-* and compute-* criteria) and USES_AUTOMATED_CHECKERS (uses-formal-coverage, lean-ref-owns-decl). Registered for a folio by loadContributions through its dependency tree; they replace the qaCheckers array contributions.ts returned.
+The QA checkers this instance's Lean tooling provides, one folio-qa-checker/v1 node per criterion, naming COST_AUTOMATED_CHECKERS in pipeline/qa-checkers-cost.ts (bean riit, step 3b), and the maths checkers moved here from cat-harness-tools (bean saqd): VACUITY_AUTOMATED_CHECKERS (Lean vacuity, four criteria), RENDER_AUTOMATED_CHECKERS (render-math-mode-envelope), TRIVIALITY_AUTOMATED_CHECKERS (proof-not-machine-trivial), EXTENDED_AUTOMATED_CHECKERS (the paper proof-*, canonical-* and compute-* criteria), USES_AUTOMATED_CHECKERS (uses-formal-coverage, lean-ref-owns-decl) and WALL_AUTOMATED_CHECKERS in pipeline/qa-checkers-wall.ts (framework-canonical and the §7c archimedean wall: wall-side-correct, wall-base-ring-minimal). Registered for a folio by loadContributions through its dependency tree; they replace the qaCheckers array contributions.ts returned.
 
 Part of [folio-assistant-sci](../README.md) 0.1.0, declared as `folio-assistant-sci-qa-checkers`, holding `qa-checkers`.
 
@@ -26,6 +26,7 @@ Part of [folio-assistant-sci](../README.md) 0.1.0, declared as `folio-assistant-
 | [`compute-prop-has-consumer.json`](compute-prop-has-consumer.json) | data |  |
 | [`compute-prop-has-probe.json`](compute-prop-has-probe.json) | data |  |
 | [`compute-witness-exists.json`](compute-witness-exists.json) | data |  |
+| [`framework-canonical.json`](framework-canonical.json) | data |  |
 | [`lean-docstring-honesty.json`](lean-docstring-honesty.json) | data |  |
 | [`lean-no-definitional-laundering.json`](lean-no-definitional-laundering.json) | data |  |
 | [`lean-no-vacuous-instance-data.json`](lean-no-vacuous-instance-data.json) | data |  |
@@ -44,5 +45,7 @@ Part of [folio-assistant-sci](../README.md) 0.1.0, declared as `folio-assistant-
 | [`proof-substantive.json`](proof-substantive.json) | data |  |
 | [`render-math-mode-envelope.json`](render-math-mode-envelope.json) | data |  |
 | [`uses-formal-coverage.json`](uses-formal-coverage.json) | data |  |
+| [`wall-base-ring-minimal.json`](wall-base-ring-minimal.json) | data |  |
+| [`wall-side-correct.json`](wall-side-correct.json) | data |  |
 
 <!-- kg:subgraph:end -->
