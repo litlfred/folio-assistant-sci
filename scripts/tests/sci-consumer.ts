@@ -27,6 +27,7 @@ import { writeInstanceConfig } from "../../../cat-harness-tools/test/support/ins
 import { loadContributions, loadContributionsSync } from "../../../cat-harness/schemas/harness-config";
 import { ContributionRegistry, type FolioContribution } from "../../../cat-harness/schemas/contributions";
 import { usePipelinePluginRegistry } from "../../../cat-harness-tools/pipeline/pipeline-plugins";
+import { configureChapterProfiles } from "../../../cat-harness-tools/pipeline/chapter-profile-registry-di";
 
 /** This instance's root: `folio-assistant-sci/`. */
 export const SCI_ROOT = resolve(import.meta.dir, "../..");
@@ -65,4 +66,17 @@ export function sciRegistrySync(): ContributionRegistry {
  * */
 export function useSciPipelinePlugins(): void {
   usePipelinePluginRegistry(sciRegistrySync());
+}
+
+/**
+ * Chapter profiles are a folio's own data and no layer ships a default, so a
+ * test whose fixtures sit in categorical chapters configures them itself.
+ * Pair with `resetChapterProfiles()` in `afterAll`.
+ */
+export function useCategoricalChapters(...chapters: string[]): void {
+  configureChapterProfiles({
+    chapterExpectedRegimes: {},
+    categoricalChapters: new Set(chapters),
+    archimedeanChapters: new Set(),
+  });
 }

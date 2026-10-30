@@ -13,11 +13,8 @@ import { join } from "path";
 import { tmpdir } from "os";
 import { checkQUsageArchimedeanInCategoricalChapter } from "../../../cat-harness-tools/pipeline/qa-checkers-q-usage.ts";
 import { usePipelinePluginRegistry } from "../../../cat-harness-tools/pipeline/pipeline-plugins";
-import {
-  configureChapterProfiles,
-  resetChapterProfiles,
-} from "../../../cat-harness-tools/pipeline/chapter-profile-registry-di";
-import { useSciPipelinePlugins } from "./sci-consumer";
+import { resetChapterProfiles } from "../../../cat-harness-tools/pipeline/chapter-profile-registry-di";
+import { useCategoricalChapters, useSciPipelinePlugins } from "./sci-consumer";
 
 // The Lean lexer the checker scopes with is sci's contribution: loaded through
 // a folio that depends on sci, not from whatever checkout is running. Chapter
@@ -25,11 +22,7 @@ import { useSciPipelinePlugins } from "./sci-consumer";
 // tests configure the two categorical chapters their fixtures sit in.
 beforeAll(() => {
   useSciPipelinePlugins();
-  configureChapterProfiles({
-    chapterExpectedRegimes: {},
-    categoricalChapters: new Set(["braids-and-knots", "appendix-surreals"]),
-    archimedeanChapters: new Set(),
-  });
+  useCategoricalChapters("braids-and-knots", "appendix-surreals");
 });
 
 const DIR = mkdtempSync(join(tmpdir(), "qa-q-usage-"));
