@@ -66,7 +66,7 @@
     {
       "id": "folio-assistant-sci-qa-checkers",
       "path": "qa-checkers/",
-      "description": "The QA checkers this instance's Lean tooling provides, one folio-qa-checker/v1 node per criterion, naming COST_AUTOMATED_CHECKERS in pipeline/qa-checkers-cost.ts (bean riit, step 3b). Registered for a folio by loadContributions through its dependency tree; they replace the qaCheckers array contributions.ts returned.",
+      "description": "The QA checkers this instance's Lean tooling provides, one folio-qa-checker/v1 node per criterion, naming COST_AUTOMATED_CHECKERS in pipeline/qa-checkers-cost.ts (bean riit, step 3b), and the maths checkers moved here from cat-harness-tools (bean saqd): VACUITY_AUTOMATED_CHECKERS (Lean vacuity, four criteria), RENDER_AUTOMATED_CHECKERS (render-math-mode-envelope) and TRIVIALITY_AUTOMATED_CHECKERS (proof-not-machine-trivial). Registered for a folio by loadContributions through its dependency tree; they replace the qaCheckers array contributions.ts returned.",
       "graphTypologies": [
         "qa-checkers"
       ]
