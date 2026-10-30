@@ -46,9 +46,9 @@ reason to say so, not a reason to file it under the nearest one.
 
 <!-- skills:index:begin -->
 
-_68 skills in 7 directories, generated from each skill's front matter. `bun run cat readme:sync` rewrites this list and `readme:sync:check` fails when it is stale. Skills this repository inherits are listed by the repositories that publish them._
+_70 skills in 7 directories, generated from each skill's front matter. `bun run cat readme:sync` rewrites this list and `readme:sync:check` fails when it is stale. Skills this repository inherits are listed by the repositories that publish them._
 
-**`skills/content/authoring-math/`** (9)
+**`skills/content/authoring-math/`** (11)
 
 | Skill | What it is for |
 |---|---|
@@ -60,6 +60,8 @@ _68 skills in 7 directories, generated from each skill's front matter. `bun run 
 | [`math-md-authoring`](skills/content/authoring-math/math-md-authoring.md) | The math half of the harness's md-authoring: display and inline math, KaTeX limits, math in titles and table cells, and what the LaTeX pipeline does with tables, for a paper folio's .md blocks. |
 | [`math-readability-editing`](skills/content/authoring-math/math-readability-editing.md) | The math half of the harness's readability-editing: math-specific style checks, the blueprint and formal-proof index cross-checks, and the mandatory TeX snippet validation after editing a paper… |
 | [`milnor-exposition-standard`](skills/content/authoring-math/milnor-exposition-standard.md) | The eight hallmarks of mathematical exposition, scored 0-2 with sixteen the only passing total, derived from John Milnor's "Link Groups" (1954). |
+| [`paper-chapter-complexity`](skills/content/authoring-math/paper-chapter-complexity.md) | The paper-folio half of the harness's chapter-complexity-review and block-density skills: the mathematical block-kind classifier for logical vs. |
+| [`paper-voice-audit`](skills/content/authoring-math/paper-voice-audit.md) | The paper-folio half of the harness's one-voice-audit, one-voice-integration-watcher, and one-voice-style-guide: scholarly voice across proof bodies, pdflatex Unicode crash remediation, mathematical… |
 | [`proof-verification`](skills/content/authoring-math/proof-verification.md) | Decide, and record, whether a block's formal claim is actually verified — separately from whether it builds. |
 
 **`skills/content/folio-paper-adapter/`** (53)
