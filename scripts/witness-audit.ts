@@ -22,7 +22,7 @@
 import { readFileSync, existsSync } from "fs";
 import { resolve, basename, dirname } from "path";
 import { createHash } from "crypto";
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
 import type { ComputationWitness } from "@litlfred/cat-harness-tools/schemas/types.ts";
 import { findContentRepoRoot } from "@litlfred/cat-harness-tools/pipeline/repo-root.ts";
 
@@ -89,7 +89,7 @@ function fileContentHash(filePath: string, length = 12): string {
 
 function gitHeadSha(repoRoot = REPO_ROOT): string {
   try {
-    return execSync("git rev-parse HEAD", { cwd: repoRoot, stdio: ["ignore", "pipe", "ignore"] }).toString().trim();
+    return execFileSync("git", ["rev-parse", "HEAD"], { cwd: repoRoot, stdio: ["ignore", "pipe", "ignore"] }).toString().trim();
   } catch {
     return "unknown";
   }
@@ -98,6 +98,11 @@ function gitHeadSha(repoRoot = REPO_ROOT): string {
 /**
  * Batch-query git for the last commit SHA of multiple files.
  * Single `git log` call instead of one per file (~20x faster).
+ *
+ * The paths go to git as an argument vector, never through a shell, so a
+ * path is data whatever characters it holds. `--literal-pathspecs` stops git
+ * reading glob or `:(magic)` syntax in them, and `core.quotePath=false` keeps
+ * non-ASCII names unquoted in the output so they match the input.
  */
 function gitFileShas(filePaths: string[], repoRoot = REPO_ROOT): Map<string, string> {
   const perFile = new Map<string, string>();
@@ -111,9 +116,10 @@ function gitFileShas(filePaths: string[], repoRoot = REPO_ROOT): Map<string, str
     }
 
     // Use git log with format that gives us file→commit mapping
-    const batchOutput = execSync(
-      `git log --format="COMMIT %H" --name-only -- ${filePaths.map((f) => `"${f}"`).join(" ")}`,
-      { cwd: repoRoot, maxBuffer: 10 * 1024 * 1024, stdio: ["ignore", "pipe", "ignore"] }
+    const batchOutput = execFileSync(
+      "git",
+      ["--literal-pathspecs", "-c", "core.quotePath=false", "log", "--format=COMMIT %H", "--name-only", "--", ...filePaths],
+      { cwd: repoRoot, maxBuffer: 64 * 1024 * 1024, stdio: ["ignore", "pipe", "ignore"] }
     ).toString();
 
     let currentCommit = "unknown";
@@ -425,6 +431,7 @@ if (import.meta.main) {
 
 export {
   fileContentHash,
+  gitFileShas,
   auditLeanWitnesses,
   auditPythonWitnesses,
   printReport,

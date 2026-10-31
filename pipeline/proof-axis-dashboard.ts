@@ -10,10 +10,9 @@
  */
 
 import { folioDir } from "@litlfred/cat-harness-tools/schemas/kg/cat-harness.js";
-import { readFileSync, existsSync } from "fs";
+import { readFileSync, existsSync, readdirSync } from "fs";
 import { resolve, dirname, relative, join } from "path";
 import { fileURLToPath } from "url";
-import { execSync } from "child_process";
 
 const __filename = fileURLToPath(import.meta.url);
 const INSTANCE_ROOT = resolve(dirname(__filename), "..");
@@ -82,6 +81,30 @@ function evidenceText(ev: string | Array<{ line?: number; text?: string }> | und
   if (typeof ev === "string") return ev;
   if (!Array.isArray(ev)) return "";
   return ev.map((h) => `${h.line ?? ""}:${h.text ?? ""}`).join(" | ");
+}
+
+/**
+ * The `*.lean` files under `root` whose text contains a whole-word `sorry`,
+ * skipping any path with a `/lean/` segment: what the earlier `find <root>
+ * -name … ! -path … -exec grep -l …` shell command listed, done in-process so
+ * the root is never parsed by a shell. (The `find` form also lost every result
+ * when any one `grep` batch matched nothing.)
+ */
+export function leanFilesWithSorry(root: string): string[] {
+  const out: string[] = [];
+  const walk = (dir: string): void => {
+    let entries;
+    try { entries = readdirSync(dir, { withFileTypes: true }); } catch { return; }
+    for (const e of entries) {
+      const abs = join(dir, e.name);
+      if (e.isDirectory()) walk(abs);
+      else if (e.name.endsWith(".lean") && !abs.includes("/lean/")) {
+        try { if (/\bsorry\b/.test(readFileSync(abs, "utf-8"))) out.push(abs); } catch { /* unreadable */ }
+      }
+    }
+  };
+  walk(root);
+  return out.sort();
 }
 
 function main() {
@@ -179,11 +202,7 @@ function main() {
   // Scan for actual sorry in code
   const sorries: SorryInfo[] = [];
   try {
-    const grepOut = execSync(
-      `find ${rootPath} -name '*.lean' ! -path '*/lean/*' -exec grep -l '\\bsorry\\b' {} +`,
-      { encoding: "utf-8", timeout: 30000 }
-    ).trim();
-    for (const f of grepOut.split("\n").filter(Boolean)) {
+    for (const f of leanFilesWithSorry(rootPath)) {
       const src = readFileSync(f, "utf-8");
       const cleaned = src
         .replace(/\/-[\!]?[\s\S]*?-\//g, (m: string) => "\n".repeat(m.split("\n").length - 1))
@@ -301,4 +320,4 @@ function main() {
   console.log(``);
 }
 
-main();
+if (import.meta.main) main();

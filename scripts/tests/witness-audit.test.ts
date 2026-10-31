@@ -3,7 +3,8 @@
  * staleness detection, legacy format detection, and `runAudit` options.
  */
 import { describe, expect, test } from "bun:test";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -11,6 +12,7 @@ import {
   auditLeanWitnesses,
   auditPythonWitnesses,
   fileContentHash,
+  gitFileShas,
   runAudit,
 } from "../witness-audit.ts";
 
@@ -131,6 +133,31 @@ describe("witness-audit", () => {
       expect(report.python.withAssertions).toBe(1);
       expect(report.python.withCommitSha).toBe(2);
       expect(report.lean.entries).toHaveLength(0);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("gitFileShas passes paths with shell metacharacters to git as data", () => {
+    const root = mkdtempSync(join(tmpdir(), "witness-audit-git-"));
+    try {
+      const git = (...args: string[]) =>
+        execFileSync("git", args, { cwd: root, stdio: ["ignore", "pipe", "pipe"] }).toString().trim();
+      git("init", "-q");
+      git("config", "user.email", "t@t");
+      git("config", "user.name", "t");
+      const names = ["a$(echo x).lean", "b;c.lean", "d`e`.lean", "f g.lean", "h'i.lean", "j*.lean", "k&l|m.lean", "\u00e9.lean"];
+      for (const n of names) writeFileSync(join(root, n), `-- ${n}\n`);
+      writeFileSync(join(root, "jX.lean"), "-- matched only if the pathspec were a glob\n");
+      git("add", "-A");
+      git("commit", "-qm", "files");
+      const sha = git("rev-parse", "HEAD");
+
+      const shas = gitFileShas(names, root);
+      for (const n of names) expect(shas.get(n)).toBe(sha);
+      expect(shas.size).toBe(names.length);
+      // Nothing was created by a shell reading the names.
+      expect(readdirSync(root).filter((f) => f !== ".git").sort()).toEqual([...names, "jX.lean"].sort());
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
