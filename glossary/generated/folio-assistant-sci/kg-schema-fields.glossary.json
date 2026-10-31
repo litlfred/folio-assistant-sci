@@ -196,6 +196,20 @@
       "status": "candidate"
     },
     {
+      "id": "mathpaper-vocabulary.mathpaperconstraintcontext.laketreecontainsbasename",
+      "prefLabel": "MathpaperConstraintContext.lakeTreeContainsBasename",
+      "definition": "Basename lookup under a Lake package root (for the `lean.ref` fallback).",
+      "source": "folio-assistant-sci/schemas/mathpaper-vocabulary.ts#MathpaperConstraintContext.lakeTreeContainsBasename",
+      "status": "candidate"
+    },
+    {
+      "id": "mathpaper-vocabulary.mathpaperconstraintcontext.leancontent",
+      "prefLabel": "MathpaperConstraintContext.leanContent",
+      "definition": "Lean sibling stub content (for the §3b-cond kind check), if the file exists.",
+      "source": "folio-assistant-sci/schemas/mathpaper-vocabulary.ts#MathpaperConstraintContext.leanContent",
+      "status": "candidate"
+    },
+    {
       "id": "mathpaper-vocabulary.proofblock.computation",
       "prefLabel": "ProofBlock.computation",
       "definition": "Optional computational verification (Python/SnapPea/sympy/etc.).",
