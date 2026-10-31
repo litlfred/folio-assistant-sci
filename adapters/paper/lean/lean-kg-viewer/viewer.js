@@ -55,9 +55,37 @@ function el(tag, attrs = {}, ...kids) {
 function typeset(node) {
   if (window.MathJax?.typesetPromise) window.MathJax.typesetPromise([node]).catch(() => {});
 }
+
+// ── HTML from the data ──────────────────────────────────────────────────────
+// Docstrings (rendered by marked, which does not sanitise) and signature chunks
+// (doc-gen4's header HTML, passed through lean-kg-ingest.ts with only its links
+// rewritten) come from ingested Lean sources and may be fetched from a staging
+// overlay's base. Neither is trusted: every piece of HTML goes through
+// DOMPurify, and when DOMPurify is missing the node gets plain text instead —
+// never the raw HTML.
+
+/** The text of an HTML string, read from an inert document (nothing runs or loads). */
+function htmlText(html) {
+  return new DOMParser().parseFromString(html, "text/html").body.textContent ?? "";
+}
+/** Put sanitised HTML into `node`, or plain text when no sanitiser is loaded. */
+function setSafeHTML(node, html) {
+  const purify = window.DOMPurify;
+  if (purify?.isSupported && typeof purify.sanitize === "function") node.innerHTML = purify.sanitize(html);
+  else node.textContent = htmlText(html);
+}
+/** A link target from the data: http(s) or relative, else nothing. */
+function safeHref(url) {
+  if (typeof url !== "string") return null;
+  try {
+    const u = new URL(url, location.href);
+    return u.protocol === "http:" || u.protocol === "https:" ? url : null;
+  } catch { return null; }
+}
+
 function renderDoc(md) {
   const d = el("div", { class: "lkg-doc" });
-  if (window.marked) d.innerHTML = window.marked.parse(md);
+  if (window.marked && window.DOMPurify) setSafeHTML(d, window.marked.parse(md));
   else d.textContent = md;
   return d;
 }
@@ -184,7 +212,7 @@ async function modulePage(name, target) {
     const sigs = await chunk(name, k);
     const sig = card.querySelector(".lkg-sig");
     sig.classList.remove("pending");
-    sig.innerHTML = sigs[i - k * state.index.chunkSize] ?? "";
+    setSafeHTML(sig, sigs[i - k * state.index.chunkSize] ?? "");
     const d = decls[i];
     if (d.doc && !card.querySelector(".lkg-doc")) card.append(renderDoc(d.doc));
     typeset(card);
@@ -203,8 +231,8 @@ async function modulePage(name, target) {
     const meta = el("div", { class: "lkg-meta" },
       el("span", { class: "lkg-badge", text: d.kind }),
       el("a", { href: `#/m/${name}/${encodeURIComponent(d.name)}`, text: d.name.slice(name.length + 1) || d.name }),
-      d.sourceLink ? el("a", { href: d.sourceLink, target: "_blank", rel: "noopener", text: `source${d.line ? ` L${d.line}` : ""}` }) : null,
-      ...(d.formalizes ?? []).map((b) => el("a", { class: "lkg-badge", href: blockHref(b), target: "_blank", rel: "noopener", title: "content block formalized by this declaration", text: b.label })),
+      safeHref(d.sourceLink) ? el("a", { href: safeHref(d.sourceLink), target: "_blank", rel: "noopener", text: `source${d.line ? ` L${d.line}` : ""}` }) : null,
+      ...(d.formalizes ?? []).map((b) => el("a", { class: "lkg-badge", href: safeHref(blockHref(b)), target: "_blank", rel: "noopener", title: "content block formalized by this declaration", text: b.label })),
     );
     const card = el("section", { class: "lkg-decl", id: d.name, "data-i": String(i), "data-k": String(d.signatureChunk) },
       meta, el("div", { class: "lkg-sig pending", text: "signature loading…" }));
