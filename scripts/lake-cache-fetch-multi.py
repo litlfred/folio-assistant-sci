@@ -88,24 +88,78 @@ def package_is_warm(pkg_name: str) -> bool:
     return any(lib.iterdir())
 
 
+def validate_tar_archive(tar_path: Path, allowed_prefix: str = ".lake") -> list[str]:
+    """Validate that a tar archive holds only regular files and directories
+    (type whitelist: `-` and `d` in `tar -tvf`), with relative paths free of
+    `..` traversal and confined to `allowed_prefix` (bean folio-assistant-8eyy).
+
+    Returns a list of offending lines/paths (empty when valid).
+    """
+    tv = subprocess.run(
+        ["tar", "-tvf", str(tar_path)],
+        capture_output=True, text=True, check=False,
+    )
+    if tv.returncode != 0:
+        return [f"unreadable archive: {tv.stderr.strip() or tar_path}"]
+    bad: list[str] = []
+    for line in tv.stdout.splitlines():
+        s = line.strip()
+        if s and not (s.startswith("-") or s.startswith("d")):
+            bad.append(f"non-regular/non-directory member: {s}")
+    tf = subprocess.run(
+        ["tar", "-tf", str(tar_path)],
+        capture_output=True, text=True, check=False,
+    )
+    if tf.returncode != 0:
+        return bad or [f"unreadable archive names: {tf.stderr.strip() or tar_path}"]
+    prefix = allowed_prefix.rstrip("/")
+    for raw in tf.stdout.splitlines():
+        name = raw.strip()
+        if not name:
+            continue
+        if name.startswith("/") or "\0" in name or ".." in name.split("/"):
+            bad.append(f"unsafe path: {name}")
+        elif prefix and name != prefix and not name.startswith(prefix + "/"):
+            bad.append(f"outside {prefix}/: {name}")
+    return bad
+
+
+def extract_tar_checked(tar_path: Path, staging: Path, allowed_prefix: str = ".lake") -> bool:
+    """Validate `tar_path` with `validate_tar_archive` and extract into `staging`."""
+    bad = validate_tar_archive(tar_path, allowed_prefix=allowed_prefix)
+    if bad:
+        print(
+            "lake-cache-fetch-multi: ERROR — archive failed member type/path check:\n  "
+            + "\n  ".join(bad[:5]),
+            file=sys.stderr,
+        )
+        return False
+    res = subprocess.run(
+        ["tar", "-xf", str(tar_path), "-C", str(staging)],
+        capture_output=True, text=True, check=False,
+    )
+    return res.returncode == 0
+
+
 def extract_lake_subtree(staging: Path) -> Path | None:
-    """git archive the .lake/ tree from FETCH_HEAD into staging.
+    """git archive the .lake/ tree from FETCH_HEAD into staging after
+    member-type and path validation (bean folio-assistant-8eyy).
 
     Returns the staging-relative .lake/ Path or None on failure.
     """
-    archive_proc = subprocess.Popen(
-        ["git", "archive", "--format=tar", "FETCH_HEAD", "--", ".lake"],
-        cwd=REPO_ROOT, stdout=subprocess.PIPE,
-    )
-    # GNU tar strips leading '/' by default — no flag needed; the
-    # producer's git archive output never has absolute paths anyway.
-    tar_proc = subprocess.Popen(
-        ["tar", "-xC", str(staging)],
-        stdin=archive_proc.stdout,
-    )
-    archive_proc.stdout.close()
-    tar_proc.communicate()
-    archive_proc.wait()
+    tar_path = staging / "_lake-subtree.tar"
+    try:
+        with tar_path.open("wb") as out:
+            res = subprocess.run(
+                ["git", "archive", "--format=tar", "FETCH_HEAD", "--", ".lake"],
+                cwd=REPO_ROOT, stdout=out, check=False,
+            )
+        if res.returncode != 0 or not tar_path.exists() or tar_path.stat().st_size == 0:
+            return None
+        if not extract_tar_checked(tar_path, staging, allowed_prefix=".lake"):
+            return None
+    finally:
+        tar_path.unlink(missing_ok=True)
     lake = staging / ".lake"
     return lake if lake.exists() else None
 
