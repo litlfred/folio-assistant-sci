@@ -226,11 +226,20 @@ done
 tar_size=$(stat -c '%s' "$TMP/lake-oleans.tgz" 2>/dev/null || stat -f '%z' "$TMP/lake-oleans.tgz")
 echo "  assembled tarball: $((tar_size / 1024 / 1024)) MB"
 
-# Validate every entry path is under '.lake/' and contains no traversal
-# / absolute-path components before extracting. Defense-in-depth even
-# though the source is a controlled internal orphan branch (Copilot
-# review on PR #1950: a malicious or corrupted tarball could otherwise
-# write outside .lake/ via absolute paths or '..' traversal).
+# Validate every entry is a regular file or directory (member-type
+# whitelist: only `-` and `d` in `tar -tvzf`; symlinks and hardlinks
+# are refused, bean folio-assistant-8eyy), and that every entry path is
+# under '.lake/' and contains no traversal / absolute-path components
+# before extracting.
+bad_types=$(tar -tvzf "$TMP/lake-oleans.tgz" 2>/dev/null \
+  | awk 'NF && !/^[-d]/' | head -5)
+if [ -n "$bad_types" ]; then
+  echo "lake-cache-fetch: ERROR — tarball contains non-regular/non-directory entries (symlinks/hardlinks refused)" >&2
+  echo "  Offending entries (first 5):" >&2
+  echo "$bad_types" | sed 's/^/    /' >&2
+  exit 1
+fi
+
 bad_entries=$(tar -tzf "$TMP/lake-oleans.tgz" 2>/dev/null \
   | awk '/^\// || /(^|\/)\.\.($|\/)/ || !/^(\.lake\/|content\/.*\/\.lake\/)/' | head -5)
 if [ -n "$bad_entries" ]; then

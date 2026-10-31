@@ -25,7 +25,8 @@
     "check:extracted-references": "bun run folio-assistant-sci/scripts/extract-references.ts --check",
     "check:editor-checkers": "bun run folio-assistant-sci/scripts/check-editor-checkers.ts",
     "latex:validate": "bun run folio-assistant-sci/pipeline/validate-tex.ts",
-    "latex:audit-source": "bun run folio-assistant-sci/pipeline/audit-tex-source.ts"
+    "latex:audit-source": "bun run folio-assistant-sci/pipeline/audit-tex-source.ts",
+    "check:workflows:security": "bun run folio-assistant-sci/scripts/check-workflows-security.ts"
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "21.0.4",
@@ -40,5 +41,16 @@
     "../cat-harness-tool[s]",
     "bootstrap-tool[s]",
     "../bootstrap-tool[s]"
-  ]
+  ],
+  "scripts": {
+    "security:gate": "bun run scripts/check-workflows-security.ts"
+  },
+  "overrides": {
+    "@fastify/busboy": "^3.2.4",
+    "body-parser": "^2.4.0",
+    "fast-uri": "^3.1.9",
+    "qs": "^6.17.1",
+    "undici": "^6.29.1",
+    "zod": "^4.6.6"
+  }
 }

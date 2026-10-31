@@ -87,3 +87,92 @@ describe("the Python mirrors read the same declaration (bean rva2)", () => {
     });
   }
 });
+
+describe("lake-cache archive member-type whitelist (bean folio-assistant-8eyy)", () => {
+  test("lake-cache-fetch.sh refuses a cache tarball containing a symlink", () => {
+    const f = folio();
+    const root = resolve(f, "..");
+    const bare = join(root, "o.git");
+
+    // Build a tarball containing .lake/ with a symlink member.
+    const stage = join(root, "stage");
+    mkdirSync(join(stage, ".lake", "packages", "mathlib", ".lake", "build", "lib"), { recursive: true });
+    writeFileSync(join(stage, ".lake", "packages", "mathlib", ".lake", "build", "lib", "Foo.olean"), "x");
+    spawnSync("ln", ["-s", "/etc/passwd", join(stage, ".lake", "evil-link")]);
+
+    const wt = join(root, "cache-wt");
+    mkdirSync(wt);
+    spawnSync("git", ["init", "-q", "-b", BUILT_IN], { cwd: wt });
+    spawnSync("git", ["config", "user.email", "t@t"], { cwd: wt });
+    spawnSync("git", ["config", "user.name", "t"], { cwd: wt });
+    spawnSync("tar", ["-czf", join(wt, "lake-oleans.tgz.part00"), "-C", stage, ".lake"]);
+    spawnSync("git", ["add", "-A"], { cwd: wt });
+    spawnSync("git", ["commit", "-qm", "symlink-cache"], { cwd: wt });
+    spawnSync("git", ["remote", "add", "origin", bare], { cwd: wt });
+    spawnSync("git", ["push", "-q", "origin", BUILT_IN], { cwd: wt });
+
+    const r = spawnSync("bash", [join(f, "scripts", "lake-cache-fetch.sh")], { cwd: f, encoding: "utf-8" });
+    expect(r.status).not.toBe(0);
+    expect(`${r.stdout}${r.stderr}`).toContain("non-regular/non-directory entries");
+  });
+
+  test("lake-cache.sh refuses a split-tarball cache branch containing a symlink", () => {
+    const f = folio();
+    const root = resolve(f, "..");
+    const bare = join(root, "o.git");
+    const branch = "cat/folio-assistant-sci/lake-cache/testpkg-v4-24-0";
+
+    writeFileSync(join(f, "lakefile.toml"), 'name = "testpkg"\n');
+
+    const stage = join(root, "stage-lc");
+    mkdirSync(join(stage, ".lake", "build", "lib", "lean", "TestPkg"), { recursive: true });
+    writeFileSync(join(stage, ".lake", "build", "lib", "lean", "TestPkg", "Own0.olean"), "x");
+    spawnSync("ln", ["-s", "/etc/passwd", join(stage, ".lake", "evil-link")]);
+
+    const wt = join(root, "cache-wt-lc");
+    mkdirSync(wt);
+    spawnSync("git", ["init", "-q", "-b", branch], { cwd: wt });
+    spawnSync("git", ["config", "user.email", "t@t"], { cwd: wt });
+    spawnSync("git", ["config", "user.name", "t"], { cwd: wt });
+    spawnSync("tar", ["-czf", join(wt, "lake-oleans.tgz.part00"), "-C", stage, ".lake"]);
+    spawnSync("git", ["add", "-A"], { cwd: wt });
+    spawnSync("git", ["commit", "-qm", "symlink-cache"], { cwd: wt });
+    spawnSync("git", ["remote", "add", "origin", bare], { cwd: wt });
+    spawnSync("git", ["push", "-q", "origin", branch], { cwd: wt });
+
+    const lcScript = resolve(import.meta.dir, "..", "lake-cache.sh");
+    const r = spawnSync("bash", [lcScript, "restore", "--package", "testpkg"], { cwd: f, encoding: "utf-8" });
+    expect(r.status).toBe(3);
+    expect(`${r.stdout}${r.stderr}`).toContain("non-regular/non-directory member");
+  });
+
+  test("lake-cache-fetch-multi.py refuses an archive containing a symlink or unsafe path", () => {
+    const f = folio();
+    const multiScript = resolve(import.meta.dir, "..", "lake-cache-fetch-multi.py");
+    copyFileSync(multiScript, join(f, "scripts", "lake-cache-fetch-multi.py"));
+
+    const stage = join(f, "stage-multi");
+    mkdirSync(join(stage, ".lake", "packages", "mathlib"), { recursive: true });
+    writeFileSync(join(stage, ".lake", "packages", "mathlib", "Foo.olean"), "x");
+    spawnSync("ln", ["-s", "/etc/passwd", join(stage, ".lake", "evil-link")]);
+    const evilTar = join(f, "evil.tar");
+    spawnSync("tar", ["-cf", evilTar, "-C", stage, ".lake"]);
+
+    const dest = join(f, "dest");
+    mkdirSync(dest);
+    const py =
+      "import importlib.util, json, sys\n" +
+      "from pathlib import Path\n" +
+      "s = importlib.util.spec_from_file_location('m', sys.argv[1])\n" +
+      "m = importlib.util.module_from_spec(s); s.loader.exec_module(m)\n" +
+      "bad = m.validate_tar_archive(Path(sys.argv[2]))\n" +
+      "ok = m.extract_tar_checked(Path(sys.argv[2]), Path(sys.argv[3]))\n" +
+      "print(json.dumps({'bad': bad, 'ok': ok, 'extracted': (Path(sys.argv[3]) / '.lake').exists()}))\n";
+    const r = spawnSync("python3", ["-c", py, join(f, "scripts", "lake-cache-fetch-multi.py"), evilTar, dest], { encoding: "utf-8" });
+    expect(r.status, r.stderr).toBe(0);
+    const res = JSON.parse(r.stdout) as { bad: string[]; ok: boolean; extracted: boolean };
+    expect(res.ok).toBe(false);
+    expect(res.extracted).toBe(false);
+    expect(res.bad.some((b) => b.includes("non-regular/non-directory member"))).toBe(true);
+  });
+});

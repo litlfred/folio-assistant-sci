@@ -277,6 +277,42 @@ PY
 # A restore is only real if oleans actually landed. `.lake/` existing
 # proves nothing — a failed extract, or a Lake dir holding only a
 # manifest, both leave the directory present and the build cold.
+# Validate that a tar/tgz archive contains ONLY regular files and directories
+# (`-` or `d` in `tar -tvf`, refusing symlinks `l`, hardlinks `h`, devices and
+# FIFOs; bean folio-assistant-8eyy) and that every member path is relative, has
+# no `..` traversal segment, and (when a prefix regex is given) matches it.
+validate_tar_archive() {
+  local archive="$1"
+  local prefix_re="${2:-}"
+  local list_types list_names bad_types bad_names
+  if ! list_types=$(tar -tvf "$archive" 2>/dev/null); then
+    warn "cannot list archive '$archive'"
+    return 1
+  fi
+  bad_types=$(printf '%s\n' "$list_types" | awk 'NF && !/^[-d]/' | head -5)
+  if [ -n "$bad_types" ]; then
+    warn "archive rejected — non-regular/non-directory member(s) found (only - and d allowed):"
+    printf '%s\n' "$bad_types" | sed 's/^/  /' >&2
+    return 1
+  fi
+  if ! list_names=$(tar -tf "$archive" 2>/dev/null); then
+    warn "cannot list archive member names '$archive'"
+    return 1
+  fi
+  bad_names=$(printf '%s\n' "$list_names" | awk -v pre="$prefix_re" '
+    NF {
+      if ($0 ~ /^\// || $0 ~ /(^|\/)\.\.($|\/)/) { print; next }
+      if (pre != "" && $0 !~ pre) { print; next }
+    }
+  ' | head -5)
+  if [ -n "$bad_names" ]; then
+    warn "archive rejected — unsafe member path(s) found:"
+    printf '%s\n' "$bad_names" | sed 's/^/  /' >&2
+    return 1
+  fi
+  return 0
+}
+
 count_oleans() {
   find "$1/.lake" -name '*.olean' -type f 2>/dev/null | head -20000 | wc -l | tr -d ' '
 }
@@ -520,6 +556,10 @@ Known packages: $(cmd_list_names | tr '\n' ' ')"
     while IFS= read -r p; do
       git show "$PRIVATE_REF:$p" >> "$tgz" || { warn "failed reading part $p"; return 3; }
     done <<< "$parts"
+    if ! validate_tar_archive "$tgz" '^(\.lake(/|$)|content/.*/\.lake(/|$))'; then
+      warn "tarball failed member type/path check — cache branch '$br' refused."
+      return 3
+    fi
     if ! tar xzf "$tgz" -C "$root" 2>/dev/null; then
       warn "tarball did not extract — cache branch '$br' is corrupt."
       info "Reseed it after a successful build: $PROG seed --branch $br"
@@ -528,7 +568,16 @@ Known packages: $(cmd_list_names | tr '\n' ' ')"
   elif printf '%s\n' "$names" | grep -qx '.lake'; then
     # Legacy shape: a committed `.lake/` tree.
     info "format: committed .lake/ tree (legacy)"
-    if ! git archive --format=tar "$PRIVATE_REF" -- '.lake' 2>/dev/null | tar -xC "$tmp" 2>/dev/null; then
+    local legacy_tar="$tmp/legacy.tar"
+    if ! git archive --format=tar "$PRIVATE_REF" -- '.lake' > "$legacy_tar" 2>/dev/null; then
+      warn "could not archive the .lake tree from '$br'."
+      return 3
+    fi
+    if ! validate_tar_archive "$legacy_tar" '^\.lake(/|$)'; then
+      warn "legacy .lake archive failed member type/path check — branch '$br' refused."
+      return 3
+    fi
+    if ! tar -xf "$legacy_tar" -C "$tmp" 2>/dev/null; then
       warn "could not extract the .lake tree from '$br'."
       return 3
     fi
@@ -807,6 +856,10 @@ cmd_restore_toolchain() {
   # `$ELAN_HOME` itself lands it one level too high, where nothing finds
   # it — which is exactly what an earlier version of this did while
   # reporting success.
+  if ! validate_tar_archive "$tgz"; then
+    warn "toolchain tarball failed member type/path check — branch '$br' refused."
+    return 3
+  fi
   mkdir -p "$dest/toolchains"
   if ! tar xzf "$tgz" -C "$dest/toolchains" 2>/dev/null; then
     warn "toolchain tarball did not extract — branch '$br' is corrupt."
