@@ -108,6 +108,7 @@ A folio that configures none gets `n/a` for every chapter check.
 
 ## Slot B — §3 trigger filter
 
+<!-- command-path-ok: the paths in the grep -E patterns are regex alternatives matched against changed file names, not commands to run -->
 ```bash
 SHA=<event sha>
 changed=$(git diff-tree --no-commit-id --name-only -r "$SHA")
