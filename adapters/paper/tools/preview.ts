@@ -8,7 +8,7 @@
  */
 
 import { z } from "zod";
-import { execSync, spawn } from "child_process";
+import { spawn } from "child_process";
 import { existsSync, readdirSync } from "fs";
 import { join } from "path";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -23,17 +23,12 @@ const BUILD_DIR = resolve(findContentRepoRoot(), "build");
 /** Detect the system's "open" command. */
 function getOpenCommand(): string | null {
   // ChromeOS/Linux
+  // (looked up with Bun.which, without a shell)
   for (const cmd of ["xdg-open", "sensible-browser", "x-www-browser"]) {
-    try {
-      execSync(`which ${cmd}`, { stdio: "pipe" });
-      return cmd;
-    } catch {}
+    if (Bun.which(cmd) !== null) return cmd;
   }
   // macOS
-  try {
-    execSync("which open", { stdio: "pipe" });
-    return "open";
-  } catch {}
+  if (Bun.which("open") !== null) return "open";
   return null;
 }
 

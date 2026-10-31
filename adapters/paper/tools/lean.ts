@@ -21,14 +21,9 @@ import { join, resolve } from "path";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { LEAN_DIR, REPO_ROOT } from "../../../../folio-assistant-core/adapters/document/paths.js";
 
-/** Check if a command is available. */
+/** Check if a command is available on PATH (looked up without a shell). */
 function hasCommand(cmd: string): boolean {
-  try {
-    execSync(`which ${cmd}`, { stdio: "pipe" });
-    return true;
-  } catch {
-    return false;
-  }
+  return Bun.which(cmd) !== null;
 }
 
 /**
