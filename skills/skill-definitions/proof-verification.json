@@ -2,7 +2,6 @@
   "id": "proof-verification",
   "name": "Proof Verification",
   "description": "Verify Lean 4 proofs, track sorry obligations, and report build diagnostics.",
-  "roles": ["author", "qc-reviewer", "admin"],
   "requiredCapabilities": [
     { "capabilityId": "lean-toolchain", "degradation": "fail" }
   ],
