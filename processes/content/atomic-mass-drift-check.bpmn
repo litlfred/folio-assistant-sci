@@ -27,10 +27,10 @@ The check itself is the shared `generated-file-drift` process (Process_Generated
         <bpmn:flowNodeRef>End_Checked</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
-    <bpmn:startEvent id="Start_Change" name="Pull request, push&#10;to main, or dispatch">
+    <bpmn:startEvent id="Start_Change" name="Pull request, push to main, or dispatch">
       <bpmn:outgoing>Flow_0</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:callActivity id="Call_Drift" name="Check AtomicMass.lean&#10;is in sync" calledElement="Process_GeneratedFileDrift">
+    <bpmn:callActivity id="Call_Drift" name="Check AtomicMass.lean is in sync" calledElement="Process_GeneratedFileDrift">
       <bpmn:documentation>Run gen_atomic_mass.py --check: regenerate AtomicMass.lean from the data table and diff it against the committed file. Any divergence exits 1 with a unified diff and fails the PR — a Lean file that compiles must not carry numbers the table no longer produces.</bpmn:documentation>
       <bpmn:incoming>Flow_0</bpmn:incoming>
       <bpmn:outgoing>Flow_1</bpmn:outgoing>
@@ -44,21 +44,21 @@ The check itself is the shared `generated-file-drift` process (Process_Generated
   <bpmndi:BPMNDiagram id="Diagram_Process_AtomicMassDrift">
     <bpmndi:BPMNPlane id="Plane_Process_AtomicMassDrift" bpmnElement="Collaboration_Process_AtomicMassDrift">
       <bpmndi:BPMNShape id="Shape_Participant_Process_AtomicMassDrift" bpmnElement="Participant_Process_AtomicMassDrift" isHorizontal="true">
-        <dc:Bounds x="60" y="60" width="468" height="360"/>
+        <dc:Bounds x="60" y="60" width="468" height="240"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Shape_Lane_Ci" bpmnElement="Lane_Ci" isHorizontal="true">
-        <dc:Bounds x="90" y="60" width="438" height="360"/>
+        <dc:Bounds x="90" y="60" width="438" height="240"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Shape_Start_Change" bpmnElement="Start_Change">
         <dc:Bounds x="150" y="182" width="36" height="36"/>
-        <bpmndi:BPMNLabel><dc:Bounds x="115" y="222" width="110" height="40"/></bpmndi:BPMNLabel>
+        <bpmndi:BPMNLabel><dc:Bounds x="118" y="221.5" width="120" height="54" /></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Shape_Call_Drift" bpmnElement="Call_Drift">
         <dc:Bounds x="250" y="140" width="120" height="120"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Shape_End_Checked" bpmnElement="End_Checked">
         <dc:Bounds x="432" y="182" width="36" height="36"/>
-        <bpmndi:BPMNLabel><dc:Bounds x="410" y="222" width="80" height="40"/></bpmndi:BPMNLabel>
+        <bpmndi:BPMNLabel><dc:Bounds x="390" y="222" width="120" height="40"/></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Edge_Flow_0" bpmnElement="Flow_0">
         <di:waypoint x="186" y="200"/>
