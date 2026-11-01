@@ -10,26 +10,15 @@ Check that `AtomicMass.lean` is still in sync with the data table it is generate
 
 - Begin here.
 - Call `workflow_start` with `process: "Process_AtomicMassDrift"` and the subject this run is about; keep the instance id it returns.
-- next: → `Task_Check` (Regenerate AtomicMass.lean from the data table — and diff)
+- next: → `Call_Drift` (Check AtomicMass.lean is in sync)
 
-### 1. Regenerate AtomicMass.lean from the data table — and diff (`Task_Check`)
+### 1. Check AtomicMass.lean is in sync (`Call_Drift`)
 
-- Who: the `CI/CD Pipeline` lane (role `build-pipeline`).
+- Who: the `Build pipeline` lane (role `build-pipeline`).
 - What: Run gen_atomic_mass.py --check: regenerate AtomicMass.lean from the data table and diff it against the committed file.
-- Record it: `workflow_complete` with `node: "Task_Check"`.
-- next: → `GW_Drift` (Did anything change?)
+- A subprocess (`Process_GeneratedFileDrift`): `workflow_next` reports its own steps; complete those — this call activity itself is not completable.
+- next: → `End_Checked` (Checked)
 
-### Decide — Did anything change? (`GW_Drift`)
-
-- Answered by the diff Task_Check takes after regenerating AtomicMass.lean from the data table.
-- Call `workflow_complete` with `node: "GW_Drift"` and `outcome` set to the label that holds:
-  - «no — in sync» → `End_Clean` (Generated file in sync)
-  - «yes — drifted» → `End_Drift` (Job RED — the generated file is stale)
-
-## Done — Generated file in sync (`End_Clean`)
-
-- The instance completes here. `workflow_next` then reports nothing enabled — that, not this line, is the record of completion.
-
-## Done — Job RED — the generated file is stale (`End_Drift`)
+## Done — Checked (`End_Checked`)
 
 - The instance completes here. `workflow_next` then reports nothing enabled — that, not this line, is the record of completion.
