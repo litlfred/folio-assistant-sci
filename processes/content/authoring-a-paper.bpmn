@@ -82,7 +82,7 @@
     <bpmn:startEvent id="StartEvent_NewPaper" name="New paper">
       <bpmn:outgoing>A01</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:userTask id="Task_Plan" name="1 · Plan the paper&#10;[content-plan]">
+    <bpmn:userTask id="Task_Plan" name="1 · Plan the paper">
       <bpmn:documentation>Scope the paper: chapters, the blocks each needs, what gets formalised.</bpmn:documentation>
       <bpmn:extensionElements>
         <bootstrap.processes:skill ref="content-plan" />
@@ -90,7 +90,7 @@
       <bpmn:incoming>A01</bpmn:incoming>
       <bpmn:outgoing>A02</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:task id="Task_SeedPlan" name="2 · Seed the work plan&#10;[todo-manager]">
+    <bpmn:task id="Task_SeedPlan" name="2 · Seed the work plan">
       <bpmn:documentation>The plan becomes beans, so a resumed session or a sibling agent can pick it up.</bpmn:documentation>
       <bpmn:extensionElements>
         <bootstrap.processes:skill ref="todo-manager" />
@@ -99,7 +99,7 @@
       <bpmn:outgoing>A03</bpmn:outgoing>
       <bpmn:incoming>SF_Bean_1</bpmn:incoming>
     </bpmn:task>
-    <bpmn:serviceTask id="Task_Scaffold" name="3 · Scaffold the folio repo&#10;[content-plan]">
+    <bpmn:serviceTask id="Task_Scaffold" name="3 · Scaffold the folio repo">
       <bpmn:documentation>Create the folio repository with `bun run cat init-folio` (or the folio_init tool): content/, the document, chapter and first block manifests, the builder shim, AGENTS.md, .mcp.json, the session-start hook and the beans store, with the platform linked rather than copied.</bpmn:documentation>
       <bpmn:extensionElements>
         <bootstrap.processes:skill ref="content-plan" />
@@ -107,7 +107,7 @@
       <bpmn:incoming>A03</bpmn:incoming>
       <bpmn:outgoing>A04</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Task_AuthorBlocks" name="4 · Author blocks&#10;[content-author]">
+    <bpmn:serviceTask id="Task_AuthorBlocks" name="4 · Author blocks">
       <bpmn:documentation>Every block edit runs the HCI validation gate — see editing-hci-validation.bpmn.</bpmn:documentation>
       <bpmn:extensionElements>
         <bootstrap.processes:skill ref="content-author" />
@@ -116,7 +116,7 @@
       <bpmn:incoming>A12</bpmn:incoming>
       <bpmn:outgoing>A05</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Task_Formalize" name="5 · Formalise in Lean&#10;[lean-formalization]">
+    <bpmn:serviceTask id="Task_Formalize" name="5 · Formalise in Lean">
       <bpmn:documentation>Give each formal block (definition, theorem, lemma, proposition, corollary, conjecture, proof) a .lean sibling that Lean 4 accepts, in the order lean-formalization sets out. A compiling declaration is not a formalised claim: check vacuity and narrative drift before calling it done, and record the status with proof-verification.</bpmn:documentation>
       <bpmn:extensionElements>
         <bootstrap.processes:skill ref="lean-formalization" />
@@ -135,7 +135,7 @@
       <bpmn:outgoing>A07</bpmn:outgoing>
       <bpmn:outgoing>A08</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="Task_Validate" name="6 · Validate&#10;[content-validate]">
+    <bpmn:serviceTask id="Task_Validate" name="6 · Validate">
       <bpmn:documentation>Run content validation over the folio: schemas, the content profile (formal kinds only in a paper), cross-block consistency and that the Lean builds. Loop back rather than rendering over a failure.</bpmn:documentation>
       <bpmn:extensionElements>
         <bootstrap.processes:skill ref="content-validate" />
@@ -143,7 +143,7 @@
       <bpmn:incoming>A08</bpmn:incoming>
       <bpmn:outgoing>A09</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Task_Render" name="7 · Render PDF / HTML&#10;[latex-authoring]">
+    <bpmn:serviceTask id="Task_Render" name="7 · Render PDF / HTML">
       <bpmn:documentation>Typeset the paper through LaTeX to PDF and HTML. Run latex_preflight first — missing packages, fonts or engine — rather than discovering them twenty minutes in. The preamble, class and macros belong to the folio, never to the platform.</bpmn:documentation>
       <bpmn:extensionElements>
         <bootstrap.processes:skill ref="latex-authoring" />
@@ -151,7 +151,7 @@
       <bpmn:incoming>A09</bpmn:incoming>
       <bpmn:outgoing>A10</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:userTask id="Task_Review" name="8 · Review and feedback&#10;[content-review]">
+    <bpmn:userTask id="Task_Review" name="8 · Review and feedback">
       <bpmn:documentation>Review the rendered paper, not a description of it, and record the feedback. The outcome is iterate — back to authoring — or approved for the publication path.</bpmn:documentation>
       <bpmn:extensionElements>
         <bootstrap.processes:skill ref="content-review" />
@@ -165,7 +165,7 @@
       <bpmn:outgoing>A12</bpmn:outgoing>
       <bpmn:outgoing>A13</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="Task_Publish" name="9 · Publish&#10;[content-publish]">
+    <bpmn:serviceTask id="Task_Publish" name="9 · Publish">
       <bpmn:documentation>See draft-to-publication.bpmn for the review and release path this expands into.</bpmn:documentation>
       <bpmn:extensionElements>
         <bootstrap.processes:skill ref="content-publish" />
@@ -176,7 +176,7 @@
     <bpmn:endEvent id="EndEvent_Published" name="Paper published">
       <bpmn:incoming>SF_Bean_4</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:callActivity id="Call_BeanOpen" name="Open the bean&#10;[bean-open]" calledElement="Process_BeanOpen">
+    <bpmn:callActivity id="Call_BeanOpen" name="Open the bean" calledElement="Process_BeanOpen">
       <bpmn:documentation>Process_BeanOpen: check before you create, find out whose the bean is, and claim it — or leave it alone when it is someone else's. The one place a claim is drawn (bean m8gz, owner 2026-10-24); the gateway after this reads which end it reached.</bpmn:documentation>
       <bpmn:extensionElements><bootstrap.processes:skill ref="bean-coordination"/></bpmn:extensionElements>
       <bpmn:incoming>A02</bpmn:incoming>
@@ -192,7 +192,7 @@
       <bpmn:documentation>Someone else holds the bean; this run stops without touching it.</bpmn:documentation>
       <bpmn:incoming>SF_Bean_3</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:callActivity id="Call_BeanClose" name="Close the bean&#10;[bean-close]" calledElement="Process_BeanClose">
+    <bpmn:callActivity id="Call_BeanClose" name="Close the bean" calledElement="Process_BeanClose">
       <bpmn:documentation>Process_BeanClose: end the bean in a state that says why — complete and archive it, scrap it with its reasons and archive it, or record the blocker and hand it back. The one place resolve and archive are drawn (bean m8gz, owner 2026-10-24); placed straight before the end so the engine's resolve sees nothing left but the archive step.</bpmn:documentation>
       <bpmn:extensionElements><bootstrap.processes:skill ref="todo-manager"/></bpmn:extensionElements>
       <bpmn:incoming>A14</bpmn:incoming>

@@ -16,47 +16,47 @@ msgstr ""
 
 #: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:85
 #. Diagram label
-msgid "1 · Plan the paper [content-plan]"
+msgid "1 · Plan the paper"
 msgstr ""
 
 #: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:93
 #. Diagram label
-msgid "2 · Seed the work plan [todo-manager]"
+msgid "2 · Seed the work plan"
 msgstr ""
 
 #: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:102
 #. Diagram label
-msgid "3 · Scaffold the folio repo [content-plan]"
+msgid "3 · Scaffold the folio repo"
 msgstr ""
 
 #: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:110
 #. Diagram label
-msgid "4 · Author blocks [content-author]"
+msgid "4 · Author blocks"
 msgstr ""
 
 #: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:119
 #. Diagram label
-msgid "5 · Formalise in Lean [lean-formalization]"
+msgid "5 · Formalise in Lean"
 msgstr ""
 
 #: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:138
 #. Diagram label
-msgid "6 · Validate [content-validate]"
+msgid "6 · Validate"
 msgstr ""
 
 #: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:146
 #. Diagram label
-msgid "7 · Render PDF / HTML [latex-authoring]"
+msgid "7 · Render PDF / HTML"
 msgstr ""
 
 #: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:154
 #. Diagram label
-msgid "8 · Review and feedback [content-review]"
+msgid "8 · Review and feedback"
 msgstr ""
 
 #: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:168
 #. Diagram label
-msgid "9 · Publish [content-publish]"
+msgid "9 · Publish"
 msgstr ""
 
 #: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:130
@@ -111,7 +111,7 @@ msgstr ""
 
 #: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:195
 #. Diagram label
-msgid "Close the bean [bean-close]"
+msgid "Close the bean"
 msgstr ""
 
 #: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:103
@@ -181,7 +181,7 @@ msgstr ""
 
 #: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:179
 #. Diagram label
-msgid "Open the bean [bean-open]"
+msgid "Open the bean"
 msgstr ""
 
 #: ../folio-assistant-sci/processes/content/authoring-a-paper.bpmn:61
