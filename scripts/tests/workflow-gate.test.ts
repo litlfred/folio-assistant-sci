@@ -22,7 +22,7 @@ describe("the base is strict and the content-type processes are not", () => {
   test("an advisory process allows a step that is not enabled, and says why", async () => {
     const model = await loadProcessModel(workflowFile(HERE, "authoring-a-paper.bpmn"));
     const state = startInstance(model, { id: "g0", subject: "paper" });
-    const v = checkGate(model, state, "Task_Publish", []);
+    const v = checkGate(model, state, "Call_ReviewPublish", []);
     expect(v.allowed).toBe(true);
     expect(v.reason).toContain("advisory");
   });
