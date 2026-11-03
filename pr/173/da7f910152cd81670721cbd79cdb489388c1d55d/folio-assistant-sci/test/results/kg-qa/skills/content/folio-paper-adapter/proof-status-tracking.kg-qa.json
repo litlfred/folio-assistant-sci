@@ -1,0 +1,67 @@
+{
+  "$schema": "kg-qa/v1",
+  "subject": {
+    "kind": "skill",
+    "id": "proof-status-tracking",
+    "path": "skills/content/folio-paper-adapter/proof-status-tracking.md"
+  },
+  "source_hash": "3a3752763a63",
+  "criteria": {
+    "skill-is-a-stub": {
+      "result": "pass",
+      "findings": []
+    },
+    "skill-is-brief": {
+      "result": "pass",
+      "findings": []
+    },
+    "skill-not-a-document": {
+      "result": "pass",
+      "findings": []
+    },
+    "skill-no-repeated-heading": {
+      "result": "pass",
+      "findings": []
+    },
+    "prose-reviewed-since-code-changed": {
+      "result": "pass",
+      "findings": []
+    },
+    "prose-claims-resolve": {
+      "result": "unknown",
+      "findings": [
+        {
+          "where": "scripts/lean-witness.ts",
+          "detail": "file-run: scripts/lean-witness.ts is not in this repository"
+        },
+        {
+          "where": "scripts/lean-witness.ts",
+          "detail": "file-run: scripts/lean-witness.ts is not in this repository"
+        },
+        {
+          "where": "scripts/lean-audit.ts",
+          "detail": "file-run: scripts/lean-audit.ts is not in this repository"
+        },
+        {
+          "where": "scripts/witness-audit.ts",
+          "detail": "file-run: scripts/witness-audit.ts is not in this repository"
+        }
+      ]
+    },
+    "skill-voice-review-current": {
+      "result": "fail",
+      "findings": [
+        {
+          "where": "agent-skill-authoring",
+          "detail": "never reviewed against the agent-skill-authoring voice (12 skill rule(s)) — `bun run cat voice:review`"
+        }
+      ]
+    }
+  },
+  "totals": {
+    "pass": 5,
+    "fail": 1,
+    "n/a": 0,
+    "unknown": 1
+  }
+}
