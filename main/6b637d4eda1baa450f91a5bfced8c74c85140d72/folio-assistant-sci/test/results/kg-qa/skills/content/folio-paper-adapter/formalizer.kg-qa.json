@@ -1,0 +1,55 @@
+{
+  "$schema": "kg-qa/v1",
+  "subject": {
+    "kind": "skill",
+    "id": "formalizer",
+    "path": "skills/content/folio-paper-adapter/formalizer.md"
+  },
+  "source_hash": "ae617f00478f",
+  "criteria": {
+    "skill-is-a-stub": {
+      "result": "pass",
+      "findings": []
+    },
+    "skill-is-brief": {
+      "result": "pass",
+      "findings": []
+    },
+    "skill-not-a-document": {
+      "result": "pass",
+      "findings": []
+    },
+    "skill-no-repeated-heading": {
+      "result": "pass",
+      "findings": []
+    },
+    "prose-reviewed-since-code-changed": {
+      "result": "pass",
+      "findings": []
+    },
+    "prose-claims-resolve": {
+      "result": "fail",
+      "findings": [
+        {
+          "where": "LEAN_PACKAGES in folio-assistant/schemas/lean-packages.ts",
+          "detail": "location: no folio-assistant/schemas/lean-packages.ts — its directory exists here and the file is not in it"
+        }
+      ]
+    },
+    "skill-voice-review-current": {
+      "result": "fail",
+      "findings": [
+        {
+          "where": "agent-skill-authoring",
+          "detail": "never reviewed against the agent-skill-authoring voice (12 skill rule(s)) — `bun run cat voice:review`"
+        }
+      ]
+    }
+  },
+  "totals": {
+    "pass": 5,
+    "fail": 2,
+    "n/a": 0,
+    "unknown": 0
+  }
+}
