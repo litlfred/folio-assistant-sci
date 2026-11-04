@@ -25,10 +25,8 @@ allowed to count as "verified".
 | **could not determine** | the toolchain did not run, or the cache was cold, or the build died before any declaration elaborated | `lean-environment-setup` |
 
 **The third is never written as either of the other two.** A build that did not
-run is not a failed proof, and it is emphatically not a passed one. This is the
-same rule the QA sweep, the CI-health report and the README sections all follow
-here, and it is the one most often broken under time pressure: an agent that
-cannot build reports "no errors".
+run is not a failed proof, and it is emphatically not a passed one. An agent
+that cannot build must not report "no errors".
 
 ## What a green build does not tell you
 
@@ -49,11 +47,9 @@ worked, a falsely-verified one gets built upon.
 
 ## Recording it
 
-`proof-status-tracking` owns the sidecar and its shape. Two rules from it worth
-repeating because they are what makes the record trustworthy:
+`proof-status-tracking` owns the sidecar and its shape. Two of its rules:
 
-- The status is written by the sweep, **never hand-edited**. A hand-edited
-  status is an assertion wearing a measurement's clothes.
+- The status is written by the sweep, **never hand-edited**.
 - Every `sorry` carries the proof obligation it stands for
   (`skills/requirements/lean-verification.json`, SHALL). An unannotated `sorry`
   cannot be told from abandonment.

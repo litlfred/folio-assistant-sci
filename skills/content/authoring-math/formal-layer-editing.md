@@ -20,11 +20,10 @@ also add or update a matching `**Proof.**` narrative block in the sibling
 `.md` file. See `formalizer` and `proof-narrative-lean-equivalence` for the
 canonical format.
 
-Anti-pattern (FORBIDDEN): touching the formal-proof file without touching
-`.md`, or vice versa. The formal theorem and the narrative proof move together
-in a single coherent change. A `.md` that describes the **claim** but omits
-the **proof** is incomplete: the reader must be able to follow the argument
-from the `.md` alone.
+Never change the formal-proof file without the `.md`, or the `.md` without
+the formal file. A `.md` that states the **claim** but omits the **proof** is
+incomplete: the reader must be able to follow the argument from the `.md`
+alone.
 
 For every formal theorem `foo` proved in the sibling, the `.md` must contain:
 

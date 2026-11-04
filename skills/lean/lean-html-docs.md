@@ -96,8 +96,7 @@ the rail; a page with neither fails it.
 
 ## 3. Or publish it DYNAMICALLY, from the knowledge graph
 
-Owner, 2026-10-11 (qou): *"can we have it dynamically load from the KG instead
-of static content?"* — the hybrid route. doc-gen4 still elaborates; its static
+The hybrid route: doc-gen4 still elaborates; its static
 HTML is not published. `lean-kg-publish` reads doc-gen4's per-module
 **declaration data** (`.lake/build/doc-data/declaration-data-<Module>.bmp`) and
 writes JSON-LD shards plus one viewer page:

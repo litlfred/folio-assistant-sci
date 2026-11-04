@@ -46,7 +46,7 @@ these conventions when editing; do not convert to raw LaTeX. The rules are in
 After editing any `.md` file, run the TeX snippet validator on changed files:
 
 ```bash
-cd content && bun run pipeline/validate-tex.ts --file <path-to-changed.md>
+bun run folio-assistant-sci/pipeline/validate-tex.ts --file <path-to-changed.md>
 ```
 
 This uses **remark + remark-math** to parse the markdown AST and extracts all
@@ -54,8 +54,7 @@ TeX snippets (`$...$`, `$$...$$`, ` ```tex ``` ` blocks), then validates each
 via **unified-latex** AST parsing. Fix any errors before considering the edit
 complete.
 
-If TeX validation fails, fix the problematic snippet and re-validate before
-proceeding. Common issues:
+Common issues:
 
 - Unbalanced braces in inline math
 - Non-math environments inside `$$...$$` blocks

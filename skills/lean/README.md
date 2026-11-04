@@ -4,7 +4,7 @@
 
 # lean-skills
 
-The science layer's Lean tooling skills (`lean-formal-edges`, folio-assistant#1492). Declared HERE, from within `skills/`, by the instance that owns it (bean `cmsl` step 1, owner 2026-09-30, round 4). Until then only cat-harness declared it, as the mirror `folio-assistant-sci-lean-skills`, which cmsl step 3 removes.
+The science layer's Lean tooling skills: `lean-formal-edges`, elaborated formal dependencies between `lean.ref` declarations, and `lean-html-docs`, a folio's doc-gen4 render published with the harness chrome.
 
 Part of [folio-assistant-sci](../../README.md) 0.1.0, declared as `lean-skills`, holding `skills`.
 

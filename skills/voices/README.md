@@ -4,7 +4,7 @@
 
 # voices
 
-The `milnor` voice skill — a mathematics-exposition voice derived from the exemplar paper, as `voice.json` (12 rules, each citing what it was read from) beside `SKILL.md`. It lived in the PLATFORM until 2026-09-21, which meant cat-harness shipped voice CONTENT while claiming to hold none; the owner settled that it belongs to the science layer, the instance that derived it. Under `skills/` because a voice is a skill. Declared HERE rather than in `folio-assistant-sci.config.json`: #727 split the two, and a directory is something this instance IS rather than how it behaves when a folio loads it.
+The `milnor` voice skill — a mathematics-exposition voice derived from the exemplar paper, as `voice.json` (12 rules, each citing what it was read from) beside `SKILL.md` — and the `address-*` voices, each saying how to write for the scenario role it names. Under `skills/` because a voice is a skill.
 
 Part of [folio-assistant-sci](../../README.md) 0.1.0, declared as `voices`, holding `voices`.
 
@@ -18,11 +18,9 @@ Part of [folio-assistant-sci](../../README.md) 0.1.0, declared as `voices`, hold
 
 ## `milnor` — the Milnor Exposition Standard
 
-Moved here 2026-10-01 from the harness layer's voices guide, which may not link
-up the dependency arrow to the instances that ship voices (bean `rfuq`, issue
-#1770). What a voice *is*, how to activate one and how review works stay
-there: [`cat-harness/docs/guides/voices.md`](../../../cat-harness/docs/guides/voices.md);
-the author-facing rubric is this layer's skill
+What a voice *is*, how to activate one and how review works:
+[`cat-harness/docs/guides/voices.md`](../../../cat-harness/docs/guides/voices.md).
+The author-facing rubric is this layer's skill
 [`milnor-exposition-standard`](../content/authoring-math/milnor-exposition-standard.md).
 
 A scoring gate derived from John Milnor's "Link Groups" paper

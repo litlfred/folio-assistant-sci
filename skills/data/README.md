@@ -4,7 +4,7 @@
 
 # data-skills
 
-The science layer's reference-data skills: `reference-dataset-ingestion`, which turns a published constants table (CODATA first) into a library dataset whose values are addressable as `{{ <instance>.library.<entry>.<slug> }}` with provenance (bean uyp8). Declared HERE, from within `skills/`, by the instance that owns it (placement PR0, bean ejye). Until then only cat-harness declared it, as the mirror `folio-assistant-sci-data-skills`, which PR0 removed with the other 18 (bean cmsl option A, step 3).
+The science layer's reference-data skills: `reference-dataset-ingestion`, which turns a published constants table (CODATA first) into a library dataset whose values are addressable as `{{ <instance>.library.<entry>.<slug> }}` with provenance.
 
 Part of [folio-assistant-sci](../../README.md) 0.1.0, declared as `data-skills`, holding `skills`.
 

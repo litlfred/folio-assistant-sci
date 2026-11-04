@@ -18,8 +18,8 @@ allowed-tools: Bash Read
 A paper that quotes the electron mass should quote **one** electron mass, taken
 from **one** named edition of a named table, and a reader should be able to
 check where it came from. A vendored Python module of hand-copied literals
-fails all three: qou had three disagreeing `m_e` registries (qou bean `me3r`)
-and 53 scripts with hidden CODATA literals (`46ke`), and its `inv_alpha`
+fails all three: qou had three disagreeing `m_e` registries
+and 53 scripts with hidden CODATA literals, and its `inv_alpha`
 placeholder carried the **CODATA 2018** value `137.035999084` while the paper
 cites CODATA 2022 (`137.035999177`).
 
@@ -36,7 +36,7 @@ A library entry on the existing **tabular** rung:
 | `licence.json` | what is known about reuse, in `check-source-licence`'s shape |
 
 A value is then written in any block, and resolves the same way for the PDF,
-the blueprint and the site (bean `kott`):
+the blueprint and the site:
 
 ```markdown
 $m_e c^2 = {{ folio-assistant-sci.library.codata-2022.electron-mass-energy-equivalent-in-mev | precision: 11 }}$ MeV
@@ -90,5 +90,5 @@ did not.
 
 ## See also
 
-- `witnessed-values` (core) — the `{{ … }}` syntax, prefixes and filters.
+- `witnessed-values` (`folio-paper-adapter`) — the `{{ … }}` syntax, prefixes and filters.
 - `document-intake` / the ingestion pipeline — the tabular rung this uses.
