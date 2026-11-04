@@ -13,7 +13,7 @@ allowed-tools: Read Write Edit Bash Grep Glob
 ## Overview
 
 This skill performs a complete analysis-to-formalization pass on a single
-chapter of the manuscript.  It combines a glossary pass with the
+chapter of the manuscript.  It applies the `ontologist` (folio-assistant-core),
 `formalizer` and `lean-generation` skills in a structured, chunked workflow.
 
 ## When to Use This Skill
