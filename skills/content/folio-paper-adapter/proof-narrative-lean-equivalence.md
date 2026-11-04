@@ -11,7 +11,7 @@ allowed-tools: Read Grep Glob Bash Agent
 
 # Proof Narrative ↔ Lean Equivalence Audit
 
-> **Specialises [`narrative-asserts-code`](../../../../cat-harness/skills/sdlc/sdlc-core/narrative-asserts-code.md)**
+> **Specialises [`narrative-asserts-code`](../../../../cat-harness/sdlc/skills/sdlc-core/narrative-asserts-code.md)**
 > That skill asks, for every declared prose ↔ code
 > pair, whether the prose still says what the code does. This one answers it
 > for the one pair kind a proof assistant can settle mechanically: a block's
