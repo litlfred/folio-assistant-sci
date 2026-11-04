@@ -4,7 +4,7 @@
 
 > **Generated, and not the authority.** This is `folio-assistant-sci/processes/content/atomic-mass-drift-check.bpmn` (process `Process_AtomicMassDrift`) walked as a state machine. The diagram and the workflow engine decide; this list only reads them. Follow the `next:` line of each step rather than the order on the page, and record each step with the call it names, so the engine's committed state — not this list — says which edge was taken.
 
-Check that `AtomicMass.lean` is still in sync with the data table it is generated from.
+Check that `AtomicMass.lean` is still in sync with the data table it is generated from: the job regenerates and diffs, and any difference fails.
 
 ## Begin — Pull request, push to main, or dispatch (`Start_Change`)
 
