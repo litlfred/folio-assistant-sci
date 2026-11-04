@@ -289,8 +289,7 @@ with:
 Build the local dependency slice:
 
 ```bash
-cd content
-bun run pipeline/content-graph.ts --block <label> --depth 2
+bun run cat-harness-tools/pipeline/graph-index.ts --neighbors <label> --both --hops 2
 ```
 
 For each edge, verify:
