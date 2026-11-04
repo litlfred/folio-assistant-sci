@@ -21,7 +21,7 @@ export default toolFactory((t) =>
     io: {
       inputs: [
         { name: "paper", schema: t("Slug"), required: false, arg: { flag: "--paper" }, description: "One paper instead of all." },
-        { name: "contentRoot", schema: t("RepoPath"), required: false, arg: { flag: "--content-root" }, description: "Where content blocks live. NOT a Lean project root — see the note above this node." },
+        { name: "contentRoot", schema: t("RepoPath"), required: false, arg: { flag: "--content-root" }, description: "Where content blocks live. not a Lean project root." },
         { name: "json", schema: t("Flag"), required: false, arg: { flag: "--json" } },
         { name: "out", schema: t("RepoPath"), required: false, arg: { flag: "--out" } },
       ],

@@ -17,7 +17,7 @@
     <bpmn:participant id="Participant_Process_PaperAuthoring" name="Authoring a paper" processRef="Process_PaperAuthoring"/>
   </bpmn:collaboration>
   <bpmn:process id="Process_PaperAuthoring" name="Authoring a paper" isExecutable="false">
-    <bpmn:documentation>How a scientific paper or book folio is authored end to end, with Lean for its formal claims and LaTeX for its typesetting. folio-assistant — authoring a scientific paper end to end (Lean + LaTeX).
+    <bpmn:documentation>How a scientific paper or book folio is authored end to end, with Lean for its formal claims and LaTeX for its typesetting.
       Source of truth: this file. Open it in bpmn.io, Camunda Modeler, or any other
       BPMN 2.0 tool. The SVG under docs/assets/img/workflows/ is generated from it
       by `bun run cat render:bpmn` — never hand-edit the SVG.
@@ -25,35 +25,35 @@
       that implements it; &lt;cat-harness.processes:bean&gt; marks a step that reads or writes the shared
       work plan in beans/.
 
-Review, publish and committee feedback are core's shared Process_FolioReviewPublish, called after rendering (shared block G6 of the BPMN guidance review, owner Q-BR-7 A, 2026-11-01). Its `no` answer, changes asked, comes back to Task_AuthorBlocks.</bpmn:documentation>
+Review, publish and committee feedback are core's shared Process_FolioReviewPublish, called after rendering. Its `no` answer, changes asked, comes back to Task_AuthorBlocks.</bpmn:documentation>
     <bpmn:extensionElements>
       <cat-harness.processes:policy enforcement="advisory"/>
     </bpmn:extensionElements>
     <bpmn:laneSet id="LaneSet_Process_PaperAuthoring">
       <bpmn:lane id="Lane_Author" name="Author (person)" partitionElementRef="author">
-        <bpmn:documentation>The plan set here — chapters, the blocks each needs, what gets formalised — is upstream of everything else in the diagram and is never revisited: Gateway_ReviewOutcome's 'iterate' branch re-enters Lane_Agent's Task_AuthorBlocks directly, not this lane, so a scoping mistake made here surfaces only as churn several lanes downstream.</bpmn:documentation>
+        <bpmn:documentation>The plan set here — chapters, the blocks each needs, what gets formalised — is not revisited: GW_Published's 'no' branch re-enters Task_AuthorBlocks, not this lane, so a scoping mistake surfaces only as rework downstream.</bpmn:documentation>
         <bpmn:flowNodeRef>StartEvent_NewPaper</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_Plan</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>End_BeanNotYours</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_WorkPlan" name="Work plan (beans)" partitionElementRef="work-plan">
-        <bpmn:documentation>Sits between Task_Plan and Task_Scaffold as the one conversion point in this diagram: the author's plan becomes beans here, which is what lets a resumed session or a different agent pick up Task_Scaffold without having sat through Task_Plan itself.</bpmn:documentation>
+        <bpmn:documentation>Opens and claims the bean, then turns the author's plan into beans, so a resumed session or another agent can pick up Task_Scaffold.</bpmn:documentation>
         <bpmn:flowNodeRef>Call_BeanOpen</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>GW_BeanYours</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_SeedPlan</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_Agent" name="Authoring agent (system)" partitionElementRef="authoring-agent">
-        <bpmn:documentation>Scaffolds the repo from the author's plan and then writes every block — including every revision, since Gateway_ReviewOutcome's 'iterate' branch re-enters Task_AuthorBlocks directly rather than sending the change back to Lane_Author to be re-scoped. The plan is the author's decision; executing against it, first draft through every rewrite, is this lane's.</bpmn:documentation>
+        <bpmn:documentation>Scaffolds the repo from the author's plan and writes every block, including every revision: GW_Published's 'no' branch returns here, not to Lane_Author.</bpmn:documentation>
         <bpmn:flowNodeRef>Task_Scaffold</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_AuthorBlocks</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_Lean" name="Lean toolchain (lean-mcp)" partitionElementRef="lean-toolchain">
-        <bpmn:documentation>Owns its own loop: Gateway_LeanGreen's 'not yet' branch returns straight to Task_Formalize rather than out to a person, and the gateway itself is DMN-computed off the build result rather than argued, so nothing downstream can proceed on a proof that merely looks close enough. The paper does not reach Task_Validate until this lane's own gate says green.</bpmn:documentation>
+        <bpmn:documentation>Owns its own loop: Gateway_LeanGreen, computed by decisions/lean-build-gate.dmn from the build result, sends 'not yet' back to Task_Formalize. The paper reaches Task_Validate only when it says green.</bpmn:documentation>
         <bpmn:flowNodeRef>Task_Formalize</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_LeanGreen</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_Build" name="Build pipeline" partitionElementRef="build-pipeline">
-        <bpmn:documentation>Its three tasks bracket the human review rather than replace it: Validate and Render turn the Lean-green manuscript into the artefact Task_Review actually reads, and Publish only fires once Gateway_ReviewOutcome has said 'approved' — this lane builds what gets judged and executes what was decided, and decides nothing itself.</bpmn:documentation>
+        <bpmn:documentation>Validates and renders the Lean-green manuscript, calls the shared review-and-publish process (Call_ReviewPublish), and closes the bean once GW_Published says yes. It decides nothing itself.</bpmn:documentation>
         <bpmn:flowNodeRef>Task_Validate</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_Render</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Call_ReviewPublish</bpmn:flowNodeRef>
@@ -78,7 +78,7 @@ Review, publish and committee feedback are core's shared Process_FolioReviewPubl
       <bpmn:incoming>A05</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:callActivity id="Call_BeanOpen" name="Open the bean" calledElement="Process_BeanOpen">
-      <bpmn:documentation>Process_BeanOpen: check before you create, find out whose the bean is, and claim it — or leave it alone when it is someone else's. The one place a claim is drawn (bean m8gz, owner 2026-10-24); the gateway after this reads which end it reached.</bpmn:documentation>
+      <bpmn:documentation>Process_BeanOpen: check before you create, find out whose the bean is, and claim it — or leave it alone when it is someone else's. The one place a claim is drawn; the gateway after this reads which end it reached.</bpmn:documentation>
       <bpmn:extensionElements>
         <bootstrap.processes:skill ref="bean-coordination"/>
       </bpmn:extensionElements>
@@ -128,7 +128,7 @@ Review, publish and committee feedback are core's shared Process_FolioReviewPubl
       <bpmn:outgoing>A09</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:exclusiveGateway id="Gateway_LeanGreen" name="Build green, no sorries?">
-      <bpmn:documentation>Answered by the Lean build after formalisation: is it green with no `sorry` left? `not yet` loops on formalisation; `green` goes on to validation. A build that passes with a `sorry` is not green.</bpmn:documentation>
+      <bpmn:documentation>Answered by the Lean build after formalisation: is it green with no `sorry` left? `not yet` loops on formalisation; `green` goes on to validation. A build that passes with a deferred (closeable) `sorry` is not green; a sorry standing in for an open conjecture does not hold the gate.</bpmn:documentation>
       <bpmn:extensionElements>
         <cat-harness.processes:decision ref="decisions/lean-build-gate.dmn#Decision_LeanBuildGate"/>
       </bpmn:extensionElements>
@@ -145,7 +145,7 @@ Review, publish and committee feedback are core's shared Process_FolioReviewPubl
       <bpmn:outgoing>A12</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="Task_Render" name="Render PDF and HTML">
-      <bpmn:documentation>Typeset the paper through LaTeX to PDF and HTML. Run latex_preflight first — missing packages, fonts or engine — rather than discovering them twenty minutes in. The preamble, class and macros belong to the folio, never to the platform.</bpmn:documentation>
+      <bpmn:documentation>Typeset the paper through LaTeX to PDF and HTML. Run `latex-preflight` first to catch compile-breaking source patterns before a full compile. The preamble, class and macros belong to the folio, never to the platform.</bpmn:documentation>
       <bpmn:extensionElements>
         <bootstrap.processes:skill ref="latex-authoring"/>
       </bpmn:extensionElements>
@@ -153,7 +153,7 @@ Review, publish and committee feedback are core's shared Process_FolioReviewPubl
       <bpmn:outgoing>A13</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:callActivity id="Call_ReviewPublish" name="Review and publish" calledElement="Process_FolioReviewPublish">
-      <bpmn:documentation>Core's shared review-and-publish process (Process_FolioReviewPublish): the reviewer reads the rendered folio and approves it, asks for changes, or sends a working draft to the Authoring Committee. Before 2026-11-01 each authoring process drew these steps itself (shared block G6, owner Q-BR-7 A).</bpmn:documentation>
+      <bpmn:documentation>Core's shared review-and-publish process (Process_FolioReviewPublish): the reviewer reads the rendered folio and approves it, asks for changes, or sends a working draft to the Authoring Committee.</bpmn:documentation>
       <bpmn:extensionElements>
         <bootstrap.processes:skill ref="content-review"/>
       </bpmn:extensionElements>
@@ -167,7 +167,7 @@ Review, publish and committee feedback are core's shared Process_FolioReviewPubl
       <bpmn:outgoing>A17</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:callActivity id="Call_BeanClose" name="Close the bean" calledElement="Process_BeanClose">
-      <bpmn:documentation>Process_BeanClose: end the bean in a state that says why — complete and archive it, scrap it with its reasons and archive it, or record the blocker and hand it back. The one place resolve and archive are drawn (bean m8gz, owner 2026-10-24); placed straight before the end so the engine's resolve sees nothing left but the archive step.</bpmn:documentation>
+      <bpmn:documentation>Process_BeanClose: end the bean in a state that says why — complete and archive it, scrap it with its reasons and archive it, or record the blocker and hand it back. The one place resolve and archive are drawn; placed straight before the end so the engine's resolve sees nothing left but the archive step.</bpmn:documentation>
       <bpmn:extensionElements>
         <bootstrap.processes:skill ref="todo-manager"/>
       </bpmn:extensionElements>

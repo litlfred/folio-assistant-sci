@@ -4,7 +4,7 @@
 
 # sci-tools
 
-The science layer's Tool nodes. Declared 2026-10-04 with the first two, `paper-feature-build` and `tex-install`, the iterative paper-build loop (issue #2117). Reached by the harness through tool auto-discovery (cat-harness/tools/discover.ts), never by an import.
+The science layer's Tool nodes. One `<id>/<id>.ts` (or `.json`) per folder: LaTeX build and checks, the Lean build, cache, audit and publish tools, and the proof-object tools. Reached by the harness through tool auto-discovery (cat-harness/tools/discover.ts), never by an import.
 
 Part of [folio-assistant-sci](../README.md) 0.1.0, declared as `sci-tools`, holding `tools`.
 
