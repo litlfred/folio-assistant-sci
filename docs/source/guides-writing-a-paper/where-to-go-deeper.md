@@ -6,6 +6,4 @@
 - [TypeScript API reference]({{ '/api/' | relative_url }}) — the block model in detail
 - [Architecture]({{ '/docs/cat-harness/concepts/architecture.html' | relative_url }}) — how the paper adapter is wired
 
-> **Note on the screenshots.** The images above are *mockups* illustrating the
-> chat-driven workflow and the viewer. Replace them with real screenshots from
-> your own session under `docs/assets/img/` to keep the tutorial current.
+> **Note.** The chat and viewer images above are mockups.

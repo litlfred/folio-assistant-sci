@@ -33,11 +33,12 @@ preferred shape:
 
 - **NOT a logical-equivalence audit.** Two distinct theorems with the
   same conclusion but different hypotheses are NOT consolidation
-  candidates. See `local/proof-narrative-lean-equivalence` for that.
+  candidates. See [`proof-narrative-lean-equivalence`](proof-narrative-lean-equivalence.md) for that.
 - **NOT a notation-collision audit.** Two blocks using the same
-  symbol for different objects is `local/ontologist` territory.
-- **NOT a section-reordering audit.** That's
-  `local/chapter-complexity-review`.
+  symbol for different objects is `ontologist` territory.
+- **NOT a section-reordering audit.** That's the harness's
+  `chapter-complexity-review` (paper half:
+  [`paper-chapter-complexity`](../authoring-math/paper-chapter-complexity.md)).
 
 ## When to invoke
 
@@ -45,8 +46,8 @@ preferred shape:
   whether they introduce redundancy.
 - Reader feedback: "this chapter is too long" / "there's a lot of
   special-casing".
-- After authoring a new general parent theorem (this skill's birth
-  case): check whether old specialised props should be demoted.
+- After authoring a new general parent theorem: check whether old
+  specialised props should be demoted.
 - Periodic: `/integration-watch consolidation` for a sweep.
 
 ## Inputs
@@ -90,8 +91,7 @@ Two blocks A, B with `A.uses ∩ B.uses` covering > 70% of A.uses, and
 both being `proposition`/`theorem`/`lemma`, where neither cites the
 other, are candidates for sibling-merger.
 
-`bun run pipeline/uses-overlap-audit.ts <chapter>` (script to add)
-computes the matrix.
+No script computes the matrix yet; see step 4.
 
 ### H4. Identical citation tuple (LOWER signal)
 
@@ -146,9 +146,7 @@ for sig, blocks in sig_buckets.items():
         report("H2 candidate", blocks)
 ```
 
-(For the first cut, run grep + manual inspection rather than
-implementing the helper. The skill's value is the heuristic
-checklist; the script is an optimisation.)
+(No helper script exists; run grep and inspect by hand.)
 
 ### 4. H3 sweep — uses-overlap
 
@@ -251,7 +249,7 @@ A `consolidation` chip in the dispatcher's `AskUserQuestion`:
 /integration-watch all                         → includes consolidation
 ```
 
-Per the `local/integration-watch` argument grammar, dispatch this
+Per the `integration-watch` argument grammar, dispatch this
 skill as a child whose Monitor watches for new `proposition` /
 `theorem` blocks added to `origin/main` and re-runs H1+H2 on the
 new block against its chapter neighbours. New consolidation
@@ -312,10 +310,6 @@ User: /proposition-consolidation-audit chapter-A
 ```
 
 ## Harness skills that dispatch here
-
-This layer sits above cat-harness, so the link points down from here. The
-harness skills below describe this one generically and name no science skill
-(bean `syiq`).
 
 - `domain-fencing`: H3 and H2 are the examples of domain in the vocabulary only, and of a shape that generalizes when the detection does not.
 - `integration-backlog`: one of the routed improvers re-rated in the rate→improve loop.

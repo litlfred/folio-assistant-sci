@@ -21,9 +21,8 @@ restates the proposition at the top, chains parentheticals, pads
 with transitional phrases. A published proof should cut these
 without cutting any step of the argument.
 
-**This skill removes words, not reasoning.** Every logical step
-in the original proof survives. The output is shorter, denser,
-and — when done well — easier to read, not harder.
+**This skill removes words, not reasoning:** every logical step
+in the original survives.
 
 ## Contrast with related skills
 
@@ -276,9 +275,5 @@ If any of these shift unexpectedly, re-audit the diff.
 - [ ] Edits applied only after author approves
 
 ## Harness skills that dispatch here
-
-This layer sits above cat-harness, so the link points down from here. The
-harness skills below describe this one generically and name no science skill
-(bean `syiq`).
 
 - `one-voice-audit`: as the content type's proof-trimming skill.

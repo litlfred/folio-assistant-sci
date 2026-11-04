@@ -15,11 +15,6 @@ Ensure every simulator in the folio accurately reflects the mathematics
 it claims to visualise, and that it derives its numbers rather than
 restating them.
 
-> Recovered from a migration that lost its payload: qou carried a stub
-> pointing at a folio-assistant path that never existed. Restored here
-> and generalised — the original hardcoded one folio's compute substrate
-> and constants.
-
 ## Instructions
 
 1. **Identify simulators.** Locate blocks with `kind: "simulator"` under
@@ -43,9 +38,7 @@ restating them.
      paper's canonical source. A simulator is part of the compute side
      of the repository, not a separate re-implementation.
 
-     A hardcoded constant is a silent divergence: the paper's value can
-     be corrected and the simulator will keep showing the old one, with
-     nothing failing. Treat any literal numeric constant in a simulator
+     Treat any literal numeric constant in a simulator
      as a finding unless it is a pure display parameter (canvas size,
      frame rate, colour).
 

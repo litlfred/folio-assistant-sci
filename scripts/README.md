@@ -7,7 +7,7 @@ generated: "scripts/subgraph-readmes.ts of the bootstrap toolset (https://github
 
 # sci-scripts
 
-Tests that hold the harness's code against what this instance owns or contributes: its paper processes and decision tables, its pipeline plugins and contributed checkers. The code under test is imported down from cat-harness. Also the Lean cache service and its tests: `lake-cache.sh` (the `lean-cache` tool), `reseed-lean-cache.sh`, `lake-cache-fetch.sh`, `lake-cache-produce.py`, `lake-cache-fetch-multi.py` and their `.bat` entry points, moved here from cat-harness-tools `scripts/` (folio-assistant#2598; owner 2026-10-23, "C ok"): only a Lean folio runs them, and the `lake-cache` kind is this layer's. The cache branch family they read and write keeps its name, `cat/folio-assistant-sci/lake-cache/<pkg>` (owner, 2026-10-02).
+This instance's scripts: its checkout checks (`check-lean-dirs.ts`, `check-editor-checkers.ts`, `check-workflows-security.ts`, `extract-references.ts`), Lean helpers (`setup-lean-toolchain.sh`, `lean-audit.ts`, `lean-coverage.ts`, `lsi-lean-decls.ts`), the Lean cache service (`lake-cache.sh` — the `lean-cache` tool — `reseed-lean-cache.sh`, `lake-cache-fetch.sh`, `lake-cache-produce.py`, `lake-cache-fetch-multi.py` and their `.bat` entry points, which only a Lean folio runs; they read and write the branch family `cat/folio-assistant-sci/lake-cache/<pkg>`), and `tests/`, which hold the harness's code, imported down from cat-harness, against this instance's paper processes, decision tables, pipeline plugins and contributed checkers.
 
 Part of [folio-assistant-sci](../README.md) 0.1.0, declared as `sci-scripts`, holding `code`.
 

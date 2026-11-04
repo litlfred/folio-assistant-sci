@@ -89,8 +89,7 @@ When the MCP server is available, use it for analysis and alternatives:
    - **Measure** the change, don't estimate it. Record
      `lean_profile_proof` elaboration cost before and after; a
      "simplification" that elaborates slower is a regression wearing a
-     shorter proof. Estimating length was the old instruction and it
-     let cost regressions through unnoticed.
+     shorter proof.
    - Flag any downstream declarations that would need updating
 
 5. **Confirm with the author.** Present simplifications as multiple-choice
@@ -179,22 +178,18 @@ objects, not across unrelated blocks.
 
 ## Common anti-patterns — use the strategy database
 
-The table below is now **data**, not prose:
+The anti-patterns are data in
 `folio-assistant-sci/pipeline/refactor-strategies/*.json`, typed by
-`schemas/refactor-strategy.ts`. Query it instead of reading the table,
-because the data knows two things the table cannot:
+`schemas/refactor-strategy.ts`. Query them:
 
 ```sh
 # What may I safely apply to this corpus?
 bun run folio-assistant-sci/pipeline/refactor-strategy.ts --lean 4.24.0 --applicable
 ```
 
-1. **Version gating.** A rewrite sound on one Mathlib release can
-   silently change meaning or stop compiling on another (`simp` sets
-   churn; `FunLike` became `DFunLike`). Every strategy declares the Lean
-   range it is known-good for, and the query **fails closed**: a
-   strategy with no declared range is excluded, because "unknown" must
-   not read as "fine".
+1. **Version gating.** Every strategy declares the Lean range it is
+   known-good for (`simp` sets churn; `FunLike` became `DFunLike`). The
+   query **fails closed**: a strategy with no declared range is excluded.
 
 2. **Confidence.** `verified` strategies have been applied and
    re-checked against a build here — an agent may apply one unattended,
@@ -202,11 +197,9 @@ bun run folio-assistant-sci/pipeline/refactor-strategy.ts --lean 4.24.0 --applic
    suggestions for a human. `deprecated` ones are never applicable and
    are retained only so they are not re-proposed from scratch.
 
-**Never apply a rewrite without re-checking the build.** The problem
-being solved is "correct but verbose"; trading it for "concise but
-broken" is not progress. Several strategies carry caveats that are
-easy to miss — `fold-unfold-rw-into-simp` in particular is *not*
-equivalent in general (`rw` rewrites once at the first match, `simp`
+**Never apply a rewrite without re-checking the build.** Several
+strategies carry easy-to-miss caveats: `fold-unfold-rw-into-simp` is
+*not* equivalent in general (`rw` rewrites once at the first match, `simp`
 rewrites to normal form).
 
 Adding a strategy: append to the JSON with an id, objectives, a Lean
@@ -215,8 +208,7 @@ it proposed. `pipeline/refactor-strategy.test.ts` enforces those
 invariants. A content repo may shadow a shipped strategy by declaring
 the same id in its own `refactor-strategies/`.
 
-The original table, retained as the human-readable index of what the
-database contains:
+Index of what the database contains:
 
 | Anti-pattern | Fix |
 |-------------|-----|
@@ -241,9 +233,5 @@ database contains:
 - Document the simplification in a `% Simplified from ...` comment
 
 ## Harness skills that dispatch here
-
-This layer sits above cat-harness, so the link points down from here. The
-harness skills below describe this one generically and name no science skill
-(bean `syiq`).
 
 - `integration-backlog`: one of the routed improvers re-rated in the rate→improve loop.

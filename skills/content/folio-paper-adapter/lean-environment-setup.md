@@ -17,10 +17,10 @@ allowed-tools: Read Edit Bash Grep Glob
 > install` SSL/`failed to parse release data`, empty `~/.elan/toolchains/`,
 > `lake build` timeout — **do NOT conclude "Lean is unavailable."** Several of
 > these (cache-403, toolchain-host-firewalled, leansearch/loogle SSL) have
-> **documented workarounds in this very file** (§"Mathlib cache 403 fallback"
-> + §"Web-sandbox addendum" + §"Offline Mathlib search"). The recurring
-> failure mode is *agents re-deriving these workarounds — or giving up —
-> instead of grepping for them.*
+> **documented workarounds**: §"Mathlib cache 403 fallback" and
+> §"Web-sandbox addendum" in
+> [`lean-environment-setup/mathlib-cache-fallback.md`](lean-environment-setup/mathlib-cache-fallback.md),
+> and §"Offline Mathlib search" below.
 >
 > **Discipline:** when a tool or environment operation fails, FIRST
 > `grep -ri "<error keyword>" .claude/skills/ skills/ AGENTS.md docs/`
@@ -29,7 +29,8 @@ allowed-tools: Read Edit Bash Grep Glob
 > rigorous hand-audit — and then say so explicitly.
 >
 > **If the install is long/uncertain, DELEGATE it to a sub-agent** (see
-> §"Delegate the install to a sub-agent" near the foot of this file) so the
+> §"Delegate the install to a sub-agent" in
+> [`lean-environment-setup/mathlib-cache-fallback.md`](lean-environment-setup/mathlib-cache-fallback.md#delegate-the-install-to-a-sub-agent-recommended-for-the-main-task)) so the
 > main task is not blocked on a multi-minute toolchain fetch + mathlib build.
 
 ## Architecture
@@ -146,35 +147,31 @@ In a web sandbox the hosted search services (`loogle.lean-lang.org`,
 3. **`lean_hover_info` / `lean_declaration_file` (MCP)** — offline once a
    file is loaded; type signature / source of a known name.
 
-**Why not run loogle locally?** loogle is a Lean exe that imports and indexes
-*all* of Mathlib, so it needs Mathlib oleans for **its own** toolchain, which
-may pin a newer toolchain than the repo cache; standing it up means a
-from-source Mathlib rebuild that cannot reuse commit-pinned cache oleans. The
-grep route answers the same questions in seconds.
+Do not stand up loogle locally: it needs Mathlib oleans for its own, often
+newer, toolchain — a from-source rebuild. Grep answers the same questions in
+seconds.
 
 ## Troubleshooting
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
 | "No such file or directory: 'lake'" | lean not on PATH | `export PATH="$HOME/.elan/bin:$PATH"` or install elan |
-| elan install 403 | Network restrictions | Use the GitHub-release manual install (§"Web-sandbox addendum" item 1) |
+| elan install 403 | Network restrictions | Use the GitHub-release manual install ([`mathlib-cache-fallback.md`](lean-environment-setup/mathlib-cache-fallback.md) §"Web-sandbox addendum" item 1) |
 | "lake update" hangs | Git fetch blocked | Check `git ls-remote` works for mathlib4 |
 | Lean tools timeout | Workspace not built | Run `lake build` at the **repo root** (root workspace builds all paper packages) |
-| **`lake exe cache get` → 403 on all shards** | **Mathlib cache host blocked from this network** | **See "Mathlib cache 403 fallback" below — clone mathlib source locally + git insteadOf** |
+| **`lake exe cache get` → 403 on all shards** | **Mathlib cache host blocked from this network** | **`folio-assistant-sci/scripts/lake-cache.sh restore`; else see [`mathlib-cache-fallback.md`](lean-environment-setup/mathlib-cache-fallback.md)** |
 | **`lean_diagnostic_messages` MCP times out at 60s** | **No prebuilt oleans + cache 403** | **Same fix as cache 403 above — local clone unblocks LSP** |
 | "toolchain not installed" | Wrong lean version | `elan toolchain install $(cat lean-toolchain)` from the repo root |
 | paper-assistant shows `✗ lean` | lean not on PATH | Add `$HOME/.elan/bin` to PATH in shell profile |
 
 
-## Where the cache workaround went
+## Companion file
 
-This skill was 587 lines, and 419 of them were one workaround for `lake exe
-cache get` returning 403 — a case most sessions never hit, read by every session
-that loads the skill. It now sits beside this file. Nothing was deleted.
+The Mathlib cache 403 workaround lives in a companion file:
 
 | what | where |
 |---|---|
 | FAST ROUTE, architecture, prerequisites, setup, Docker, no-Lean fallback, troubleshooting | **here** |
 | Mathlib cache 403 fallback — packing oleans, orphan branch, chunking | [`lean-environment-setup/mathlib-cache-fallback.md`](lean-environment-setup/mathlib-cache-fallback.md) |
 
-Go there only once the FAST ROUTE below has actually failed.
+Go there only once the FAST ROUTE above has failed.

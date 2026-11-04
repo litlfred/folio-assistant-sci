@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: atomic-mass-drift-check\n"
-"POT-Creation-Date: 2026-11-01T10:29:44.150Z\n"
+"POT-Creation-Date: 2026-11-04T12:14:54.808Z\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language: ar\n"
@@ -26,7 +26,7 @@ msgstr ""
 
 #: ../folio-assistant-sci/processes/content/atomic-mass-drift-check.bpmn:16
 #. Diagram element documentation
-msgid "Check that `AtomicMass.lean` is still in sync with the data table it is generated from. THE SMALLEST WORKFLOW HERE, AND THE ONE WHOSE OUTPUT A PROOF DEPENDS ON. `AtomicMass.lean` is generated from a data table; if the two part company, a Lean file that compiles is nevertheless carrying numbers nothing produced. So the job regenerates and diffs, and any difference is red. The check itself is the shared `generated-file-drift` process (Process_GeneratedFileDrift), drawn once for every drift check. This diagram stays because its workflow's job names Start_Change (`# bpmn-node:`), which is what lets check:workflow-coverage see the job."
+msgid "Check that `AtomicMass.lean` is still in sync with the data table it is generated from: the job regenerates and diffs, and any difference fails. The check itself is the shared `generated-file-drift` process (Process_GeneratedFileDrift), drawn once for every drift check. Its workflow's job names Start_Change (`# bpmn-node:`), which is how check:workflow-coverage sees the job."
 msgstr ""
 
 #: ../folio-assistant-sci/processes/content/atomic-mass-drift-check.bpmn:38

@@ -6,7 +6,7 @@ export default toolFactory((t) =>
     id: "tex-source-audit",
     title: "TeX-source hazard audit",
     description:
-      "Catch the source patterns that crash pdflatex but read as ordinary prose — a bare `_` or `^` in a bibliography field, `|` inside a markdown table cell where it is also the column separator, a `$…$` span across two lines, markdown link syntax inside a fenced tex block, a double subscript. Born from named build failures rather than from a style opinion.",
+      "Catch the source patterns that crash pdflatex but read as ordinary prose — a bare `_` or `^` in a bibliography field, `|` inside a markdown table cell where it is also the column separator, a `$…$` span across two lines, markdown link syntax inside a fenced tex block, a double subscript.",
     install: { none: true },
     invoke: { shell: "bun run cat latex:audit-source" },
     io: {

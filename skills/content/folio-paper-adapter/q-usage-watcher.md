@@ -12,7 +12,7 @@ description: >
   sidecars under the `q-usage-*` criteria and a global witness JSON.
   Inherits shared mechanics (Monitor, subscriptions, queue, ledger,
   idle sweep, author-ask, watch-prepared-PRs, witness-drift recovery,
-  billing-quick-fail flake) from `local/integration-watcher`.
+  billing-quick-fail flake) from `integration-watcher`.
 allowed-tools: Read Edit Write Bash Grep Glob Agent Monitor Skill
 ---
 
@@ -32,7 +32,7 @@ allowed-tools: Read Edit Write Bash Grep Glob Agent Monitor Skill
 > `cat-harness-tools/pipeline/qa-criteria-registry.ts`.
 
 
-A concrete instance of [`local/integration-watcher`](../../../../cat-harness/skills/sdlc/sdlc-core/integration-watcher.md).
+A concrete instance of [`integration-watcher`](../../../../cat-harness/skills/sdlc/sdlc-core/integration-watcher.md).
 The parent encodes the shared mechanics; this file fills the nine
 domain-specific slots A–I and documents the q-regime taxonomy.
 
@@ -84,7 +84,7 @@ instead of `|q| > 1`.
 
 ### Chapter → expected-regime profile
 
-Chapters are partitioned into three groups in the implementation:
+A folio partitions its chapters into three groups. Example (one folio's profile):
 
 - **categorical** — `quantum-universes`, `lifting-and-descent`,
   `braids-and-knots`, `appendix-knot-operations`, `appendix-surreals`.
@@ -139,7 +139,7 @@ mentions: `q regime`, `q usage`, `q_0`, `Real.sqrt`, `|q|`, `q > 1`,
 |-----------|--------------|-----------------|
 | `q-usage-audit.ts` | Any changed block | Runs the full 7-criterion suite, updates `<block>.qa.json`, emits witness |
 | `q-usage-audit.ts --chapter <dir>` | Chapter-scoped change | Same but on one chapter |
-| `qa-checkers-q-usage.ts` (contributed to `qa-sweep` through `qa-checkers/q-usage-*.json`) | Any sweep run | Per-criterion checker function for the new q-usage axis |
+| `qa-checkers-q-usage.ts` (contributed to `qa-sweep` through `qa-checkers/q-usage-*.json`) | Any sweep run | Per-criterion checker function for the q-usage axis |
 | `production-vs-exploratory-discipline` | Fixed-q_0 leak finding | Cross-axis — fixed-q_0 leak in a categorical chapter often signals an exploratory block that needs the production-vs-exploratory decision |
 | `compute-audit` (existing skill) | Real.* leak finding | Cross-axis — Real.* in a Lean block flags archimedean specialisation; compute-audit verifies the archimedean side actually consumes it |
 
@@ -160,7 +160,7 @@ mentions: `q regime`, `q usage`, `q_0`, `Real.sqrt`, `|q|`, `q > 1`,
 | Band | Examples |
 |------|----------|
 | **Auto-discharge** | None today — all q-usage findings touch semantic placement of a block and need author input. The infrastructure criterion `q-usage-regime-detected` is always recorded automatically. |
-| **Author-assist** | All seven criteria — `fixed-q_0` placement, `Real.*` placement, positivity-hypothesis additions, modulus-vs-real prose rewrites, root-of-unity declaration insertions, chapter relocations. |
+| **Author-assist** | The six finding criteria — `fixed-q_0` placement, `Real.*` placement, positivity-hypothesis additions, modulus-vs-real prose rewrites, root-of-unity declaration insertions, chapter relocations. |
 | **Defer** | A block with an author-granted **dispensation** in its sidecar (per §Dispensations below) — the dispensation overrides the script's fail. The paper content (`.ts` / `.md` / `.lean`) is never tagged for dispensation; the dispensation lives entirely in the audit sidecar. |
 
 ## §Dispensations — how to grant per-block opt-out (STRICT)
@@ -222,27 +222,19 @@ A dispensed block's sidecar looks like:
    `q-usage-archimedean-in-categorical-chapter` — each criterion is
    tracked independently. Add one human entry per dispensed criterion.
 
-### Why this works
+### Why the sidecar
 
-- **Zero schema change** — `block-qa/v1` already supports
-  multi-reviewer entries with the most-recent-matching-hash-wins
-  rule.
-- **CI / qa-sweep / qa-staleness / one-voice-integration-watcher
-  already understand the pattern** — they don't need to know about
-  q-usage specifically; the dispensation works because it's a
-  generic block-qa primitive.
-- **Hash-staleness is safety.** A dispensation written against
-  yesterday's content can't silently mask today's drift. Re-granting
-  is the explicit acknowledgement that the dispensation still applies.
-- **Paper content stays clean.** Readers reading the `.md` / `.ts`
-  see no audit metadata.
+- `block-qa/v1` already supports multi-reviewer entries, so no schema
+  change is needed.
+- qa-sweep, qa-staleness and the watchers handle it as a generic
+  block-qa primitive.
+- The paper `.md` / `.ts` carry no audit metadata.
 
 ### Anti-pattern (do NOT do)
 
 - ❌ Add `wall: "archimedean-specialisation"` (or any other
-  audit-control tag) to the block's `.ts` manifest. This was the
-  previous (pre-2026-06-01) approach; it was rejected for mixing
-  audit concerns with paper content.
+  audit-control tag) to the block's `.ts` manifest. It mixes audit
+  concerns with paper content.
 - ❌ Set a `human` entry's `result: "pass"` without populating
   `notes:` — undocumented dispensation defeats the audit trail.
 - ❌ Re-use one human entry across multiple criteria — each
@@ -261,8 +253,8 @@ Per-violation template:
 - File: <github-blob-url to `.md`>
 - Evidence: `<file:line>` — `<verbatim quote>`
 - Question:
-  1. Add `wall: "archimedean"` / `"archimedean-specialisation"` tag on
-     `<ts-file>` (treat as legitimate archimedean specialisation)
+  1. Grant a dispensation in `<block>.qa.json` per §Dispensations
+     (legitimate archimedean specialisation)
   2. Move the block to an archimedean chapter (suggest: `<best-fit>`)
   3. Split off the numerical evaluation into a sibling
      `<block>-substrate-evaluation.md` in the appropriate archimedean
@@ -319,7 +311,7 @@ bun run folio-assistant-sci/pipeline/q-usage-audit.ts --no-write --strict
 
 ## Cross-references
 
-- Parent: [`local/integration-watcher`](../../../../cat-harness/skills/sdlc/sdlc-core/integration-watcher.md)
+- Parent: [`integration-watcher`](../../../../cat-harness/skills/sdlc/sdlc-core/integration-watcher.md)
 - Sibling watchers: [`canonical-watcher`](../../../../cat-harness/skills/authoring/authoring-core/canonical-watcher.md),
   [`proof-integration-watcher`](proof-integration-watcher.md),
   [`compute-integration-watcher`](compute-integration-watcher.md),
@@ -334,9 +326,5 @@ bun run folio-assistant-sci/pipeline/q-usage-audit.ts --no-write --strict
   (search for the `Q_USAGE` const array).
 
 ## Harness skills that dispatch here
-
-This layer sits above cat-harness, so the link points down from here. The
-harness skills below describe this one generically and name no science skill
-(bean `syiq`).
 
 - `domain-fencing`: its first paragraph is the model of a folio-optional axis fencing itself.

@@ -33,7 +33,7 @@ export default toolFactory((t) =>
     satisfies: ["lean-html-docs"],
     requires: { runtime: ["bun"], network: false },
     selection: {
-      when: "Instead of `lean-render-publish` when the folio publishes its Lean as a dynamic viewer over graph shards (owner choice for qou, 2026-10-11), and for STAGING branches with `--base`.",
+      when: "Instead of `lean-render-publish` when the folio publishes its Lean as a dynamic viewer over graph shards, and for STAGING branches with `--base`.",
       limits:
         "doc-gen4 still has to elaborate: the shards come from its doc-data, so `lean-html-docs` (or a restored doc-gen4 cache) runs first. Links into pruned modules go to the community docs, built from their Mathlib. Docstrings are rendered client-side with marked and MathJax from CDNs.",
       cost: "Measured on qou 2026-10-11: 3,011 modules, 53,565 declarations, 651 formalizing a block; 6,005 files / 171 MB / 13 s; a no-change overlay writes 0 module files.",

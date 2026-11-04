@@ -24,11 +24,9 @@ rules mean for a paper folio with a Lean formal layer.
 ## A local `lake build` is not CI
 
 A local `lake build` runs on a warm `.lake`, your toolchain and whatever
-build flags you set. CI runs cold. Check when the Lean workflow last ran, too:
-qou's `lean_ci.yml` last ran 2026-04-25 and failed on `main`. Nothing
-dispatched it for four months, and 37 modules stopped compiling unnoticed,
-several with plain parse errors, which means files that had never compiled
-at all.
+build flags you set. CI runs cold. Check when the Lean workflow last ran:
+one nobody dispatches lets modules stop compiling unnoticed, including
+files that never compiled at all.
 
 ## What a Lake build reaches
 
@@ -36,10 +34,9 @@ Lake's `lean_lib` uses `globs := roots.map Glob.one`, so `lake build`
 compiles the root module plus its transitive `import`s, not the source
 directory. `srcDir` widens where sources are *found*, never what is *built*.
 
-Measured in qou on 2026-08-08: `lake build` reached **853 of the 1618**
-modules under `lean/QOU/`. The other 766 (47%) had no olean at all. Among
-them was the module holding the single `sorry` gating the Specht chain, which
-is why the package build's sorry-warning list omitted it.
+In one folio, `lake build` reached about half the modules under its source
+tree; an unbuilt module held the only `sorry` gating a main result, so the
+build's sorry-warning list omitted it.
 
 Count oleans against sources:
 

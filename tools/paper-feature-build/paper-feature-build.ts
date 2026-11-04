@@ -6,7 +6,7 @@ export default toolFactory((t) =>
     id: "paper-feature-build",
     title: "Paper feature build (changed chapters + latexdiff)",
     description:
-      "Quick preview of a paper folio's branch: render the paper with the sci print template (plus the folio's notation fragment when it has one), then compile ONLY the chapters changed against a base ref, and a colored and a plain latexdiff of each. Margin notes are off by default (`FAST_PREVIEW=1`, about 2x). Cross-references to chapters outside the build print as '??'. A preview, never a publish build. Run from the folio. Without a TeX engine the render still runs and the compile steps are skipped with a message.",
+      "Quick preview of a paper folio's branch: render the paper with the sci print template (plus the folio's notation fragment when it has one), then compile ONLY the chapters changed against a base ref, and a colored and a plain latexdiff of each. A preview, never a publish build. Run from the folio.",
     install: { none: true },
     invoke: { shell: "bash folio-assistant-sci/adapters/paper/latex/feature-build.sh" },
     io: {
@@ -28,7 +28,7 @@ export default toolFactory((t) =>
       when:
         "Iterating on a paper's prose or mathematics, before a full build: you want to see the changed chapters typeset, and what changed, in a minute or so instead of compiling the whole paper.",
       limits:
-        "A preview: cross-references outside the build show '??', margin notes are off by default, and a chapter's base latexdiff degrades to 'all added' when the base ref has no committed chapter .tex. Needs pdflatex/latexmk for the PDFs and latexdiff for the diffs; without them only the render runs.",
+        "A preview: cross-references outside the build show '??', margin notes are off by default (`FAST_PREVIEW=1`, about 2x faster), and a chapter's base latexdiff degrades to 'all added' when the base ref has no committed chapter .tex. Needs pdflatex/latexmk for the PDFs and latexdiff for the diffs; without them only the render runs.",
       cost: "One paper render (about 20-40 s on a 2,900-block paper) plus one pdflatex compile per output PDF.",
     },
   }),

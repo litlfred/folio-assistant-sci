@@ -12,9 +12,7 @@ description: >-
 The harness skill `scientific-accuracy` reviews any scholarly content for
 correctness, rigor and reproducibility. A folio whose content type carries a
 formal-proof layer (a paper folio, with Lean beside the narrative) needs more,
-and those checks are here, in the layer that ships that content type. They
-lived in `scientific-accuracy` until 2026-10-24 and moved out under bean
-`syiq`, so the harness names no formal layer and this skill links down to it.
+and those checks are here, in the layer that ships that content type.
 
 Run this skill alongside `scientific-accuracy`, never instead of it, and
 report in its output format.
@@ -35,8 +33,6 @@ report in its output format.
   of each.
 
 ## Formal cross-references
-
-If the project carries a formal-proof layer alongside the narrative:
 
 - Numerical constants in the manuscript must match the corresponding
   constants in the formal source exactly.

@@ -21,12 +21,6 @@ unchanged vs prior commit, no `sorryAx`) but not the *content*. This skill
 catches the family of **vacuous proofs** — proofs whose validity is purely
 syntactic — and drains them to honest representations.
 
-The canonical trigger: a batch "fix proof-statement-integrity" pass that
-discharges a `sorry`/false-`axiom` by wrapping the conclusion in a `structure`
-field and projecting it. That removes the `sorry` and the axiom, the statement
-is unchanged, the checker goes green — but the theorem now **assumes its own
-conclusion**.
-
 ## The anti-pattern family
 
 ### 1. Self-assuming projection (circular) — `proof-no-self-assuming-projection`
@@ -122,25 +116,18 @@ Tiers (agent-confirmed):
 Do **not** flag an axiom that already carries a `-- Ref:` / citation — resting
 on a cited upstream result is sound.
 
-**An API that is hard to unfold is not a reason to axiomatize.** A published
-agent pipeline (MerLean, arXiv:2602.16554v1, Appendix A.3) axiomatized that
-the tensor product of two cycles is a cycle — one line from the Leibniz rule
-its own docstring states — because Mathlib's total complex was hard to work
-with, and it converts any subgoal to an `axiom` once its attempt cap is hit.
-Both land in tier **provable**. Running out of attempts leaves an annotated
-`sorry`, never an `axiom`; see `bidirectional-agentic-autoformalization`
-§"Refusals" in `folio-assistant-sci/methodologies/`.
+**An API that is hard to unfold is not a reason to axiomatize**, and running
+out of attempts leaves an annotated `sorry`, never an `axiom` — both cases land
+in tier **provable**. Worked case and rule:
+`bidirectional-agentic-autoformalization` §"Refusals" in
+`folio-assistant-sci/methodologies/`.
 
 ## Why `proof-statement-integrity` misses all of these
 
-Per the QA registry, `proof-statement-integrity` is `automated: false`
-(agent-checked) and verifies exactly two things: (i) the provable-kind signature
-is **unchanged** vs the prior commit (or an author-approved restatement appears
-in the same `.md` + `.ts` diff); (ii) `lean_verify` shows no `sorryAx` /
-unexpected axioms. A self-assuming projection satisfies **both** — the signature
-is the intended one, and there is no `sorry`/axiom. Vacuity is a *semantic*
-property of the proof term, invisible to a signature-diff + axiom sweep. Hence a
-separate, agent-checked criterion family.
+`proof-statement-integrity` (agent-checked) verifies only that the
+provable-kind signature is unchanged (or restated in the same `.md` + `.ts`
+diff) and that `lean_verify` shows no `sorryAx` / unexpected axioms. A
+self-assuming projection passes both: vacuity is a property of the proof term.
 
 ## Legit vs. anti — the discriminators
 
@@ -150,7 +137,7 @@ Do **not** flag these legitimate patterns:
   fields or **applies lemmas** to *derive* the conclusion — `Iff.intro h.fwd
   h.bwd`, `h.step1.trans h.step2`, `by rw [h.a]; exact h.b`, `by linarith
   [h.x, h.y]`. The class fields encode *hypotheses*; the theorem *derives*. This
-  is exactly the project authoring conventions-cond item 5's required shape.
+  is the shape §3b-cond item 5 of the project authoring conventions requires.
 - **Honest named axiom with `-- Ref:`** for a genuine external input, where
   downstream theorems **`obtain`/consume** it rather than re-assuming the
   conclusion. Resting on a cited upstream axiom is sound; smuggling the
@@ -220,7 +207,7 @@ silently, but it does not *say* what the hypothesis is worth.
 
 **Parameterise the class over the data, then state the residual vacuity as a
 proved pair.** Worked example in
-[`QOU/Archimedean/JetOrderIndependence.lean`](../../../..) — read it before
+the qou folio's `QOU/Archimedean/JetOrderIndependence.lean` — read it before
 inventing your own:
 
 ```lean
@@ -240,18 +227,13 @@ theorem not_bound_of_physical_ne_zero (h : E.physical N ≠ 0) :
     ¬ Nonempty (SurrealParallelTransportBound E) := ...
 ```
 
-Read together the two say exactly what an instance buys: **the hypothesis
-carries no information until the datum is pinned down, and real information as
-soon as it is.** The trap becomes a machine-checked fact instead of a latent
-one — which is strictly better than forbidding the trivial model, because a
-non-degeneracy field on the class would prevent the trivial model *and*
-prevent saying anything about it.
+Together the pair says what an instance buys: **nothing until the datum is
+pinned down, a real constraint once it is.** Parameterising alone is not
+enough — a consumer can still instantiate at the zero datum; the pair closes
+that. (A non-degeneracy field would forbid the trivial model and also forbid
+saying anything about it.)
 
-Parameterising alone is not enough: it stops the class choosing its own shadow,
-but a consumer can still instantiate at the zero datum. The pair is what closes
-that.
-
-Detected mechanically by **two** criteria in `cat-harness-tools/pipeline/qa-checkers-vacuity.ts`,
+Detected mechanically by **two** criteria in `folio-assistant-sci/pipeline/qa-checkers-vacuity.ts`,
 which partition the defect rather than overlap — a decl the first flags is
 skipped by the second:
 
@@ -264,10 +246,8 @@ skipped by the second:
   class field compares against (`w := fun _ => cableWidthColor` under
   `is_color : ∀ A, w A = cableWidthColor`).
 
-The two lists were measured **disjoint** on the qou corpus on 2026-08-24: a hand
-read found eight laundering sites, the constant detector found twenty-five, and
-no site appeared in both. If you are auditing for vacuity, running only one of
-them is running half the check.
+The two detectors find disjoint sets; running only one of them is running
+half the check.
 
 The third shape grades `warn`, not `fail`, and says "REVIEW (not a verdict)" in
 its own evidence. Pinning a field to a formula and observing the law then holds
@@ -322,14 +302,12 @@ leave a bare un-annotated `: True`.
 
 ## Agent-inspection ledger — making agent confirmation mandatory
 
-The detector is **high-recall by design**; the legit-vs-genuine call requires
-agent inspection (a `decide` on a true concrete fact is legit; a `: True` hiding
-a real theorem is not). For **content blocks** that verdict lands on the
-`<block>.qa.json` sidecar (above). But a **standalone library `.lean`**
-(`content/**/lean/<Paper>/**/*.lean` with no `.ts`/`.md` sibling) has **no
-sidecar**, so an agent verdict has nowhere durable to live — detection stays
-purely machine, and a one-off triage doc can silently mis-call a candidate
-"legit". The **review ledger** closes that gap:
+The detector is **high-recall**; the legit-vs-genuine call needs an agent (a
+`decide` on a true concrete fact is legit; a `: True` hiding a real theorem is
+not). A content block's verdict lands on its `<block>.qa.json` sidecar. A
+standalone library `.lean` (`content/**/lean/<Paper>/**/*.lean`, no
+`.ts`/`.md` sibling) has no sidecar, so its verdict goes in the **review
+ledger**:
 
 ```bash
 # Seed/refresh: new + file-changed candidates become `needs-agent`.
@@ -354,8 +332,7 @@ bun run content/pipeline/lean-vacuity-axiom-audit.ts content/<paper> \
 - **The agent workflow:** run `--review-ledger` to materialise the queue, inspect
   each `needs-agent` entry per the legit-vs-anti discriminators above, write the
   verdict (+ disposition/evidence) into the ledger, fix every `genuine` /
-  `advisory` candidate, then `--check-ledger` must pass. This is the
-  "agent inspection, not just machine" gate.
+  `advisory` candidate, then `--check-ledger` must pass.
 
 ## QA criteria (sidecar params) — wiring
 
@@ -380,7 +357,7 @@ Mirrors the existing `proof-statement-integrity` model (Agent-checked,
    `PROOF_WATCHER_CRITERIA`, and the `proof` watcher axis). Use:
    `domain: "proof"`, `default_severity: "critical"`, `depends_on: ["lean"]`,
    `automated: false`, `applies_to: ["theorem","lemma","proposition","corollary"]`.
-2. `.claude/skills/local/proof-integration-watcher.md` — add a dispatch row per
+2. `skills/content/folio-paper-adapter/proof-integration-watcher.md` — add a dispatch row per
    criterion → `lean-proof-review` (logic-validity review type).
 3. No new checker file: `qa-sweep` marks `automated: false` criteria
    `needs-agent`; `proof-integration-watcher` dispatches an agent that runs this

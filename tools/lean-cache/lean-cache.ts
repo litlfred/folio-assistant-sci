@@ -17,7 +17,7 @@ export default toolFactory((t) =>
     invoke: { shell: "folio-assistant-sci/scripts/lake-cache.sh" },
     io: {
       inputs: [
-        { name: "action", schema: t("LakeCacheAction"), required: true, arg: { positional: 0 }, description: "The verb. `doctor` exists because a restore that silently missed used to look exactly like one that worked." },
+        { name: "action", schema: t("LakeCacheAction"), required: true, arg: { positional: 0 }, description: "The verb. `doctor` tells a restore that silently missed from one that worked." },
         { name: "lakeRoot", schema: t("RepoPath"), required: false, arg: { flag: "--lake-root" }, description: "The package whose `.lake/` is acted on." },
         { name: "package", schema: t("PackageName"), required: false, arg: { flag: "--package" } },
       ],

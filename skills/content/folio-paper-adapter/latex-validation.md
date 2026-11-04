@@ -113,12 +113,10 @@ repository's `AGENTS.md` / contributor instructions.
 
 ## Mechanical enforcement — the preflight linter (run this FIRST)
 
-The "No undefined control sequences" / balanced-braces aspirations in
-§1 are now **mechanically enforced** by a fast static gate that needs no
-TeX install. The content pipeline's `validateLatexAst`
+The §1 undefined-control-sequence and balance checks are enforced by a
+static gate that needs no TeX install. The pipeline's `validateLatexAst`
 (`render-latex.ts`) uses unified-latex, which **never resolves macros**,
-so three whole classes of fatal-pdflatex bug pass it silently and used
-to land on `main` needing a manual `fix(latex)` commit each time.
+so these fatal-pdflatex classes pass it silently.
 
 **Always run before declaring LaTeX clean:**
 

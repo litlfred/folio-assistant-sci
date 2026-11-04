@@ -34,7 +34,7 @@ export default toolFactory((t) =>
       when: "A folio's declared `lean` directory needs its visualiser (the doc-gen4 render) built or refreshed, before `lean-render-publish` wraps it.",
       limits:
         "doc-gen4 renders the WHOLE import closure, Mathlib included. It does not prune; prune at publish. Refuses, rather than risks, a shared or untraced `.lake/`. Never run it while another agent holds the folio's Lean cache.",
-      cost: "Unmeasured here (written without running Lake). One doc-gen4 compile, then one doc pass per module of the closure — thousands for a Mathlib package; qou's July render was 4,193 pages, 545 MB. Needs that much free disk beyond the build.",
+      cost: "Unmeasured. One doc-gen4 compile, then one doc pass per module of the closure — thousands for a Mathlib package; qou's July render was 4,193 pages, 545 MB. Needs that much free disk beyond the build.",
     },
   }),
 );

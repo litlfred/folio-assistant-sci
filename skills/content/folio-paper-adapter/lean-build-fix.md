@@ -30,16 +30,17 @@ zero fixable warnings.
 This skill assumes `lean_diagnostic_messages` returns real items, not
 timeouts. If your MCP queries return `success: false, items: []`
 (60 s timeout) OR `lake exe cache get` returns 403 on every shard,
-route to **[`lean-environment-setup` §"Mathlib cache 403 fallback"](lean-environment-setup.md#mathlib-cache-403-fallback-proven-workaround)**
-first — the proven workaround is a `git clone` of mathlib4 to a sibling
-directory plus a `git config --global url.insteadOf` redirect.
+route to **[`lean-environment-setup` §"Mathlib cache 403 fallback"](lean-environment-setup/mathlib-cache-fallback.md#mathlib-cache-403-fallback-proven-workaround)**
+first — the first resort is `folio-assistant-sci/scripts/lake-cache.sh
+restore`; a local mathlib4 clone plus a `git config --global
+url.insteadOf` redirect is the fallback.
 Don't start iterating blind — establish LSP feedback first.
 
 ## Lean MCP Tools (paper-assistant)
 
 When the MCP server is available, **prefer MCP tools over shell commands**:
 
-| Old workflow | MCP tool | Why better |
+| Shell route | MCP tool | Why better |
 |---|---|---|
 | `lake build` + parse output | `lean_build` | Triggers build, returns structured result |
 | grep for errors in output | `lean_diagnostic_messages` | Per-file structured errors/warnings |
@@ -259,7 +260,7 @@ replace with a different approach.
 **Fix**: A previous tactic closed the goal completely. Remove the
 subsequent tactic(s) that have nothing left to prove.
 
-### Spurious ℝ-specialisation (the project authoring conventions)
+### Spurious ℝ-specialisation
 
 **Pattern**: A categorical / algebraic identity is declared over `ℝ`
 without needing any archimedean operation (no `Real.sqrt`, `Real.rpow`,

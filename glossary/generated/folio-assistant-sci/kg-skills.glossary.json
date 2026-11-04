@@ -41,7 +41,7 @@
     {
       "id": "compute-audit",
       "prefLabel": "compute-audit",
-      "definition": "Audit compute scripts for a catalogue of correctness and performance antipatterns extracted from a long review of the project's compute history. Distinguishes CORRECTNESS antipatterns from PERFORMANCE antipatterns. Produces a ranked workplan citing concrete files+lines.",
+      "definition": "Audit compute scripts for a catalogue of correctness and performance antipatterns. Distinguishes CORRECTNESS antipatterns from PERFORMANCE antipatterns. Produces a ranked workplan citing concrete files+lines.",
       "notation": "compute-audit",
       "source": "folio-assistant-sci/skills/content/folio-paper-adapter/compute-audit.md",
       "status": "candidate"
@@ -57,7 +57,7 @@
     {
       "id": "compute-integration-watcher",
       "prefLabel": "compute-integration-watcher",
-      "definition": "Cross-layer wiring auditor — watches for newly-landed formal/analytic improvements (proofs, propositions, lemmas, axiom→theorem upgrades, witness data) on the default branch AND on open PRs, and checks whether each one has been wired into the production compute chain. Complements `local/compute-audit` (which scans for performance/correctness antipatterns inside scripts). Runs in two modes: REACTIVE (watch new commits / PR events) and IDLE-SWEEP (walk all existing content blocks and audit wiring).",
+      "definition": "Cross-layer wiring auditor — watches for newly-landed formal/analytic improvements (proofs, propositions, lemmas, axiom→theorem upgrades, witness data) on the default branch AND on open PRs, and checks whether each one has been wired into the production compute chain. Complements `compute-audit` (which scans for performance/correctness antipatterns inside scripts). Runs in two modes: REACTIVE (watch new commits / PR events) and IDLE-SWEEP (walk all existing content blocks and audit wiring).",
       "notation": "compute-integration-watcher",
       "source": "folio-assistant-sci/skills/content/folio-paper-adapter/compute-integration-watcher.md",
       "status": "candidate"
@@ -88,7 +88,7 @@
     {
       "id": "definition-clarity-audit",
       "prefLabel": "definition-clarity-audit",
-      "definition": "Definition / statement clarity + concision audit. A content block can validate (schema-clean, refs resolve, formal-proof sibling present) and still read badly: the defined term is never emphasised, the definition is buried under paragraphs of motivation, or one `definition` block silently bundles three or four distinct definienda. No existing QA axis (voice / structure / bib / proof / …) measures clarity of the statement itself. Use when asked to \"bold defined terms\", \"tighten definitions\", \"no rambling definitions\", \"one definition per block\", \"tight theorem/proposition/lemma statements\", or to set up / run a clarity audit. Also runs the inverse audit — a non-`definition` block that secretly carries a definition (`clarity-defn-misplaced`) — plus a statement-purity check (`clarity-stmt-pure`: a theorem/prop/lemma/conjecture carries only its claim; embedded remark / interpretation moves to a follow-on `remark`) and a register check (`clarity-grad-style`: graduate-level formal-math prose — no contractions, second-person, hype, colloquialism, or emoji). Emits per-block QA sidecar params under the `clarity-*` criteria via `content/pipeline/definition-clarity-audit.ts`.",
+      "definition": "Definition / statement clarity + concision audit. A content block can validate (schema-clean, refs resolve, formal-proof sibling present) and still read badly: the defined term is never emphasised, the definition is buried under paragraphs of motivation, or one `definition` block silently bundles three or four distinct definienda. Use when asked to \"bold defined terms\", \"tighten definitions\", \"no rambling definitions\", \"one definition per block\", \"tight theorem/proposition/lemma statements\", or to set up / run a clarity audit. Also runs the inverse audit — a non-`definition` block that secretly carries a definition (`clarity-defn-misplaced`) — plus a statement-purity check (`clarity-stmt-pure`: a theorem/prop/lemma/conjecture carries only its claim; embedded remark / interpretation moves to a follow-on `remark`) and a register check (`clarity-grad-style`: graduate-level formal-math prose — no contractions, second-person, hype, colloquialism, or emoji). Emits per-block QA sidecar params under the `clarity-*` criteria via `content/pipeline/definition-clarity-audit.ts`.",
       "notation": "definition-clarity-audit",
       "source": "folio-assistant-sci/skills/content/folio-paper-adapter/definition-clarity-audit.md",
       "status": "candidate"
@@ -96,7 +96,7 @@
     {
       "id": "detangler-integration-watcher",
       "prefLabel": "detangler-integration-watcher",
-      "definition": "Structural-QA integration watcher — watches the default branch + open active PRs + newly-opened PRs for organisational changes (paper / chapter manifest edits, new blocks, edited `uses[]` / `kind` / `label` / `interprets` / `defines` / `tags`, block renames) and runs the editor's detanglement skill suite (`content-graph`, `chapter-complexity-review`, `block-density`, `critical-path-analysis`) on every detected change. Queues findings, auto-discharges mechanical fixes (table extraction), routes block reorderings through narrative review before applying them, and escalates section splits / merges / cross-chapter moves / new sections to the author. Inherits shared mechanics from `local/integration-watcher`.",
+      "definition": "Structural-QA integration watcher — watches the default branch + open active PRs + newly-opened PRs for organisational changes (paper / chapter manifest edits, new blocks, edited `uses[]` / `kind` / `label` / `interprets` / `defines` / `tags`, block renames) and runs the editor's detanglement skill suite (`content-graph`, `chapter-complexity-review`, `block-density`, `critical-path-analysis`) on every detected change. Queues findings, auto-discharges mechanical fixes (table extraction), routes block reorderings through narrative review before applying them, and escalates section splits / merges / cross-chapter moves / new sections to the author. Inherits shared mechanics from `integration-watcher`.",
       "notation": "detangler-integration-watcher",
       "source": "folio-assistant-sci/skills/content/folio-paper-adapter/detangler-integration-watcher.md",
       "status": "candidate"
@@ -167,7 +167,7 @@
     {
       "id": "latex-build-cache",
       "prefLabel": "latex-build-cache",
-      "definition": "LaTeX build performance — findings + what's safe. The headline goal was to cache a large multi-chapter `report` build (a ~35-chapter / ~2900-block `report` with a heavy `pgf`/`tikz`/`tikz-cd`/`hyperref` preamble + many tikz-cd diagrams). Both standard caching mechanisms were tested on a real engine and FAILED on this toolchain (see §Negative results), so there is currently NO preamble/diagram cache. What DOES work is the iterative loop: a static preflight with no TeX, getting an engine into the sandbox (Tool `tex-install`), quick changed-chapter feature builds with latexdiff (Tool `paper-feature-build`), then the full build. Read this BEFORE re-attempting a LaTeX cache so you don't re-walk the rakes.",
+      "definition": "LaTeX build performance. What works is the iterative loop: a static preflight with no TeX, Tool `tex-install` for an engine, Tool `paper-feature-build` for quick changed-chapter builds with latexdiff, then the full build. Both standard preamble/diagram caching mechanisms failed on this toolchain, so there is no cache; read the negative results before attempting one.",
       "notation": "latex-build-cache",
       "source": "folio-assistant-sci/skills/content/folio-paper-adapter/latex-build-cache.md",
       "status": "candidate"
@@ -293,7 +293,7 @@
     {
       "id": "lean-substantive-pass",
       "prefLabel": "lean-substantive-pass",
-      "definition": "Convert abstract `holds : Prop` / `claim : Prop` placeholder Lean stubs into typed sub-claim contexts with manuscript-semantic field names. Three escalation levels: hand-craft per-block (highest fidelity), bulk-script split on numbered sub-claims, and docstring enrichment (extract first-sentence summaries from .md). Use this skill after `local/lean-generation` has created the placeholder stubs and the backlog is structurally closed.",
+      "definition": "Convert abstract `holds : Prop` / `claim : Prop` placeholder Lean stubs into typed sub-claim contexts with manuscript-semantic field names. Three escalation levels: hand-craft per-block (highest fidelity), bulk-script split on numbered sub-claims, and docstring enrichment (extract first-sentence summaries from .md). Use this skill after `lean-generation` has created the placeholder stubs and the backlog is structurally closed.",
       "notation": "lean-substantive-pass",
       "source": "folio-assistant-sci/skills/content/folio-paper-adapter/lean-substantive-pass.md",
       "status": "candidate"
@@ -405,7 +405,7 @@
     {
       "id": "proof-integration-watcher",
       "prefLabel": "proof-integration-watcher",
-      "definition": "Proof-QA integration watcher — watches origin/main + open active PRs + newly-opened PRs for narrative-proof (`.md`) or Lean-proof (`.lean`) changes, runs the proof QA skill suite on every detected change, queues gaps, attempts auto-discharge for easy sorries / naked conjectures with provable scaffolding, and escalates the rest to the author. Inherits shared mechanics (Monitor, subscriptions, queue, ledger, idle sweep, author-ask, watch-prepared-PRs, witness-drift recovery, billing-quick-fail flake, post-completion one-voice, sibling-PR comment protocol) from `local/integration-watcher`.",
+      "definition": "Proof-QA integration watcher — watches origin/main + open active PRs + newly-opened PRs for narrative-proof (`.md`) or Lean-proof (`.lean`) changes, runs the proof QA skill suite on every detected change, queues gaps, attempts auto-discharge for easy sorries / naked conjectures with provable scaffolding, and escalates the rest to the author. Inherits shared mechanics (Monitor, subscriptions, queue, ledger, idle sweep, author-ask, watch-prepared-PRs, witness-drift recovery, billing-quick-fail flake, post-completion one-voice, sibling-PR comment protocol) from `integration-watcher`.",
       "notation": "proof-integration-watcher",
       "source": "folio-assistant-sci/skills/content/folio-paper-adapter/proof-integration-watcher.md",
       "status": "candidate"
@@ -460,7 +460,7 @@
     {
       "id": "q-usage-watcher",
       "prefLabel": "q-usage-watcher",
-      "definition": "q-usage integration watcher — detects how each content block treats the substrate parameter $q$ (symbolic / generic-R / real-positive / q > 1 / |q| > 1 / unit-circle / root-of-unity / fixed q_0 / n/a) and cross-checks the detected regime vector against the chapter's narrative-expected profile. Emits per-block `<block>.qa.json` sidecars under the `q-usage-*` criteria and a global witness JSON. Inherits shared mechanics (Monitor, subscriptions, queue, ledger, idle sweep, author-ask, watch-prepared-PRs, witness-drift recovery, billing-quick-fail flake) from `local/integration-watcher`.",
+      "definition": "q-usage integration watcher — detects how each content block treats the substrate parameter $q$ (symbolic / generic-R / real-positive / q > 1 / |q| > 1 / unit-circle / root-of-unity / fixed q_0 / n/a) and cross-checks the detected regime vector against the chapter's narrative-expected profile. Emits per-block `<block>.qa.json` sidecars under the `q-usage-*` criteria and a global witness JSON. Inherits shared mechanics (Monitor, subscriptions, queue, ledger, idle sweep, author-ask, watch-prepared-PRs, witness-drift recovery, billing-quick-fail flake) from `integration-watcher`.",
       "notation": "q-usage-watcher",
       "source": "folio-assistant-sci/skills/content/folio-paper-adapter/q-usage-watcher.md",
       "status": "candidate"

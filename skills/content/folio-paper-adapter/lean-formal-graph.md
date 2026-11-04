@@ -23,12 +23,12 @@ questions and diverge legitimately in both directions.
 
 **Where the formal edges come from.** The graph reads
 `docs/audits/lean-atlas-deps.json`, and each entry records its source. A
-`scan` entry is a lexical guess (measured recall 0.63, folio-assistant#1492);
+`scan` entry is a lexical guess (measured recall 0.63);
 `atlas` and `elaborated` are elaborated and their type/value split can be
 trusted. To produce elaborated edges, run the science layer's extractor:
 skill `lean-formal-edges` (`folio-assistant-sci/skills/lean/`), CLI
 `folio-assistant-sci/pipeline/formal-edges.ts`, MCP tool
-`lean_formal_edges`. It is tooling, so it lives there, not here.
+`lean_formal_edges`.
 
 ## Get a graph
 
@@ -70,7 +70,7 @@ Say which you have.
 - **value** — only the *proof term* mentions it. Changing the target
   changes how the block is **justified**, not what it says.
 
-That split is why a proof-body rewrite no longer invalidates
+That split is why a proof-body rewrite does not invalidate
 statement-level QA (`lean_granularity: "statement"`), and why the
 semantic cone propagates over type edges only.
 
@@ -92,10 +92,8 @@ the loser silently forfeits its formal edges.
 
 `lean-ref-owns-decl` audits this, and deliberately does **not** flag a
 `prop:x` + `prf:x` pair sharing a decl — that is legitimate and common.
-Only two *statement-bearing* blocks colliding is a defect. In practice
-those are copy-paste errors, and they are worth fixing on sight: a real
-corpus had a "Unital subset" definition pointing at a Gröbner-basis
-declaration.
+Only two *statement-bearing* blocks colliding is a defect — usually a
+copy-paste error; fix it on sight.
 
 ## Drawing it
 
@@ -104,16 +102,9 @@ a paper folio, `gen-content-graph-uml.ts` (Tool `content-graph-uml`) draws the
 editorial relation (`uses[]`, `interprets`) solid and the formal one (Lean
 `type` / `value` edges) dashed purple, over the chapters of
 `buildContentGraph`, with status from `proof-objects.json`. A human review
-outranks an agentic one, which outranks the Lean status: the order the CI
-graph used.
+outranks an agentic one, which outranks the Lean status.
 
-**Papers and Lean are one drawing, not two.** The two drawings it supersedes
-each re-parsed the sources and drew only one relation:
-`content-graph-analysis.py` (blocks) and
-`.github/scripts/generate_dependency_graph.py` (Lean, still `qou`-specific: it
-imports `qou_lib`). Neither has been removed: `qou` still runs the second in
-CI, and retiring it is the owner's call. Ask the owner before a PR in a
-mathematics repository.
+**Papers and Lean are one drawing, not two.**
 
 ## Interaction with other skills
 

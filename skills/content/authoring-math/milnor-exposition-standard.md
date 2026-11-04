@@ -10,38 +10,23 @@ allowed-tools: Read Edit Bash Grep Glob
 
 # The Milnor exposition standard
 
-**Three files sent readers here for this section and it did not exist.**
-`skills/authoring/authoring-core/exposition-swarm-drain.md` cited "one-voice style guide →
-'The Milnor exposition standard'" three times, one of them naming a
-`.claude/skills/local/one-voice-style-guide.md` that is not on disk. The eight
-hallmarks lived only inside the `expo-milnor-clarity` criterion's description —
-eight words, no rubric — while that criterion is a **strict gate passing only on
-a perfect 16/16**. Scoring against eight bare words is how eight reviewers
-produce eight different sixteens. Bean `bfmf`.
+The rubric behind the `expo-milnor-clarity` criterion, a **strict gate passing
+only on a perfect 16/16**.
 
-**It is now derived from the paper, not from the name.** The source is the
-`milnorlink` library entry — John Milnor, *Link Groups*,
+The source is the `milnorlink` library entry — John Milnor, *Link Groups*,
 Annals of Mathematics, Second Series, 59(2), March 1954, pp. 177–195
 ([JSTOR 1969685](http://www.jstor.org/stable/1969685)), ingested at journal-page
 granularity so a citation to "p. 179" resolves to its
 `sections/page-179.md`. The entry is held by this layer's `library` graph
-([`library/milnorlink/`](../../../library/milnorlink/)). This skill lived in
-cat-harness until 2026-10-24 and moved here with the corpus it is derived from
-(bean `syiq`, the owner's ruling Q3 of 2026-10-01: Milnor goes to the science
-layer).
+([`library/milnorlink/`](../../../library/milnorlink/)).
 
-The path moved with the corpus (bean `frs5`): the platform holds no content,
-so `milnorlink` went to the science instance. This link went on pointing at
-`cat-harness/library/` for a day and nothing reported it — `check:subgraphs`
-only began walking this directory once `main` added its zero-dangling
-assertion, which is what finally surfaced it. Every rule in the `milnor`
-voice skill's `voice.json` (`skill_fetch milnor`) quotes a page. 8899 words, 496
-sentences; measured 2026-09-19.
+Every rule in the `milnor` voice skill's `voice.json` (`skill_fetch milnor`)
+quotes a page. The paper is 8899 words, 496 sentences (measured 2026-09-19).
 
 ### What the measurement found, including where WE are wrong
 
-Three findings contradict rules stated elsewhere in this very file or in the
-`voice-*` criteria, and the paper wins:
+Three findings contradict the house voice (`one-voice-style-guide` and the
+`voice-*` criteria), and the paper wins:
 
 **`clearly` is proof economy, not editorializing.** `voice-editorializing` lists
 "clearly", "obviously" and "trivially" and fails a block for them. Milnor uses
@@ -49,14 +34,13 @@ Three findings contradict rules stated elsewhere in this very file or in the
 effort away from a verification that is routine — *"Clearly the relation of
 homotopy is reflexive, symmetric and transitive"*, *"The inclusion map … is
 clearly a homotopy equivalence"*, *"This is clear for the case n = 0"*. Not once
-does it mean "this is remarkable". Editorializing spends the reader's attention
-on the author's opinion; this spends none and saves some. In a mathematical
+does it mean "this is remarkable". In a mathematical
 block, *clearly* before a check the reader can perform is correct, and a finding
 against it should be overruled with a reviewer entry. *Clearly* attached to a
 claim the reader cannot verify in their head is the real defect — and no phrase
 list separates the two.
 
-**"Never `I`" is too blunt.** §"Author Voice Profile" above says *"we" for joint
+**"Never `I`" is too blunt.** The house voice profile (`one-voice-style-guide`) says *"we" for joint
 reasoning with the reader, never "I"*. Milnor's split is sharper than a
 prohibition: exactly **one** first-person singular in the paper — *"I am indebted
 to R. H. Fox for assistance in the preparation of this paper"*, at the end of §1
@@ -119,12 +103,10 @@ reader knows the destination before the first step, so no step is a surprise
 - **Do not score from a diff.** Every hallmark is a property of the block as a
   reader meets it, not of what changed.
 - **Do not fail a block for `clearly` before a routine verification.** The
-  checker no longer does either — bean `2t41` narrowed it, and the exemplar now
-  scores exactly one `voice-editorializing` finding (p194's *"Unfortunately these
-  invariants are not strong enough"*, which is real). What remains yours is the
-  distinction no regex makes: `clearly` before a check the reader can perform is
-  correct; `clearly` on a claim they cannot verify is the author asserting where
-  they should be proving.
+  checker does not either: the exemplar scores exactly one `voice-editorializing`
+  finding (p194's *"Unfortunately these invariants are not strong enough"*, which
+  is real). Telling a routine check from an unverifiable claim (see above) is
+  yours.
 - **Do not fix H4 by renaming symbols across a chapter** without checking what
   else binds them. Notation is shared.
 - **Do not treat a 16 as a licence.** The gate is necessary, not sufficient: a

@@ -2,8 +2,7 @@
 name: compute-audit
 description: >
   Audit compute scripts for a catalogue of correctness and performance
-  antipatterns extracted from a long review of the project's compute
-  history. Distinguishes CORRECTNESS antipatterns from PERFORMANCE
+  antipatterns. Distinguishes CORRECTNESS antipatterns from PERFORMANCE
   antipatterns. Produces a ranked workplan citing concrete files+lines.
 allowed-tools: Read Bash Grep Glob Edit Write Agent
 ---
@@ -157,9 +156,7 @@ with project-specific ones.
 ## §Long-compute logging discipline (STRICT)
 
 Any script expected to run **> 5 minutes wall** **must** emit periodic
-progress lines — not silent until finish. Silent long computes are
-unmonitorable: a background run that prints nothing for an hour is
-indistinguishable between "progressing", "hung", and "crashed silently".
+progress lines — not silent until finish.
 
 **Rules for the script author:** print a header (total work units,
 expected scaling, estimated wall); per-unit progress every ~10 s or ~5%
@@ -182,10 +179,6 @@ python3 -u script.py --args ... 2>&1 | tee /tmp/script.log
 ```
 
 ## Harness skills that dispatch here
-
-This layer sits above cat-harness, so the link points down from here. The
-harness skills below describe the slot generically ("the content type's …")
-and name no science skill (bean `syiq`).
 
 - `canonical-watcher`: as the compute-audit scanner, on any changed compute script.
 - `production-vs-exploratory-discipline`: as the content type's compute audit, which uses its 3-category classification.

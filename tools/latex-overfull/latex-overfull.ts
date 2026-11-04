@@ -15,8 +15,8 @@ export default toolFactory((t) =>
         // `usage: latex-overfull-report.ts <main.log> [--min N] …`. The first
         // draft of this node declared only the flags, which would have told a
         // caller the log was optional and sent them to a usage error.
-        { name: "log", schema: t("RepoPath"), required: true, arg: { positional: 0 }, description: "The pdflatex log to read. Nothing to read means no answer, not a pass." },
-        { name: "min", schema: t("Dpi"), required: false, arg: { flag: "--min" }, description: "Ignore overruns below this size — the long tail is noise, and reporting it hides the rest." },
+        { name: "log", schema: t("RepoPath"), required: true, arg: { positional: 0 }, description: "The pdflatex log to read." },
+        { name: "min", schema: t("Dpi"), required: false, arg: { flag: "--min" }, description: "Ignore overruns below this size" },
         { name: "max", schema: t("Dpi"), required: false, arg: { flag: "--max" }, description: "Fail above this count, for use as a gate." },
         { name: "json", schema: t("Flag"), required: false, arg: { flag: "--json" } },
       ],

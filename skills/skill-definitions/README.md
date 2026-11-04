@@ -1,7 +1,7 @@
 <!-- kg:subgraph:begin -->
 # folio-assistant-sci-skill-definitions
 
-The mathematical-paper workflow-skill definitions this layer owns (latex-authoring, lean-formalization, proof-verification): JSON SkillDefinitions. Moved from .claude/skills/local/ by theme (owner, 2026-09-30, bean rqao).
+The mathematical-paper workflow-skill definitions this layer owns (latex-authoring, lean-formalization, proof-verification): JSON SkillDefinitions.
 
 Part of [folio-assistant-sci](../../README.md) 0.1.0, declared as `folio-assistant-sci-skill-definitions`, holding `skills`.
 

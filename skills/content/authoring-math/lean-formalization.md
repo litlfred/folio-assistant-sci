@@ -13,10 +13,9 @@ Take a block whose assertion is a formal mathematical claim and give it a
 `.lean` sibling that Lean 4 accepts.
 
 **This skill is the entry point, not the manual.** The formalisation work
-itself is covered in depth by `folio-paper-adapter`, which carries seventeen
-Lean skills and twelve proof skills. Fetching this one and stopping is the
-mistake it exists to prevent: it tells you which of those to open and in what
-order, and nothing here restates what they say.
+itself is covered in depth by `folio-paper-adapter`, which carries the Lean and
+proof skills. This says which of those to open and in what order; do not stop
+here.
 
 ## When this applies at all
 
@@ -53,8 +52,7 @@ wrong are both invisible to `lake build`:
   it sits beside. `proof-narrative-lean-equivalence` is the check, and
   `lean-witness-audit` is how you evidence that a declaration is inhabited.
 
-Neither is caught by the build, and both produce a block that looks finished.
-Run them before you call a block formalised.
+Run both before you call a block formalised.
 
 ## `uses[]` is editorial and must not come from Lean
 

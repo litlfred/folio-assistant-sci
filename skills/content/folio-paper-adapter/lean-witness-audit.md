@@ -12,16 +12,10 @@ allowed-tools: Read Edit Bash Grep Glob
 
 ## Purpose
 
-Audit computation scripts that produce witness statements
-for Lean formalization. Ensure the witness output is complete,
-self-documenting, uses the paper's notation, and maps directly to
-Lean declarations.
-
-A **witness** is the durable, machine-checkable record that a numerical
-or symbolic computation underpinning a formalized result was actually
-run, with what inputs, and what it produced. The witness links a content
-block, the computation script, and the Lean declaration(s) the
-computation supports.
+A **witness** is the durable, machine-checkable record that a computation
+underpinning a formalized result was run — its inputs, its outputs, and the
+content block and Lean declaration(s) it supports. This skill checks that it
+is complete, uses the paper's notation, and maps to Lean declarations.
 
 ## Unified Witness Infrastructure
 
@@ -90,10 +84,8 @@ computation script, migrate it to `witness_base.py`:
 
 ## Audit checklist
 
-The checklist below is the **generic shape** of a witness audit. The
-specific notation, inputs, and outputs are project-specific — build the
-concrete tables for the paper at hand; the audit *structure* is what
-generalises.
+Notation, inputs and outputs are project-specific; build the concrete
+tables for the paper at hand.
 
 ### 1. Notation compliance
 
@@ -164,17 +156,3 @@ generalises.
   above tolerance means the result has components NOT in the chosen
   basis — flag these as genuinely new / unmodelled.
 
-## Failure modes
-
-- **Abbreviated notation**: Using internal script variable names instead
-  of the paper's symbols makes the witness unreadable outside the
-  computation context.
-
-- **Missing inputs**: A witness without all inputs stated cannot be
-  verified independently.
-
-- **No Lean output**: The computation is not formalized unless it
-  produces Lean-compatible declarations.
-
-- **Silent steps**: If a transformation happens but isn't logged, the
-  step/metric accounting is wrong.

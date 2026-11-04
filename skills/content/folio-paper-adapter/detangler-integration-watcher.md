@@ -13,13 +13,13 @@ description: >
   fixes (table extraction), routes block reorderings through narrative
   review before applying them, and escalates section splits / merges /
   cross-chapter moves / new sections to the author. Inherits shared
-  mechanics from `local/integration-watcher`.
+  mechanics from `integration-watcher`.
 allowed-tools: Read Edit Write Bash Grep Glob Agent Monitor Skill
 ---
 
 # /detangler-integration-watcher
 
-A concrete instance of `local/integration-watcher`. The parent encodes
+A concrete instance of `integration-watcher`. The parent encodes
 the shared mechanics. This file fills the nine domain-specific slots A–I.
 
 ## Scope: editorial edges only
@@ -32,7 +32,7 @@ dependencies would make the answers wrong rather than richer: a `simp`
 lemma invoked mid-proof implies nothing about where a section belongs.
 
 The formal relation is a separate edge kind in
-`pipeline/content-graph.ts`; pass `"editorial"` explicitly when
+`cat-harness-tools/pipeline/content-graph.ts`; pass `"editorial"` explicitly when
 querying it from this watcher. The `uses` QA axis owns whether `uses[]`
 is *well used* — that is `uses-editorial-review`, not this watcher.
 
@@ -40,11 +40,9 @@ is *well used* — that is `uses-editorial-review`, not this watcher.
 
 Reordering blocks to clear forward references is the obvious discharge
 for a `detangler-no-forward-ref` finding, and it is **not** safe to
-apply unread. Run over a real paper, an unconstrained search cleared 66
-of 236 forward references — and a narrative review of its 53 moves found
-**18 of them made the paper worse**. Reducing the metric and improving
-the reading are different objectives, and they diverge often enough that
-the difference is not a rounding error.
+apply unread. Minimising forward references and improving the reading
+are different objectives; an unconstrained search routinely makes the
+paper worse.
 
 Constrain the search first. Each of these exists because a move broke
 something a reader would hit:
@@ -64,7 +62,7 @@ would be authoring `uses[]` by inference, which is the failure mode the
 `uses` axis exists to prevent.
 
 Even fully constrained, the search cannot see authored order, and this
-is what escalation is for. Every one of these was found only by reading:
+is what escalation is for. Escalate a move that breaks any of these:
 
 - a section intro that narrates a sequence — "the analysis proceeds in
   three stages. **First** … **Second** …", a hand-numbered 1–5 arc,
@@ -121,11 +119,9 @@ the expected reading pattern. Maintain the preview list per project
 
 ### Story coherence (STRICT)
 
-**Detanglement is not just edge counting.** Every section and every
-chapter must tell **a single coherent story** — a narrative arc that
-motivates the blocks inside and connects to the surrounding sections /
-chapters. Sections that are *collections of blocks sharing keywords* but
-not a narrative are tangle by another name. The watcher enforces:
+Every section and every chapter must tell **a single coherent story**
+that motivates its blocks and connects to its neighbours; a
+keyword-sharing collection of blocks is a tangle. The watcher enforces:
 
 1. **Each section has its own story.** Its title names the story (and
    the label must not be generic — see `generic-section-name`); its
@@ -199,7 +195,7 @@ scalars). If the event is clean, promote the snapshot to baseline.
 | `critical-path-break` | critical | a move/removal broke a logical chain reaching a downstream provable |
 | `cross-chapter-forward` | critical | a new forward cross-chapter edge to a non-existent block |
 | `defterm-undeclared` | critical | a new reference-directive with no matching `defines` |
-| `forward-ref` | major | a new **logical** forward reference (span > 3 OR cross-section); only logical edges count (see severity gate) |
+| `forward-ref` | major | a new **logical** forward reference (span > 3 OR cross-section); only logical edges count (see Excluded forward-reference patterns) |
 | `dense-section` | major | section pushed over the upper block-count band |
 | `sparse-section` | major | section dropped below the lower band (excludes intro/overview) |
 | `topic-mixing` | major | a block violates the single-topic rule |
@@ -255,17 +251,15 @@ analysis script.
 
 | Band | Examples |
 |------|----------|
-| **Auto-discharge** | `embedded-table` extraction; `intra-chapter-energy` where the fix is an **intra-section** block swap that resolves a span-1 forward edge AND no single-topic hit on either block AND the validator passes post-swap |
-| **Author-assist** | section split (always paired with per-new-section story drafts), section merge, cross-chapter move, new section, topic-mixing split, `critical-path-break`, `reorg-map-stale`, `missing-section-story` / `generic-section-name` / `missing-chapter-intro` |
+| **Auto-discharge** | `embedded-table` extraction |
+| **Author-assist** | `intra-chapter-energy` block swaps (propose, narrative review, then apply); section split (always paired with per-new-section story drafts), section merge, cross-chapter move, new section, topic-mixing split, `critical-path-break`, `reorg-map-stale`, `missing-section-story` / `generic-section-name` / `missing-chapter-intro` |
 | **Defer** | architectural backward edge (`wontfix: architectural`); single-occurrence span-1 forward edge between adjacent sections; `isolated-block` flagged for a content pass; `remark-ratio` within ±20% of the band edge |
 
 **Auto-discharge safety net (STRICT).** Every auto-discharge MUST: run
 the validator post-edit and exit clean; re-snapshot the graph and verify
 the forward-ref count didn't increase, no section left the band, and the
 cross-chapter count didn't increase; **revert** and reclassify as
-`needs-author` if any check fails. **Section merge is deliberately NOT
-auto-discharge** — it renames labels and ripples through cross
--references; always escalate.
+`needs-author` if any check fails.
 
 ## Slot F — §4e author-ask templates
 
@@ -335,19 +329,9 @@ author (per parent §6).
   proof watcher's queue — a `critical-path-break` may be a proof issue.
 - Treat architectural backward edges as fixable — `wontfix:
   architectural` by design.
-- Split a dense section without writing a story for each new section —
-  the split is **not actionable** without per-new-section stories, and a
-  `<source>-part-1`/`-part-2` split is a `generic-section-name` finding.
-- Pretend a section/chapter without a story is fine — the edge metrics
-  may pass while the narrative is incoherent; *detanglement is not edge
-  counting*.
 - Auto-fix a `missing-chapter-intro` without surfacing the draft — the
   arc is editorial, not mechanical.
 
 ## Harness skills that dispatch here
 
-This layer sits above cat-harness, so the link points down from here. The
-harness skills below describe this one generically and name no science skill
-(bean `syiq`).
-
-- `integration-watcher`: a child of this abstract parent.
+- `integration-watcher`: the abstract parent this skill instantiates.

@@ -8,7 +8,7 @@ description: >
   improvements (proofs, propositions, lemmas, axiom→theorem upgrades,
   witness data) on the default branch AND on open PRs, and checks
   whether each one has been wired into the production compute chain.
-  Complements `local/compute-audit` (which scans for
+  Complements `compute-audit` (which scans for
   performance/correctness antipatterns inside scripts). Runs in two
   modes: REACTIVE (watch new commits / PR events) and IDLE-SWEEP (walk
   all existing content blocks and audit wiring).
@@ -21,9 +21,7 @@ allowed-tools: Read Bash Grep Glob Edit Write Agent Monitor
 
 When a new claim lands on the default branch (or an open PR introduces
 one), the claim is not "done" until the compute chain that *consumes* it
-has been updated to reflect it. A proved theorem is only valuable to the
-project's predictions if the production computation actually uses it
-rather than a fitted free parameter standing in for it.
+has been updated to reflect it.
 
 This skill answers, on every new commit/PR event AND on demand against
 all existing blocks: **for each claim, is the matching compute consumer
@@ -32,10 +30,10 @@ against the correct constants?**
 
 It is the *cross-layer* counterpart to:
 
-- `local/compute-audit` — patterns INSIDE one script
-- `local/watch` — event-stream router for upstream commits / PRs
-- `local/proof-gap-audit` — claims missing formal proofs
-- `local/proof-integration-watcher` — the proof-side analogue (chases
+- `compute-audit` — patterns INSIDE one script
+- `watch` — event-stream router for upstream commits / PRs
+- `proof-gap-audit` — claims missing formal proofs
+- `proof-integration-watcher` — the proof-side analogue (chases
   gaps / naked conjectures across the default branch + sibling PRs).
   When both are armed: proof-integration-watcher owns proof-QA gaps;
   this skill owns compute-wiring gaps. Gaps bridging both layers are
@@ -176,7 +174,7 @@ small and local to your branch; otherwise queue a TODO on the PR.
 Enumerate every provable `.ts` block. For each: read the formal sibling
 (skip conjecture-class blocks — they don't need a compute consumer);
 grep witnesses for `"contentBlock": "L"`; grep production scripts for
-the producer witness or the label; walk I1–I12; emit hits. Emit a dated
+the producer witness or the label; walk I1–I13; emit hits. Emit a dated
 audit doc with a per-label table, aggregate counts by pattern, and
 next-actions ranked by leverage × tractability. Batch ≤30-minute fixes
 into one follow-up branch.
@@ -204,7 +202,7 @@ into one follow-up branch.
 - **Overclaiming convergence** — "we wired it, look at the agreement!"
   when the routes compute different objects.
 
-## Tie-in with `local/watch`
+## Tie-in with `watch`
 
 `watch`'s "Can we reuse?" → "Computation" step is the entry point: when
 a commit adds a provable block, `watch` delegates here, captures the
@@ -214,7 +212,7 @@ in-script patterns.
 
 ## AGENTS.md interaction
 
-Respects the same rules as `compute-audit`: never write to protected
+Rules: never write to protected
 files; never close/resolve TodoItems (human-only); cite the matching
 I-pattern for every recommended fix; for dual paths (probe-only vs
 production), preserve the probe-only path as an opt-out — never delete
@@ -222,8 +220,4 @@ it.
 
 ## Harness skills that dispatch here
 
-This layer sits above cat-harness, so the link points down from here. The
-harness skills below describe this one generically and name no science skill
-(bean `syiq`).
-
-- `integration-watcher`: a child of this abstract parent.
+- `integration-watcher`: the abstract parent this skill instantiates (`watch_arg: compute`).

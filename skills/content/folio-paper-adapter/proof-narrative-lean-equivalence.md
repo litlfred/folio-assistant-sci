@@ -12,7 +12,7 @@ allowed-tools: Read Grep Glob Bash Agent
 # Proof Narrative ↔ Lean Equivalence Audit
 
 > **Specialises [`narrative-asserts-code`](../../../../cat-harness/skills/sdlc/sdlc-core/narrative-asserts-code.md)**
-> (issue #1042, stage C). That skill asks, for every declared prose ↔ code
+> That skill asks, for every declared prose ↔ code
 > pair, whether the prose still says what the code does. This one answers it
 > for the one pair kind a proof assistant can settle mechanically: a block's
 > narrative and its `lean.ref`. Everything Lean-specific lives here, and
@@ -65,7 +65,7 @@ This skill catches each case.
 Both skills should run on Lean-bearing blocks; they catch different
 failure modes.
 
-## Heavy-proof discipline — Class E (NEW)
+## Heavy-proof discipline — Class E
 
 ### Class E — Missing narrative proof (auto-finding)
 
@@ -86,10 +86,8 @@ If neither is present → **Class E finding**.
 Lean theorem name, give a 1–3 sentence sketch (longer for inductions
 or case-splits), and mention the key Mathlib lemmas / tactics used.
 
-This class catches the "Lean is comprehensive, paper narrative
-covers the high-level claims but doesn't enumerate Lean theorems"
-gap. The bridge must be explicit at the theorem level for every
-proved Lean result.
+Every proved Lean result needs an explicit theorem-level bridge in
+the narrative.
 
 **Audit output**: for each Class E finding, include the Lean
 theorem name, file:line of the Lean proof, and the recommended
@@ -157,7 +155,7 @@ From `.lean`:
 
 - Identify the top-level `theorem` / `lemma` / `def` / `structure`
   matching the `lean.ref` URI in the `.ts` manifest (parse with
-  `parseLeanRef()` from `folio-assistant/schemas/lean-packages.ts`)
+  `parseLeanRef()` from `cat-harness-tools/schemas/lean-packages.ts`)
 - Record: name, type signature, hypotheses, conclusion,
   proof-term-or-tactic-body
 
@@ -269,7 +267,6 @@ should use the canonical symbol for that topic, not an ASCII or
 alternate-symbol stand-in. Compare each block's tags to the convention
 table and flag mismatches.
 
-A one-shot bulk scan can produce the Class-A count in under 30s.
 Class-B/C require reading the statement pairs; use for sampled
 blocks and extrapolate.
 

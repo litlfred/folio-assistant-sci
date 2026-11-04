@@ -4,7 +4,7 @@
 
 # sci-methodologies
 
-The methodologies this layer adopts from its own library: external, named methods for formalising mathematics in Lean. Separate from `cat-harness/methodologies/` for the reason `core-methodologies` is separate from both -- a method belongs to the layer whose job it describes, so this directory lifts out with this instance and nothing else moves (`methodology-adoption` §4). Each node renders the METHOD and states where the rendering stops; the paper's tools and numbers are not adopted. Bean h3rw.
+The methodologies this layer adopts from its own library: external, named methods for formalising mathematics in Lean. A method belongs to the layer whose job it describes (`methodology-adoption` §4), so these sit apart from cat-harness's and core's methodologies. Each node renders the METHOD and states where the rendering stops; the paper's tools and numbers are not adopted.
 
 Part of [folio-assistant-sci](../README.md) 0.1.0, declared as `sci-methodologies`, holding `methodology`.
 

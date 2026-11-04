@@ -4,7 +4,7 @@
 
 # folio-assistant-sci-block-typologies
 
-The paper adapter's math block kinds — the ones whose assertion is a formal mathematical claim (definition, theorem, lemma, proposition, corollary, conjecture, proof), one folio-block-kind/v1 node per file (bean riit, step 2). Owner, 2026-10-04: kinds are discoverable and not centrally managed; cat-harness/schemas/block-kinds.ts finds these by scanning every instance's declared block-kinds graph, and the seven parallel tables they replace are gone.
+The paper adapter's math block kinds — the ones whose assertion is a formal mathematical claim (definition, theorem, lemma, proposition, corollary, conjecture, proof), one folio-block-kind/v1 node per file. Kinds are discoverable and not centrally managed: cat-harness/schemas/block-kinds.ts finds these by scanning every instance's declared block-kinds graph.
 
 Part of [folio-assistant-sci](../README.md) 0.1.0, declared as `folio-assistant-sci-block-typologies`, holding `block-kinds`.
 

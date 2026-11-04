@@ -20,7 +20,7 @@ every entry records where it came from:
 
 | source | how it was made | trust the type/value split? |
 |---|---|---|
-| `scan` | regex over `.lean` text | **no** — measured recall 0.63 against elaborated ground truth (folio-assistant#1492) |
+| `scan` | regex over `.lean` text | **no** — measured recall 0.63 against elaborated ground truth |
 | `atlas` | Lean Atlas, elaborated | yes |
 | `elaborated` | **this extractor**, elaborated | yes |
 
@@ -68,7 +68,7 @@ helper lemmas collapsed.
 - `value_deps` — reached from its **proof** (its value), minus the
   statement set.
 
-Measured on a 691-declaration qou cluster (folio-assistant#1492): 172/172
+Measured on a 691-declaration qou cluster: 172/172
 of LeanArchitect v4.25.0's edges reproduced with 30 % tagged, plus 2
 `structure`-field edges LeanArchitect omits. Those are the paper's and our
 measurements of a tool, not mathematical claims about the folio.
@@ -134,8 +134,8 @@ paper's graph once `kpsewhich` resolves.
 
 ## See also
 
-- `lean-formal-graph` (core) — building and querying the graph these
+- `lean-formal-graph` (`folio-paper-adapter`) — building and querying the graph these
   edges feed.
 - `folio-assistant-sci/methodologies/blueprint-driven-formalization.md` —
   why blueprint `\uses` should be computed from Lean, and why LeanArchitect
-  itself was not adopted (folio-assistant#1492).
+  itself was not adopted.

@@ -2,17 +2,12 @@
 name: latex-build-cache
 user_invocable: true
 description: >
-  LaTeX build performance — findings + what's safe. The headline goal was
-  to cache a large multi-chapter `report` build (a ~35-chapter / ~2900-block
-  `report` with a heavy `pgf`/`tikz`/`tikz-cd`/`hyperref` preamble + many
-  tikz-cd diagrams).
-  Both standard caching mechanisms were tested on a real engine and FAILED
-  on this toolchain (see §Negative results), so there is currently NO
-  preamble/diagram cache. What DOES work is the iterative loop: a static
-  preflight with no TeX, getting an engine into the sandbox (Tool
-  `tex-install`), quick changed-chapter feature builds with latexdiff (Tool
-  `paper-feature-build`), then the full build. Read this BEFORE re-attempting
-  a LaTeX cache so you don't re-walk the rakes.
+  LaTeX build performance. What works is the iterative loop: a static
+  preflight with no TeX, Tool `tex-install` for an engine, Tool
+  `paper-feature-build` for quick changed-chapter builds with latexdiff,
+  then the full build. Both standard preamble/diagram caching mechanisms
+  failed on this toolchain, so there is no cache; read the negative
+  results before attempting one.
 allowed-tools: Read Bash Grep Glob Edit Write Skill
 ---
 
@@ -39,9 +34,8 @@ result, and says it skipped the PDFs.
 packages, styling, and the macros the renderer emits. A folio's own
 **notation** (its symbol macros, and any unicode map that encodes a font
 choice) stays with the folio as a fragment, by default
-`<paper dir>/latex/notation-preamble.tex`, appended after the template. The
-template was recovered on 2026-10-04 after the platform's copy was deleted
-(`34a70659c7`); see the README beside it.
+`<paper dir>/latex/notation-preamble.tex`, appended after the template. See
+the README beside it.
 
 **The preload.** The platform pipeline is dependency-injected: the build throws
 "Value registry not configured" unless the folio's preload has run (by default
@@ -50,20 +44,17 @@ checkout the tool runs from, normally the folio's `folio-assistant/` link, or
 it configures a different module instance and the build still throws.
 
 A from-scratch compile re-parses the heavy preamble on **every latexmk
-pass** and re-renders **every** diagram. Caching either was the goal.
-**On real-engine testing (texlive-full 2023), both standard mechanisms
-failed on this toolchain** — the default build is therefore plain
-inline-preamble + full latexmk. This doc records *why*, so the next
-attempt starts informed.
+pass** and re-renders **every** diagram. Both standard caching mechanisms
+failed on this toolchain (texlive-full 2023), so the default build is
+plain inline-preamble + full latexmk.
 
 ## Negative results (read before re-attempting a cache)
 
 | Attempt | Verdict | Why (verified on a real engine) |
 |---------|---------|---------------------------------|
 | **Preamble format** (`mylatexformat` → `paper.fmt`, `%&paper`) | ❌ unusable | mylatexformat **gobbles everything between `%&fmt` and `\begin{document}`** (log: *"start reading document on input line N (\begin{document})"*). That silently drops the per-paper **manifest macros** (`\mymacro` …) AND any per-render `\usepackage` (memoize). A format can only carry what's dumped from `latex/preamble.tex`; per-paper/per-render preamble content can't ride along. |
-| **memoize** (per-box diagram cache) | ❌ unusable for tikzcd | This TeXLive's memoize **lacks its tikz library** (`\usetikzlibrary{memoize}` → "I did not find the tikz library"). The manual `memoize` environment **breaks tikzcd's `&` catcode**. Extraction is also a 2-pass tool needing `pdfrw` (python) or `PDF::API2` (perl) — installable, but moot without box marking. All 74 diagrams are `tikzcd`, 0 are `tikzpicture`, so 0 boxes ever cache. |
+| **memoize** (per-box diagram cache) | ❌ unusable for tikzcd | This TeXLive's memoize **lacks its tikz library** (`\usetikzlibrary{memoize}` → "I did not find the tikz library"). The manual `memoize` environment **breaks tikzcd's `&` catcode**. Extraction is also a 2-pass tool needing `pdfrw` (python) or `PDF::API2` (perl) — installable, but moot without box marking. The diagrams are `tikzcd`, so no boxes cache. |
 | **tikz externalization** (`\tikzexternalize`) | ❌ aborts on tikzcd | The `external` library collects until `\end{tikzpicture}`; tikzcd ends with `\end{tikzcd}` → *"File ended while scanning…"* fatal. Only hooks `tikzpicture`. |
-| **fixed numbering + per-section `\clearpage`** | reverted | Were *enablers* for block-level caching (deterministic block output) that none of the above delivered; pure overhead + a layout change without a working cache. |
 
 **`standalone` externalization *works* but is NOT worth doing** (measured
 2026-06-15, real engine): render each `tikzcd` to its own `.tex` → `.pdf`
@@ -71,8 +62,7 @@ attempt starts informed.
 bottleneck.** A `tikzcd` renders in ~0 ms (10 inline added 0 ms over
 baseline, within noise); a `standalone` sub-build *costs* ~0.63 s of
 pdflatex startup per diagram. Caching them is **net-negative.** Do NOT
-pursue the standalone diagram cache. (Census: 94 `tikzcd` blocks / 79
-files; 6 `tikzpicture`.)
+pursue the standalone diagram cache.
 
 > **Why not "cache each block's PDF and concatenate"?** LaTeX is a
 > single-pass global typesetter — a block's numbering / pagination / refs
@@ -101,34 +91,31 @@ Installed `texlive-full` via `install-tex.sh`; measured the real paper:
 regen (Python, ~36 min, gated by `skip_witnesses`) ≫ `texlive-full`
 install ×3 (~3–6 min) ≫ LaTeX compile (~2–3 min) ≫ bun render.
 
-**The only real win — the prebuilt CI image**: `publish.yml`'s
-3 TeX jobs now `container: ghcr.io/<org>/<paper>-paper-builder` instead of
-`apt-get install texlive-full` ×3; `paper-builder-image.yml` now triggers
-on main pushes (touching the Dockerfile) + monthly cron — it previously
-only ran on `workflow_dispatch`, so the image was never actually built.
+**The only real win — a prebuilt CI image**: run the TeX jobs in
+`container: ghcr.io/<org>/<paper>-paper-builder` instead of installing
+`texlive-full` in each job, and rebuild the image
+(`paper-builder-image.yml`) on pushes touching its Dockerfile plus a
+monthly cron.
 
 ## What works (use these)
 
 | Tool | Role |
 |------|------|
-| [`cat-harness-tools/scripts/install-tex.sh`](../../../../cat-harness-tools/scripts/install-tex.sh) | Get a TeX engine into the sandbox (the base Ubuntu repos are reachable; only launchpad PPAs are firewalled). Idempotent. **This is how you compile/verify at all.** |
+| [`cat-harness-tools/scripts/install-tex.sh`](../../../../cat-harness-tools/scripts/install-tex.sh) | Get a TeX engine into the sandbox. Idempotent. **This is how you compile/verify at all.** |
 | [`adapters/paper/latex/feature-build.sh`](../../../adapters/paper/latex/feature-build.sh) (Tool `paper-feature-build`) | Quick draft: compiles ONLY the changed chapters (not the full paper) with the **inline** preamble, + per-chapter latexdiff (colored + plain). Speedup is from fewer chapters, not a format. **Sets `FAST_PREVIEW=1` by default** (margins off, ~2× on top). |
 | **`FAST_PREVIEW=1`** env flag | Read by `generate-main-tex.ts`: no-ops `\marginnote`, skipping the 2944 per-block source/issue/Lean icons that cost **~50%** of compile (19.5 s → 9.2 s). Body byte-identical; **published builds leave it unset**. The biggest single *preview* speedup. |
 
 ## Getting a TeX engine in the sandbox
 
-The sandbox usually ships **no `pdflatex`**, but the base Ubuntu repos
-are reachable (only the launchpad PPAs — `ondrej/php`, `deadsnakes` —
-are firewalled and break `apt-get update`). Run:
+The sandbox usually ships **no `pdflatex`**. Run:
 
 ```bash
 cat-harness-tools/scripts/install-tex.sh     # run with run_in_background: true (~5 GB, ~10-20 min)
 ```
 
-It disables the firewalled PPAs, installs `texlive-full` + `latexmk`,
-and verifies the packages. `pdflatex` unpacks early but isn't usable
-until the post-install format build finishes (`kpsewhich memoize.sty`
-returning a path is the ready signal).
+It disables the firewalled launchpad PPAs (`ondrej/php`, `deadsnakes`),
+installs `texlive-full` + `latexmk`, and verifies. `pdflatex` is usable
+once `kpsewhich memoize.sty` returns a path.
 
 ## Quick feature build
 
@@ -160,13 +147,9 @@ bun run $P/folio-assistant-sci/pipeline/latex-preflight.ts /tmp/fb/main.tex   # 
 ```
 
 For a real compile, install TeX (above) and run
-`latexmk -pdf main.tex`. The preflight (`latex-preflight.ts`) is the
-fast static gate that catches the recurring fatal-pdflatex classes
-(undefined control sequence, duplicate `\newcommand`, math-delimiter
-imbalance) — it gates every PR even when the heavy compile job no-ops.
+`latexmk -pdf main.tex`. The preflight gates every PR even when the heavy
+compile job no-ops.
 
 ## References
 
-- Strategy + full investigation log:
-  `docs/workplans/2026-06-14-latex-build-caching-strategy.md` (no longer in this repository)
 - CI billing signature: `litlfred/qou` `AGENTS.md` §"CI billing failures".

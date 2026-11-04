@@ -45,7 +45,7 @@ export default toolFactory((t) =>
         { name: "warningsLog", schema: t("RepoPath"), required: false, arg: { flag: "--warnings-log" }, description: "Write a QA-compatible log to this path." },
       ],
       outputs: [
-        { name: "report", schema: t("Text"), description: "Per snippet, what will not compile. Run in the platform it reports `Files scanned: 0` and exits 2 — could-not-determine (this repository carries no folio, so there was nothing to scan). Read the scanned count before reading the verdict." },
+        { name: "report", schema: t("Text"), description: "Per snippet, what will not compile. With no folio to scan it reports `Files scanned: 0` and exits 2 (could-not-determine). Read the scanned count before reading the verdict." },
       ],
     },
     satisfies: ["latex-validation"],

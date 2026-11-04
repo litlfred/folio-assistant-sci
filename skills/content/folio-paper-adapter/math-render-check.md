@@ -12,9 +12,7 @@ The harness skill `markdown-render-check` checks any `.md` content block
 before the user sees it on GitHub. A paper folio's blocks carry math
 (`$...$`, `$$...$$`, fenced ```tex blocks), and GitHub's renderer breaks
 some math patterns that the LaTeX pipeline accepts, especially display
-blocks hijacked by markdown's list parser. These checks lived in
-`markdown-render-check` until 2026-10-24 and moved here under bean `syiq`
-(the owner's ruling Q3 of 2026-10-01: split markdown-render-check).
+blocks hijacked by markdown's list parser.
 
 Run them in step 2 of `markdown-render-check`, beside its own checks, and
 report the same way.

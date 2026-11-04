@@ -13,12 +13,9 @@ allowed-tools: Read Bash Grep Glob Edit Write Agent
 
 ## Role
 
-When a user asks "find back-and-forth script ↔ native", "where are we
-shuttling data across the FFI boundary in a loop", "FFI ping-pong
-audit", "compute boundary audit", or "where should we consolidate to the
-native side" — run the scanner, read the output, and produce a ranked
-workplan. Companion to `compute-audit.md` but narrower: only catches the
-boundary-crossing anti-pattern. Performance-only.
+Run the scanner, read its output, and produce a ranked workplan of loops
+that cross the FFI / subprocess boundary per item. Narrower than
+`compute-audit`: performance only.
 
 ## When to use
 
@@ -91,7 +88,9 @@ wall.
 
 4. **Verify equivalence at the target point** — every consolidation must
    match the per-item version at the floor tolerance on a representative
-   input set. No silent precision loss.
+   input set. No silent precision loss. Add a cross-check that runs the
+   old per-item path and the new batch path on each test input and
+   asserts `rel.diff < floor tolerance`.
 
 5. **Bench** — report wall before/after on a real input; the commit
    message should include a small table.
@@ -116,8 +115,8 @@ grep -rnB4 "subprocess\.run(" computations/*.py 2>/dev/null \
 
 For each candidate, open the file at the cited line. The static scan has
 false positives (e.g. a loop that merely *builds* a single native input
-is fine). Maintain a catalogue of catalogued offenders + their fix
-column and a status row tracking when each is discharged.
+is fine). Keep a catalogue of offenders with their fix and a status
+column recording when each is discharged.
 
 ## How to add a new batch API (F-B)
 
@@ -140,13 +139,6 @@ not P-F4. P-F4 fires when the *script loop* invokes the binary per item.
 The fix is the same as F-B: have the binary accept a list of specs and
 return a list of results in one invocation, or expose the kernel as a
 binding and skip subprocess entirely.
-
-## Verification harness
-
-After every consolidation, add a cross-check that evaluates the old
-per-item path and the new batch path on each test input and asserts
-`rel.diff < floor tolerance`. The cross-check passes because both paths
-use the same native kernel internally; only the boundary differs.
 
 ## Skill output
 

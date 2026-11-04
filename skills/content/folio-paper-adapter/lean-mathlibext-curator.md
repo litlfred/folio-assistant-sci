@@ -137,6 +137,6 @@ back-compat.
 
 ## Cross-references
 
-- `formalizer.md` §"MathlibExt promotion".
+- [`formalizer/patterns.md`](formalizer/patterns.md) §"MathlibExt promotion".
 - `lean-build-fix.md` — when a Mathlib bump breaks `MathlibExt`,
   start there before touching consumer files.

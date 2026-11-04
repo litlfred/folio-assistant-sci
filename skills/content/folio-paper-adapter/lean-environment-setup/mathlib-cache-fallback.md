@@ -7,9 +7,7 @@ description: >
 
 # lean-environment-setup — the Mathlib cache 403 workaround
 
-A proven workaround for one specific failure: `lake exe cache get` returning
-403. Four hundred lines of procedure for a case most sessions never hit, which
-is why it is here and not in the parent.
+The workaround for `lake exe cache get` returning 403.
 
 **Do not start here.** Read the parent's FAST ROUTE first — it exists to stop
 you declaring Lean unavailable when it is merely slow to reach.
@@ -35,17 +33,12 @@ MCP times out at 60 s because no prebuilt oleans are available.
 >
 > Full command set and failure guide: the `lean-cache-restore` skill.
 >
-> **This is the single most common wasted hour** — the from-source
-> sections below are a *fallback*, not the default. If you do end up
-> building, run `folio-assistant-sci/scripts/lake-cache.sh seed` afterwards so the next
-> agent restores in 2 minutes instead of rebuilding.
+> The from-source sections below are a fallback. If you do build, run
+> `folio-assistant-sci/scripts/lake-cache.sh contribute` afterwards so the
+> next agent restores instead of rebuilding.
 >
-> The hand-written git recipe that used to live here has been removed:
-> it carried a `FETCH_HEAD` race that silently truncated the tarball
-> (surfacing as `gzip: not in gzip format`, indistinguishable from a
-> corrupt cache), and a `git ls-tree` call that returned nothing when
-> run from a package subdirectory — reporting a perfectly good branch as
-> empty. Both are fixed in the script; do not reconstruct the recipe.
+> Do not hand-roll the restore with git; the script handles the
+> `FETCH_HEAD` race and subdirectory `git ls-tree` pitfalls.
 >
 > **Out-of-cone modules.** A cache branch carries only the oleans in the
 > paper's dependency closure at seed time. A module outside it (e.g. a
@@ -103,12 +96,6 @@ git config --global url."file:///home/user/mathlib4".insteadOf \
 After the clone/redirect succeeds, `lean_diagnostic_messages` returns real
 error / warning items (not the timeout sentinel), unblocking iterative Lean
 proof development.
-
-**Why this is the right diagnostic step.** Without LSP feedback, blind
-proof iteration is a trap — agents push speculative "plausible" proofs that
-fail to compile, and the trust-but-verify rule forces reverts. The local
-mathlib clone is the cheapest path to a warm LSP when the cache is
-unreachable.
 
 ### Build-from-source path (when you don't need iterative LSP)
 
@@ -175,7 +162,7 @@ Lean is **not mechanically compilable** in that session — fall back to a
 rigorous hand-audit and say so explicitly rather than claiming a green
 build you could not run.
 
-### Two more gotchas after a `lake-cache/*` restore
+### Two more gotchas after a `cat/folio-assistant-sci/lake-cache/*` restore
 
 Both can cost a session **even though the restore itself succeeded**, and
 both occur with **no** `insteadOf` redirect set:
@@ -279,11 +266,11 @@ ELAN_NO_OVERRIDE_NOTICE=1 nohup lake build -R MyPaper.SomeModule \
 > build failure. Prefer `grep -c … ; true` or read the explicit "Build
 > completed" line.
 
-### 🗄️ PRESERVE THE BUILD — seed/restore the `lake-cache/*` orphan branch
+### 🗄️ PRESERVE THE BUILD — seed/restore the `cat/folio-assistant-sci/lake-cache/*` orphan branch
 
-**Every agent rebuilding Mathlib from scratch is the waste to avoid.**
 Durable cross-container preservation lives on **orphan branches**
-`lake-cache/<package>-<toolchain-slug>` (slug for `v4.24.0` = `v4-24-0`).
+`cat/folio-assistant-sci/lake-cache/<package>-<toolchain-slug>` (slug for
+`v4.24.0` = `v4-24-0`).
 These survive container reclaim (git-versioned), unlike `.lake/`
 (ephemeral) or `../mathlib4` (parent-tree, often persists but not
 guaranteed).
@@ -291,19 +278,14 @@ guaranteed).
 The cache branch stores the oleans as a **compressed tarball split into
 <100 MB chunks** (`lake-oleans.tgz.part00…`), because GitHub hard-rejects
 any single file > 100 MB on push. NOT the raw `.lake/` tree (a raw multi-GB
-tree push is hostile). Both restore and seed use a **separate `git
-worktree`** so your main working tree is never disturbed — do NOT `git
-switch --orphan` in the main tree (it leaves every file untracked and traps
-you on switch-back).
+tree push is hostile). Never `git switch --orphan` in the main tree (it
+leaves every file untracked and traps you on switch-back).
 
 **RESTORE first (before any from-source build):**
 ```bash
 folio-assistant-sci/scripts/lake-cache.sh restore     # exit 1 = not seeded yet; 3 = corrupt
 ```
-Do not hand-roll this. The earlier hand-written version raced on
-`FETCH_HEAD` and used a cwd-relative `git ls-tree` that returned nothing
-when run from a package subdirectory — reporting a good branch as empty.
-```
+Do not hand-roll this.
 
 > **⚠ Post-restore hazard — verify mathlib's origin URL BEFORE running
 > lake.** The tar carries `.lake/packages/mathlib/.git` from the *seeding*
@@ -326,61 +308,19 @@ when run from a package subdirectory — reporting a good branch as empty.
 > package dir. Lake then accepts every package untouched. A package dir
 > missing entirely is fine — lake clones just that one.
 
-**SEED after a successful build** (so the NEXT agent restores in ~2 min
-instead of rebuilding) — worktree-based, tarball created in-repo:
-```bash
-WT=/tmp/lake-cache-wt
-SLUG=$(cut -d: -f2 lean-toolchain | tr -d '\r' | tr . -)
-# The branch NAME is resolved, never spelled: new name if it exists, else a
-# legacy one that does, else the new name (the folio's declared lake-cache family comes first).
-# Writing a hardcoded legacy name would bypass that and block the owner's rename.
-BR=$(folio-assistant-sci/scripts/lake-cache.sh resolve-branch --key "<package>-$SLUG") || exit 1
-# 1. Pack the built oleans (compressed). Create the tarball where the
-#    worktree can `git add` it — git cannot add a path outside its tree.
-#    ⚠ The paper package build lives in the NESTED Lake dir
-#    `content/*/lean/.lake/build`; if root `.lake/build` does not exist in
-#    this checkout, the glob silently ships a tarball with ZERO paper oleans
-#    (only Mathlib). The restore-check (Step 4 below) is what catches this.
-# (No `2>/dev/null` — a missing path must fail LOUDLY.)
-tar czf /tmp/lake-oleans.tgz content/*/lean/.lake/build .lake/packages/*/.lake/build
-# 2. Orphan branch in a SEPARATE worktree (main tree untouched, no trap).
-git worktree add --orphan -b "$BR" "$WT" 2>/dev/null \
-  || { git worktree add --detach "$WT"; git -C "$WT" checkout --orphan "$BR"; \
-       git -C "$WT" rm -rfq --cached . 2>/dev/null; git -C "$WT" clean -fdxq; }
-# 3. Split into <100 MB chunks INSIDE the worktree (GitHub rejects >100 MB files).
-( cd "$WT" && split -b 90m -d /tmp/lake-oleans.tgz lake-oleans.tgz.part )
-git -C "$WT" add 'lake-oleans.tgz.part*'
-git -C "$WT" commit -qm "seed lean cache: oleans @ $(cat lean-toolchain) (chunked <100MB)"
-git -C "$WT" push -u origin "$BR"
-git worktree remove --force "$WT"                      # main branch never left
-```
-> **HTTP 413 on the seed push.** A web-sandbox git proxy may cap a single
-> push payload — a large one-commit pack is rejected with `RPC failed; HTTP
-> 413`. Workaround: commit **each ~90 MB chunk as its own commit** inside the
-> worktree and `git push` after each one (`--force` on the first push to
-> replace the old cache history). Restorers are unaffected — the restore
-> recipe reads the tip tree, which contains all chunks.
+**SEED after a successful build** so the next agent restores in ~2 min:
+`folio-assistant-sci/scripts/lake-cache.sh contribute` (guarded; see
+`lean-cache-restore`), or `lake-cache.sh seed --push` to force a seed. The
+script splits the tarball into <100 MB parts, pushes in batches, and
+verifies a restore before publishing. Pack from the nested
+`content/*/lean/.lake/build` when root `.lake/build` is absent, or the
+cache carries no paper oleans.
 
-> **Step 4 — VERIFY the seed in a clean temp dir (MANDATORY — catches the
-> paper-oleans-missing bug).** A silent bad seed corrupts the cache for every
-> downstream session, so prove the pushed branch restores before trusting it:
-> ```bash
-> T=/tmp/restore-check; rm -rf "$T"; mkdir -p "$T"
-> # Restore into a scratch Lake root and let the script do the verifying:
-> # it counts oleans and exits 3 if the extract produced none, which is
-> # exactly the paper-oleans-missing bug this step exists to catch.
-> folio-assistant-sci/scripts/lake-cache.sh restore --lake-root "$T" --branch "$BR"; echo "exit=$?"
-> ```
-> Seeding to a `-test` branch suffix first (then a ref-only force-push
-> cutover to production — the blobs are already on the remote, so the cutover
-> uploads nothing and dodges the 413) is the safe path for the load-bearing
-> production branch.
-
-Keep the number of cache branches bounded (an owner cap). A CI workflow can
+Keep the number of cache branches bounded. A CI workflow can
 prune/refresh on `lean-toolchain`/`lakefile.toml` changes — if CI billing is
 up, prefer triggering it over an ad-hoc multi-GB agent push.
 
-**Rule for agents going forward:** RESTORE → (build only if miss) → SEED.
+**Rule:** RESTORE → (build only if miss) → SEED.
 Never silently rebuild Mathlib and throw the oleans away.
 
 ## Delegate the install to a sub-agent (recommended for the main task)
@@ -419,10 +359,6 @@ Agent(
    the transitive-dep fetch, Lean is **not mechanically compilable** in that
    session — say so explicitly and fall back to a rigorous hand-audit; do
    **not** claim a green build you could not run.
-
-**Why a sub-agent:** the install can take many minutes (toolchain fetch) to
-hours (full mathlib from source). Foreground-blocking the main task on it is
-the anti-pattern; the sub-agent isolates the wait and returns a clean verdict.
 
 ## PATH Configuration
 

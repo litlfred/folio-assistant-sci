@@ -19,12 +19,13 @@ Each simulator is a content object with three files:
 content/<paper>/<chapter>/
   <simulator-name>.ts    — manifest (kind, params, views, html ref)
   <simulator-name>.md    — documentation (explains simulator + default view)
-  <simulator-name>.html  — NOT here; lives at repo root (served as static file)
+  <simulator-name>.html  — NOT here; lives in the folio's `simulators.dir`
 ```
 
-The `.html` file is a standalone single-page app served at the repo root
-(e.g. `my_simulator.html`). The `.ts` manifest references it via the
-`html` field.
+The `.html` file is a standalone single-page app in the folio's simulator
+directory (`simulators.dir` in `<name>.config.json`). The `.ts` manifest's
+`html` field is its path relative to the folio root (e.g.
+`simulators/my_simulator.html`).
 
 ## Type system
 
@@ -141,7 +142,7 @@ const a = parseFloat(params.get('a') || '1.0');
 
 ## Workflow: Adding a new simulator
 
-1. Create the standalone `.html` simulator at the repo root
+1. Create the standalone `.html` simulator in the folio's `simulators.dir`
 2. Create `.ts` manifest with `simulator()` builder in the relevant chapter
 3. Create `.md` documentation explaining the simulator and its default view
 4. Add the simulator block name to the chapter manifest's section blocks

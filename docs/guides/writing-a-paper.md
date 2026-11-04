@@ -30,9 +30,8 @@ This tutorial walks through authoring a rigorous scientific paper **with an LLM*
 driving folio-assistant: the agent plans the paper, drafts blocks, formalizes
 theorems in Lean 4, renders LaTeX, and publishes — while you steer.
 
-It uses a small running example — *"A note on the harmonic series"* — purely to
-illustrate the workflow. The content is not the point; the **formalism and the
-LLM workflow** are.
+It uses a small running example, *"A note on the harmonic series"*, to
+illustrate the workflow.
 
 ---
 
@@ -46,7 +45,7 @@ LLM workflow** are.
        alt="BPMN swimlane diagram: the author plans, the plan is seeded as beans, the authoring agent scaffolds the repo and drafts blocks, Lean formalisation loops until the build is green with no sorries, the build pipeline validates and renders, a reviewer either sends it back to authoring or approves it for publication.">
 </div>
 
-[BPMN 2.0 source](https://github.com/litlfred/folio-assistant/blob/main/processes/authoring-a-paper.bpmn) · [full-size SVG]({{ '/assets/img/workflows/authoring-a-paper.svg' | relative_url }})
+[BPMN 2.0 source](https://github.com/litlfred/folio-assistant-sci/blob/main/processes/content/authoring-a-paper.bpmn) · [full-size SVG]({{ '/assets/img/workflows/authoring-a-paper.svg' | relative_url }})
 {: .bpmn-source }
 
 Every step is something the LLM does *for you* by calling folio-assistant's MCP
@@ -113,56 +112,6 @@ beans <id> --status in-progress
 The agent creates the block files and a `main.tex`, then confirms with
 `content_list`.
 
-### Required `.gitignore` baseline
-{: #required-gitignore-baseline data-fa-label="sec:guides-writing-a-paper-required-gitignore-baseline" }
-
-[✎ Edit](https://github.com/litlfred/folio-assistant-sci/edit/main/docs/source/guides-writing-a-paper/required-gitignore-baseline.md){: .fa-node-edit title="Edit docs/source/guides-writing-a-paper/required-gitignore-baseline.md" data-fa-link="edit" data-src="docs/source/guides-writing-a-paper/required-gitignore-baseline.md" data-repo="litlfred/folio-assistant-sci" } <span class="fa-qa-badges"><button type="button" class="fa-qa-badge fa-qa-pending fa-qa-fam-block" lang="en" dir="ltr" data-qa-family="block" data-qa-key="required-gitignore-baseline.block" data-qa-label="Content QA" data-qa-noun="block" data-qa-src="{{ '/assets/qa/folio-assistant-sci/guides-writing-a-paper/required-gitignore-baseline.block.json' | relative_url }}" data-qa-index="{{ '/assets/qa/folio-assistant-sci/guides-writing-a-paper/qa-index.json' | relative_url }}" aria-expanded="false" aria-busy="true" title="Content QA: loading the verdict…" aria-label="Content QA: loading the verdict…"><span class="fa-qa-tag">QA</span><span class="fa-qa-glyph" aria-hidden="true">…</span></button> <button type="button" class="fa-qa-badge fa-qa-pending fa-qa-fam-translation" lang="en" dir="ltr" data-qa-family="translation" data-qa-key="required-gitignore-baseline.translation" data-qa-label="Translation QA" data-qa-noun="block" data-qa-src="{{ '/assets/qa/folio-assistant-sci/guides-writing-a-paper/required-gitignore-baseline.translation.json' | relative_url }}" data-qa-index="{{ '/assets/qa/folio-assistant-sci/guides-writing-a-paper/qa-index.json' | relative_url }}" aria-expanded="false" aria-busy="true" title="Translation QA: loading the verdict…" aria-label="Translation QA: loading the verdict…"><span class="fa-qa-tag">TR</span><span class="fa-qa-glyph" aria-hidden="true">…</span></button></span>
-
-Every new folio repository starts with these entries. They are not optional
-polish — agent sandboxes accumulate scratch directories as untracked state, and
-a single `git add -A` then commits all of it under a message describing
-something else. In the `qou` folio that mechanism produced one commit adding
-**46,155 files / 11.4 M insertions** under a one-file Lean subject line,
-including 14,688 duplicate beans.
-
-```gitignore
-# Agent scratch state — transient tooling state, never repository content.
-# Leading slash = root-level only. Keep it (see the warning below).
-/.agents/
-/amalgamated_done/
-/amalgamated_input/
-/_deprecated/
-/scratch/
-.claude/worktrees/
-
-# Python bytecode
-__pycache__/
-*.py[cod]
-```
-
-**Keep the leading slashes.** A gitignore pattern containing no internal slash
-matches at *every* directory depth, not just the root. Written unanchored, the
-`_deprecated/` line above silently captured two documented archives in the `qou`
-folio — `computations/_deprecated/` (1,449 tracked files, including
-`script-qa/*.script-qa.json` QA sidecars) and `docs/audits/_deprecated/` (66) —
-and `scratch/` reached every `content/**/scratch/`. Already-tracked files were
-unaffected, because an ignore rule never untracks; the hazard is that any *new*
-file under such a path is skipped by `git add` with no error and no output. If
-your folio keeps a nested archive or scratch area under one of these names, the
-anchored form is what keeps it committable.
-
-Two deliberate exclusions:
-
-- **`beans/` stays tracked.** It is the durable, cross-session work plan; a
-  sibling agent has to be able to read it. Bean *duplication* is prevented by
-  the create-guard in
-  [`skills/sdlc/sdlc-core/todo-manager.md`](../../skills/sdlc/sdlc-core/todo-manager.md),
-  not by ignoring the directory.
-- **Any directory your folio documents as a real pipeline stays tracked** — in
-  `qou`, `uploads/` is the document-intake stage and belongs in git. Check your
-  own `AGENTS.md` §Project structure before adding a path to this list: if it is
-  documented there, it is content, not scratch.
-
 > **Assistant:** *(creates blocks, calls `content_list`)* Scaffolded 5 blocks
 > under `content/harmonic-series/`. Current artifacts:
 >
@@ -188,6 +137,48 @@ lean: HarmonicSeries.partialSum
 For $n \ge 1$, the *$n$-th harmonic partial sum* is
 $$ H_n = \sum_{k=1}^{n} \frac{1}{k}. $$
 ```
+
+### Required `.gitignore` baseline
+{: #required-gitignore-baseline data-fa-label="sec:guides-writing-a-paper-required-gitignore-baseline" }
+
+[✎ Edit](https://github.com/litlfred/folio-assistant-sci/edit/main/docs/source/guides-writing-a-paper/required-gitignore-baseline.md){: .fa-node-edit title="Edit docs/source/guides-writing-a-paper/required-gitignore-baseline.md" data-fa-link="edit" data-src="docs/source/guides-writing-a-paper/required-gitignore-baseline.md" data-repo="litlfred/folio-assistant-sci" } <span class="fa-qa-badges"><button type="button" class="fa-qa-badge fa-qa-pending fa-qa-fam-block" lang="en" dir="ltr" data-qa-family="block" data-qa-key="required-gitignore-baseline.block" data-qa-label="Content QA" data-qa-noun="block" data-qa-src="{{ '/assets/qa/folio-assistant-sci/guides-writing-a-paper/required-gitignore-baseline.block.json' | relative_url }}" data-qa-index="{{ '/assets/qa/folio-assistant-sci/guides-writing-a-paper/qa-index.json' | relative_url }}" aria-expanded="false" aria-busy="true" title="Content QA: loading the verdict…" aria-label="Content QA: loading the verdict…"><span class="fa-qa-tag">QA</span><span class="fa-qa-glyph" aria-hidden="true">…</span></button> <button type="button" class="fa-qa-badge fa-qa-pending fa-qa-fam-translation" lang="en" dir="ltr" data-qa-family="translation" data-qa-key="required-gitignore-baseline.translation" data-qa-label="Translation QA" data-qa-noun="block" data-qa-src="{{ '/assets/qa/folio-assistant-sci/guides-writing-a-paper/required-gitignore-baseline.translation.json' | relative_url }}" data-qa-index="{{ '/assets/qa/folio-assistant-sci/guides-writing-a-paper/qa-index.json' | relative_url }}" aria-expanded="false" aria-busy="true" title="Translation QA: loading the verdict…" aria-label="Translation QA: loading the verdict…"><span class="fa-qa-tag">TR</span><span class="fa-qa-glyph" aria-hidden="true">…</span></button></span>
+
+Every new folio repository starts with these entries. Agent sandboxes
+accumulate scratch directories as untracked state, and a single `git add -A`
+then commits all of it under a message describing something else.
+
+```gitignore
+# Agent scratch state — transient tooling state, never repository content.
+# Leading slash = root-level only. Keep it (see the warning below).
+/.agents/
+/amalgamated_done/
+/amalgamated_input/
+/_deprecated/
+/scratch/
+.claude/worktrees/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+```
+
+**Keep the leading slashes.** A gitignore pattern with no internal slash
+matches at *every* directory depth, not just the root: unanchored, `_deprecated/`
+would also catch a nested archive such as `computations/_deprecated/`, and
+`scratch/` every `content/**/scratch/`. An ignore rule never untracks a file, but
+any *new* file under such a path is skipped by `git add` with no error and no
+output. If your folio keeps a nested archive or scratch area under one of these
+names, the anchored form keeps it committable.
+
+Two deliberate exclusions:
+
+- **`beans/` stays tracked.** It is the durable, cross-session work plan; a
+  sibling agent has to be able to read it. Bean *duplication* is prevented by
+  the create-guard of the `todo-manager` skill, not by ignoring the directory.
+- **Any directory your folio documents as a real pipeline stays tracked** — in
+  `qou`, `uploads/` is the document-intake stage and belongs in git. Check your
+  own `AGENTS.md` §Project structure before adding a path to this list: if it is
+  documented there, it is content, not scratch.
 
 ## Step 3 — Author the content
 {: #step-3-author-the-content data-fa-label="sec:guides-writing-a-paper-step-3-author-the-content" }
@@ -343,6 +334,4 @@ beans <id> --status resolved
 - [TypeScript API reference]({{ '/api/' | relative_url }}) — the block model in detail
 - [Architecture]({{ '/docs/cat-harness/concepts/architecture.html' | relative_url }}) — how the paper adapter is wired
 
-> **Note on the screenshots.** The images above are *mockups* illustrating the
-> chat-driven workflow and the viewer. Replace them with real screenshots from
-> your own session under `docs/assets/img/` to keep the tutorial current.
+> **Note.** The chat and viewer images above are mockups.

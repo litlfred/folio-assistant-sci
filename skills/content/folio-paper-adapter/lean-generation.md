@@ -26,7 +26,7 @@ the manuscript and machine-checkable formal proofs.
 
 When the MCP server is available, **prefer MCP tools over shell commands**:
 
-| Old workflow | MCP tool | Why better |
+| Shell route | MCP tool | Why better |
 |-------------|----------|-----------|
 | `lake build` + parse output | `lean_diagnostic_messages` | Structured errors/warnings per file |
 | Manual file reading for structure | `lean_file_outline` | Concise view of imports + declarations with type sigs |
@@ -140,7 +140,7 @@ Rules:
 - Categorical theorems/lemmas use `snake_case` (e.g., `categorical_self_duality`)
 - Top-level categorical stubs live directly in the `MyPaper` namespace (not a chapter submodule)
 
-## Base ring convention (STRICT — the project authoring conventions)
+## Base ring convention (STRICT)
 
 When generating Lean stubs, **always start over a generic type variable
 `{R : Type*}`** with the weakest typeclass that admits the construction.
@@ -167,8 +167,7 @@ later (drop the parameter); ℝ-specialised code is hard to generalise
 back** because downstream consumers accrete archimedean assumptions
 silently. When in doubt, stay generic.
 
-Concrete cheat-sheet — see `formalizer.md §Base ring convention` and
-`the project authoring conventions` for the full table.
+Full table: [`formalizer/conventions.md` §"Base ring convention"](formalizer/conventions.md).
 
 ## Lean Project Structure
 
@@ -197,8 +196,7 @@ lake build MyPaper   # just one library
 lake exe cache get   # Mathlib cache for the workspace
 ```
 
-Do **not** create a top-level `lean/` directory — that layout is
-deprecated.
+Do **not** create a top-level `lean/` directory.
 
 ## Linking to mathlib4
 
@@ -237,12 +235,10 @@ in sync — it is the **author's responsibility** to ensure consistency:
 | `-- Ref: [key]` before sorry | Citation key `key` in `content/schema/references.ts` |
 | `\cite{key}` in blueprint | Citation key `key` in `content/schema/references.ts` |
 
-**Every row above except the first two is a fact Lean can compute**, and a
-hand-kept copy of a computable fact is a second answer free to disagree with the
-first. `blueprint-driven-formalization` (a methodology node in
-`folio-assistant-sci/methodologies/`) adopts the inversion from the LeanArchitect
-paper: `\uses` and `\leanok` are **inferred** from the declarations, not
-written. Two cautions when doing that here:
+**Every row above except the first two is computable from Lean.** Per
+`blueprint-driven-formalization` (`folio-assistant-sci/methodologies/`), infer
+`\uses` and `\leanok` from the declarations rather than writing them, with two
+cautions:
 
 - **`\uses` is the FORMAL relation** — fill it from `lean-formal-graph`, never
   from or into a block's `uses[]`, which is editorial.
@@ -291,8 +287,7 @@ Instead of extracting from LaTeX, read the `.ts` manifest:
 3. **Read the `.md` file**: extract the mathematical statement
 4. **Generate the `.lean` sibling** alongside the `.ts` and `.md` files
 5. **Update the `.ts` manifest**: set `lean.ref` to the package-qualified
-   URI `"<pkg>:<Decl.Path>"` (per the project authoring conventions). The legacy
-   `lean.decl` / `lean.file` shape is removed from the schema.
+   URI `"<pkg>:<Decl.Path>"`, never the `lean.decl` / `lean.file` shape.
 
 ### The `uses[]` dependency graph
 
@@ -334,8 +329,8 @@ Parse with `parseLeanRef()` from
 
 ## Trivial-model consistency witness (conjecture-class companion)
 
-Whenever a conjecture is axiomatised as a `class` (per AGENTS.md
-§3b, the conditional-class exception), generate a paired
+Whenever a conjecture is axiomatised as a `class` (the folio's
+conditional-class convention, §3b-cond), generate a paired
 `def trivialModel … : TheClass … where …` populated with
 `PUnit`/`0`/`fun _ => True` so that **every** class field reduces
 to `rfl`.  This proves the class axiomatisation is **consistent**
@@ -367,7 +362,7 @@ When generating a conjecture class, emit two `def`s in the same file:
    each class field discharges by `rfl`.
 
 The trivial model unblocks downstream `[ClassName]`-conditional
-theorems (the project authoring conventions-cond) by guaranteeing the conditional
+theorems (conditional-class convention) by guaranteeing the conditional
 hypothesis is satisfiable, hence the conditional results are not
 vacuously true.
 

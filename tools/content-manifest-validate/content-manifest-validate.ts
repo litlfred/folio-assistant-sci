@@ -6,7 +6,7 @@ export default toolFactory((t) =>
     id: "content-manifest-validate",
     title: "Content manifest validation",
     description:
-      "Validate the block manifests under a path against their schemas. Exits 2 where no folio is present rather than reporting a clean run — the platform carries no content, and a validator that passes over nothing is how this one validated nothing for a while.",
+      "Validate the block manifests under a path against their schemas.",
     install: { none: true },
     invoke: { shell: "bun run cat content:validate" },
     io: {

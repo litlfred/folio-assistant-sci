@@ -14,9 +14,8 @@ tested-by:
 `lean-toolchain` in `scenarios/roles.json` is played by a **mechanical**
 actor (`actorKinds: ["system"]`; today `scenarios/actors/lean-mcp.json`). A
 role played by a machine is still a role, and its skills are its **contract**:
-the responsibilities it must perform, which a test can hold it to (owner,
-2026-10-16). This is that contract. Nothing here is new; each line is read
-off what the repository already says.
+the responsibilities it must perform, which a test can hold it to. This is
+that contract.
 
 ## What it must do
 

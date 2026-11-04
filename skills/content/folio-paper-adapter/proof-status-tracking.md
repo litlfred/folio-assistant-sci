@@ -11,16 +11,16 @@ allowed-tools: Read Write Edit Bash Grep Glob
 
 ## Overview
 
-This skill manages the `proof-objects.json` manifest — the single source of
-truth for which mathematical objects have been formalized, reviewed, and
-approved.  Lean declarations are referenced by URL (doc-gen4 pages), not
+This skill manages the `proof-objects.json` manifest: the record, derived
+from the block `.ts` manifests and the Lean build, of which mathematical
+objects have been formalized, reviewed and approved.  Lean declarations are referenced by URL (doc-gen4 pages), not
 duplicated in JSON.
 
 ## Lean MCP Tools (paper-assistant)
 
 When the MCP server is available, **prefer MCP tools for live status**:
 
-| Old workflow | MCP tool | Why better |
+| Instead of | MCP tool | Why better |
 |-------------|----------|-----------|
 | `lake build` + `update_proof_status.py` | `lean_diagnostic_messages` | Per-file sorry/error counts without full build |
 | Manual declaration inventory | `lean_file_outline` | All declarations with type sigs in one call |
@@ -74,7 +74,7 @@ Multiple reviewers (human + agentic) contribute reviews.  Consensus rules:
 | Script | Purpose |
 |--------|---------|
 | `extract_proof_objects.py` | Parse LaTeX → proof-objects.json |
-| `generate_lean_stubs.py` | proof-objects.json → lean stub files |
+| `folio-assistant-sci/pipeline/generate-lean-stubs.ts <chapter-dir>` | sorry-backed Lean declarations for stub `.lean` files, from each `.ts` `lean.ref` |
 | `update_proof_status.py` | Lean build log → update statuses |
 
 ### GitHub Actions Integration (CI-only)
@@ -83,7 +83,7 @@ The `lean-build.yml` workflow runs the pipeline, once per Lean package
 (`folio/<paper>/lean/` with a lakefile). It is not a workflow of the
 platform's: `folio_init` writes it into a **paper** folio's
 `.github/workflows/`, with the `.github/scripts/` it calls, from
-`cat-harness/templates/paper/` (bean `52dz`). Per package it:
+`folio-assistant-sci/templates/paper/`. Per package it:
 1. Builds the paper to LaTeX with the platform's `build.ts`
 2. Runs `extract_proof_objects.py`
 3. Runs `lake build`
@@ -91,8 +91,7 @@ platform's: `folio_init` writes it into a **paper** folio's
 5. Commits the updated `build-logs/<paper>/proof-objects.json`
    (automated commit by `github-actions[bot]`)
 
-`generate_lean_stubs.py` is **not** in the template: its chapter-to-file
-map was one folio's, written by hand, so there was nothing generic to ship.
+`generate_lean_stubs.py` is **not** in the template.
 
 **This pipeline is CI-only.** Locally, agents must not replicate it.
 Local `lake build` is compile-only — no generation scripts before it.
@@ -122,9 +121,8 @@ Key metrics:
 ## Snapshot policy
 
 Do **not** maintain a static metrics snapshot (total files, declarations,
-active sorry count, sorry distribution) in this skill file. Such tables drift
-within weeks and mislead fresh agents. Derive the current snapshot at the
-start of each pass:
+active sorry count, sorry distribution) in this skill file. Derive the
+current snapshot at the start of each pass:
 
 | Metric | Source |
 |--------|--------|
@@ -193,9 +191,9 @@ The witness includes:
 - `stampedAt`: ISO 8601 timestamp
 
 **Scripts:**
-- `bun run scripts/lean-witness.ts stamp <file>` — after successful build
-- `bun run scripts/lean-witness.ts status` — show all witness statuses
-- `bun run scripts/lean-audit.ts` — deep chapter-by-chapter audit
+- `bun run cat-harness-tools/scripts/lean-witness.ts stamp <file>` — after successful build
+- `bun run cat-harness-tools/scripts/lean-witness.ts status` — show all witness statuses
+- `bun run folio-assistant-sci/scripts/lean-audit.ts` — deep chapter-by-chapter audit
 
 ### Python computation witnesses
 
@@ -213,12 +211,8 @@ w.save()
 
 **Staleness detection:**
 - `python3 witness_base.py check-all` — check all Python witnesses
-- `bun run scripts/witness-audit.ts` — unified Lean + Python audit
+- `bun run folio-assistant-sci/scripts/witness-audit.ts` — unified Lean + Python audit
 
 ## Harness skills that dispatch here
-
-This layer sits above cat-harness, so the link points down from here. The
-harness skills below describe the slot generically ("the content type's …")
-and name no science skill (bean `syiq`).
 
 - `todo-review`: the feedback it raises tracks formalization gaps.
