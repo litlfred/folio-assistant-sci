@@ -14,7 +14,7 @@ propagates to every place the value is mentioned.
 
 ## The syntax: Liquid `{{ … }}` — `:val` is deprecated
 
-**Since 2026-09-30 (bean `kott`, issue #1564) a value is written as Liquid**, one
+**A value is written as Liquid**, one
 syntax for every target: the PDF, the blueprint, the just-the-docs site and IG
 pages all print the same number, because one resolver
 (`cat-harness-tools/pipeline/liquid-values.ts`) substitutes it before Jekyll, the IG
@@ -43,16 +43,15 @@ exact for 50-digit witnesses); `| scientific` emits `\times 10^{e}` and belongs
 inside math.
 
 **`{{ site.data.… }}` is fhir-harness's**, declared as pass-through: Jekyll and
-the IG Publisher resolve it exactly as before, and bean `bamf` populates it for
-just-the-docs. `{{ page.* }}` and anything else not declared is left alone.
+the IG Publisher resolve it. `{{ page.* }}` and anything else not declared is left alone.
 
 **Never silent:** a reference under a resolved prefix that does not resolve
 becomes a visible `⟦unresolved: …⟧` marker and is reported. Left as `{{ … }}`,
 Jekyll would print an undefined variable as the empty string.
 
-**Datasets:** values from an ingested dataset are addressed the same way once
-the dataset carries them, e.g. `{{ qou.library.codata-2022.mass-electron }}`
-(bean `uyp8`: CODATA is still a vendored Python snapshot today).
+**Datasets:** values from an ingested dataset are addressed the same way, e.g.
+`{{ folio-assistant-sci.library.codata-2022.electron-mass }}` (see
+`reference-dataset-ingestion`).
 
 The rest of this skill describes `:val[…]`, which keeps working on the LaTeX
 path as a **deprecated alias** until a folio migrates its uses.
@@ -90,29 +89,19 @@ context (the math-mode pass picks it up):
 $\mathrm{Vol}(K) = :val[vol_K]{precision=8}$
 ```
 
-### Why `:val[…]` was chosen over Liquid (superseded 2026-09-30)
+### Liquid and TeX braces
 
-The `:directive[arg]{attrs}` form is CommonMark generic-directive
-syntax, already used for `:defterm[…]` / `:refterm[…]` (the glossary
-system). Liquid `{{ … }}` would collide with math's heavy use of `{…}`
-braces. Using `:val[…]` keeps the syntax disjoint from math markup,
-reuses the existing directive infrastructure, and mirrors the muscle
-memory authors already have for term references.
-
-**Why that no longer decides it.** The collision is real only for a `{{`
-that is NOT a value reference, and the resolver matches exactly
-`{{ <declared-prefix>.… }}`: LaTeX's `x^{{1}}` or `∏_{{i,j}}` never matches, so
-the PDF path is unaffected. Jekyll targets still need other `{{` raw-wrapped,
-which qou's docs stager already does by detection. Against that, one syntax
-that Jekyll, the IG Publisher and the platform all read won — owner, 2026-09-30:
-*"why markdown pages not use same as jekyll? ... be consistent"*.
+The resolver matches only `{{ <declared-prefix>.… }}`, so TeX such as
+`x^{{1}}` or `∏_{{i,j}}` never matches and the PDF path is unaffected.
+Jekyll targets still need any other `{{` raw-wrapped.
 
 ## Authoring rules
 
 ### When to use `:val[name]`
 
-**Use it for every literal whose value is derived from a computation
-witness — in *every* block kind**, not just prose. The codemod and
+**Cite every literal whose value is derived from a computation witness,
+in *every* block kind**: as a Liquid reference, or as `:val[…]` in a folio
+not yet migrated. The codemod and
 validator are kind-agnostic: they walk every `.md` file regardless of
 the wrapping block kind.
 
@@ -232,11 +221,10 @@ inside an *exploratory* fence is a contradiction to resolve.
 
 ## Skill routing
 
-When asked to write or revise paper content that quotes witness-derived
-literals, **first check the registry**. If registered, use `:val[name]`.
-If it should be registered but isn't, add it (with `needsReview: true`
-if the witness is uncertain) and *then* cite it. Avoid hard-coded
-literals in newly-authored prose.
+When writing or revising content that quotes a witness-derived literal,
+cite it with a Liquid reference to the witness; never hard-code it. In a
+folio still on `:val`, check the registry first, and add a missing entry
+(with `needsReview: true` if the witness is uncertain) before citing it.
 
 ## Formal-source companion: `:leanval[...]` codemod
 
@@ -265,9 +253,5 @@ decision procedure); the codemod is a drift safety net, not a generic
 literal rewriter.
 
 ## Harness skills that dispatch here
-
-This layer sits above cat-harness, so the link points down from here. The
-harness skills below describe the slot generically ("the content type's …")
-and name no science skill (bean `syiq`).
 
 - `canonical-watcher`: as the value-citation check, on any changed block quoting numerical literals.

@@ -15,9 +15,8 @@ allowed-tools: Bash Read
 The expensive QA criteria are the ones a machine cannot settle —
 `proof-narrative-lean-equiv`, `proof-statement-integrity`, the vacuity
 family, the `proof-rater-*` scores. Every one is `automated: false`, so
-every one costs agent turns. A sweep that walks the corpus in file order
-spends most of them on blocks that cannot affect anything anyone cares
-about.
+every one costs agent turns. Sweeping in file order spends most of them
+on blocks that cannot affect a target.
 
 ## Use it
 
@@ -27,8 +26,7 @@ bun run folio-assistant-sci/pipeline/semantic-cone.ts --targets thm:a --coverage
 ```
 
 `--coverage` is the useful one: it lists cone members that lack a
-**fresh** adjudication of each agent-checked criterion. That turns "have
-we reviewed enough?" from a judgement call into a computed answer.
+**fresh** adjudication of each agent-checked criterion.
 
 ## Why it works: type edges only
 
@@ -45,7 +43,7 @@ mathematics? — propagates differently from logical dependency:
 So the cone is the transitive closure over **type edges only**, and that
 termination is the entire reduction.
 
-## Read the confidence line — it is not decoration
+## Read the confidence line
 
 | Output | Meaning |
 |---|---|
@@ -84,9 +82,5 @@ statement-level criteria.
 | `delivery-summary` | Report coverage against headline theorems, not raw block counts |
 
 ## Harness skills that dispatch here
-
-This layer sits above cat-harness, so the link points down from here. The
-harness skills below describe this one generically and name no science skill
-(bean `syiq`).
 
 - `review-task (process)`: the harness review task binds `content-review`; a paper process that wants semantic scoping adds this skill by calling that process.

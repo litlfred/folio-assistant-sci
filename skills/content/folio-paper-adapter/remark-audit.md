@@ -177,8 +177,4 @@ The following constraint is added to `constraints.ts`:
 
 ## Harness skills that dispatch here
 
-This layer sits above cat-harness, so the link points down from here. The
-harness skills below describe the slot generically ("the content type's …")
-and name no science skill (bean `syiq`).
-
 - `one-voice-integration-watcher`: as the remark audit, when a `remark` block fires `fit-section-chapter`.

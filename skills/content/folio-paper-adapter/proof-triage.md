@@ -27,9 +27,9 @@ to a proof writer for guidance.
 
 ## Lean MCP Tools (paper-assistant)
 
-When the MCP server is available, it **transforms every phase** of triage:
+When the MCP server is available, use it in every phase:
 
-| Phase | Old workflow | MCP tool | Improvement |
+| Phase | Fallback | MCP tool | Improvement |
 |-------|-------------|----------|-------------|
 | Inventory | `grep sorry` + manual classification | `lean_diagnostic_messages` | Structured sorry warnings with file/line/type |
 | Goal reading | Manual file reading | `lean_goal` | Live goal state at each sorry position |
@@ -60,9 +60,6 @@ For each sorry site:
    a. lean_local_search for similar declarations in the project
    b. Escalate with goal state + failed attempts + similar lemmas
 ```
-
-This loop replaces the edit-build-check cycle with **interactive feedback**
-that doesn't require a full `lake build` between attempts.
 
 ## Prerequisites
 
@@ -225,23 +222,16 @@ not `proposition = True`.  Before resolving any sorry, verify the statement
 is well-typed by checking that `lake build` produces a sorry warning (not a
 type error).
 
-### 2. Placeholder field axioms: prefer `True := by trivial`
+### 2. Placeholder fields: state the real proposition
 
 **Wrong:**
 ```lean
 laplacian_vanishes : ∀ (p : M), (0 : ℝ) = 0  -- placeholder for Δ α = 0
 ```
-This is technically provable but semantically misleading — it universally
-quantifies over an unused variable and states a tautology unrelated to the
-real axiom.
-
-**Right:**
-```lean
-laplacian_vanishes : True := by trivial  -- placeholder for Δ α = 0
-```
-Use `True := by trivial` for placeholder axioms.  It's immediately discharged,
-clearly marks itself as a placeholder, and is consistent with other axiom
-placeholders in the codebase.
+This states nothing. Do not use `True := by trivial` either:
+[`lean-proof-vacuity-audit`](lean-proof-vacuity-audit.md) flags both
+(`proof-no-trivial-true`). State the real proposition with `sorry` and a
+`-- Ref:` line, or demote the block to `conjecture`.
 
 ### 3. Pin external dependencies to commit hashes
 
@@ -273,9 +263,8 @@ In `glossary.json`, follow the existing notation conventions:
 
 ## Current Sorry Inventory
 
-Live state — **do not** maintain a static snapshot in this skill file
-(prior dated tables drifted within months and misled fresh agents).
-Pull the current inventory at the start of each triage pass:
+Do **not** maintain a static snapshot in this skill file. Pull the
+current inventory at the start of each triage pass:
 
 | Source | Command |
 |--------|---------|
@@ -296,14 +285,14 @@ Update them after each triage pass.
 ### Classification Boundaries
 
 - **Glossary type stubs** (`def X : Type* := sorry`) are **design tasks**, not
-  proof tasks.  They need a concrete `structure`/`class`/`inductive`.  Route
-  them through Phase 3b (Design Review), not Phase 3 (Proof Attempts).
+  proof tasks.  They need a concrete `structure`/`class`/`inductive`.  Skip
+  Phase 3 for them; escalate them (Phase 4) as design tasks.
 - **Structure field defaults** (`field : P := by sorry`) are a special case:
   the sorry lives in the structure definition but must be resolved per-instance.
   The fix is usually to remove the default and provide explicit proofs at each
   construction site.  This is a **refactoring task**, not a single proof.
-- **Axiom placeholders** (`True := by trivial` with `-- axiom placeholder`
-  comment) are sorry-free by design.  Do not count them in the sorry inventory.
+- **Axiom placeholders** (`sorry` with a `-- deferred to Ch.N` comment) are
+  skipped, not counted as resolved.
 - **`axiom` declarations** (if any remain) are intentionally unproved — they
   represent conjectures or assumptions stated honestly.
 
@@ -364,16 +353,12 @@ manifests to order the work list: blocks depended on by many others should
 be resolved first. This replaces or supplements the DAG built from Lean
 imports in Phase 2.
 
-**Source of truth.** Formalization status is derived at build time from
-`.lean` file content and Lean build output, then written to
-`proof-objects.json`. It is not stored in `.ts` manifests.
-
 ## Checklist
 
 - [ ] All `.lean` files grepped for `sorry`
 - [ ] Each sorry classified (type / proof / field / axiom-placeholder)
 - [ ] Theorem statements checked for well-typedness (no `= True` anti-pattern)
-- [ ] Placeholder axioms use `True := by trivial` consistently
+- [ ] No `: True` placeholders (see `lean-proof-vacuity-audit`)
 - [ ] Dependency order established
 - [ ] Easy proofs attempted first (positivity, ring, limit cases)
 - [ ] `noncomputable def` values unfolded before `norm_num`
@@ -385,10 +370,6 @@ imports in Phase 2.
 - [ ] Summary table generated
 
 ## Harness skills that dispatch here
-
-This layer sits above cat-harness, so the link points down from here. The
-harness skills below describe the slot generically ("the content type's …")
-and name no science skill (bean `syiq`).
 
 - `todo-review`: as the gap-triage skill: formal-layer gap stubs become high-priority feedback.
 - `integration-backlog`: one of the routed improvers re-rated in the rate→improve loop.

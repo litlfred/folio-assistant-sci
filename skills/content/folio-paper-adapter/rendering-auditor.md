@@ -75,7 +75,7 @@ cd content && bun run pipeline/validate.ts <paper>/<chapter>/<block>.ts
 Or for remark + unified-latex AST on the `.md` directly:
 
 ```bash
-cd content && bun run pipeline/validate-tex.ts <paper>/<chapter>/<block>.md
+bun run folio-assistant-sci/pipeline/validate-tex.ts --file <paper>/<chapter>/<block>.md
 ```
 
 ### Manual inspection (when tools unavailable)
@@ -99,7 +99,7 @@ cd content && bun run pipeline/validate-tex.ts <paper>/<chapter>/<block>.md
 | Check | Severity | How |
 |-------|----------|-----|
 | All math symbols used are defined in the paper or glossary | **warning** | Extract symbols from math AST, cross-ref against glossary.json and notation remarks |
-| Notation register compliance (project AGENTS.md notation section) | **error** | Verify each symbol's font/register matches the project's notation register; a symbol used with the wrong font/register (e.g. plain where the register calls for fraktur, bold, or calligraphic) should match the project's notation register defined in the project's AGENTS.md notation section |
+| Notation register compliance (project AGENTS.md notation section) | **error** | Each symbol's font/register matches the notation register in the project's AGENTS.md (e.g. fraktur, bold or calligraphic where the register calls for it) |
 | No notation collisions | **error** | Flag a single symbol used for two distinct concepts, or a concept written with a symbol that the notation register reserves for something else |
 | Category notation conventions | **error** | Flag font/register used for categories that the notation register reserves for another role (e.g. a calligraphic letter reserved for sheaves/bundles being used for a category) |
 | Observed/derived values use `$\approx$` not `$=$` | **error** | Numerical predictions must use `$\approx$` unless an `$O(\cdot)$` error term is present |
@@ -119,15 +119,6 @@ cd content && bun run pipeline/validate-tex.ts <paper>/<chapter>/<block>.md
    - The block's `uses[]` dependencies (symbol comes from a referenced block)
    - Standard LaTeX/amsmath commands (no check needed for `\frac`, `\int`, etc.)
 4. Flag anything that doesn't appear in any of these sources
-
-### Common notation violations
-
-The project's notation register (in AGENTS.md) defines the canonical
-font/symbol for each concept — which font/register each role uses, and which
-symbols are reserved for which concepts. The auditor flags deviations from that
-register: wrong-font symbols, reserved symbols used for the wrong role, and
-symbol collisions. Treat the project's notation register as the source of truth
-and report any mismatch against it.
 
 ---
 
@@ -166,14 +157,12 @@ running the full pdflatex pipeline. This catches TeX errors early.
 
 ### Running Pass 3
 
-For HTML pipeline validation:
-```bash
-cd content && bun run pipeline/validate-tex.ts --katex <block>.md
-```
+For HTML pipeline validation there is no KaTeX CLI check; use the manual
+check below.
 
 For LaTeX snippet compilation:
 ```bash
-cd content && bun run pipeline/validate-tex.ts --compile <block>.md
+bun run folio-assistant-sci/pipeline/validate-tex.ts --file <block>.md --compile
 ```
 
 ### Manual check (when compilation tools unavailable)
@@ -215,7 +204,7 @@ locations, and other pdflatex warnings.
 
 ```bash
 # Build the chapter's .tex file
-cd content && bun run pipeline/build.ts <paper>/<paper>.ts \
+bun run cat-harness-tools/pipeline/build.ts <paper>/<paper>.ts \
   --out-dir ../chapters/
 
 # Compile with nonstopmode and capture log
@@ -266,7 +255,7 @@ that pass compilation but produce wrong visual output.
 | No overlapping text in PDF | **error** | Check for text collisions in dense sections |
 | Fenced `` ```tex `` blocks with pre-rendered SVGs display correctly | **warning** | Verify SVG embed or image fallback is present |
 
-### Viewer-specific checks (discovered 2026-04-02 audit)
+### Viewer-specific checks
 
 | Check | Severity | How |
 |-------|----------|-----|
@@ -274,13 +263,12 @@ that pass compilation but produce wrong visual output.
 | Title math in `$...$` renders (not raw) | **error** | `mkBlockHeader()` calls `inl(title)` then `renderMath(div)`; if KaTeX is not yet loaded or macros empty, math shows as raw — verify KaTeX loads before block rendering |
 | Simulator blocks validate against current schema | **error** | `SimulatorBlock` requires `html: string` + `defaultView: SimulatorView`; deprecated `simulator: {type, source}` field causes Zod parse failure |
 | Content blocks in correct chapter directory | **error** | Block `.ts`/`.md` must be in the chapter directory that references them in its manifest |
-| `\{` and `\}` in inline math don't break `$` parser | **error** | The `inl()` brace-depth tracker must skip `\{`/`\}` (escaped braces); otherwise the closing `$` is never found and math shows as raw text |
 
 ### HTML visual verification procedure
 
 1. Build the paper JSON:
    ```bash
-   cd content && bun run pipeline/export-json.ts
+   bun run folio-assistant-sci/pipeline/export-json.ts
    ```
 
 2. For each content block in the output, check:
@@ -417,9 +405,5 @@ If rendering-auditor finds issues it cannot diagnose:
 - **Complex layout problems** → defer to `latex-validation` with the specific `.tex` output
 
 ## Harness skills that dispatch here
-
-This layer sits above cat-harness, so the link points down from here. The
-harness skills below describe the slot generically ("the content type's …")
-and name no science skill (bean `syiq`).
 
 - `block-density`: when a table is extracted from a block.

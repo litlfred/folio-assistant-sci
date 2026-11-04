@@ -34,6 +34,10 @@ Agents editing content blocks should check this list before committing.
 | F13 | Orphan cross-reference | Error | Manual |
 | F14 | Missing bibliography entry | Error | Manual |
 | F15 | `$=$` for observed/derived values | Error | Yes |
+| F16 | Multi-line inline math in viewer | Error | Viewer fix |
+| F17 | Simulator block schema mismatch | Error | Manual |
+| F18 | Orphaned content block (wrong chapter directory) | Error | Manual |
+| F19 | tikzcd/gathered shown raw in HTML viewer | Warning | Script |
 
 ---
 
@@ -354,7 +358,7 @@ No source change needed. If rendering fails, the bug is in the viewer's
 parser (see `inl()` function in `viewer/index.html`).
 
 **Common pitfalls**:
-- `\{` and `\}` (literal braces) treated as depth changes → **fixed in viewer**
+- `\{` and `\}` (literal braces) must not count as depth changes in `inl()`
 - Continuation lines in list items not joined properly → check indentation is 2+ spaces
 - `$...$` inside bold `**...**` — the bold regex in `inl()` runs first and may split the math token
 
@@ -383,8 +387,7 @@ defaultView: {
 
 The path is relative to the **folio's** root, and the directory is whatever
 that folio declares as `simulators.dir` in `<name>.config.json` — not a
-platform path. It read `folio-assistant/simulators/…` until 2026-09-19, when
-the simulators moved to the folio that owns them.
+platform path.
 
 **Fix**: Replace the `simulator:` field with `html:` + `defaultView:`.
 Use an existing simulator block (e.g. `<simulator-name>.ts`) as a template.
@@ -412,13 +415,10 @@ happens because:
 2. KaTeX cannot render tikzcd environments
 3. The viewer falls back to displaying raw source text
 
-**Fix** (preferred): Run the pre-rendering pipeline:
-```bash
-cd content && bun run render-tex
-```
-This generates SVGs and updates `.ts` manifests with `rendered[]` entries.
+**Fix** (preferred): as F12, run `render-tex`; it writes the SVGs and the
+`rendered[]` entries.
 
-**Fix** (when pdflatex unavailable): The viewer now shows a styled
+**Fix** (when pdflatex unavailable): The viewer shows a styled
 placeholder with a "[Commutative diagram]" label and collapsible source
 instead of raw text. This is automatic — no content change needed.
 
