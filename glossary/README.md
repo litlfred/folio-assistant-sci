@@ -4,7 +4,7 @@
 
 # glossary
 
-Science's generated glossary (`glossary/generated/folio-assistant-sci/`): candidate `folio-glossary/v1` schemes extracted from this layer's tools, skills, BPMN activities and DMN decisions by core's `glossary:page`. Moved here from `folio-assistant-core/glossary/generated/folio-assistant-sci/` (bean q3n9, owner ruling 2026-10-24: a scheme is keyed by (instance, scheme), and each layer holds its own glossary, following rfev).
+Science's generated glossary (`glossary/generated/folio-assistant-sci/`): candidate `folio-glossary/v1` schemes extracted from this layer's tools, skills, BPMN activities and DMN decisions by core's `glossary:page`. A scheme is keyed by (instance, scheme), and each layer holds its own glossary.
 
 Part of [folio-assistant-sci](../README.md) 0.1.0, declared as `glossary`, holding `glossary`.
 

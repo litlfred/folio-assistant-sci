@@ -1,8 +1,7 @@
 # AGENTS.md — folio-assistant-sci
 
-What binds everywhere is the repository's [`AGENTS.md`](../AGENTS.md); what
-this layer *is* is [`README.md`](README.md). This layer is small, and what it
-mostly needs from an agent is that things are put in the right place.
+What this layer *is* is [`README.md`](README.md). What it mostly needs from an
+agent is that things are put in the right place.
 
 ## Source material, not authored content
 
@@ -18,20 +17,17 @@ each rendered from a paper in `library/` and citing it as `evidence`. The
 discipline is `methodology-adoption`: render the method, not the paper's tools;
 state what the paper measured and did not; state what this platform refuses.
 A paper's empirical results are the paper's findings and are reported as such,
-never restated as mathematics. Bean `h3rw`.
+never restated as mathematics.
 
-## The placement rule, and it has already been got wrong once
-
-`milnorlink` sat under `cat-harness/library/` beside three WHO IRIS
-publications. It is **not an IRIS item**: no handle, no DSpace UUID, no
-collection path, nothing in the catalogue naming it.
+## The placement rule
 
 > **A repository named for one catalogue is not a place to keep things that
 > belong to another.**
 
-Moving it to [`who-iris/`](../who-iris/) would have been the cheaper move and
-the wrong one — the next agent looking for the WHO corpus would have found a
-mathematics paper in it with no way to tell why. Beans `r1lz` and `frs5`.
+`milnorlink`, for example, is **not a WHO IRIS item** — no handle, no DSpace
+UUID, no collection path — so it is not in `who-iris`, where the next agent
+looking for the WHO corpus would find a mathematics paper with no way to tell
+why.
 
 So when you add a source, ask which catalogue it belongs to **before** asking
 which directory is convenient. If the answer is "none of them", that is a
@@ -40,7 +36,7 @@ reason to say so, not a reason to file it under the nearest one.
 ---
 
 *A declared asset of this instance ([`folio-assistant-sci.json`](folio-assistant-sci.json), role
-`agent-instructions`). Issue #592.*
+`agent-instructions`).*
 
 ## The skills this layer publishes
 
@@ -72,7 +68,7 @@ _70 skills in 7 directories, generated from each skill's front matter. `bun run 
 | [`build-pdf`](skills/content/folio-paper-adapter/build-pdf.md) | Builds a paper folio's PDF locally in the workspace — the monolithic PDF plus split per-chapter PDFs. |
 | [`category-theory`](skills/content/folio-paper-adapter/category-theory.md) | Category Theory formalization skill — handles diagram chasing, universal properties, functorial translation, and whiskering in Lean 4. |
 | [`chapter-analysis`](skills/content/folio-paper-adapter/chapter-analysis.md) | Thorough analysis and Lean 4 formalization of a single manuscript chapter. |
-| [`compute-audit`](skills/content/folio-paper-adapter/compute-audit.md) | Audit compute scripts for a catalogue of correctness and performance antipatterns extracted from a long review of the project's compute history. |
+| [`compute-audit`](skills/content/folio-paper-adapter/compute-audit.md) | Audit compute scripts for a catalogue of correctness and performance antipatterns. |
 | [`compute-author`](skills/content/folio-paper-adapter/compute-author.md) | Pre-work briefing + durable patterns for anyone writing or modifying compute scripts (or the native crates they call). |
 | [`compute-integration-watcher`](skills/content/folio-paper-adapter/compute-integration-watcher.md) | Cross-layer wiring auditor — watches for newly-landed formal/analytic improvements (proofs, propositions, lemmas, axiom→theorem upgrades, witness data) on the default branch AND on open PRs, and… |
 | [`content-block-review`](skills/content/folio-paper-adapter/content-block-review.md) | Reviews existing content blocks for adherence to all requirements — structural integrity, Lean proof rules, cross-reference consistency, status accuracy, and naming conventions. |
@@ -84,7 +80,7 @@ _70 skills in 7 directories, generated from each skill's front matter. `bun run 
 | [`ffi-roundtrip-audit`](skills/content/folio-paper-adapter/ffi-roundtrip-audit.md) | Audit compute scripts for script ↔ native ping-pong patterns — loops that cross the FFI / subprocess boundary per iteration, instead of one boundary crossing for the whole pipeline. |
 | [`formalizer`](skills/content/folio-paper-adapter/formalizer.md) | Lean 4 Formalizer — translates the logical skeleton of narrative mathematical proofs into Lean 4 tactic blocks. |
 | [`groebner-basis`](skills/content/folio-paper-adapter/groebner-basis.md) | Compute Gröbner bases and normal forms for (possibly non-commutative) algebraic structures using a CAS (e.g. |
-| [`latex-build-cache`](skills/content/folio-paper-adapter/latex-build-cache.md) | LaTeX build performance — findings + what's safe. |
+| [`latex-build-cache`](skills/content/folio-paper-adapter/latex-build-cache.md) | LaTeX build performance. |
 | [`latex-compilation`](skills/content/folio-paper-adapter/latex-compilation.md) | Compile LaTeX source documents into PDF using latexmk and pdflatex, with safe shell-escape isolation across trusted and untrusted environments. |
 | [`latex-validation`](skills/content/folio-paper-adapter/latex-validation.md) | LaTeX Validation Skill |
 | [`lean-build-fix`](skills/content/folio-paper-adapter/lean-build-fix.md) | Iteratively fix Lean build errors and linter warnings until the build passes cleanly. |

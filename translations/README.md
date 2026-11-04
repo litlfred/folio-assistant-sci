@@ -4,7 +4,7 @@
 
 # folio-assistant-sci-translations
 
-The gettext side of folio-assistant-sci's own strings, one directory per target locale. Today: `block-kinds.pot`/`.po`, the headings of the block kinds this instance declares in block-kinds/, keyed `msgctxt "block-kind:<kind>"` with the node's English `heading` as msgid (bean riit, step 2b). Owner, 2026-10-04: locale headings live in the translation graph (option 1 of 2), and kinds are not centrally managed, so the catalogue sits with the kinds rather than in cat-harness/translations/.
+The gettext side of folio-assistant-sci's own strings, one directory per target locale. `block-kinds.pot`/`.po`, the headings of the block kinds this instance declares in block-kinds/, keyed `msgctxt "block-kind:<kind>"` with the node's English `heading` as msgid, and `processes/<process>.pot`, the text of this layer's BPMN processes. Locale headings live in the translation graph, and kinds are not centrally managed, so the catalogue sits with the kinds rather than in cat-harness/translations/.
 
 Part of [folio-assistant-sci](../README.md) 0.1.0, declared as `folio-assistant-sci-translations`, holding `translation-sources`.
 

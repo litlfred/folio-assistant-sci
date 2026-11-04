@@ -7,7 +7,7 @@ generated: "scripts/subgraph-readmes.ts of the bootstrap toolset (https://github
 
 # folio-assistant-sci-typologies
 
-The graph typologies folio-assistant-sci owns, one folio-graph-typology/v1 node per file (bean dmx1). Owner, 2026-10-04: no central registry for subgraph types; a harness declares its own in a kinds/ graph.
+The graph typologies folio-assistant-sci owns, one folio-graph-typology/v1 node per file. There is no central registry for subgraph types: a harness declares its own in a kinds/ graph.
 
 Part of [folio-assistant-sci](../README.md) 0.1.0, declared as `folio-assistant-sci-typologies`, holding `typologies`.
 

@@ -7,7 +7,7 @@ generated: "scripts/subgraph-readmes.ts of the bootstrap toolset (https://github
 
 # folio-assistant-sci-validators
 
-The validators this instance's code provides, one folio-validator/v1 node each, naming the graph typology and $schema family it checks and the Zod export that checks it (bean riit): `conjecture-register` for `folio-conjecture-register/v1` and `editor-checker` for `folio-editor-checker/v1`.
+The validators this instance's code provides, one folio-validator/v1 node each, naming the graph typology and $schema family it checks and the Zod export that checks it: `conjecture-register` for `folio-conjecture-register/v1` and `editor-checker` for `folio-editor-checker/v1`.
 
 Part of [folio-assistant-sci](../README.md) 0.1.0, declared as `folio-assistant-sci-validators`, holding `validators`.
 

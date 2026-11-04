@@ -1,61 +1,44 @@
 # folio-assistant-sci
 
-Scientific source material used by folios that formalise mathematics. Staged as
-a top-level directory ahead of becoming its own repository — the same
-arrangement as [`who-iris/`](../who-iris/) and
-[`folio-assistant-core/`](../folio-assistant-core/).
+Scientific source material used by folios that formalise mathematics, the
+methodologies for formalising it in Lean that this layer adopts from that
+material, and the paper content adapter, skills, tools and processes a paper
+folio works with. `folio-assistant-sci.json` declares every directory; each has
+a generated README.
 
 **Contents**
 
 <!-- readme:toc:begin -->
 
 - [What is here](#what-is-here)
-- [Why it is not in who-iris/](#why-it-is-not-in-who-iris)
-- [Why it is not in cat-harness/](#why-it-is-not-in-cat-harness)
+- [The platform is not the content](#the-platform-is-not-the-content)
 - [How it is reached](#how-it-is-reached)
 
 <!-- readme:toc:end -->
 
 ## What is here
 
-Four documents and the methods adopted from three of them.
+The library and the methods adopted from it.
 
 | | |
 |---|---|
-| `library/milnorlink/` | The source text the derived `milnor` skill reads. |
+| `library/milnorlink/` | The source text the derived `milnor-exposition-standard` skill reads (Milnor, *Link Groups*, 1954). |
 | `library/arxiv-2601.22554v1/` | Zhu, Monticone, Avigad, Welleck (2026), *LeanArchitect: Automating Blueprint Generation for Humans and AI*. |
 | `library/arxiv-2406.01940v2/` | Lu, Wan, et al. (2024), *Process-Driven Autoformalization in Lean 4*. |
 | `library/arxiv-2602.16554v1/` | Ren, Li, Qi (2026), *MerLean: An Agentic Framework for Autoformalization in Quantum Computation*. |
-| `library/image-verdicts.json` | The image-role judgements for all four, each made by opening the image. |
-| `methodologies/` | One node per arXiv paper above — the METHOD each paper presents for Lean formalization, what it measured and did not, and what this platform refuses from it. The Lean skills in `cat-harness/skills/` point here rather than restating them. Bean `h3rw`. |
+| `library/arxiv-2003.08005v1/` | *ScanSSD: Scanning Single Shot Detector for Mathematical Formulas in PDF Document Images*. |
+| `library/arxiv-2512.09874v3/` | *Benchmarking Document Parsers on Mathematical Formula Extraction from PDFs*. |
+| `library/arxiv-2604.00554v1/` | *LLM-supported document separation for printed reviews from zbMATH Open*. |
+| `library/codata-2022/` | *CODATA 2022 Recommended Values of the Fundamental Physical Constants*. |
+| `library/image-verdicts.json` | The image-role judgements for the library's documents, each made by opening the image. |
+| `methodologies/` | One node per Lean-autoformalization paper above (LeanArchitect, Process-Driven Autoformalization, MerLean) — the METHOD each paper presents for Lean formalization, what it measured and did not, and what this platform refuses from it. This layer's Lean skills point here rather than restating them. |
 
-## Why it is not in `who-iris/`
+## The platform is not the content
 
-`milnorlink` was the fourth entry under `cat-harness/library/`, beside three WHO
-IRIS publications. It is **not an IRIS item** and never was: no handle, no
-DSpace UUID, no collection path, nothing in the catalogue that names it.
-
-Sending it to `who-iris/` would have been the cheaper move and the wrong one — a
-repository named for one catalogue is not a place to keep things that belong to
-another, and the next agent looking for the WHO corpus would have found a
-mathematics paper in it with no way to tell why. Bean `r1lz` called this
-destination before the move; bean `frs5` made it.
-
-## Why it is not in `cat-harness/`
-
-`AGENTS.md` states the rule this instance is an application of:
-
-> **folio-assistant is the platform, not the content.**
-
-`cat-harness/library/` held 1,431 files of somebody else's writing inside the
-repository that ships the skills, schemas and pipeline for working with it.
-Every one of those files has now left; `cat-harness` declares no `library`
-graph at all, because a declared-and-empty directory is the `dh4f` defect —
-a consumer scans nothing and reports a clean run over it.
-
-The **pipeline** stays platform-side. OCR, ingestion, the JSON-LD generator and
-the L1 completeness gate are all still in `cat-harness/`, and they read this
-library through the declaration rather than through a path anyone wrote down.
+folio-assistant is the platform, not the content: the library lives here, not in
+`cat-harness/`. The pipeline that reads it — OCR, ingestion, the JSON-LD
+generator and the L1 completeness gate — stays in `cat-harness/` and reaches
+this library through its declaration, not a path.
 
 ## How it is reached
 
@@ -63,9 +46,5 @@ library through the declaration rather than through a path anyone wrote down.
 instance's own tooling resolves it directly. `cat-harness/cat-harness.json`
 additionally declares it as `folio-assistant-sci-library`, repository-scoped,
 because the consumers that scan libraries — `check:l1-complete`, the narrative
-queue, `gen-library-jsonld`, the MCP server's graph roots — run from that root
-and a library they cannot see is a corpus they pass silently.
-
-Those consumers now fan out over **every** declared library rather than taking
-the first (bean `a02m`). Before that change this move would have made half the
-corpus invisible to them, with every gate still green.
+queue, `gen-library-jsonld`, the MCP server's graph roots — run from that root.
+Those consumers fan out over every declared library.

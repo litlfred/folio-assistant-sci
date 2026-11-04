@@ -4,7 +4,7 @@
 
 # folio-assistant-sci-editor-checkers
 
-The ✍ suggest editor's checks and Crepe settings for this instance's content profiles, one folio-editor-checker/v1 node per profile naming the code (`path.ts#Export`) the editor loads. Today it holds one node: `paper-latex`, the LaTeX syntax checker and the Crepe repairs for paper math (bean folio-assistant-4dx7). The kind is declared in typologies/editor-checkers.json and its validator in validators/editor-checker.json.
+The ✍ suggest editor's checks and Crepe settings for this instance's content profiles, one folio-editor-checker/v1 node per profile naming the code (`path.ts#Export`) the editor loads. Today it holds one node: `paper-latex`, the LaTeX syntax checker and the Crepe repairs for paper math. The kind is declared in typologies/editor-checkers.json and its validator in validators/editor-checker.json.
 
 Part of [folio-assistant-sci](../README.md) 0.1.0, declared as `folio-assistant-sci-editor-checkers`, holding `editor-checkers`.
 
