@@ -13,8 +13,8 @@ allowed-tools: Read Write Edit Bash Grep Glob
 ## Overview
 
 This skill performs a complete analysis-to-formalization pass on a single
-chapter of the manuscript.  It is the union of the Ontologist, Formalizer,
-and Lean Generation skills applied in a structured, chunked workflow.
+chapter of the manuscript.  It combines a glossary pass with the
+`formalizer` and `lean-generation` skills in a structured, chunked workflow.
 
 ## When to Use This Skill
 
@@ -70,9 +70,10 @@ objects in the chapter.  Follow these rules:
 
 - Import from mathlib: `CategoryTheory.Monoidal.Basic`, `Functor.Basic`,
   `Algebra.Group.Basic`, etc.
-- Use `sorry` only for axiom placeholders that represent deep mathematical
-  content (non-degeneracy, cohomological vanishing).  Prefer `True := by trivial`
-  for conditions that are axiomatically assumed.
+- Use `sorry` (with a `-- Ref:` comment) only for axiom placeholders that
+  represent deep mathematical content (non-degeneracy, cohomological
+  vanishing). State an assumed condition as a real `Prop` field, never as
+  `True` (see `lean-proof-vacuity-audit`).
 - Every structure field gets a `/-- ... -/` docstring
 - Naming: `PascalCase` for structures, `camelCase` for defs/theorems,
   `snake_case` for lemma names

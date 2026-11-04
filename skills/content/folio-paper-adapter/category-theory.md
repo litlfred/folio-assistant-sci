@@ -12,14 +12,13 @@ allowed-tools: Read Write Edit Bash Grep Glob
 
 ## Overview
 
-Category theory is the "connective tissue" of Mathlib.  In Lean 4, a
-`Category` is not just a set of data — it is a **capability** that types
-can have (via typeclasses).  This skill provides the tactics, patterns,
-and glossary requirements for effective category-theoretic formalization.
+In Lean 4 a `Category` is a typeclass capability of a type. This skill
+gives the tactics, patterns and glossary requirements for
+category-theoretic formalization.
 
 ## Lean MCP Tools (paper-assistant)
 
-When the MCP server is available, it supercharges category theory work:
+When the MCP server is available:
 
 | Task | MCP tool | How it helps |
 |------|----------|-------------|
@@ -157,8 +156,8 @@ If `lake build` reports:
 type mismatch: universe level u_1 is not <= u_2
 ```
 
-The Ontologist must check whether the glossary entry for that type has
-correct universe annotations.
+check that the glossary entry for that type has correct universe
+annotations.
 
 ## Mathlib Imports for Category Theory
 
@@ -176,12 +175,9 @@ import Mathlib.CategoryTheory.Preadditive.Basic
 
 ## `aesop_cat` Integration
 
-When the narrative proof involves a diagram chase or naturality:
-
-1. **First**: Attempt `aesop_cat`
-2. **If fails**: Fall back to `slice_lhs` / `slice_rhs` to manually
-   navigate the composition until a rewrite can be applied
-3. **If still fails**: Decompose into intermediate `sorry` lemmas
+Follow the Skill 1 tactic order (`aesop_cat`, then `slice_lhs` /
+`slice_rhs`); if that still fails, decompose into intermediate `sorry`
+lemmas.
 
 ```lean
 -- Golden template: aesop_cat solving a naturality proof

@@ -20,7 +20,7 @@ When you are about to **author new compute** (a script, or a native
 kernel it calls) or modify existing compute in a way that touches
 precision, performance, or derivation discipline — run this skill
 **before** any code change. This is the pre-work counterpart to
-`local/compute-audit` (post-hoc review). Both share a vocabulary; this
+`compute-audit` (post-hoc review). Both share a vocabulary; this
 one gates entry, that one gates exit.
 
 **Workflow precondition.** Before writing the first line of compute,
@@ -35,9 +35,8 @@ crossing a native↔script language boundary (FFI / extension module /
 round-trip); memory / cache / bottleneck / profile; cross-check /
 identity / residual / drift; or any pre-work question about which type /
 precision / boundary granularity to use, or whether a shortcut identity
-is safe. **Anything performance-related is in-scope, even if the request
-looks small** — a one-line "use a fast float here" change can break the
-precision floor.
+is safe. **Anything performance-related is in scope, however small** — a
+one-line fast-float change can break the precision floor.
 
 ## §0. Canonical references (read these first)
 
@@ -122,7 +121,7 @@ compute, return result) as a single boundary call. The script builds the
 input and reads the output; the native side does everything in between —
 not per-coefficient-multiplication.
 
-### §2.3 FFI marshalling format
+### §2.2 FFI marshalling format
 
 For complex objects across the boundary, serialize as **flat structured
 lists** (no custom script-side objects on the native side; no
@@ -155,11 +154,9 @@ Keep a project catalogue of **common false identities** (claimed
 symmetries that turn out to fail for coupled/non-trivial cases) so they
 are not re-shipped without proof.
 
-### §3.3 Formalize-first probe discipline (STRICT)
+### §3.2 Formalize-first probe discipline (STRICT)
 
-**Too much time is lost chasing numerical rainbows that a one-line
-structural argument — or a small formal lemma — would have eliminated up
-front.** Before launching a numerical search over a *hypothesis class*
+Before launching a numerical search over a *hypothesis class*
 (a family of candidate closed forms, an integer-relation basis, an
 enumeration), STOP and ask whether a **formalizable structural claim
 prunes the class first**:
@@ -179,7 +176,7 @@ probe AND the probe is cheap and decisive, just run the probe. This
 targets *wide / expensive* searches that a cheap structural argument
 would prune.
 
-### §3.4 Formalize-the-refutation
+### §3.3 Formalize-the-refutation
 
 The mirror of formalize-first: when a numerical probe **refutes** a
 candidate, do not let the refutation live only in prose + a witness —
@@ -249,26 +246,17 @@ If any box is unchecked, **stop and resolve before writing code**.
 
 ## §9. Sibling skills
 
-- `local/compute-audit` — post-hoc review (this skill is pre-work).
-- `local/canonical-watcher` — catches hidden-input / numerology / fits.
-- `local/compute-integration-watcher` — cross-layer wiring check.
-- `local/prepare-merge` — merge workflow.
+- `compute-audit` — post-hoc review (this skill is pre-work).
+- `canonical-watcher` — catches hidden-input / numerology / fits.
+- `compute-integration-watcher` — cross-layer wiring check.
+- `prepare-merge` — merge workflow.
 
 ## Anti-patterns this skill explicitly rejects
 
-- Writing compute without reading the references (§0).
 - Optimizing without a profile — profile first to find the real
   bottleneck.
-- Per-call boundary crossings — always port whole computes.
-- Machine float in production — the floor demands arbitrary precision.
-- Shortcut identities without algebraic preflight.
 - Inline external-data literals — always route through the registry.
-- A hidden extra calibration input.
 
 ## Harness skills that dispatch here
-
-This layer sits above cat-harness, so the link points down from here. The
-harness skills below describe this one generically and name no science skill
-(bean `syiq`).
 
 - `production-vs-exploratory-discipline`: as the content type's compute-authoring skill, the sibling pre-work skill.

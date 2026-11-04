@@ -71,9 +71,8 @@ to final results, classifying every block on the critical path by its
 
 ### 1. Identify the critical path
 
-Read the paper manifest and chapter manifests to trace the dependency
-chain via `uses[]` fields.  Build the DAG from the target result back
-to the axioms.
+Trace the dependency chain on the union graph (see "Which graph to
+trace"), from the target result back to the axioms.
 
 ### 2. Classify each block
 
@@ -85,7 +84,6 @@ and `.ts` (manifest) files.  Classify by:
 | Uses only the abstract/foundational vocabulary of the general theory | GENERAL |
 | Invokes a concrete model, realisation, or extra structure not assumed by the general theory | SPECIALIZED |
 | Pulls in analytic/geometric machinery, a specific group or space, or numerical/empirical data | SPECIALIZED |
-| Relies only on the foundational constructions defined by the project's axioms | GENERAL |
 
 ### 3. Identify mismatches
 
@@ -157,9 +155,5 @@ free-text questions).
 
 ## Harness skills that dispatch here
 
-This layer sits above cat-harness, so the link points down from here. The
-harness skills below describe the slot generically ("the content type's …")
-and name no science skill (bean `syiq`).
-
 - `one-voice-integration-watcher`: as the dependency-trace skill, when `domain-boundary-correct` fires.
-- `domain-fencing`: the example of a rule that splits cleanly; its union-of-two-relations model now lives in `edge-kinds-and-blast-radius`.
+- `domain-fencing`: the example of a rule that splits cleanly; the union-of-two-relations model is in `edge-kinds-and-blast-radius`.

@@ -44,7 +44,6 @@ block, with severity (error / warning / info).
 |-------|----------|------|
 | Label prefix matches kind | **error** | `definition` → `def:`, `theorem` → `thm:`, `lemma` → `lem:`, `proposition` → `prop:`, `corollary` → `cor:`, `conjecture` → `conj:`, `example` → `ex:`, `remark` → `rem:` |
 | Label is unique across the paper | **error** | No duplicate labels |
-| Labels in `uses[]` resolve to existing blocks | **error** | Dangling cross-references break the dependency graph |
 
 ### 3. Lean declaration consistency
 
@@ -73,7 +72,7 @@ block, with severity (error / warning / info).
 | Cross-refs use `[text](#label)` format | **info** | Ensures `\hyperref` conversion works |
 | No raw LaTeX commands outside `` ```tex `` fences | **warning** | Raw `\begin{tikzcd}` in markdown breaks rendering |
 
-### 7. Dependency graph health
+### 6. Dependency graph health
 
 | Check | Severity | Rule |
 |-------|----------|------|
@@ -82,7 +81,7 @@ block, with severity (error / warning / info).
 | Lean imports mirror `uses[]` ordering | **info** | Lean import graph should reflect narrative dependencies |
 | Blocks with most dependents are formalized first | **info** | Priority guidance, not a hard rule |
 
-### 8. Chapter manifest consistency
+### 7. Chapter manifest consistency
 
 | Check | Severity | Rule |
 |-------|----------|------|
@@ -90,7 +89,19 @@ block, with severity (error / warning / info).
 | Chapter `.ts` references only blocks that exist | **error** | Dangling block references break the build |
 | Section ordering in chapter `.ts` is consistent | **info** | Sections should follow a logical order |
 
-### 10. Glossary terms (`:defterm` / `:refterm`)
+### 8. Glossary block compliance
+
+| Check | Severity | Rule |
+|-------|----------|------|
+| Glossary blocks use `remark` kind | **error** | Glossary entries must be `remark` blocks, not `definition` |
+| Glossary blocks have `"glossary"` tag | **warning** | Tag enables filtering and discovery |
+| Label follows `rem:glossary-<term>` pattern | **warning** | Consistent naming for glossary entries |
+| `.md` includes "Mathlib reference" section | **warning** | Glossary entries must cite the canonical Mathlib type |
+| No Lean file exists for glossary blocks | **info** | Glossary blocks are terminological wrappers — Lean formalization is not expected |
+| Glossary block does not duplicate a `definition` block | **error** | If the paper introduces new mathematics, it belongs as a `definition`, not a glossary entry |
+| Terms used in chapter `.md` files that are Mathlib synonyms have glossary entries | **info** | Completeness check — missing glossary entries for standard terms |
+
+### 9. Glossary terms (`:defterm` / `:refterm`)
 
 | Check | Severity | Rule |
 |-------|----------|------|
@@ -101,7 +112,7 @@ block, with severity (error / warning / info).
 | Bare-text mentions of known slugs are wrapped (`--strict`) | **warning** | `term-mention-coverage` rule; run `bun run validate <paper> --strict` |
 | Defined terms are not styled as plain text or `\emph{}` in `.md` | **warning** | Defeats the validator's resolution graph; rewrap with the codemod |
 
-Run `bun run pipeline/build-glossary.ts <paper> --check` as a CI gate
+Run `bun run folio-assistant-core/scripts/build-glossary.ts content/<paper> --check` as a CI gate
 to catch duplicate slugs and out-of-date `glossary.json`. See
 `glossary-build` skill.
 
@@ -134,9 +145,9 @@ Report findings as a structured summary:
 
 1. List all content blocks: use `content_list` MCP tool or glob
    `content/<paper>/**/*.ts` (exclude chapter/paper manifests)
-2. For each block `.ts`, read the manifest and check §1–§8
+2. For each block `.ts`, read the manifest and check §1–§9
 3. For blocks with `.lean`, read the Lean source and check §3–§4
-4. For `uses[]` and label uniqueness, collect all labels first (§2, §7)
+4. For `uses[]` and label uniqueness, collect all labels first (§2, §6)
 5. Cross-check against `content/schema/references.ts` for sorry citations (§4)
 
 ### Single chapter review
@@ -147,30 +158,14 @@ Same as above but scoped to one chapter directory.
 
 Skip severity=info and severity=warning. Only report errors.
 
-### 9. Glossary block compliance
-
-| Check | Severity | Rule |
-|-------|----------|------|
-| Glossary blocks use `remark` kind | **error** | Glossary entries must be `remark` blocks, not `definition` |
-| Glossary blocks have `"glossary"` tag | **warning** | Tag enables filtering and discovery |
-| Label follows `rem:glossary-<term>` pattern | **warning** | Consistent naming for glossary entries |
-| `.md` includes "Mathlib reference" section | **warning** | Glossary entries must cite the canonical Mathlib type |
-| No Lean file exists for glossary blocks | **info** | Glossary blocks are terminological wrappers — Lean formalization is not expected |
-| Glossary block does not duplicate a `definition` block | **error** | If the paper introduces new mathematics, it belongs as a `definition`, not a glossary entry |
-| Terms used in chapter `.md` files that are Mathlib synonyms have glossary entries | **info** | Completeness check — missing glossary entries for standard terms |
-
 ## Integration
 
 - Runs **before** `content-validation` (which does schema + AST validation)
 - Complements `lean-proof-review` (which focuses on proof quality, not
   structural compliance)
 - Feeds into `proof-triage` (violations of §4–§5 indicate formalization gaps)
-- Glossary blocks are reviewed under §9 for terminology consistency
+- Glossary blocks are reviewed under §8 for terminology consistency
 
 ## Harness skills that dispatch here
-
-This layer sits above cat-harness, so the link points down from here. The
-harness skills below describe the slot generically ("the content type's …")
-and name no science skill (bean `syiq`).
 
 - `todo-review`: as the block-review skill: cross-reference issues become feedback.

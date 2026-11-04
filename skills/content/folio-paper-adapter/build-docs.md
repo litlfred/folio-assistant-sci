@@ -49,9 +49,7 @@ Never hardcode a paper name here. If a folio has exactly one paper the
    ```
 
    `sed -i.bak … && rm` is used because bare `sed -i` differs between GNU
-   and BSD/macOS; the suffix form works on both. (The previous version of
-   this skill hardcoded the macOS `sed -i ''` spelling, which fails on the
-   Linux CI image.)
+   and BSD/macOS; the suffix form works on both.
 
 3. Update and build:
 

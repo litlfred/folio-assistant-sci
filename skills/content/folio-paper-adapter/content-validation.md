@@ -50,28 +50,6 @@ content/
   which are skipped — resolved at folio level)
 - **provable-lean-warning**: Theorems/lemmas without Lean get warnings
 
-### Level 5: Witnessed-value directive validation
-
-Five rules check `:val[name]` directive usage in every block kind
-(definitions, propositions, theorems, lemmas, conjectures, proofs,
-examples, remarks, prose, equations):
-
-| Rule                       | Level | What it checks |
-|---------------------------|-------|----------------|
-| `val-registered`          | error | name appears in `WITNESSED_VALUES` |
-| `val-resolves`            | error | witness file exists, dotted path resolves |
-| `val-precision-bounded`   | error | requested precision ≤ source precision |
-| `val-units-consistent`    | warn  | `units=plain` only when entry has units |
-| `val-pending`             | warn  | `needsReview: true` entry was cited |
-| `val-block-computation`   | warn  | block cites `:val[…]` but `computation:` is absent or refers to a different witness file |
-
-When you spot a hard-coded computed literal in **any** block
-kind (a numeric bound in a proposition, a constant in a conjecture, a
-calibration value in a definition, a quoted intermediate in a proof,
-etc.), flag it as drift risk and migrate it to `:val[name]`.  The
-`folio-assistant-sci/pipeline/codemod-val.ts` codemod handles bulk migration.
-See [`witnessed-values.md`](witnessed-values.md) for full details.
-
 ### Level 3: LaTeX AST validation
 - Rendered LaTeX parses through unified-latex without errors
 - Environment balance (\begin matches \end)
@@ -99,36 +77,51 @@ The markdown AST node types used:
 | `$$...$$` | `math` (display) | Display-mode TeX |
 | ` ```tex ``` ` | `code` (lang=tex) | Raw LaTeX |
 
+### Level 5: Witnessed-value directive validation
+
+Six rules check `:val[name]` directive usage in every block kind
+(definitions, propositions, theorems, lemmas, conjectures, proofs,
+examples, remarks, prose, equations):
+
+| Rule                       | Level | What it checks |
+|---------------------------|-------|----------------|
+| `val-registered`          | error | name appears in `WITNESSED_VALUES` |
+| `val-resolves`            | error | witness file exists, dotted path resolves |
+| `val-precision-bounded`   | error | requested precision ≤ source precision |
+| `val-units-consistent`    | warn  | `units=plain` only when entry has units |
+| `val-pending`             | warn  | `needsReview: true` entry was cited |
+| `val-block-computation`   | warn  | block cites `:val[…]` but `computation:` is absent or refers to a different witness file |
+
+When you spot a hard-coded computed literal in **any** block
+kind (a numeric bound in a proposition, a constant in a conjecture, a
+calibration value in a definition, a quoted intermediate in a proof,
+etc.), flag it as drift risk and migrate it to `:val[name]`.  The
+`folio-assistant-sci/pipeline/codemod-val.ts` codemod handles bulk migration.
+See [`witnessed-values.md`](witnessed-values.md) for full details.
+
 ## Running validation
 
-> **Currency.** The content pipeline + schemas live in the
-> separate `folio-assistant` platform repo. Run
-> [`scripts/setup-folio-assistant.sh`](../../../scripts/setup-folio-assistant.sh)
-> **once** (clones the platform as a sibling + symlinks `folio-assistant/`), then
-> validate via the standalone entry `bun run scripts/run-validate.ts content/<paper>`.
-> The `pipeline/*.ts` paths live under `cat-harness-tools/pipeline/`; the
-> `bun run <name>` package.json shortcuts below (`validate`, `validate-tex`,
-> `build-glossary`, `migrate-lean-refs`) are retained for their flags/semantics.
+> The content pipeline and schemas live in `cat-harness-tools/pipeline/`;
+> `validate-tex.ts` lives in `folio-assistant-sci/pipeline/` (`bun run latex:validate`).
 
 ```bash
 # Validate all objects in a paper (schema + constraints + LaTeX AST)
-bun run cat-harness-tools/pipeline/validate.ts content/<paper>   # after setup-folio-assistant.sh
-# (legacy form: cd content && bun run pipeline/validate.ts <paper>/)
+bun run cat-harness-tools/pipeline/validate.ts content/<paper>
 
 # Full build with validation
 cd content && bun run pipeline/build.ts <paper>/<paper>.ts
 
 # Validate TeX snippets in .md files (AST-based, no compilation)
-cd content && bun run pipeline/validate-tex.ts
+bun run folio-assistant-sci/pipeline/validate-tex.ts
 
 # Validate specific file
-cd content && bun run pipeline/validate-tex.ts --file path/to/block.md
+bun run folio-assistant-sci/pipeline/validate-tex.ts --file path/to/block.md
 
 # Validate with pdflatex compilation (slower, catches more)
-cd content && bun run pipeline/validate-tex.ts --compile
+bun run folio-assistant-sci/pipeline/validate-tex.ts --compile
 
 # JSON output (for programmatic use by skills)
-cd content && bun run pipeline/validate-tex.ts --json
+bun run folio-assistant-sci/pipeline/validate-tex.ts --json
 
 # Strict mode: also fire `term-mention-coverage` on bare-text
 # mentions of known glossary slugs. Run once a chapter has been
@@ -136,8 +129,7 @@ cd content && bun run pipeline/validate-tex.ts --json
 cd content && bun run validate <paper> --strict
 
 # Build the glossary index (committed) + LaTeX chapter (gitignored).
-# The builder moved to the CONTENT layer on 2026-09-30 (bean `yj6r`); a folio
-# that vendors its own `content/pipeline/build-glossary.ts` still uses that copy.
+# A folio that vendors its own `content/pipeline/build-glossary.ts` uses that copy.
 bun run folio-assistant-core/scripts/build-glossary.ts content/<paper>
 
 # CI gate: non-zero exit on duplicates or out-of-date glossary.json
@@ -153,12 +145,9 @@ from upstream, **always run** the idempotent `lean.ref` migration:
 cd content && bun run migrate-lean-refs
 ```
 
-Coexisting forks may have authored content blocks against the legacy
-`lean: { decl: "...", file? }` shape; the migration converts them to
-the package-qualified URI form `lean: { ref: "<pkg>:<Decl>" }` that
-the current Zod schema requires. Running validation first will fail
-with `Lean ref must be "<package>:<Decl.Path>"` errors that are
-trivially fixed by the migration.
+It converts the legacy `lean: { decl: "...", file? }` shape to the
+`lean: { ref: "<pkg>:<Decl>" }` form the Zod schema requires; without it
+validation fails with `Lean ref must be "<package>:<Decl.Path>"`.
 
 When the schema's Zod error message names this script in its
 output, **do not hand-edit the failing block** — run the script.
@@ -171,9 +160,9 @@ output, **do not hand-edit the failing block** — run the script.
 3. **After adding new blocks**: Check constraints (lean file exists, labels resolve)
 4. **After modifying schema**: Run validation across all content
 5. **After creating .md content**: Any skill that creates or edits `.md` files
+   MUST run `validate-tex.ts --file <path>` before considering the task complete
 6. **After Lean changes**: Run `bun run scripts/lean-audit.ts` for sorry/trivial/witness audit
 7. **After computation changes**: Run `bun run scripts/witness-audit.ts` for staleness check
-   MUST run `validate-tex.ts --file <path>` before considering the task complete
 8. **After rebase / merge from upstream**: **first** run
    `bun run migrate-lean-refs` (see top of this section), then run
    `bun run validate` to confirm the schema is clean
@@ -243,11 +232,9 @@ statement block:
 | Comparison tables | `rem:<label>-comparison` | `interprets: "prop:original"` |
 | Connection to other topics | `rem:<label>-connection` | `interprets: "prop:original"` |
 
-**Rationale**: Theorems are cited, cross-referenced, and formalised
-in Lean.  Explication clutters the formal statement and makes it
-harder to extract the precise mathematical content.  Companion
-remarks provide the interpretive layer without contaminating the
-statement.
+**Rationale**: theorems are cited, cross-referenced and formalised in
+Lean; explication in the statement obscures the precise mathematical
+content.
 
 **Remark length rule**: A remark block should cover **one topical
 group**.  If a remark exceeds ~60 lines and covers multiple
@@ -295,10 +282,6 @@ test("all content objects valid", async () => {
 ```
 
 ## Harness skills that dispatch here
-
-This layer sits above cat-harness, so the link points down from here. The
-harness skills below describe the slot generically ("the content type's …")
-and name no science skill (bean `syiq`).
 
 - `block-density`: when a block is split or a table extracted, to check the new blocks validate.
 - `todo-review`: its validation errors seed feedback.
