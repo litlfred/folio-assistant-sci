@@ -261,8 +261,9 @@ structure PeriodResidue (k : ℕ) where
   residues : Fin k → ℂ
   period_eq : period = twoPiI * ∑ p, residues p   -- the realisation, as hypothesis
 
-theorem period_eq_residue_sum (S : PeriodResidue k) :
-    S.period = S.twoPiI * ∑ p, S.residues p := S.period_eq
+theorem period_eq_sum_residue_terms (S : PeriodResidue k) :
+    S.period = ∑ p, S.twoPiI * S.residues p := by
+  rw [S.period_eq, Finset.mul_sum]
 ```
 
 The file is genuinely `sorry`-free; the cited input is visible as the

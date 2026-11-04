@@ -69,7 +69,7 @@ passes (garbage-in-garbage-out).
 ### Running Pass 1
 
 ```bash
-cd content && bun run pipeline/validate.ts <paper>/<chapter>/<block>.ts
+bun run cat content:validate content/<paper>
 ```
 
 Or for remark + unified-latex AST on the `.md` directly:

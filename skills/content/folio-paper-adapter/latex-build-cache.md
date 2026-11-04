@@ -80,8 +80,9 @@ Installed `texlive-full` via `install-tex.sh`; measured the real paper:
 - Hotspots: the two math/table-heavy chapters — chapter-A (3.5 s) +
   chapter-B (3.3 s) ≈ 40%; the rest a ~1 s/chapter tail.
 - **~50% of the body is the 2944 `\marginnote` annotations, not math:**
-  one pass 19.5 s → **9.2 s** with `\marginnote` no-op'd (→ 8.9 s also
-  dropping hyperlinks). Parallel per-chapter compile (4 cores) = **1.85 s**
+  no-op'ing `\marginnote` took one pass from 19.5 s to **9.2 s** (8.9 s
+  with hyperlinks also dropped), in a separate run from the 14.0 s
+  measurement above. Parallel per-chapter compile (4 cores) = **1.85 s**
   (~10×). Both are *preview* levers — the published PDF is unchanged. The
   first is wired as `FAST_PREVIEW=1` (see What works).
 - `.fmt` saves only ~0.45 s of startup = **~3% of a pass** (and is broken

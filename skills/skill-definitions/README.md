@@ -3,7 +3,7 @@
 
 The mathematical-paper workflow-skill definitions this layer owns (latex-authoring, lean-formalization, proof-verification): JSON SkillDefinitions.
 
-Part of [folio-assistant-sci](../../README.md) 0.1.0, declared as `folio-assistant-sci-skill-definitions`, holding `skills`.
+Part of [folio-assistant-sci](../../README.md). Not declared on its own: readers find a `skill-definitions/` directory inside the declared `skills` directory by convention.
 
 | file | what it is | used by |
 |---|---|---|
