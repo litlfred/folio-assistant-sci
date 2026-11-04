@@ -14,9 +14,7 @@ allowed-tools: Bash Read
 
 ## The loop
 
-The cache is not a maintenance chore. It is the **output of every
-authoring session**, and every session should leave it warmer than it
-found it:
+Every authoring session should leave the cache warmer than it found it:
 
 ```
 restore  ──▶  draft / edit .lean  ──▶  lake build  ──▶  contribute
@@ -31,9 +29,8 @@ folio-assistant-sci/scripts/lake-cache.sh restore      # warm up  (~2 min)
 folio-assistant-sci/scripts/lake-cache.sh contribute   # give the build back
 ```
 
-**Restore before any Lean work.** The single most common wasted hour is
-an agent running `lake build` cold, waiting 40 minutes for Mathlib, and
-never learning a prebuilt cache existed.
+**Restore before any Lean work.** A cold `lake build` spends 30-60
+minutes on Mathlib.
 
 **Contribute when you finish.** If you compiled anything, the next agent
 should not have to compile it again. `contribute` is safe to run
@@ -66,7 +63,7 @@ Lake decides staleness from `.trace`, **not** `.olean`. An olean with no
 trace is "out of date", so Lake rebuilds it — and rebuilding **evicts**
 the untraced neighbours.
 
-This was measured, not theorised: a cache with 7268 oleans and 0 traces
+Measured: a cache with 7268 oleans and 0 traces
 survived a single-module build as 772 oleans, and every survivor had a
 trace. Such a cache works for direct `lean` + `LEAN_PATH` and is useless
 for a build.
@@ -76,15 +73,14 @@ should act on rather than route around.
 
 ## This cache is a `compiled` materialization
 
-Bean `gpdo`, owner's pick 2026-09-23 ("Third purpose"). The Lean cache is
-not a special case: it is one instance of the `compiled` purpose in
-`folio-assistant-core/schemas/materialization.ts`. Its policy used to live
-only in `lake-cache-refresh.yml`; this section is where it is stated, and the
-workflow is **adopted, not superseded**.
+The Lean cache is not a special case: it is one instance of the
+`compiled` purpose in `folio-assistant-core/schemas/materialization.ts`.
+This section states its policy; the `lake-cache-refresh.yml` workflow
+implements it.
 
 | the cache's own terms | the `compiled` record |
 |---|---|
-| orphan branch `lake-cache/<package>-<toolchain>` | one record per package; the branch name's toolchain is `inputs.toolchain` |
+| orphan branch `cat/folio-assistant-sci/lake-cache/<package>-<toolchain-slug>` | one record per package; the branch name's toolchain is `inputs.toolchain` |
 | the Lake root's commit at build time | `inputs.sourceRevision` |
 | Lake's per-module `.trace` files | the fine-grained input digests. Lake checks these itself, module by module, which is why an untraced olean is rebuilt (above). A whole-tree `inputs.inputDigest` is optional for that reason. |
 | keep ≤2 toolchains per package (the cleanup job) | retention: a copy whose toolchain is no longer one of the two is `stale-inputs` for every current build |
@@ -104,11 +100,9 @@ the source is what you would rebuild from. It has no expiry date; its
 lifetime is its inputs, so `freshness()` reports it `input-bound` and
 `cache:index` never lists it just for having no expiry.
 
-**The second instance is FHIR.** sushi turning FSH into FHIR resources (and
-an AST) has the same shape: `inputs.toolchain` is the sushi version,
-`inputs.sourceRevision` the FSH commit. Two instances is what makes this a
-purpose and not a Lean detail. The FHIR pipeline records its builds this way
-when it lands; nothing FHIR-side is built here.
+FHIR builds (sushi: `inputs.toolchain` = sushi version,
+`inputs.sourceRevision` = FSH commit) are a second instance of the same
+purpose.
 
 ## Exit codes — branch on these, don't grep
 

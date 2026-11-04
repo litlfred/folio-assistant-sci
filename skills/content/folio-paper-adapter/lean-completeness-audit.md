@@ -112,7 +112,7 @@ Any `.lean` file not reachable from the root module won't be built.
 ### 3. Content Block → Lean Coverage
 
 Cross-reference content `.ts` manifests against `.lean` files.
-Per AGENTS.md rules:
+Per the folio's AGENTS.md:
 
 | Block kind | `.lean` required? |
 |-----------|------------------|
@@ -184,11 +184,11 @@ List all `sorry` occurrences and verify each has a bibliographic citation:
 grep -rn 'sorry' content/*/lean/ --include='*.lean' | grep -v '.lake'
 ```
 
-Per AGENTS.md: every `sorry` must have a `-- Ref: [key]` comment.
+Every `sorry` must have a `-- Ref: [key]` comment (folio rule).
 
 #### §3b-cond conditional-class carve-out (do NOT discharge these)
 
-Per the project authoring conventions-cond, a `sorry` inside a Lean `class` body **is the
+Under the folio's conditional-class convention, a `sorry` inside a Lean `class` body **is the
 conjectural input** — it is permanent by design, NOT a missing-proof
 gap. Maintain a catalogue of class-body sorries so a sweep can
 distinguish them from missing proofs.
@@ -331,9 +331,5 @@ migrated to use `witness_base.py` when the computation is next modified.
 - [ ] Legacy Python witnesses identified for migration to witness_base.py
 
 ## Harness skills that dispatch here
-
-This layer sits above cat-harness, so the link points down from here. The
-harness skills below describe this one generically and name no science skill
-(bean `syiq`).
 
 - `domain-fencing`: the example of a rule that needs the domain installed to run.

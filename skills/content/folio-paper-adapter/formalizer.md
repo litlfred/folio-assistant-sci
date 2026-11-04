@@ -38,14 +38,10 @@ The narrative proof should:
 - Match the Lean proof's structure — if the Lean uses induction
   on `n`, the narrative explains the base case + step.
 
-**Anti-pattern**: writing a Lean theorem with no `.md` counterpart,
-or with only a one-line "see Lean" stub. Both leave the paper
-narrative incomplete and force readers to read Lean to understand
-the math. The `.md` must stand on its own as a math reading.
-
-When generating Lean theorems, ALWAYS edit the `.md` in the same
-diff to add the narrative proof. Don't split into separate
-commits — Lean and narrative must move together.
+**Anti-pattern**: a Lean theorem with no `.md` counterpart, or with
+only a one-line "see Lean" stub — the `.md` must stand on its own as a
+math reading. Add the narrative proof in the same diff as the Lean
+theorem, never in a separate commit.
 
 ## Overview
 
@@ -67,8 +63,8 @@ cd content && bun run migrate-lean-refs
 When authoring the `.ts` manifest for a new block, set
 `lean: { ref: "<pkg>:<Decl>" }` (never the legacy `decl:` / `file:`
 shape).  Use `<pkg>` from `LEAN_PACKAGES` in
-`folio-assistant/schemas/lean-packages.ts`.  See the project authoring conventions for the
-URI grammar and §0b for the rebase workflow.
+`folio-assistant/schemas/lean-packages.ts`.  See the folio's authoring
+conventions for the URI grammar.
 
 ## When to Use This Skill
 
@@ -81,7 +77,7 @@ URI grammar and §0b for the rebase workflow.
 
 When the MCP server is available, **prefer MCP tools over shell commands**:
 
-| Old workflow | MCP tool | Why better |
+| Shell route | MCP tool | Why better |
 |-------------|----------|-----------|
 | `lake build` + parse output | `lean_diagnostic_messages` | Structured errors per file, no parsing |
 | Export proof state via script | `lean_goal` | Live goal state at any line/column, no scripting |
@@ -186,7 +182,7 @@ published reference exists, use `[manuscript]` and cite the chapter/section.
 This is enforced by the axiom report's Theoretical Gap Report.
 
 **Conditional-class carve-out.** Class-body sorries are NOT missing
-proofs — they are conjectural inputs per the project authoring conventions-cond, permanent
+proofs — they are conjectural inputs under the folio's conditional-class convention (§3b-cond), permanent
 by design. Before adding a `-- Ref:` to a `sorry`, check whether you are
 inside a `class` body — if yes, the `sorry` is the conjectural
 axiomatisation and no external citation is required (the conjecture
@@ -199,9 +195,7 @@ counted).
 
 ## Where each section lives
 
-This skill was 842 lines. An agent reads it before acting, every time, and at
-that length it skims — so the detail sits beside it, grouped by *when you need
-it*. Nothing was deleted.
+Detail sits in three companion files, grouped by when you need it:
 
 | what | where |
 |---|---|
@@ -209,10 +203,6 @@ it*. Nothing was deleted.
 | base ring convention, imports, library synthesis | [`formalizer/conventions.md`](formalizer/conventions.md) — before writing a declaration |
 | proven patterns, tactic ladder, authoring patterns, simplification pass | [`formalizer/patterns.md`](formalizer/patterns.md) — while proving |
 | proof-state export, output structure, dependencies, blueprint, content objects | [`formalizer/integration.md`](formalizer/integration.md) — when wiring a finished proof in |
-
-The **heavy-proof discipline** below is MANDATORY and stays here deliberately:
-it governs whether you should be formalising at all, and moving it behind a
-link would put the gate after the work.
 
 ## Checklist
 
@@ -229,9 +219,5 @@ link would put the gate after the work.
 ---
 
 ## Harness skills that dispatch here
-
-This layer sits above cat-harness, so the link points down from here. The
-harness skills below describe the slot generically ("the content type's …")
-and name no science skill (bean `syiq`).
 
 - `todo-review`: it creates feedback when formal-layer gaps need attention.

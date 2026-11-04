@@ -49,8 +49,6 @@ untrusted TeX payloads from executing code in CI environments:
 
 ## Exit Code Contract
 
-In adherence to the platform's exit code standard:
-
 | Exit Code | Meaning | Condition |
 |---|---|---|
 | **0** | Success | Compilation succeeded and PDF was produced. |
