@@ -7,7 +7,7 @@ description: >
   field names. Three escalation levels: hand-craft per-block
   (highest fidelity), bulk-script split on numbered sub-claims, and
   docstring enrichment (extract first-sentence summaries from .md).
-  Use this skill after `local/lean-generation` has created the
+  Use this skill after `lean-generation` has created the
   placeholder stubs and the backlog is structurally closed.
 allowed-tools: Read Edit Write Bash Grep Glob Skill
 ---
@@ -29,9 +29,9 @@ Level 3 (docstring enrichment, ~seconds/block)
 
 ## 0. When to invoke
 
-- After `local/lean-generation` has populated `.lean` stubs with
+- After `lean-generation` has populated `.lean` stubs with
   `holds : Prop` placeholders (the "backlog closure" pass).
-- Before `local/lean-completeness-audit` reports trivial-skeleton
+- Before `lean-completeness-audit` reports trivial-skeleton
   status — typed sub-claims downgrade the audit verdict from
   "structural placeholder" to "named structural placeholder".
 - After resolving a `.md` block's `uses[]` cone (so the manuscript
@@ -156,11 +156,11 @@ These are anti-patterns to **avoid**:
 
 ## 5. Sub-skills delegated
 
-- `local/lean-generation` — populates stubs initially.
-- `local/lean-build-fix` — fixes any compilation errors from the
+- `lean-generation` — populates stubs initially.
+- `lean-build-fix` — fixes any compilation errors from the
   typed sub-claim encoding (missing imports, syntax errors).
-- `local/lean-completeness-audit` — measures coverage afterwards.
-- `local/proof-conciseness` — tightens the final theorem proofs
+- `lean-completeness-audit` — measures coverage afterwards.
+- `proof-conciseness` — tightens the final theorem proofs
   once they're typed.
 
 ## 6. Author-ask templates

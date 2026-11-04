@@ -153,7 +153,7 @@ User selects which blocks to formalize. For each:
    ```
 
 2. Update `.ts` manifest (use the package-qualified `ref` URI; see
-   `folio-assistant/schemas/lean-packages.ts` for package names):
+   `cat-harness-tools/schemas/lean-packages.ts` for package names):
    ```typescript
    lean: { ref: "<paper-pkg>:<Paper>.Imported.Smith2024.imported_main_result" },
    status: "stated"
@@ -181,7 +181,8 @@ in the feedback system.
 
 The `formalizer`, `proof-triage`, and `category-theory` skills can:
 
-1. **Search imported blocks** via `tags: ["imported"]` filter
+1. **Search imported blocks** via `tags: ["imported"]` — when stuck on a
+   sorry, or when planning a formalization
 2. **Reference imported theorems** in `uses[]` of main paper blocks
 3. **Look up original context** via `meta.source` and the upload files
 4. **Cite sorry'd proofs** with the imported paper's reference
@@ -247,18 +248,6 @@ ref({
 }),
 ```
 
-The dependency graph links across papers. Proof-writers can traverse
-this to understand what external results are being relied upon.
-
-### Imported theorem discovery
-
-Proof-writers should check imported papers when:
-- Stuck on a sorry → search imported blocks for relevant lemmas
-- Planning formalization → check if imported results provide shortcuts
-- Writing proofs → `uses[]` chain may lead to an imported theorem
-
-Use the tag filter: `tags.includes("imported")` on any block search.
-
 ## arXiv Integration
 
 ### Fetching papers
@@ -289,24 +278,9 @@ Parse the Atom response for:
 
 When importing, check `content/schema/references.ts` for existing entry:
 - If found, use that citation key
-- If not found, add a `ref()` entry (user confirms)
+- If not found, add a `ref()` entry (user confirms; arXiv-only papers get
+  `"container-title": "arXiv preprint"` and `note: "arXiv:<id>"`)
 - After adding, run `bun run export-bibtex` to regenerate `references.bib`
-
-Generated CSL-JSON entry in `references.ts`:
-```typescript
-ref({
-  id: "smith2024",
-  type: "article-journal",
-  title: "On the Structure of Widgets",
-  author: [
-    { family: "Smith", given: "Alice" },
-    { family: "Jones", given: "Bob" },
-  ],
-  "container-title": "arXiv preprint",
-  issued: { "date-parts": [[2024]] },
-  note: "arXiv:2301.12345",
-}),
-```
 
 ## File Organization
 

@@ -89,16 +89,13 @@ file. Flag any of the following:
 ## Gap criticality — `routine` | `core` | `restates-target`
 
 Beyond *what kind* of gap (A–E), every `sorry` / deferred step is also
-classified by *how much of the result's content it defers*. Adopted from
-the AlphaProof Nexus rater rubric (arXiv:2605.22763): an honest sketch that
-defers only *routine* steps is healthier than one that hides the key idea —
-and a gap that *is* the target is not a proof at all.
+classified by *how much of the result's content it defers*.
 
 | Tag | Meaning | Severity | Audit action |
 |-----|---------|----------|--------------|
 | `routine` | Defers a standard / technical step (a Mathlib-shaped lemma, a finite computation, a bookkeeping inequality). The proof's **idea is present**; only labour is deferred. | minor (major if load-bearing for a downstream chain) | Acceptable to defer — **must** still carry `-- Ref:` (the project authoring conventions). |
 | `core` | Defers the **key insight** — the step carrying the result's novelty (the "miracle"). Only scaffolding is present. | critical / major | Chase **first** in triage; never let it sit behind `routine` gaps. |
-| `restates-target` | The deferred lemma **is** the target, or a trivial rephrasing / re-hypothesised form of it — the gap *is* the theorem. | critical | **AUTO-FAIL.** This is the AlphaProof Nexus failure mode (a): hiding the hard part in a helper that restates the goal. Not a proof. Demote the block to `conjecture`, or replace the helper with the real argument. |
+| `restates-target` | The deferred lemma **is** the target, or a trivial rephrasing / re-hypothesised form of it — the gap *is* the theorem. | critical | **AUTO-FAIL.** Not a proof. Demote the block to `conjecture`, or replace the helper with the real argument. |
 
 **How to classify:**
 
@@ -189,11 +186,7 @@ abstraction gap. The audit should report the count, the
 hypotheses being shared, and a candidate name for the extracted
 block.
 
-**Why this matters.** Repeated identical sub-proofs (a) increase
-the chance of inconsistent edits later (one copy gets fixed, others
-drift), (b) inflate the dependency graph energy unnecessarily (each
-proof carries its own copy rather than pointing to one source), and
-(c) hide the fact that the shared content is itself a theorem
+Repeated copies drift apart under later edits, and hide a result
 worth naming.
 
 **Cross-skill handoff.** When this skill flags a J-class gap, the
@@ -226,40 +219,22 @@ gap; document the existing resolution instead. Only after all four
 return empty (modulo the originating source file) may the item
 appear in the audit's gap list.
 
-**Why this matters.** Source file status notes lag the corpus by
-weeks; the corpus is the source of truth. Items repeatedly declared
-"open" against a source file's status note have, on re-analysis,
-been found already implemented elsewhere in the corpus.
+Source-file status notes lag the corpus; the corpus is the source
+of truth.
 
 This check applies to every gap class A-J above when the gap
 candidate is large enough that a categorical resolution could
 plausibly exist (heuristically: any gap that would warrant a
 follow-up `prop:` or `conj:` block).
 
-**The cases behind the rule.** The harness skill `corpus-grep` states the
-checklist for any content type. It was written after three consecutive items
-in May 2026 (qou PRs
-[#1515](https://github.com/litlfred/qou/pull/1515),
-[#1532](https://github.com/litlfred/qou/pull/1532),
-[#1543](https://github.com/litlfred/qou/pull/1543)) were declared open
-against a source file's status note, and each was found on reanalysis to be
-already implemented:
-
-- Track B Gap #2 in `canonical_tr_m_via_branching.py`
-- α_shift A=4 in `lightNucleiForceCarrierKnot`
-- ρ_F derivation in `conj:kashaev-density-equals-sdp-multiplicity`
-- p/n asymmetry in `closed_form_tau_M.py::bring_color_weighted`
-
-Post-mortem: `docs/audits/2026-05-31-binding-magic-A-wireup.md` §"Why was the
-resolution missed?".
+The harness skill `corpus-grep` states this checklist for any content type.
 
 ## Workflow
 
 ### Phase 0 — Anti-hallucination protocol (REQUIRED)
 
-This skill has a documented history of hallucinating findings (one
-full-paper run produced a ~56% false-positive rate). Every finding
-**must** clear all five checks below before being reported:
+Every finding **must** clear all five checks below before being
+reported:
 
 1. **Path-exists check.** Run `ls <path>` (or `find` / `Glob`) on
    every file you cite. If a file is not on disk, the finding is
@@ -288,7 +263,7 @@ full-paper run produced a ~56% false-positive rate). Every finding
    chain.
 
 A finding that fails any of checks 1-5 must be dropped from the
-report. Better to report 3 verified gaps than 18 with hallucinations.
+report.
 
 ### Phase 1 — Scope
 
@@ -407,9 +382,5 @@ Each finding **must** include the Phase-0 verification metadata
 - [ ] No edits made — handoff to `proof-editor` or author
 
 ## Harness skills that dispatch here
-
-This layer sits above cat-harness, so the link points down from here. The
-harness skills below describe this one generically and name no science skill
-(bean `syiq`).
 
 - `domain-fencing`: §J is the example of a rationale that survives translation.

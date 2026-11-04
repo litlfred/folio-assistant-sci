@@ -141,7 +141,7 @@ If the author says "apply all" or "go ahead":
 1. Dispatch each fix to its owner skill, in dependency order
 2. After each batch, re-run the relevant specialists to confirm the
    gap is closed
-3. Produce a delivery summary per `.claude/skills/local/delivery-summary.md`
+3. Produce a delivery summary per the `delivery-summary` skill
 
 ## Output format
 
@@ -243,12 +243,8 @@ If the author says "apply all" or "go ahead":
 - [ ] No edits made without explicit author approval
 - [ ] Glossary-term findings (defterm/refterm violations) routed to the
       authoring skill (`md-authoring` or `scientific-accuracy`) plus
-      `local/glossary-build` for the codemod/build pass
+      `glossary-build` for the codemod/build pass
 
 ## Harness skills that dispatch here
-
-This layer sits above cat-harness, so the link points down from here. The
-harness skills below describe this one generically and name no science skill
-(bean `syiq`).
 
 - `integration-watcher`: its lifecycle §4c applies the synthesis rules of §3 here, which hold in every domain.

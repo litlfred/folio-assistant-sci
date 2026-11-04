@@ -13,13 +13,13 @@ description: >
   (Monitor, subscriptions, queue, ledger, idle sweep, author-ask,
   watch-prepared-PRs, witness-drift recovery, billing-quick-fail
   flake, post-completion one-voice, sibling-PR comment protocol)
-  from `local/integration-watcher`.
+  from `integration-watcher`.
 allowed-tools: Read Edit Write Bash Grep Glob Agent Monitor Skill
 ---
 
 # /proof-integration-watcher
 
-A concrete instance of [`local/integration-watcher`](../../../../cat-harness/skills/sdlc/sdlc-core/integration-watcher.md).
+A concrete instance of [`integration-watcher`](../../../../cat-harness/skills/sdlc/sdlc-core/integration-watcher.md).
 The parent encodes the shared mechanics (Monitor, subscriptions,
 queue, ledger, idle sweep, author-ask, watch-PRs-you-prepare,
 sibling-PR comment protocol, witness-drift recovery, billing
@@ -35,7 +35,8 @@ parent's §1 references `${NAME}`. Files land at
 
 No bare `sorry`, no new axioms beyond the accepted set
 (`Classical.choice`, `Quot.sound`, `propext`, and any
-`-- Ref:`-cited axiomatic conjectures per the project authoring conventions-cond), and
+`-- Ref:`-cited axiomatic conjectures per §3b-cond of the project authoring
+conventions), and
 no naked `conjecture` blocks whose downstream scaffolding is
 actually provable. Conjectures that genuinely need axiomatisation
 as Lean classes per §3b-cond are fine.
@@ -82,7 +83,7 @@ content block label.
 
 ### Sidecar criteria → Lean skill mapping
 
-The 5 proof criteria registered in `qa-criteria-registry.ts §PROOF`
+The proof criteria registered in `qa-criteria-registry.ts §PROOF`
 each route to a specific existing Lean skill on `fail`. This is
 how `qa-sweep --axis proof` finds work to do, and how
 `/integration-backlog proof` knows which agent to dispatch per
@@ -101,19 +102,19 @@ batch.
 | `proof-no-trivial-true` | agent | `lean-proof-vacuity-audit` | Flag conclusion `True` / `x=x` / `holds:Prop:=True` with hypotheses unused; fix → restore the real statement + honest proof or `sorry`+`-- Ref:` |
 | `proof-no-false-premise` | agent | `lean-proof-vacuity-audit` | Flag theorem resting on `False` or uninhabited type; fix → correct the premise or remove theorem if invalid |
 | `proof-no-unused-hypotheses` | agent | `lean-proof-vacuity-audit` | Flag proofs that don't use all hypotheses; fix → remove unused hyps or use them if statement weakened |
-| `proof-no-decide-masking` | agent | `lean-proof-vacuity-audit` | Flag non-trivial goals closed via `decide`; fix → structural proof or explicit justification |
+| `proof-no-decide-masking` | agent | `lean-proof-vacuity-audit` | Flag non-trivial goals closed via `native_decide`; fix → structural proof or explicit justification |
+| `proof-no-provable-axiom` | agent | `lean-proof-vacuity-audit` | Flag an `axiom` with no `-- Ref:`; fix → prove it, add a `-- Ref:`, or move it to a `[Class]` hypothesis |
 | `proof-rater-strategy-clarity` | agent **(score)** | `proof-simplifier` / `proof-conciseness` | Score 0–1 → `score` field; if < 0.66, make the strategy explicit, re-rate |
 | `proof-rater-goal-plausibility` | agent **(score)** | `proof-triage` / `lean-build-fix` | Score 0–1 (cross-ref gap-criticality); improve by discharging `routine` gaps, re-rate |
 | `proof-rater-novelty` | agent **(score)** | `proposition-consolidation-audit` | Score 0–1; if redundant (~0), consolidate with the sibling, re-rate |
 
 > **Rater rubric (scored, not gating).** The `proof-rater-*` criteria
-> (AlphaProof-Nexus adoption) write a **0–1 `score`** to the block's
+> write a **0–1 `score`** to the block's
 > `.qa.json` (`QaCriterionEntry.score`), NOT a merge gate. The watcher is the
 > **rate** half (dispatch a rater agent per fresh proof block → write
 > `score`); `/integration-backlog proof` is the **improve** half (drain
 > ascending-score, apply the routed skill, **re-rate** to confirm the score
-> rose). This raises *corpus* quality the way their Elo search raises sketch
-> quality — but the population is the whole corpus, not a single proof.
+> rose).
 
 Watcher invocation pattern:
 
@@ -161,7 +162,7 @@ stale + the sweep will populate fresh entries.
 
 | Finding | Severity | Description |
 |---------|----------|-------------|
-| `uncited-sorry` | critical | `sorry` with **no** `-- Ref:` anywhere within: (a) the 6 lines above the sorry, **OR** (b) the 6 lines above the enclosing decl header. the project authoring conventions strictly requires the Ref **immediately above** the sorry; this finding catches the "no Ref reachable at all" case. The looser-but-not-strict case (Ref present somewhere in the enclosing decl but not adjacent to the sorry) is the **separate** `cite-position-hygiene` (minor) finding. The 2-tier split deliberately surfaces "missing entirely" as critical and "wrong position" as polish. |
+| `uncited-sorry` | critical | `sorry` with no `-- Ref:` in the 6 lines above it or the 6 lines above its enclosing decl header. (The conventions require the Ref immediately above the sorry; a Ref present but not adjacent is `cite-position-hygiene`, minor.) |
 | `hidden-axiom` | critical | New `axiom` declaration that isn't a §3b-cond class encoding |
 | `drift-class-A` | critical | Lean stub-weakening — `theorem foo : True := trivial` while narrative claims something substantive |
 | `conditional-class-violation` | critical | Theorem's `uses[]` transitively includes a `conj:` but the block isn't class-axiomatised per §3b-cond |
@@ -186,19 +187,18 @@ stale + the sweep will populate fresh entries.
 |------|----------|
 | **Auto-discharge** | `uncited-sorry` with goal matching positivity / ring / linarith / aesop / norm_num — try `lean_multi_attempt` with the canonical tactic set; `cite-position-hygiene` — move/add the `-- Ref:` line; `lean-compile-error` with simple import/namespace issues — fix import, re-check via `lean_diagnostic_messages` |
 | **Auto-discharge (script)** | `holds-prop-placeholder` + .md has numbered sub-claims — run `.work/bulk-split-holds.py` on the file. `claim-i-generic-docstring` — run `.work/enrich-subclaim-docstrings.py`. `mechanical-rename-without-md-check` — run the bulk-split script (it handles the split case correctly) |
-| **Auto-discharge (special)** | **Naked conjecture with fully-defined `uses[]` cone** — attempt discharge via `local/formalizer` + `local/lean-generation` before defaulting to author-assist. This is the *"if a conjecture is a placeholder for something to be proved, try"* clause of this watcher's mission. **`holds-prop-placeholder` with explicit boxed identity in .md** — invoke `local/lean-substantive-pass` to hand-craft typed sub-claims per the recognised manuscript patterns (boxed identity / piecewise / equivalence relation / table of moves / existence + uniqueness). |
+| **Auto-discharge (special)** | **Naked conjecture with fully-defined `uses[]` cone** — attempt discharge via `formalizer` + `lean-generation` before defaulting to author-assist. **`holds-prop-placeholder` with explicit boxed identity in .md** — invoke `lean-substantive-pass` to hand-craft typed sub-claims per the recognised manuscript patterns (boxed identity / piecewise / equivalence relation / table of moves / existence + uniqueness). |
 | **Author-assist** | Class A stub-weakening, hidden axiom, naked conjecture without conditional-class scaffolding, broken inter-proof chain, conjectural-propagation violation |
 | **Defer** | Minor stylistic gap, sorry already carrying `-- Ref:`, conjecture correctly class-axiomatised per §3b-cond |
 
 ### Author rules when writing class-axiomatised `.lean` stubs (§3b-cond)
 
-When this watcher (or `local/formalizer`) authors a new
+When this watcher (or `formalizer`) authors a new
 class-axiomatised `.lean` stub for a naked conjecture:
 
-1. **Imports first, doc block second** (Lean v4.24+). Module
-   documentation `/-! … -/` must come AFTER any `import`
-   statements; placing it first causes parse errors in
-   Lean v4.24.0 and later.
+1. **Imports first, doc block second** — Lean 4.24+ rejects a
+   `/-! … -/` module doc placed before the imports (see
+   `lean-generation`).
 
    ```lean
    import Mathlib.Data.Nat.Defs
@@ -423,7 +423,7 @@ Override the parent's default rule with this proof-specific ordering:
 | Every `sorry` has `-- Ref:` | `grep -B6 '^[^-]*sorry' <file>.lean \| grep -qE -- '-- Ref:'` OR enclosing decl header carries it |
 | No new `axiom` declarations | `git diff origin/main -- <file>.lean \| grep -E '^\+axiom '` is empty |
 | Naked conjectures attempted | Every `conjecture` block touched in this branch has a `formalizer` attempt log in the queue (status `resolved` or `needs-author`) |
-| No conjectural propagation regressions | `cd content && bun run pipeline/conjectural-propagation-audit.ts` reports no new violations vs main |
+| No conjectural propagation regressions | `bun run folio-assistant-sci/pipeline/conjectural-propagation-audit.ts` reports no new violations vs main |
 
 If any invariant fails on a proposed commit, **block the commit**,
 queue the violation as `critical`, and ask the author (per
@@ -449,9 +449,5 @@ parent §6).
       Slot I invariants
 
 ## Harness skills that dispatch here
-
-This layer sits above cat-harness, so the link points down from here. The
-harness skills below describe this one generically and name no science skill
-(bean `syiq`).
 
 - `integration-watcher`: a child of this abstract parent.

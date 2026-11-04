@@ -37,13 +37,8 @@ silently. When in doubt, start generic.
 `lake build` / `lean`-direct passing says **nothing** about §7c — a
 gratuitous `(q : ℝ)` compiles fine.
 
-> **Quickest path — run `scripts/check-sidecars.sh` (no longer in this repository)
-> on your changed files.** It maps each changed file to the QA sidecar
-> criteria that apply (`q-usage-*`, `wall-side-correct`, one-voice, …)
-> and runs the §7c base-ring check on standalone library Lean that has
-> no sidecar. **This is an agent-owned MANUAL pre-commit gate; CI is a
-> *backup*, not the primary check** — agents run the relevant checks for
-> their own PRs by hand; CI catches only what the agent missed.
+> This is an agent-owned **manual** pre-commit gate; CI is a backup that
+> catches only what the agent missed.
 
 **Before committing any new or edited `.lean`, run the base-ring pass:**
 
@@ -69,11 +64,6 @@ gratuitous `(q : ℝ)` compiles fine.
    sibling has no sidecar and escapes the sweep, so you MUST run the
    per-declaration triage by hand for those.
 
-Skipping this gate is how a gratuitous `(q : ℝ)` / `SL₂(ℝ)` lands on a
-purely-algebraic statement (a `det = 1` is `CommRing`-universal; a
-bar-even `[2]_q` identity holds over any field; only an ordering like
-`τ > 2` is genuinely `ℝ`). The gate above catches it at authoring time.
-
 Concrete cheat-sheet:
 
 | Construction | Typeclass | Example |
@@ -91,7 +81,7 @@ discussion, `q ∈ ℝ` only when the archimedean evaluation is needed.
 
 ### Wall-side QA checker — tactic constraints
 
-The `wall-side-correct` QA checker (`cat-harness-tools/pipeline/qa-checkers-voice.ts`,
+The `wall-side-correct` QA checker (`folio-assistant-sci/pipeline/qa-checkers-wall.ts`,
 `checkWallSide`) enforces this convention mechanically. It **strips `/- -/`
 + `--` comments and `import` lines**, then scans the *code body* for
 archimedean markers — `Real.sqrt|rpow|log|exp|cos|sin|pi`, `linarith`,

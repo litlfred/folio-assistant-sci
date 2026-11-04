@@ -30,7 +30,7 @@ with the repo's root `/lakefile.toml` aggregating every package into a
 single Lake workspace. See [Root Lake workspace
 (standardized)](#root-lake-workspace-standardized) below for the
 canonical layout, package registry, and build commands. Do **not**
-create a top-level `lean/` directory — that layout is deprecated.
+create a top-level `lean/` directory.
 
 
 ## Adding New Dependencies
@@ -123,7 +123,7 @@ Per-paper `cd content/<paper>/lean && lake build` still works as a
 standalone build path, but CI, the MCP `lean_build` tool, and the
 skills here all prefer the root workspace.  The registry mapping
 short-form package names to paper directories lives in
-`folio-assistant/schemas/lean-packages.ts`.
+`cat-harness-tools/schemas/lean-packages.ts`.
 
 ## Blueprint Synchronization
 
@@ -161,14 +161,13 @@ content/<paper>/<chapter>/
 ### Workflow with content objects
 
 1. **Read the `.ts` manifest** to get `lean.ref` (parse with
-   `parseLeanRef()` from `folio-assistant/schemas/lean-packages.ts`
+   `parseLeanRef()` from `cat-harness-tools/schemas/lean-packages.ts`
    to extract `{ package, decl, module, name }`) and `uses[]`
 2. **Check `uses[]`** to understand upstream dependencies — ensure they're
    formalized first (dependency DAG ordering)
 3. **Write/update the sibling `.lean` file** in `content/<paper>/<chapter>/`
 4. **Update the `.ts` manifest**: set `lean.ref` to the package-qualified
-   URI `"<pkg>:<Decl.Path>"` (per the project authoring conventions; legacy `lean.decl` /
-   `lean.file` shape is removed)
+   URI `"<pkg>:<Decl.Path>"` (per the project authoring conventions)
 5. **Run validation**: `bun run cat-harness-tools/pipeline/validate.ts` to check
    cross-references and constraint rules
 
@@ -181,7 +180,7 @@ other mention). Do **not** add `\emph{}` or plain-text mentions of
 defined terms. The Lean side is unaffected by this contract — Lean
 declarations are linked via `lean.ref`, not glossary slugs — but the
 validator will flag stray plain-text mentions in the narrative
-companion. See `local/glossary-build`.
+companion. See `glossary-build`.
 
 ### The `uses[]` dependency graph
 

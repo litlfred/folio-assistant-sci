@@ -13,8 +13,7 @@ allowed-tools: Read Write Edit Bash Grep Glob
 
 This skill defines how Lean proofs are reviewed by human and agentic reviewers.
 Reviews are stored as structured records in `proof-objects.json`, attached to
-individual proof objects.  The skill integrates with the existing agent-review
-workflow.
+individual proof objects.
 
 ## When to Use This Skill
 
@@ -66,14 +65,14 @@ Verifies:
 
 ### 3. Scientific Accuracy (`scientific-accuracy`)
 
-Existing review type — extended to cover Lean formalization:
+Verifies:
 - Does the formal statement match the mathematical intent?
 - Are the modelling assumptions correctly encoded?
 
 ### 4. Statement integrity (`statement-integrity`)
 
-Guards against the *most dangerous* way a "proof" can pass: silently
-weakening or altering the **statement** until the compiler is satisfied.
+Guards against a proof passing because the **statement** was weakened or
+altered until the compiler accepted it.
 
 Verifies:
 - **Signature unchanged.** For every provable-kind block touched on the
@@ -86,7 +85,7 @@ Verifies:
 - **No axiom injection.** `lean_verify` on the (sorry-free) declaration
   shows no `sorryAx` and no axioms beyond the declared set — no laundering a
   hole through a `Classical`-shaped placeholder or an axiomatised helper
-  that is not a registered conjecture class (the project authoring conventions-cond).
+  that is not a registered conjecture class (§3b-cond of the project authoring conventions).
 - **No degenerate conditional-class projection.** A §3b-cond block must
   *derive* its conclusion from class-axiomatised **hypotheses** — it must not
   carry the conclusion itself as a class field and project it
@@ -187,8 +186,7 @@ Live state — derived, not maintained in this skill file:
 - Per-file declaration inventory: `lean_file_outline`.
 - Axiom dependencies for any theorem: `lean_verify`.
 
-Do not rely on dated snapshots in this file — they go stale and mislead
-fresh agents. Always pull live counts before reporting.
+Always pull live counts before reporting.
 
 ## Content Object Integration
 
@@ -199,7 +197,7 @@ Reviews must cross-check all three.
 **Manifest–Lean consistency.** Verify that:
 - The `lean.ref` URI in the `.ts` manifest (form `"<pkg>:<Decl>"`) names
   the actual Lean declaration in the `.lean` file. Parse with
-  `parseLeanRef()` from `folio-assistant/schemas/lean-packages.ts`.
+  `parseLeanRef()` from `cat-harness-tools/schemas/lean-packages.ts`.
 - The block `kind` matches the Lean content: `definition` blocks should
   contain `def` or `structure`; `theorem`/`lemma` blocks should contain
   `theorem` or `lemma`.
