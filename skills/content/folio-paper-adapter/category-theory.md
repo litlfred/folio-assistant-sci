@@ -156,8 +156,8 @@ If `lake build` reports:
 type mismatch: universe level u_1 is not <= u_2
 ```
 
-check that the glossary entry for that type has correct universe
-annotations.
+The `ontologist` skill (folio-assistant-core) must check that the glossary
+entry for that type has correct universe annotations.
 
 ## Mathlib Imports for Category Theory
 
