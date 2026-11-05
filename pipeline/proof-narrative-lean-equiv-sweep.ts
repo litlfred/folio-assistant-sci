@@ -18,7 +18,7 @@ import { resolve, basename, dirname, relative as pathRelative, join } from "path
 import { findContentRepoRoot } from "@litlfred/cat-harness-tools/pipeline/repo-root.ts";
 import {
   hashBlockFiles,
-  gitHeadSha,
+  gitHeadTree,
   walkBlocks,
   loadPriorBlockReport,
   priorRefusalLine,
@@ -486,7 +486,10 @@ async function main() {
     process.exit(2);
   }
 
-  const headSha = gitHeadSha();
+  // The tree, not the commit: on a pull_request run HEAD is the synthetic
+  // refs/pull/<n>/merge commit, which can vanish (folio-assistant bean 69lr;
+  // owner card Q4, 2026-11-05: the tree is the identity).
+  const headTree = gitHeadTree();
   const now = new Date().toISOString();
 
   interface Result {
@@ -577,7 +580,7 @@ async function main() {
         version: "v1",
       },
       reviewed_at: now,
-      reviewed_sha: headSha,
+      reviewed_tree: headTree,
       ...(check.notes ? { notes: check.notes } : {}),
     };
 
