@@ -29,7 +29,7 @@
  * ~50 MB of signature HTML. The shard itself stays small enough to list the
  * module at once; the viewer fetches signature chunks as they scroll in.
  *
- * ## Incremental (STAGING) mode
+ * ## Incremental (branches/) mode
  *
  * `--base <dir-or-url of a published index.json's directory>` compares each
  * module's content hash with the base index and writes ONLY modules that

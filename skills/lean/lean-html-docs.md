@@ -124,7 +124,7 @@ doc-gen4's `style.css` styles bare `body`/`header`/`nav`/`main`; the publish
 step keeps only its custom properties and signature rules, scoped under
 `.lkg-sig`, so it cannot lay the viewer out as a doc-gen4 page or reach the rail.
 
-### Cache the doc-gen4 output, iterate per STAGING branch
+### Cache the doc-gen4 output, iterate per branches/ branch
 
 The doc-gen4 run is the expensive part (qou: about 2 h 20 min on 4 cores, 15,151
 Lake jobs). Its output is cached on an orphan branch, e.g. qou's
@@ -133,7 +133,7 @@ doc-data, and doc-gen4's own build; ~160 MB in two parts, `MANIFEST.json`).
 Restore it after the olean cache and `lake -R -Kenv=dev build <Lib>:docs`
 re-renders only modules whose traces changed.
 
-For a STAGING branch, publish an overlay against the main graph:
+For a branches/ branch, publish an overlay against the main graph:
 
 ```sh
 … lean-kg-publish.ts … --base https://<site>/lean/data

@@ -14,7 +14,7 @@
  *     --doc-data <lake>/.lake/build/doc-data --site _site [--route lean] \
  *     --modules QOU,UGB,Fred2005 [--content-root folio] \
  *     [--repo litlfred/qou --ref <sha> --content-prefix folio/] \
- *     [--base <published data dir or URL>]     # STAGING overlay
+ *     [--base <published data dir or URL>]     # branches/ overlay
  *     [--home-label qou] [--instance <name>] [--platform <index root>] [--no-rail]
  *
  * `--doc-style` defaults to `<doc-data>/../doc/style.css` (doc-gen4's own); the
