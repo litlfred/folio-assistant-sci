@@ -107,7 +107,7 @@ interface QaCriterionEntry {
   evidence?: string;
   reviewer: QaReviewer;
   reviewed_at: string;
-  reviewed_sha: string;
+  reviewed_tree: string;
 }
 interface QaSidecarDoc {
   $schema?: string;
@@ -535,9 +535,12 @@ function sha12(s: string): string {
   return createHash("sha256").update(s).digest("hex").slice(0, 12);
 }
 
-function headSha(repoRoot: string): string {
+// On a pull_request CI run HEAD is GitHub's synthetic refs/pull/<n>/merge
+// commit, which can vanish; the commit that lands on main has the same tree,
+// so a verdict records the TREE it reviewed (folio-assistant bean 69lr; owner card Q4, 2026-11-05: the tree is the identity).
+function headTree(repoRoot: string): string {
   try {
-    return execFileSync("git", ["rev-parse", "HEAD"], { cwd: repoRoot })
+    return execFileSync("git", ["rev-parse", "HEAD^{tree}"], { cwd: repoRoot })
       .toString()
       .trim();
   } catch {
@@ -554,7 +557,7 @@ function writeSidecar(
   findings: Finding[],
   scriptHash: string,
   scriptSha: string,
-  reviewedSha: string,
+  reviewedTree: string,
 ): boolean {
   // LOAD-THEN-WRITE. The read falls back to the legacy sibling so a folio whose
   // verdicts have not migrated keeps its history instead of being overwritten
@@ -609,7 +612,7 @@ function writeSidecar(
         script_commit_sha: scriptSha,
       },
       reviewed_at: now,
-      reviewed_sha: reviewedSha,
+      reviewed_tree: reviewedTree,
     };
     if (f.severity) entry.severity = f.severity;
     if (f.evidence) entry.evidence = f.evidence;
@@ -849,10 +852,10 @@ function main() {
     } catch {
       /* ignore */
     }
-    const reviewedSha = headSha(repoRoot);
+    const reviewedTree = headTree(repoRoot);
     for (const b of blocks) {
       const fs = allFindings.filter((f) => f.mdPath === b.mdPath);
-      if (!writeSidecar(b, fs, scriptHash, scriptSha, reviewedSha)) refusedSidecars++;
+      if (!writeSidecar(b, fs, scriptHash, scriptSha, reviewedTree)) refusedSidecars++;
     }
   }
 

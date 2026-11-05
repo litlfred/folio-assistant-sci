@@ -28,6 +28,7 @@
 import { folioDir, deferResolution} from "../../cat-harness-tools/schemas/kg/cat-harness.js";
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { createHash } from "node:crypto";
+import { execFileSync } from "node:child_process";
 import { dirname, join, resolve, relative } from "node:path";
 import {
   Q_USAGE_AUTOMATED_CHECKERS,
@@ -237,10 +238,10 @@ interface QaEntry {
   };
   reviewed_at: string;
   /**
-   * Repo HEAD SHA at audit time — required by block-qa/v1 schema
-   * (#1640-Copilot @ q-usage-audit.ts:141).
+   * Repo HEAD's tree at audit time (folio-assistant bean 69lr); it replaces
+   * `reviewed_sha`, the HEAD commit (#1640-Copilot @ q-usage-audit.ts:141).
    */
-  reviewed_sha: string;
+  reviewed_tree: string;
   notes?: string;
 }
 
@@ -273,23 +274,22 @@ const SCRIPT_HASH = hashFile(join(SCI_ROOT, SCRIPT_PATH));
 const NOW_ISO = new Date().toISOString();
 const REVIEWER_ID = "q-usage-audit";
 
-// Capture HEAD SHA once per run for `reviewed_sha` in every entry —
-// required by block-qa/v1 (#1640-Copilot @ q-usage-audit.ts:168).
-function captureHeadSha(): string {
+// Capture HEAD's TREE once per run for `reviewed_tree` in every entry. On a
+// pull_request CI run HEAD is GitHub's synthetic refs/pull/<n>/merge commit,
+// which can vanish; the commit that lands on main has the same tree, so a
+// verdict records the tree it reviewed (folio-assistant bean 69lr; owner card
+// Q4, 2026-11-05: the tree is the identity). A tree id needs git itself: it
+// is not in `.git/HEAD` or a ref file, which the commit lookup here used to read.
+function captureHeadTree(): string {
   try {
-    const headPath = join(REPO_ROOT, ".git", "HEAD");
-    if (!existsSync(headPath)) return "uncommitted";
-    const head = readFileSync(headPath, "utf-8").trim();
-    if (head.startsWith("ref: ")) {
-      const refPath = join(REPO_ROOT, ".git", head.slice(5));
-      if (existsSync(refPath)) return readFileSync(refPath, "utf-8").trim();
-    }
-    return head;
+    return execFileSync("git", ["rev-parse", "HEAD^{tree}"], { cwd: REPO_ROOT, stdio: ["ignore", "pipe", "ignore"] })
+      .toString()
+      .trim() || "uncommitted";
   } catch {
     return "uncommitted";
   }
 }
-const HEAD_SHA = captureHeadSha();
+const HEAD_TREE = captureHeadTree();
 
 function updateSidecar(b: BlockTriple, results: Map<string, QUsageResult>): boolean {
   // Load-then-write, so the two halves get different qa-paths.ts helpers:
@@ -358,7 +358,7 @@ function updateSidecar(b: BlockTriple, results: Map<string, QUsageResult>): bool
         script_hash: SCRIPT_HASH,
       },
       reviewed_at: NOW_ISO,
-      reviewed_sha: HEAD_SHA,
+      reviewed_tree: HEAD_TREE,
     };
     if (r.result === "fail" || r.result === "warn") {
       entry.severity = CRITERION_SEVERITY[criterionId];
