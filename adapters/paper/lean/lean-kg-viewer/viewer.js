@@ -5,7 +5,7 @@
 //   data/names.json            search list, fetched on first search
 //   data/m/<Module>.jsonld     module graph: module node + declaration nodes
 //   data/m/<Module>.<k>.sig.json  rendered signatures, fetched as cards scroll in
-//   data/overlay.json          optional: a STAGING overlay; modules not in
+//   data/overlay.json          optional: a branches/ overlay; modules not in
 //                              `changed` are fetched from `base` instead
 //   config.json                { repo, ref, contentPrefix } for block links
 //
