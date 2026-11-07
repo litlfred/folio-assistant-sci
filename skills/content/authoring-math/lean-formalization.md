@@ -6,7 +6,7 @@ output: schemas/skills/lean-formalization/output.schema.json
 # lean-formalization
 
 > Skill id: `lean-formalization` · Package: `authoring-math` ·
-> Named by `authoring-a-paper.bpmn` step **5 · Formalise in Lean**, in the
+> Named by `authoring-a-paper.bpmn` step **6 · Formalise in Lean**, in the
 > `Lean toolchain (lean-mcp)` lane.
 
 Take a block whose assertion is a formal mathematical claim and give it a
