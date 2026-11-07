@@ -6,7 +6,7 @@ output: schemas/skills/latex-authoring/output.schema.json
 # latex-authoring
 
 > Skill id: `latex-authoring` · Package: `authoring-math` ·
-> Named by `authoring-a-paper.bpmn` step **7 · Render PDF and HTML**, in the
+> Named by `authoring-a-paper.bpmn` step **9 · Render PDF and HTML**, in the
 > `Build pipeline` lane.
 
 Get a paper folio through LaTeX to a PDF, and keep the TeX a folio's own rather
@@ -32,6 +32,16 @@ silently came out of LaTeX would misreport what the folio needs to build.
 
 So: if you are here because a document folio will not render, you are in the
 wrong skill.
+
+## Statements extracted from sources go in an appendix, never in a proof
+
+Step **8 · Publish extracted statements**, just before the render, publishes
+every statement the paper extracted from its library sources (core's
+`publish-extracted-statements`, `bun run cat statements:pages`), each linked
+to its library entry and section. In a paper the page is an appendix of
+exposition about the sources. Nothing on it enters a definition, a theorem, a
+proof or a Lean sibling: a quoted or measured statement is never a premise of
+formal mathematics.
 
 ## Preflight before you build
 
