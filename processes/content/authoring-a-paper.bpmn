@@ -55,6 +55,7 @@ Review, publish and committee feedback are core's shared Process_FolioReviewPubl
       <bpmn:lane id="Lane_Build" name="Build pipeline" partitionElementRef="build-pipeline">
         <bpmn:documentation>Validates and renders the Lean-green manuscript, calls the shared review-and-publish process (Call_ReviewPublish), and closes the bean once GW_Published says yes. It decides nothing itself.</bpmn:documentation>
         <bpmn:flowNodeRef>Task_Validate</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Call_PublishStatements</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_Render</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Call_ReviewPublish</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>GW_Published</bpmn:flowNodeRef>
@@ -144,12 +145,20 @@ Review, publish and committee feedback are core's shared Process_FolioReviewPubl
       <bpmn:incoming>A11</bpmn:incoming>
       <bpmn:outgoing>A12</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:callActivity id="Call_PublishStatements" name="Publish extracted statements" calledElement="Process_PublishExtractedStatements">
+      <bpmn:documentation>The paper draws on library sources; every statement quoted or extracted from them is published in an appendix page of the paper and in the shared extraction viewer, each linked to its library entry and section, before the paper is rendered. These pages are EXPOSITION about sources, never part of a proof: nothing published here enters a formal statement or its Lean sibling. The sub-process is core's, the same for every content type; the paper supplies only the page look.</bpmn:documentation>
+      <bpmn:extensionElements>
+        <bootstrap.processes:skill ref="publish-extracted-statements"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>A12</bpmn:incoming>
+      <bpmn:outgoing>A12b</bpmn:outgoing>
+    </bpmn:callActivity>
     <bpmn:serviceTask id="Task_Render" name="Render PDF and HTML">
       <bpmn:documentation>Typeset the paper through LaTeX to PDF and HTML. Run `latex-preflight` first to catch compile-breaking source patterns before a full compile. The preamble, class and macros belong to the folio, never to the platform.</bpmn:documentation>
       <bpmn:extensionElements>
         <bootstrap.processes:skill ref="latex-authoring"/>
       </bpmn:extensionElements>
-      <bpmn:incoming>A12</bpmn:incoming>
+      <bpmn:incoming>A12b</bpmn:incoming>
       <bpmn:outgoing>A13</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:callActivity id="Call_ReviewPublish" name="Review and publish" calledElement="Process_FolioReviewPublish">
@@ -188,7 +197,8 @@ Review, publish and committee feedback are core's shared Process_FolioReviewPubl
     <bpmn:sequenceFlow id="A09" sourceRef="Task_Formalize" targetRef="Gateway_LeanGreen"/>
     <bpmn:sequenceFlow id="A10" sourceRef="Gateway_LeanGreen" targetRef="Task_Formalize" name="not yet"/>
     <bpmn:sequenceFlow id="A11" sourceRef="Gateway_LeanGreen" targetRef="Task_Validate" name="green"/>
-    <bpmn:sequenceFlow id="A12" sourceRef="Task_Validate" targetRef="Task_Render"/>
+    <bpmn:sequenceFlow id="A12" sourceRef="Task_Validate" targetRef="Call_PublishStatements"/>
+    <bpmn:sequenceFlow id="A12b" sourceRef="Call_PublishStatements" targetRef="Task_Render"/>
     <bpmn:sequenceFlow id="A13" sourceRef="Task_Render" targetRef="Call_ReviewPublish"/>
     <bpmn:sequenceFlow id="A14" sourceRef="Call_ReviewPublish" targetRef="GW_Published"/>
     <bpmn:sequenceFlow id="A15" sourceRef="GW_Published" targetRef="Call_BeanClose" name="yes"/>
@@ -198,22 +208,22 @@ Review, publish and committee feedback are core's shared Process_FolioReviewPubl
   <bpmndi:BPMNDiagram id="Diagram_Process_PaperAuthoring">
     <bpmndi:BPMNPlane id="Plane_Process_PaperAuthoring" bpmnElement="Collaboration_Process_PaperAuthoring">
       <bpmndi:BPMNShape id="Shape_Participant_Process_PaperAuthoring" bpmnElement="Participant_Process_PaperAuthoring" isHorizontal="true">
-        <dc:Bounds x="60" y="60" width="1370" height="890"/>
+        <dc:Bounds x="60" y="60" width="1525" height="890"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Shape_Lane_Author" bpmnElement="Lane_Author" isHorizontal="true">
-        <dc:Bounds x="90" y="60" width="1340" height="150"/>
+        <dc:Bounds x="90" y="60" width="1495" height="150"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Shape_Lane_WorkPlan" bpmnElement="Lane_WorkPlan" isHorizontal="true">
-        <dc:Bounds x="90" y="210" width="1340" height="150"/>
+        <dc:Bounds x="90" y="210" width="1495" height="150"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Shape_Lane_Agent" bpmnElement="Lane_Agent" isHorizontal="true">
-        <dc:Bounds x="90" y="360" width="1340" height="150"/>
+        <dc:Bounds x="90" y="360" width="1495" height="150"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Shape_Lane_Lean" bpmnElement="Lane_Lean" isHorizontal="true">
-        <dc:Bounds x="90" y="510" width="1340" height="150"/>
+        <dc:Bounds x="90" y="510" width="1495" height="150"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Shape_Lane_Build" bpmnElement="Lane_Build" isHorizontal="true">
-        <dc:Bounds x="90" y="660" width="1340" height="290"/>
+        <dc:Bounds x="90" y="660" width="1495" height="290"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Shape_StartEvent_NewPaper" bpmnElement="StartEvent_NewPaper">
         <dc:Bounds x="140" y="117" width="36" height="36"/>
@@ -252,18 +262,21 @@ Review, publish and committee feedback are core's shared Process_FolioReviewPubl
       <bpmndi:BPMNShape id="Shape_Task_Validate" bpmnElement="Task_Validate">
         <dc:Bounds x="925" y="675" width="120" height="120"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_Task_Render" bpmnElement="Task_Render">
+      <bpmndi:BPMNShape id="Shape_Call_PublishStatements" bpmnElement="Call_PublishStatements">
         <dc:Bounds x="1080" y="675" width="120" height="120"/>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Render" bpmnElement="Task_Render">
+        <dc:Bounds x="1235" y="675" width="120" height="120"/>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Shape_Call_ReviewPublish" bpmnElement="Call_ReviewPublish">
-        <dc:Bounds x="1250" y="675" width="120" height="120"/>
+        <dc:Bounds x="1405" y="675" width="120" height="120"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Shape_GW_Published" bpmnElement="GW_Published" isMarkerVisible="true">
-        <dc:Bounds x="1285" y="860" width="50" height="50"/>
-        <bpmndi:BPMNLabel><dc:Bounds x="1250" y="914" width="120" height="40"/></bpmndi:BPMNLabel>
+        <dc:Bounds x="1440" y="860" width="50" height="50"/>
+        <bpmndi:BPMNLabel><dc:Bounds x="1405" y="914" width="120" height="40"/></bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Shape_Call_BeanClose" bpmnElement="Call_BeanClose">
-        <dc:Bounds x="1080" y="825" width="120" height="120"/>
+        <dc:Bounds x="1235" y="825" width="120" height="120"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Shape_EndEvent_Published" bpmnElement="EndEvent_Published">
         <dc:Bounds x="960" y="867" width="36" height="36"/>
@@ -321,26 +334,30 @@ Review, publish and committee feedback are core's shared Process_FolioReviewPubl
         <di:waypoint x="1045" y="735"/>
         <di:waypoint x="1080" y="735"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_A13" bpmnElement="A13">
+      <bpmndi:BPMNEdge id="Edge_A12b" bpmnElement="A12b">
         <di:waypoint x="1200" y="735"/>
-        <di:waypoint x="1250" y="735"/>
+        <di:waypoint x="1235" y="735"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_A13" bpmnElement="A13">
+        <di:waypoint x="1355" y="735"/>
+        <di:waypoint x="1405" y="735"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Edge_A14" bpmnElement="A14">
-        <di:waypoint x="1310" y="795"/>
-        <di:waypoint x="1310" y="860"/>
+        <di:waypoint x="1465" y="795"/>
+        <di:waypoint x="1465" y="860"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Edge_A15" bpmnElement="A15">
-        <di:waypoint x="1285" y="885"/>
-        <di:waypoint x="1200" y="885"/>
+        <di:waypoint x="1440" y="885"/>
+        <di:waypoint x="1355" y="885"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Edge_A16" bpmnElement="A16">
-        <di:waypoint x="1080" y="885"/>
+        <di:waypoint x="1235" y="885"/>
         <di:waypoint x="996" y="885"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Edge_A17" bpmnElement="A17">
-        <di:waypoint x="1335" y="885"/>
-        <di:waypoint x="1390" y="885"/>
-        <di:waypoint x="1390" y="405"/>
+        <di:waypoint x="1490" y="885"/>
+        <di:waypoint x="1545" y="885"/>
+        <di:waypoint x="1545" y="405"/>
         <di:waypoint x="780" y="405"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>

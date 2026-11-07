@@ -84,9 +84,17 @@ How a scientific paper or book folio is authored end to end, with Lean for its f
 - Skill: `content-validate`.
 - What: Run content validation over the folio: schemas, the content profile (formal kinds only in a paper), cross-block consistency and that the Lean builds.
 - Record it: `workflow_complete` with `node: "Task_Validate"`.
+- next: → `Call_PublishStatements` (Publish extracted statements)
+
+### 8. Publish extracted statements (`Call_PublishStatements`)
+
+- Who: the `Build pipeline` lane (role `build-pipeline`).
+- Skill: `publish-extracted-statements`.
+- What: The paper draws on library sources; every statement quoted or extracted from them is published in an appendix page of the paper and in the shared extraction viewer, each linked to its library entry and section, before the paper is rendered.
+- A subprocess (`Process_PublishExtractedStatements`): `workflow_next` reports its own steps; complete those — this call activity itself is not completable.
 - next: → `Task_Render` (Render PDF and HTML)
 
-### 8. Render PDF and HTML (`Task_Render`)
+### 9. Render PDF and HTML (`Task_Render`)
 
 - Who: the `Build pipeline` lane (role `build-pipeline`).
 - Skill: `latex-authoring`.
@@ -94,7 +102,7 @@ How a scientific paper or book folio is authored end to end, with Lean for its f
 - Record it: `workflow_complete` with `node: "Task_Render"`.
 - next: → `Call_ReviewPublish` (Review and publish)
 
-### 9. Review and publish (`Call_ReviewPublish`)
+### 10. Review and publish (`Call_ReviewPublish`)
 
 - Who: the `Build pipeline` lane (role `build-pipeline`).
 - Skill: `content-review`.
@@ -109,7 +117,7 @@ How a scientific paper or book folio is authored end to end, with Lean for its f
   - «yes» → `Call_BeanClose` (Close the bean)
   - «no» → `Task_AuthorBlocks` (Author blocks)
 
-### 10. Close the bean (`Call_BeanClose`)
+### 11. Close the bean (`Call_BeanClose`)
 
 - Who: the `Build pipeline` lane (role `build-pipeline`).
 - Skill: `todo-manager`.

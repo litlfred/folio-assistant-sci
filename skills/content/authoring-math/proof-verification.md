@@ -6,7 +6,7 @@ output: schemas/skills/proof-verification/output.schema.json
 # proof-verification
 
 > Skill id: `proof-verification` · Package: `authoring-math` ·
-> Named by `authoring-a-paper.bpmn` step **5 · Formalise in Lean**, in the
+> Named by `authoring-a-paper.bpmn` step **6 · Formalise in Lean**, in the
 > `Lean toolchain (lean-mcp)` lane.
 
 Decide, and record, whether a block's formal claim is actually verified —
