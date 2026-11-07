@@ -1,6 +1,6 @@
 Feature: proof-axis-dashboard — listing the Lean files that still contain a sorry
 
-  @test:pipeline/proof-axis-dashboard.test.ts::listsSorryLeanFilesSkipsLeanDirs
+  @test:pipeline/proof-axis-dashboard.test.ts::proof-axis-dashboard_leanFilesWithSorry::listsSorryLeanFilesSkipsLeanDirs
   Scenario: lists *.lean files with a whole-word sorry, skips /lean/ paths, and treats the root as data
     Given a temporary root whose name contains shell metacharacters
     And ch1/A.lean with "by sorry", ch1/B.lean with only "sorryless" in a comment

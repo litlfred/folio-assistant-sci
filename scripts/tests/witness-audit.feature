@@ -1,6 +1,6 @@
 Feature: witness-audit — staleness of Lean and Python computation witnesses
 
-  @test:scripts/tests/witness-audit.test.ts::auditsLeanWitnessStates
+  @test:scripts/tests/witness-audit.test.ts::witness-audit::auditsLeanWitnessStates
   Scenario: audits Lean witnesses: fresh, stale hash, malformed JSON, and pending files
     Given a folio chapter with Fresh.lean and a witness named for its content hash, holding a commitSha
     And Stale.lean with a witness named for another hash
@@ -15,7 +15,7 @@ Feature: witness-audit — staleness of Lean and Python computation witnesses
     Then it counts 4 Lean files: 1 witnessed, 2 stale and 1 pending
     And it counts 0 Python witnesses
 
-  @test:scripts/tests/witness-audit.test.ts::auditsPythonWitnessStates
+  @test:scripts/tests/witness-audit.test.ts::witness-audit::auditsPythonWitnessStates
   Scenario: audits Python witnesses: structured fresh, stale scriptHash, legacy format, and malformed JSON
     Given a computations directory with a structured witness for calc_alpha.py whose scriptHash matches, with one assertion and a commitSha
     And a structured witness for calc_beta.py whose scriptHash does not match
@@ -27,7 +27,7 @@ Feature: witness-audit — staleness of Lean and Python computation witnesses
     Then it counts 4 Python witnesses: 2 structured, 2 legacy, 2 stale, 1 with assertions and 2 with a commit sha
     And it lists no Lean entries
 
-  @test:scripts/tests/witness-audit.test.ts::gitFileShasPassesPathsAsData
+  @test:scripts/tests/witness-audit.test.ts::witness-audit::gitFileShasPassesPathsAsData
   Scenario: gitFileShas passes paths with shell metacharacters to git as data
     Given a git repository with one commit holding files whose names contain $( ), ;, backticks, a space, a quote, *, & and |, and an accented letter
     And a file jX.lean that a glob pathspec would match
