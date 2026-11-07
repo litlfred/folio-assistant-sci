@@ -23,20 +23,20 @@ import {
 import { PAPER_PREAMBLE_PATH, PaperContentAdapter } from "./index.ts";
 
 describe("paper adapter declaration", () => {
-  test("is discovered from this instance's declaration, and leads as the superset", () => {
+  test("discoveredFromDeclarationLeadsAsSuperset", () => {
     const paper = BUILTIN_ADAPTERS.find((a) => a.contentType === "paper");
     expect(paper).toMatchObject({ instance: "folio-assistant-sci", className: "PaperContentAdapter", extends: "document" });
     // Falling back TO paper loses nothing; falling back FROM it loses Lean and TeX.
     expect(BUILTIN_ADAPTERS[0]?.contentType).toBe("paper");
   });
 
-  test("resolves to the class this directory exports", async () => {
+  test("resolvesToExportedClass", async () => {
     const r = await resolveBuiltinAdapter("paper");
     expect(r.fallbackReason).toBeUndefined();
     expect(r.ctor).toBe(PaperContentAdapter as never);
   });
 
-  test("supplies its print preamble template to generate-main-tex when --preamble is omitted (bean 4dj5)", async () => {
+  test("suppliesPreambleWhenOmitted", async () => {
     expect(PaperContentAdapter.preamblePath).toBe(PAPER_PREAMBLE_PATH);
     expect(existsSync(PAPER_PREAMBLE_PATH)).toBe(true);
     const resolveAdapterPreamble = (
@@ -54,7 +54,7 @@ describe("paper adapter declaration", () => {
     }
   });
 
-  test("generate-main-tex CLI with no --preamble inlines the paper adapter's template (bean 4dj5)", () => {
+  test("cliInlinesPaperPreamble", () => {
     const resolvePaperPreamble = (
       mainTex as { resolvePaperPreamble?: (explicit?: string) => Promise<string> }
     ).resolvePaperPreamble;

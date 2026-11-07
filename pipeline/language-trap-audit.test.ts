@@ -47,7 +47,7 @@ function makeBlock(md: string, overrides: Partial<Block> = {}): Block {
 }
 
 describe("language-trap-audit helpers", () => {
-  test("parseKind and parseLabel extract builder kind and label from .ts source", () => {
+  test("parsesKindAndLabel", () => {
     const ts = 'export default remark({\n  label: "rem:gauge-fixing",\n  title: "Gauge",\n});\n';
     expect(parseKind(ts)).toBe("remark");
     expect(parseLabel(ts)).toBe("rem:gauge-fixing");
@@ -55,7 +55,7 @@ describe("language-trap-audit helpers", () => {
     expect(PROSE_KINDS.includes("equation")).toBe(false);
   });
 
-  test("prose strips math, code fences, inline code, tables, and markdown links", () => {
+  test("proseStripsMathCodeTablesLinks", () => {
     const raw = [
       "First paragraph with [a link](https://example.com) and $x^2 + y^2 = z^2$.",
       "$$",
@@ -73,7 +73,7 @@ describe("language-trap-audit helpers", () => {
     expect(stripped).toContain("Final line of prose.");
   });
 
-  test("wordCount and sentences split prose cleanly", () => {
+  test("wordCountAndSentencesSplit", () => {
     expect(wordCount("One two three four.")).toBe(4);
     expect(wordCount("   ")).toBe(0);
     const sents = sentences("First sentence is here. Second sentence follows! Is there a third?");
@@ -82,7 +82,7 @@ describe("language-trap-audit helpers", () => {
 });
 
 describe("findingsFor across LLM rhetorical trap criteria", () => {
-  test("detects trap-negation-contrast ('not a X, but Y')", () => {
+  test("detectsNegationContrast", () => {
     const hitBlock = makeBlock("The framework is not a mere approximation, but a complete reformulation of the dynamics.");
     const findings = findingsFor(hitBlock, "trap-negation-contrast");
     expect(findings).toHaveLength(1);
@@ -92,7 +92,7 @@ describe("findingsFor across LLM rhetorical trap criteria", () => {
     expect(findingsFor(cleanBlock, "trap-negation-contrast")[0]!.result).toBe("pass");
   });
 
-  test("detects trap-rhetorical-pivot, trap-meta-commentary, trap-thesis-restatement, trap-performed-warmth, trap-superlative", () => {
+  test("detectsPivotMetaRestatementWarmthSuperlative", () => {
     const text = [
       "The real question is whether the boundary condition determines the spectrum.",
       "It is worth noting that the operator is self-adjoint, and we emphasize its positivity.",
@@ -113,7 +113,7 @@ describe("findingsFor across LLM rhetorical trap criteria", () => {
     expect(failedIds.has("trap-superlative")).toBe(true);
   });
 
-  test("detects trap-em-dash and trap-triples when density exceeds threshold", () => {
+  test("detectsEmDashAndTriplesByDensity", () => {
     const text =
       "Alpha — beta — gamma — delta — epsilon. " +
       "We study groups, rings, and fields; we analyze spaces, maps, and functors; we construct sheaves, schemes, and stacks.";
@@ -127,7 +127,7 @@ describe("findingsFor across LLM rhetorical trap criteria", () => {
     expect(failedIds.has("trap-triples")).toBe(true);
   });
 
-  test("detects trap-closing-aphorism and trap-nonspeakable", () => {
+  test("detectsClosingAphorismAndNonspeakable", () => {
     const longSentence = Array.from({ length: 65 }, (_, i) => `word${i}`).join(" ") + ".";
     const text = [
       `First long sentence: ${longSentence}`,
@@ -144,7 +144,7 @@ describe("findingsFor across LLM rhetorical trap criteria", () => {
     expect(failedIds.has("trap-nonspeakable")).toBe(true);
   });
 
-  test("buildMd renders markdown summary with criteria table", () => {
+  test("buildMdRendersCriteriaTable", () => {
     expect(CRITERIA.length).toBe(10);
     expect(T.dashMin).toBeGreaterThan(0);
     const b = makeBlock("The theory is not a heuristic, but a deduction.");
@@ -156,7 +156,7 @@ describe("findingsFor across LLM rhetorical trap criteria", () => {
 });
 
 describe("language-trap-audit --write-sidecars attestation survival", () => {
-  test("language-trap-audit --write-sidecars keeps both attestations when prior report is absent", () => {
+  test("writeSidecarsKeepsBothAttestations", () => {
     const parent = realpathSync(mkdtempSync(join(tmpdir(), "lang-trap-sidecar-")));
     const root = join(parent, "repo");
     try {

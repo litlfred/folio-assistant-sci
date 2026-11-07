@@ -118,7 +118,7 @@ const MIXED_BODY = [
 // ── 1. Candidate-2 resolution + audit of the resolved file ──────
 
 describe("lean.ref candidate-2 (library tree) resolution", () => {
-  test("sibling-less block resolves to the Lake-tree file and is audited", () => {
+  test("siblinglessBlockResolvesToLibraryAudited", () => {
     const { tmp, content, lake } = makeWorkspace();
     try {
       writeLake(lake, "QOU/BraidKnot/TauQuantumIntegerForm.lean", ARCHIMEDEAN_BODY);
@@ -151,7 +151,7 @@ describe("lean.ref candidate-2 (library tree) resolution", () => {
     }
   });
 
-  test("direct module-path resolution (candidate 2a)", () => {
+  test("directModulePathResolves", () => {
     const { tmp, lake } = makeWorkspace();
     try {
       const abs = writeLake(lake, "QOU/FluidDynamics/qBkm.lean", GENERIC_R_BODY);
@@ -162,7 +162,7 @@ describe("lean.ref candidate-2 (library tree) resolution", () => {
     }
   });
 
-  test("sibling (candidate 1) wins over the library tree", () => {
+  test("siblingWinsOverLibrary", () => {
     const { tmp, content, lake } = makeWorkspace();
     try {
       writeLake(lake, "QOU/BraidKnot/Dup.lean", ARCHIMEDEAN_BODY);
@@ -178,7 +178,7 @@ describe("lean.ref candidate-2 (library tree) resolution", () => {
     }
   });
 
-  test("decl-named ref resolves to the leaf decl file, NOT an import-only aggregator (candidate c)", () => {
+  test("declRefResolvesToLeafNotAggregator", () => {
     const { tmp, lake } = makeWorkspace();
     try {
       // An import-only aggregator sits at the ref's module path
@@ -213,7 +213,7 @@ describe("lean.ref candidate-2 (library tree) resolution", () => {
     }
   });
 
-  test("(a) direct module-path still wins when the module file declares the decl", () => {
+  test("directModulePathWinsWhenDeclares", () => {
     const { tmp, lake } = makeWorkspace();
     try {
       const modFile = writeLake(
@@ -228,7 +228,7 @@ describe("lean.ref candidate-2 (library tree) resolution", () => {
     }
   });
 
-  test("ref naming a nonexistent decl does NOT fall back to an import-only root", () => {
+  test("nonexistentDeclNoAggregatorFallback", () => {
     const { tmp, lake } = makeWorkspace();
     try {
       // The library root is an import-only aggregator, exactly like qou's
@@ -251,7 +251,7 @@ describe("lean.ref candidate-2 (library tree) resolution", () => {
     }
   });
 
-  test("unknown package / malformed ref resolves to undefined", () => {
+  test("unknownOrMalformedRefUndefined", () => {
     makeWorkspace();
     expect(resolveCanonicalLean("nope:QOU.X", INSTANCE_ROOT)).toBeUndefined();
     expect(resolveCanonicalLean("malformed-no-colon", INSTANCE_ROOT)).toBeUndefined();
@@ -262,7 +262,7 @@ describe("lean.ref candidate-2 (library tree) resolution", () => {
 // ── 2. Orphan library-tree coverage ─────────────────────────────
 
 describe("orphan library-tree coverage", () => {
-  test("an orphan mixed-substrate file is flagged; a referenced file is not scanned", () => {
+  test("orphanMixedFlaggedReferencedSkipped", () => {
     const { tmp, lake } = makeWorkspace();
     try {
       const referenced = writeLake(lake, "QOU/Mathlib/Referenced.lean", GENERIC_R_BODY);
@@ -284,7 +284,7 @@ describe("orphan library-tree coverage", () => {
     }
   });
 
-  test("a clean generic-R orphan produces no findings (no path-based over-firing)", () => {
+  test("cleanGenericOrphanNoFindings", () => {
     const { tmp, lake } = makeWorkspace();
     try {
       // Lives under BraidKnot/ — the catch-all dir the path heuristic
@@ -298,7 +298,7 @@ describe("orphan library-tree coverage", () => {
     }
   });
 
-  test("listPackageLeanFiles enumerates every .lean across the Lake tree", () => {
+  test("listsEveryLeanInLakeTree", () => {
     const { tmp, lake } = makeWorkspace();
     try {
       writeLake(lake, "QOU/A/One.lean", GENERIC_R_BODY);

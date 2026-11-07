@@ -21,7 +21,7 @@ const SAMPLE = [
 describe("parsing NIST's table", () => {
   const rows = parseCodataAscii(SAMPLE);
 
-  test("grouping spaces go, the exponent stays, the value stays a decimal STRING", () => {
+  test("parsesValueAsDecimalString", () => {
     expect(rows.get("electron-mass")).toEqual({
       quantity: "electron mass",
       value: "9.1093837139e-31",
@@ -31,16 +31,16 @@ describe("parsing NIST's table", () => {
     });
   });
 
-  test("CODATA 2022 1/alpha — not the 2018 value 137.035999084", () => {
+  test("inverseAlphaIs2022Value", () => {
     expect(rows.get("inverse-fine-structure-constant")?.value).toBe("137.035999177");
     expect(rows.get("inverse-fine-structure-constant")?.unit).toBeNull();
   });
 
-  test("(exact) is exact, with no uncertainty", () => {
+  test("exactHasNoUncertainty", () => {
     expect(rows.get("speed-of-light-in-vacuum")).toMatchObject({ value: "299792458", uncertainty: null, exact: true, unit: "m s^-1" });
   });
 
-  test("slugs are mechanical, and a collision is refused", () => {
+  test("slugsMechanicalCollisionRefused", () => {
     expect(slugOf("electron mass energy equivalent in MeV")).toBe("electron-mass-energy-equivalent-in-mev");
     expect(() =>
       parseCodataAscii(
@@ -59,7 +59,7 @@ describe("the committed library/codata-2022 entry", () => {
     sheets: Array<{ rows: number }>;
   };
 
-  test("carries the whole table, with its provenance", () => {
+  test("entryCarriesWholeTableWithProvenance", () => {
     expect(Object.keys(values).length).toBe(tabular.sheets[0]!.rows);
     expect(tabular.sheets[0]!.rows).toBeGreaterThan(300);
     expect(tabular.source.edition).toBe("CODATA 2022");
@@ -68,13 +68,13 @@ describe("the committed library/codata-2022 entry", () => {
     expect(tabular.source.sha256).toMatch(/^[0-9a-f]{64}$/);
   });
 
-  test("known CODATA 2022 values, as published", () => {
+  test("entryHoldsPublishedValues", () => {
     expect(values["electron-mass-energy-equivalent-in-mev"]!.value).toBe("0.51099895069");
     expect(values["inverse-fine-structure-constant"]!.value).toBe("137.035999177");
     expect(values["planck-constant"]!.value).toBe("6.62607015e-34");
   });
 
-  test("the sample rows rebuild to the same records the entry holds", () => {
+  test("sampleRebuildsToEntryRecords", () => {
     const rebuilt = buildCodataEntry({
       entryId: "codata-2022",
       sourceText: SAMPLE,

@@ -14,13 +14,17 @@ Part of [folio-assistant-sci](../README.md) 0.1.0, declared as `sci-scripts`, ho
 | file | what it is | used by |
 |---|---|---|
 | [`check-duplicate-decls.ts`](check-duplicate-decls.ts) | a file |  |
+| [`check-editor-checkers.feature`](check-editor-checkers.feature) | a file |  |
 | [`check-editor-checkers.test.ts`](check-editor-checkers.test.ts) | a file |  |
 | [`check-editor-checkers.ts`](check-editor-checkers.ts) | a file |  |
+| [`check-lean-dirs.feature`](check-lean-dirs.feature) | a file |  |
 | [`check-lean-dirs.test.ts`](check-lean-dirs.test.ts) | a file |  |
 | [`check-lean-dirs.ts`](check-lean-dirs.ts) | a file |  |
 | [`check-self-discharging-instances.ts`](check-self-discharging-instances.ts) | a file |  |
+| [`check-workflows-security.feature`](check-workflows-security.feature) | a file |  |
 | [`check-workflows-security.test.ts`](check-workflows-security.test.ts) | a file |  |
 | [`check-workflows-security.ts`](check-workflows-security.ts) | a file |  |
+| [`extract-references.feature`](extract-references.feature) | a file |  |
 | [`extract-references.test.ts`](extract-references.test.ts) | a file |  |
 | [`extract-references.ts`](extract-references.ts) | a file |  |
 | [`lake-cache-fetch-multi.py`](lake-cache-fetch-multi.py) | a file |  |

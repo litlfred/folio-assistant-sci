@@ -28,31 +28,31 @@ function defines(name: string): boolean {
 describe("paper-preamble.tex", () => {
   // Emitted by render-latex.ts / generate-block-tex.ts / generate-main-tex.ts.
   for (const m of ["blockannot", "sectionannot", "chapterannot", "defterm", "refterm", "uses", "proofstatuslegend"]) {
-    it(`defines \\${m}, which the paper renderer emits`, () => {
+    it(`definesEmittedMacro[${m}]`, () => {
       expect(defines(m)).toBe(true);
     });
   }
 
-  it("is a full preamble: a document class and no \\begin{document}", () => {
+  it("fullPreambleNoBeginDocument", () => {
     expect(code).toMatch(/\\documentclass/);
     expect(code).not.toMatch(/\\begin\{document\}/);
   });
 
   // Decision D1/D2: these are litlfred/qou's notation, carried in its fragment.
   for (const m of ["bigbowtie", "varTheta", "pp", "yng", "unicode"]) {
-    it(`does not define the folio notation macro \\${m}`, () => {
+    it(`omitsFolioNotationMacro[${m}]`, () => {
       expect(defines(m)).toBe(false);
     });
   }
 
-  it("does not map 𝓑 or 𝔙, the two unicode maps that are notation", () => {
+  it("omitsNotationUnicodeMaps", () => {
     expect(code).not.toMatch(/\\newunicodechar\{𝓑\}/u);
     expect(code).not.toMatch(/\\newunicodechar\{𝔙\}/u);
   });
 
   // The 2026-08-22 removal must not come back through the platform copy: each
   // of these turned a loud error into silently wrong mathematics.
-  it("does not restore any of the 16 typo macros qou removed", () => {
+  it("omitsRemovedTypoMacros", () => {
     for (const m of ["pic", "xid", "xiZ", "xiA", "pid", "nuk", "varepsilonk", "varepsilonq", "foralln", "omegadV", "omegads", "Gammat", "psiK", "pia", "lambdaL", "inftydt"]) {
       expect(defines(m)).toBe(false);
     }

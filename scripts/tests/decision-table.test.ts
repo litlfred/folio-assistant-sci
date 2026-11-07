@@ -20,7 +20,7 @@ import { workflowFile } from "../../../cat-harness-tools/scripts/known-skills.ts
 const HERE = resolve(import.meta.dir, "../..");
 
 describe("the shipped tables", () => {
-  test("the Lean gate distinguishes deferred sorries from conjectural ones", async () => {
+  test("leanGateSeparatesDeferredSorries", async () => {
     const t = await loadDecisionTable(workflowFile(HERE, "lean-build-gate.dmn"), "Decision_LeanBuildGate");
     expect(t.hitPolicy).toBe("FIRST");
     expect(t.inputs.map((i) => i.expression)).toEqual(["buildOk", "deferredSorries"]);
@@ -36,7 +36,7 @@ describe("the shipped tables", () => {
     expect(green.rule).toBe("Rule_Green");
   });
 
-  test("possibleOutcomes reads the rules, not a particular evaluation", async () => {
+  test("possibleOutcomesFromRules", async () => {
     const t = await loadDecisionTable(workflowFile(HERE, "lean-build-gate.dmn"), "Decision_LeanBuildGate");
     expect(possibleOutcomes(t).sort()).toEqual(["green", "not yet"]);
   });
@@ -62,7 +62,7 @@ describe("computed gateways in a running process", () => {
     return { model, state };
   };
 
-  test("workflow_next reports which facts the table reads", async () => {
+  test("workflowNextReportsTableFacts", async () => {
     const { model, state } = await upToLeanGate();
     const gate = enabled(model, state).find((e) => e.node === "Gateway_LeanGreen");
     expect(gate?.kind).toBe("decision");
@@ -72,7 +72,7 @@ describe("computed gateways in a running process", () => {
     });
   });
 
-  test("the outcome is computed from facts, and the rule is recorded", async () => {
+  test("outcomeComputedRuleRecorded", async () => {
     const { model, state } = await upToLeanGate();
     complete(model, state, "Gateway_LeanGreen", { facts: { buildOk: true, deferredSorries: 0 } });
 
@@ -83,13 +83,13 @@ describe("computed gateways in a running process", () => {
     expect(entry.note).toContain("Decision_LeanBuildGate → green by Rule_Green");
   });
 
-  test("a red build routes back to formalisation", async () => {
+  test("redBuildRoutesToFormalize", async () => {
     const { model, state } = await upToLeanGate();
     complete(model, state, "Gateway_LeanGreen", { facts: { buildOk: false, deferredSorries: 0 } });
     expect(enabled(model, state).map((e) => e.node)).toEqual(["Task_Formalize"]);
   });
 
-  test("a hand-supplied outcome is REFUSED on a computed gateway", async () => {
+  test("handSuppliedOutcomeRefused", async () => {
     const { model, state } = await upToLeanGate();
     // Being able to assert the answer would defeat the mechanism entirely.
     expect(() => complete(model, state, "Gateway_LeanGreen", { outcome: "green" })).toThrow(
@@ -100,7 +100,7 @@ describe("computed gateways in a running process", () => {
     );
   });
 
-  test("omitting the facts refuses and names them", async () => {
+  test("omittedFactsRefusedAndNamed", async () => {
     const { model, state } = await upToLeanGate();
     expect(() => complete(model, state, "Gateway_LeanGreen")).toThrow(/buildOk.*deferredSorries/s);
   });

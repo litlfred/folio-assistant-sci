@@ -12,7 +12,7 @@ function md(body: string): string {
 }
 
 describe("checkCanonicalNoNumerology", () => {
-  test("flags numerology asserted as significant", () => {
+  test("flagsNumerologyAsSignificant", () => {
     expect(
       checkCanonicalNoNumerology(
         md("The predicted ratio miraculously agrees with the measured value.\n"),
@@ -20,7 +20,7 @@ describe("checkCanonicalNoNumerology", () => {
     ).toBe("fail");
   });
 
-  test("flags a bare happens-to-equal claim", () => {
+  test("flagsHappensToEqual", () => {
     expect(
       checkCanonicalNoNumerology(
         md("The constant happens to equal the observed slope, which supports it.\n"),
@@ -28,7 +28,7 @@ describe("checkCanonicalNoNumerology", () => {
     ).toBe("fail");
   });
 
-  test("does NOT flag prose that disclaims the coincidence", () => {
+  test("passesDisclaimedCoincidence", () => {
     // The criterion exists to reward exactly this. Firing here punishes the
     // paper for being careful.
     expect(
@@ -41,7 +41,7 @@ describe("checkCanonicalNoNumerology", () => {
     ).toBe("pass");
   });
 
-  test("sees a disclaimer that wraps onto a later line", () => {
+  test("seesWrappedDisclaimer", () => {
     // The regression that motivated this: hard-wrapped prose puts the phrase
     // and its caveat on different physical lines, so a per-line check
     // structurally cannot see the caveat.
@@ -52,7 +52,7 @@ describe("checkCanonicalNoNumerology", () => {
     expect(checkCanonicalNoNumerology(md(body)).result).toBe("pass");
   });
 
-  test("a disclaimer in a DIFFERENT paragraph does not launder a claim", () => {
+  test("otherParagraphDisclaimerNoLaunder", () => {
     // Scope is the paragraph. A caveat elsewhere in the file must not excuse
     // numerology asserted here.
     const body =
@@ -62,7 +62,7 @@ describe("checkCanonicalNoNumerology", () => {
     expect(checkCanonicalNoNumerology(md(body)).result).toBe("fail");
   });
 
-  test("negation alone does not suppress a boast", () => {
+  test("negationAloneNoSuppress", () => {
     // "not accidental" is a negation, but it does not deny that the match
     // establishes something — it asserts the opposite. Must still fail.
     const body =
@@ -71,14 +71,14 @@ describe("checkCanonicalNoNumerology", () => {
     expect(checkCanonicalNoNumerology(md(body)).result).toBe("fail");
   });
 
-  test("reports the line the phrase is actually on", () => {
+  test("reportsPhraseLine", () => {
     const body = "intro\n\nfiller line\nthe fit is miraculous here\n";
     const r = checkCanonicalNoNumerology(md(body));
     expect(r.result).toBe("fail");
     expect(r.hits[0].line).toBe(4);
   });
 
-  test("clean prose passes", () => {
+  test("cleanProsePasses", () => {
     expect(
       checkCanonicalNoNumerology(md("The bound follows from the lemma.\n")).result,
     ).toBe("pass");

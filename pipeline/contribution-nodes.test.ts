@@ -20,13 +20,13 @@ const coreRoot = orderedDependencies(SCI_ROOT).find((d) => d.dependency.name ===
 const withoutSci = loadContributionsSync(coreRoot, new ContributionRegistry());
 
 describe("sci's contributions arrive as nodes, through the dependency tree", () => {
-  test("every slot in the table is filled, with the table's own implementation", () => {
+  test("everySlotFilledWithOwnImpl", () => {
     for (const [slot, impl] of Object.entries(PIPELINE_IMPLEMENTATIONS)) {
       expect(withSci.pipelinePlugin(slot)).toBe(impl);
     }
   });
 
-  test("every checker in the table is registered, hashed over the file that defines it", () => {
+  test("everyCheckerRegisteredWithSource", () => {
     for (const [criterion, check] of Object.entries(COST_AUTOMATED_CHECKERS)) {
       const entry = withSci.qaCheckerEntry(criterion);
       expect(entry?.check).toBe(check);
@@ -34,14 +34,14 @@ describe("sci's contributions arrive as nodes, through the dependency tree", () 
     }
   });
 
-  test("a folio whose tree does not include sci gets none of them", () => {
+  test("folioWithoutSciGetsNone", () => {
     for (const slot of Object.keys(PIPELINE_IMPLEMENTATIONS)) expect(withoutSci.pipelinePlugin(slot)).toBeUndefined();
     for (const criterion of Object.keys(COST_AUTOMATED_CHECKERS)) expect(withoutSci.qaCheckerEntry(criterion)).toBeUndefined();
   });
 });
 
 describe("a contribution's code ref is its own", () => {
-  test("an instance prefix, an escaping path and a missing export are refused", () => {
+  test("codeRefRefusesPrefixEscapeNoExport", () => {
     expect(OwnCodeRefSchema.safeParse("pipeline/x.ts#TABLE").success).toBe(true);
     expect(OwnCodeRefSchema.safeParse("cat-harness:pipeline/x.ts#TABLE").success).toBe(false);
     expect(OwnCodeRefSchema.safeParse("../cat-harness/x.ts#TABLE").success).toBe(false);

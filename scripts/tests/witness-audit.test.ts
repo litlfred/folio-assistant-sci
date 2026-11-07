@@ -17,7 +17,7 @@ import {
 } from "../witness-audit.ts";
 
 describe("witness-audit", () => {
-  test("audits Lean witnesses: fresh, stale hash, malformed JSON, and pending files", () => {
+  test("auditsLeanWitnessStates", () => {
     const root = mkdtempSync(join(tmpdir(), "witness-audit-lean-"));
     try {
       const chDir = join(root, "folio", "ch1");
@@ -74,7 +74,7 @@ describe("witness-audit", () => {
     }
   });
 
-  test("audits Python witnesses: structured fresh, stale scriptHash, legacy format, and malformed JSON", () => {
+  test("auditsPythonWitnessStates", () => {
     const root = mkdtempSync(join(tmpdir(), "witness-audit-py-"));
     try {
       const compDir = join(root, "folio-assistant", "computations");
@@ -138,7 +138,7 @@ describe("witness-audit", () => {
     }
   });
 
-  test("gitFileShas passes paths with shell metacharacters to git as data", () => {
+  test("gitFileShasPassesPathsAsData", () => {
     const root = mkdtempSync(join(tmpdir(), "witness-audit-git-"));
     try {
       const git = (...args: string[]) =>

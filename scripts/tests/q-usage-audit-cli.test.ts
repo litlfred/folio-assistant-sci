@@ -28,7 +28,7 @@ afterAll(() => {
 });
 
 describe("q-usage-audit CLI: a sweep that finds nothing must not report success", () => {
-  test("exits non-zero and names the searched root when no blocks match", async () => {
+  test("emptySweepExitsNonZeroNamesRoot", async () => {
     const proc = Bun.spawn(
       ["bun", "run", SCRIPT, "--paper", "definitely-not-a-paper", "--no-write"],
       { cwd: root, stdout: "pipe", stderr: "pipe" },
@@ -48,7 +48,7 @@ describe("q-usage-audit CLI: a sweep that finds nothing must not report success"
 });
 
 describe("q-usage-audit still IMPORTS", () => {
-  test("the module loads at all", async () => {
+  test("moduleLoads", async () => {
     // The regression this guards was a ReferenceError at MODULE SCOPE: every
     // import threw. Importing it is the whole assertion.
     const mod = await import("../../pipeline/q-usage-audit");
@@ -57,7 +57,7 @@ describe("q-usage-audit still IMPORTS", () => {
 });
 
 describe("q-usage-audit carries no private resolver/walker", () => {
-  test("it reads lean.ref resolution from the shared qa-utils", () => {
+  test("usesSharedQaUtilsResolver", () => {
     const src = readFileSync(SCRIPT, "utf-8");
     expect(src).toContain('pipeline/qa-utils');
     expect(src).not.toContain("function resolveLakeTreePath");

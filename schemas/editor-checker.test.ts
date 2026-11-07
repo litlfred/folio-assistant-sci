@@ -22,7 +22,7 @@ const nodes = readdirSync(join(SCI, "editor-checkers"))
   .map((f) => ({ file: f, node: JSON.parse(readFileSync(join(SCI, "editor-checkers", f), "utf8")) }));
 
 describe("editor-checkers", () => {
-  test("are declared: the directory, its typology node and its validator node", () => {
+  test("declaredWithTypologyAndValidator", () => {
     expect(dirOf("editor-checkers")).toBe("editor-checkers/");
     const kind = JSON.parse(readFileSync(join(SCI, dirOf("typologies")!, "editor-checkers.json"), "utf8"));
     expect(kind.kind).toBe("editor-checkers");
@@ -32,7 +32,7 @@ describe("editor-checkers", () => {
     expect(v.schema).toBe(`${declaration.name}:schemas/editor-checker.ts#EditorCheckerKind`);
   });
 
-  test("there is at least one, and each passes its schema", () => {
+  test("atLeastOneEachPassesSchema", () => {
     expect(nodes.length).toBeGreaterThan(0);
     for (const { file, node } of nodes) {
       const r = EditorCheckerNodeSchema.safeParse(node);
@@ -41,12 +41,12 @@ describe("editor-checkers", () => {
     }
   });
 
-  test("each serves a content type this instance declares an adapter for", () => {
+  test("eachServesDeclaredContentType", () => {
     const types = new Set(declaration.contentAdapters.map((a) => a.contentType));
     for (const { node } of nodes) expect(types.has(node.contentType)).toBe(true);
   });
 
-  test("each code ref resolves to an exported function", async () => {
+  test("codeRefsResolveToFunctions", async () => {
     for (const { node } of nodes) {
       for (const ref of codeRefs(EditorCheckerNodeSchema.parse(node))) {
         const [path, name] = ref.split("#") as [string, string];
@@ -56,7 +56,7 @@ describe("editor-checkers", () => {
     }
   });
 
-  test("the schema refuses a path that climbs out of the instance", () => {
+  test("refusesClimbingPath", () => {
     const bad = { ...nodes[0]!.node, check: "../cat-harness-tools/x.ts#f" };
     expect(EditorCheckerNodeSchema.safeParse(bad).success).toBe(false);
   });

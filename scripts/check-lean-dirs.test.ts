@@ -16,16 +16,16 @@ function dir(name: string, files: Record<string, string>): string {
 }
 
 describe("a lean directory holds what its kind says, and nothing orphaned", () => {
-  test("a template a module reads, with a README, is clean", () => {
+  test("readTemplateWithReadmeClean", () => {
     expect(judgeLeanDir(dir("ok", { "README.md": "x", "a.lean.tmpl": "x" }), ROOT, () => ["const T = 'a.lean.tmpl'"])).toEqual([]);
   });
-  test("a template nothing reads is a finding", () => {
+  test("unreadTemplateIsFinding", () => {
     expect(judgeLeanDir(dir("orphan", { "README.md": "x", "b.lean.tmpl": "x" }), ROOT, () => ["nothing"]).join()).toContain("b.lean.tmpl is read by no module");
   });
-  test("a Lake package without its toolchain is a finding", () => {
+  test("lakePackageWithoutToolchainIsFinding", () => {
     expect(judgeLeanDir(dir("pkg", { "README.md": "x", "lakefile.toml": "x" }), ROOT, () => []).join()).toContain("no lean-toolchain");
   });
-  test("no README is a finding", () => {
+  test("missingReadmeIsFinding", () => {
     expect(judgeLeanDir(dir("bare", { "lakefile.lean": "x", "lean-toolchain": "x" }), ROOT, () => []).join()).toContain("no README.md");
   });
 });

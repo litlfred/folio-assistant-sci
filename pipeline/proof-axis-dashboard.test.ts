@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { leanFilesWithSorry } from "./proof-axis-dashboard.ts";
 
 describe("proof-axis-dashboard leanFilesWithSorry", () => {
-  test("lists *.lean files with a whole-word sorry, skips /lean/ paths, and treats the root as data", () => {
+  test("listsSorryLeanFilesSkipsLeanDirs", () => {
     const root = mkdtempSync(join(tmpdir(), "pad-$(echo x) ;'q"));
     try {
       const put = (rel: string, text: string) => {

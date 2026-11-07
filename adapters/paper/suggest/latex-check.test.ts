@@ -43,17 +43,17 @@ const edit = (from: string, to: string) => {
 const errors = (fs: ReturnType<typeof checkLatex>) => fs.filter((f) => f.severity === "error");
 
 describe("the real block", () => {
-  test("is the LaTeX-bearing one this suite claims", () => {
+  test("blockHasClaimedLatex", () => {
     for (const s of ["$N$", "\\begin{theorem}", "\\end{proof}", "\\uses{lem:zero-add, lem:succ-add}", "\\cref{", "% Statement"]) {
       expect(BLOCK).toContain(s);
     }
   });
 
-  test("is well formed: no syntax errors as ingested", () => {
+  test("blockHasNoSyntaxErrors", () => {
     expect(errors(checkLatex(BLOCK, OPTS))).toEqual([]);
   });
 
-  test("its dangling example labels are warnings, never errors", () => {
+  test("danglingExampleLabelsWarn", () => {
     // The labels name blocks of the paper's EXAMPLE blueprint, not of this KG.
     const w = checkLatex(BLOCK, OPTS);
     expect(w.length).toBeGreaterThan(0);
@@ -65,17 +65,17 @@ describe("the real block", () => {
 });
 
 describe("round trip", () => {
-  test("an untouched block reports nothing", () => {
+  test("untouchedBlockReportsNothing", () => {
     expect(checkSuggestion(BLOCK, BLOCK, OPTS)).toEqual([]);
   });
 
-  test("protecting then restoring gives the block back byte for byte", () => {
+  test("protectRestoreRoundTrips", () => {
     const p = protectLatex(BLOCK, MACROS);
     expect(p).not.toBe(BLOCK);
     expect(restoreLatex(p)).toBe(BLOCK);
   });
 
-  test("both environments are kept verbatim, whole", () => {
+  test("environmentsKeptWhole", () => {
     const spans = latexSpans(BLOCK, MACROS).map(([a, b]) => BLOCK.slice(a, b));
     expect(spans.some((s) => s.startsWith("\\begin{theorem}") && s.endsWith("\\end{theorem}"))).toBe(true);
     expect(spans.some((s) => s.startsWith("\\begin{proof}") && s.endsWith("\\end{proof}"))).toBe(true);
@@ -84,95 +84,95 @@ describe("round trip", () => {
 });
 
 describe("a valid edit is accepted", () => {
-  test("rewriting the math", () => {
+  test("acceptsMathRewrite", () => {
     const after = edit("Addition in $N$ is commutative.", "Addition in $\\mathbb{N}$ is commutative: $\\frac{a+b}{1} = b + a$.");
     expect(checkSuggestion(BLOCK, after, OPTS)).toEqual([]);
   });
 
-  test("using a paper macro with its two arguments", () => {
+  test("acceptsPaperMacroWithArgs", () => {
     expect(checkSuggestion(BLOCK, edit("By induction and then", "By induction on $\\pair{a}{b}$ and then"), OPTS)).toEqual([]);
   });
 
-  test("deleting a whole environment", () => {
+  test("acceptsDeletingEnvironment", () => {
     const a = BLOCK.indexOf("\\begin{proof}");
     const b = BLOCK.indexOf("\\end{proof}") + "\\end{proof}".length;
     expect(checkSuggestion(BLOCK, BLOCK.slice(0, a) + BLOCK.slice(b), OPTS)).toEqual([]);
   });
 
-  test("a reference to a label the KG lacks: a warning, never an error", () => {
+  test("unknownLabelWarns", () => {
     const f = checkSuggestion(BLOCK, edit("\\uses{def:nat}", "\\uses{def:nat, def:nowhere}"), OPTS);
     expect(f.map((x) => [x.severity, x.code, x.subject])).toEqual([["warning", "unknown-label", "def:nowhere"]]);
   });
 
-  test("a citation the bibliography lacks: a warning", () => {
+  test("unknownCiteWarns", () => {
     const f = checkSuggestion(BLOCK, edit("inspired by doc-gen4.", "inspired by doc-gen4~\\cite[§2]{docgen4}."), OPTS);
     expect(f.map((x) => [x.severity, x.code, x.subject])).toEqual([["warning", "unknown-cite", "docgen4"]]);
   });
 });
 
 describe("an unbalanced edit is reported", () => {
-  test("an unclosed brace in math", () => {
+  test("unclosedBraceInMath", () => {
     const f = checkSuggestion(BLOCK, edit("Addition in $N$", "Addition in $\\mathbb{N$"), OPTS);
     expect(f.map((x) => [x.severity, x.code])).toEqual([["error", "unclosed-brace"]]);
     expect(f[0]!.line).toBe(BLOCK.slice(0, BLOCK.indexOf("Addition in $N$")).split("\n").length);
   });
 
-  test("a stray closing brace", () => {
+  test("strayClosingBrace", () => {
     const f = checkSuggestion(BLOCK, edit("\\uses{def:nat}", "\\uses{def:nat}}"), OPTS);
     expect(f.map((x) => x.code)).toEqual(["unmatched-close-brace"]);
   });
 
-  test("an environment left open", () => {
+  test("environmentLeftOpen", () => {
     const f = checkSuggestion(BLOCK, edit("\\end{proof}", ""), OPTS);
     expect(f.map((x) => [x.code, x.subject])).toEqual([["unclosed-environment", "proof"]]);
   });
 
-  test("environments closed out of order", () => {
+  test("environmentsClosedOutOfOrder", () => {
     const after = edit("% Text\n\\end{theorem}", "% Text\n\\begin{itemize}\n\\end{theorem}\n\\end{itemize}");
     const f = checkSuggestion(BLOCK, after, OPTS).map((x) => [x.code, x.subject]);
     expect(f).toContainEqual(["mismatched-end", "itemize"]);
     expect(f.every(([c]) => c !== "unknown-label")).toBe(true);
   });
 
-  test("a macro short of its arguments: built-in, preamble and paper", () => {
+  test("macroShortOfArguments", () => {
     const n = (s: string) => checkSuggestion(BLOCK, edit("Addition in $N$", s), OPTS).map((x) => [x.code, x.subject]);
     expect(n("Addition in $\\frac{a}$")).toEqual([["missing-argument", "frac"]]);
     expect(n("Addition in $\\pair{a}$")).toEqual([["missing-argument", "pair"]]);
     expect(n("Addition in $\\leanstatusmark{a}$")).toEqual([["missing-argument", "leanstatusmark"]]);
   });
 
-  test("an unclosed display math", () => {
+  test("unclosedDisplayMath", () => {
     const f = checkSuggestion(BLOCK, edit("Addition in $N$", "Addition in $$N"), OPTS);
     expect(f.map((x) => x.code)).toEqual(["unclosed-display-math"]);
   });
 });
 
 describe("what is not an error", () => {
-  test("TeX's single-token arguments: \\frac12", () => {
+  test("singleTokenArgsNotError", () => {
     expect(errors(checkLatex("$\\frac12 + \\sqrt[3]x$", OPTS))).toEqual([]);
   });
 
-  test("a percent sign in prose, a dollar in prose, braces in code", () => {
+  test("proseDollarPercentCodeBraces", () => {
     const md = "Up 50% this year; it costs $5.\n\nNext paragraph.\n\n```lean\nexample : {x // x > 0} := ⟨1, by simp⟩ }\n```\n\nand `}` inline.\n";
     expect(checkLatex(md, OPTS)).toEqual([]);
   });
 
-  test("escaped braces", () => {
+  test("escapedBracesOk", () => {
     expect(checkLatex("$\\{ x \\mid x > 0 \\}$", OPTS)).toEqual([]);
   });
 
-  test("an unknown macro: no shape, so no arity complaint", () => {
+  test("unknownMacroNoArity", () => {
     expect(checkLatex("$\\mysterious$ and \\inputleannode", OPTS)).toEqual([]);
   });
 });
 
 describe("the macro table", () => {
-  test("argument counts from a body, as blueprint-layout counts them", () => {
+  test("arityFromBody", () => {
     expect(macroArity("\\langle #1, #2 \\rangle")).toBe(2);
     expect(macroArity("\\mathrm{LM}")).toBe(0);
   });
 
-  test("\\newcommand shapes from the paper preamble, optional arguments apart", () => {
+  test("newcommandShapesFromPreamble", () => {
     const t = parseNewcommands(PREAMBLE);
     expect(t.lean).toEqual({ args: 1, optional: false });
     expect(t.leanok).toEqual({ args: 0, optional: false });
@@ -180,13 +180,13 @@ describe("the macro table", () => {
     expect(t.chapterannot).toEqual({ args: 2, optional: false });
   });
 
-  test("the paper's own macros win over the preamble and built-ins", () => {
+  test("paperMacrosWin", () => {
     expect(macroTable({ frac: { tex: "#1/#2/#3" } }).frac).toEqual({ args: 3, optional: false });
   });
 });
 
 describe("cite keys from the KG", () => {
-  test("reference nodes by their `references/<key>` IRI, and CSL entries by id", () => {
+  test("citeKeysFromIrisAndIds", () => {
     const keys = citeKeysFromReferenceNodes([
       { "@id": "references/milnor1965" },
       { "@id": "https://litlfred.github.io/folio/references/garoufalidis2004" },
@@ -196,7 +196,7 @@ describe("cite keys from the KG", () => {
     expect([...keys].sort()).toEqual(["garoufalidis2004", "kassel1995", "milnor1965"]);
   });
 
-  test("a key the bibliography holds is not warned about; one it lacks is", () => {
+  test("heldKeyNotWarnedMissingIs", () => {
     const kg = { citeKeys: citeKeysFromReferenceNodes([{ "@id": "references/docgen4" }]) };
     const ok = edit("inspired by doc-gen4.", "inspired by doc-gen4~\\cite{docgen4}.");
     const bad = edit("inspired by doc-gen4.", "inspired by doc-gen4~\\cite{nowhere}.");
@@ -206,7 +206,7 @@ describe("cite keys from the KG", () => {
 });
 
 describe("macroTableFromKatex", () => {
-  test("built-ins, then each page macro's arity from its body", () => {
+  test("katexTableBuiltinsAndArity", () => {
     const t = macroTableFromKatex({ "\\LM": "\\mathrm{LM}", "\\pair": "\\langle #1, #2 \\rangle", "\\bad name": "x" });
     expect(t.frac).toEqual({ args: 2, optional: false });
     expect(t.LM).toEqual({ args: 0, optional: false });

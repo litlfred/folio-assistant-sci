@@ -14,17 +14,17 @@ const EXPECTED_SENTINEL: CheckerResult = {
 };
 
 describe("Paper QA stub checkers return distinguishable sentinel notes (folio-assistant-89wq)", () => {
-  test("checkProofNoAxiomGrowth returns distinguishable stub sentinel", () => {
+  test("noAxiomGrowthReturnsSentinel", () => {
     expect(checkProofNoAxiomGrowth(undefined)).toEqual(EXPECTED_SENTINEL);
     expect(checkProofNoAxiomGrowth("some/path/to/block.lean")).toEqual(EXPECTED_SENTINEL);
   });
 
-  test("checkProofBuildGreen returns distinguishable stub sentinel", () => {
+  test("buildGreenReturnsSentinel", () => {
     expect(checkProofBuildGreen(undefined)).toEqual(EXPECTED_SENTINEL);
     expect(checkProofBuildGreen("some/path/to/block.lean")).toEqual(EXPECTED_SENTINEL);
   });
 
-  test("USES_AUTOMATED_CHECKERS and EXTENDED_AUTOMATED_CHECKERS expose all 23 paper criteria", () => {
+  test("exposesAll23PaperCriteria", () => {
     expect(Object.keys(USES_AUTOMATED_CHECKERS).sort()).toEqual([
       "lean-ref-owns-decl",
       "uses-formal-coverage",

@@ -26,18 +26,18 @@ function fixture(): { docData: string; content: string } {
 }
 
 describe("lean-kg-ingest", () => {
-  test("moduleOfDocPath maps doc-gen4 paths to module + fragment", () => {
+  test("moduleOfDocPathMapsModuleFragment", () => {
     expect(moduleOfDocPath("./QOU/Mass/X.html#QOU.Mass.X.y")).toEqual({ module: "QOU.Mass.X", frag: "QOU.Mass.X.y" });
     expect(moduleOfDocPath("./foundational_types.html")).toBeUndefined();
   });
 
-  test("rewriteHeader routes kept modules to the viewer and the rest to the external docs", () => {
+  test("rewriteHeaderRoutesLinks", () => {
     const h = rewriteHeader(decl("QOU.A.x").header, new Set(["qou"]), "https://ext/");
     expect(h).toContain(`href="#/m/QOU.A/QOU.A.x"`);
     expect(h).toContain(`href="https://ext/Mathlib/Algebra/Field/Defs.html#Field"`);
   });
 
-  test("ingest prunes to kept roots, chunks signatures, links lean.ref blocks", () => {
+  test("ingestPrunesChunksLinks", () => {
     const { docData, content } = fixture();
     const out = mkdtempSync(join(tmpdir(), "lkg-out-"));
     const r = ingest({ docData, out, modules: ["QOU"], contentRoot: content });
@@ -53,7 +53,7 @@ describe("lean-kg-ingest", () => {
     expect(x.formalizes).toEqual([{ "@id": "block:prop:x", label: "prop:x", md: "ch/blk.md" }]);
   });
 
-  test("overlay mode writes only changed modules", () => {
+  test("overlayWritesOnlyChangedModules", () => {
     const { docData, content } = fixture();
     const base = mkdtempSync(join(tmpdir(), "lkg-base-"));
     ingest({ docData, out: base, modules: ["QOU"], contentRoot: content });
@@ -68,13 +68,13 @@ describe("lean-kg-ingest", () => {
     expect(readdirSync(join(out, "m")).some((f) => f.startsWith("QOU.Big"))).toBe(false);
   });
 
-  test("ingest refuses a directory that is not doc-gen4 doc-data", () => {
+  test("refusesNonDocGenDir", () => {
     expect(() => ingest({ docData: mkdtempSync(join(tmpdir(), "lkg-empty-")), out: mkdtempSync(join(tmpdir(), "x-")), modules: [] })).toThrow(/not a doc-gen4/);
   });
 });
 
 describe("signatureStyles", () => {
-  test("keeps custom properties and signature rules, scoped; drops page layout", () => {
+  test("signatureStylesScopedDropsLayout", () => {
     const css = `* { box-sizing: border-box; }\nbody { margin: 0 }\nnav { position: fixed }\n:root { --x: 1 }\n.decl_header { color: red }\nmain .fn, .impl_arg { color: blue }\n@media (prefers-color-scheme: dark) { :root { --x: 2 } nav { left: 0 } }`;
     const out = signatureStyles(css);
     expect(out).toContain(":root{ --x: 1 }");

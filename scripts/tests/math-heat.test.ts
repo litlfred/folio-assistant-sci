@@ -37,13 +37,13 @@ describe("computeMathHeat", () => {
     blk(ROOT_CHAPTER, "remark", "rem:x"),
   ];
 
-  test("proved counts sorry-free provables only; a provable with no Lean file is not proved", () => {
+  test("provedCountsSorryFreeProvables", () => {
     const h = computeMathHeat({ ...none, blocks });
     const ch1 = h.rows.find((r) => r.chapter === "ch1")!;
     expect(ch1).toMatchObject({ provable: 3, proved: 1, conjectures: 1 });
   });
 
-  test("with every optional source missing, those columns are null on every row, never 0", () => {
+  test("missingSourcesNullNotZero", () => {
     const h = computeMathHeat({ ...none, blocks });
     expect(h).toMatchObject({ hasLean: false, hasRegister: false, hasBeans: false, hasQa: false });
     for (const r of h.rows) {
@@ -56,17 +56,17 @@ describe("computeMathHeat", () => {
     }
   });
 
-  test("no blocks read gives no rows, not a row of zeros", () => {
+  test("noBlocksNoRows", () => {
     expect(computeMathHeat({ ...none, blocks: null }).rows).toEqual([]);
   });
 
-  test("lean-audit's counts land on their chapter; a chapter it does not list stays null", () => {
+  test("leanCountsOnTheirChapter", () => {
     const h = computeMathHeat({ ...none, blocks, lean: [{ chapter: "ch1", totalSorries: 4, axiomCount: 2 }] });
     expect(h.rows.find((r) => r.chapter === "ch1")).toMatchObject({ sorries: 4, axioms: 2 });
     expect(h.rows.find((r) => r.chapter === "ch2")).toMatchObject({ sorries: null, axioms: null });
   });
 
-  test("open conjectures follow the register; famous ones are left out; one with no node is unregistered", () => {
+  test("openConjecturesFollowRegister", () => {
     const h = computeMathHeat({
       ...none,
       blocks,
@@ -80,14 +80,14 @@ describe("computeMathHeat", () => {
     expect(h.rows.find((r) => r.chapter === "ch2")).toMatchObject({ conjectures: 2, conjecturesOpen: 0, conjecturesUnregistered: 1 });
   });
 
-  test("active beans are distinct per chapter", () => {
+  test("activeBeansDistinctPerChapter", () => {
     const h = computeMathHeat({ ...none, blocks, activeBeans: { "thm:a": ["b1", "b2"], "lem:b": ["b1"], "conj:new": ["b3"] } });
     expect(h.rows.find((r) => r.chapter === "ch1")!.activeBeans).toEqual(["b1", "b2"]);
     expect(h.rows.find((r) => r.chapter === "ch2")!.activeBeans).toEqual(["b3"]);
     expect(h.rows.find((r) => r.chapter === ROOT_CHAPTER)!.activeBeans).toEqual([]);
   });
 
-  test("verdicts split by QA state, and a block the QA file lacks is counted as no record", () => {
+  test("verdictsSplitByQaState", () => {
     const h = computeMathHeat({
       ...none,
       blocks,
@@ -96,18 +96,18 @@ describe("computeMathHeat", () => {
     expect(h.rows.find((r) => r.chapter === "ch1")!.verdicts).toEqual({ failing: 1, stale: 1, unaudited: 1, passing: 1, noRecord: 2 });
   });
 
-  test("rows are chapters by name, the paper root last", () => {
+  test("rowsByNameRootLast", () => {
     expect(computeMathHeat({ ...none, blocks }).rows.map((r) => r.chapter)).toEqual(["ch1", "ch2", ROOT_CHAPTER]);
   });
 });
 
 describe("helpers", () => {
-  test("chapterOf takes the first directory under the paper; a file at the paper root is in none", () => {
+  test("chapterOfFirstDirUnderPaper", () => {
     expect(chapterOf("/r/content/qou/ch3-spectra/sec1/thm.ts", "/r/content/qou")).toBe("ch3-spectra");
     expect(chapterOf("/r/content/qou/intro.ts", "/r/content/qou")).toBe(ROOT_CHAPTER);
   });
 
-  test("activeBeansByLabel keeps in-progress beans with a resolved block", () => {
+  test("activeBeansKeepsInProgressResolved", () => {
     const out = activeBeansByLabel({
       beans: [
         { id: "a", status: "in-progress", targets: [{ blockLabel: "thm:x" }, { blockLabel: "thm:x" }, {}] },
@@ -117,7 +117,7 @@ describe("helpers", () => {
     expect(out).toEqual({ "thm:x": ["a"] });
   });
 
-  test("readRegister reads register nodes and skips other JSON", () => {
+  test("readRegisterSkipsOtherJson", () => {
     const dir = mkdtempSync(join(tmpdir(), "math-heat-"));
     try {
       writeFileSync(
@@ -132,7 +132,7 @@ describe("helpers", () => {
     }
   });
 
-  test("the table shows an unknown cell as ?, and says why", () => {
+  test("tableShowsUnknownAsQuestionMark", () => {
     const h = computeMathHeat({ ...none, blocks: [blk("ch1", "theorem", "thm:a", true)] });
     const text = formatMathHeat(h, { blocks: "ok", lean: "no Lean tree", register: "ok", beans: "ok", qa: "no --qa file given" });
     expect(text).toContain("1/1");

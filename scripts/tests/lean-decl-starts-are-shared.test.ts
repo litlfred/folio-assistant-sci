@@ -38,7 +38,7 @@ def Ns.delta : Nat := 3
 `;
 
 describe("the two projections share the detection", () => {
-  test("character spans and line spans report the SAME names, in order", () => {
+  test("charAndLineSpansSameNames", () => {
     // THE anti-re-divergence assertion. A second pattern anywhere makes these
     // two lists disagree, which is exactly how the pair drifted apart before.
     const stripped = stripLeanComments(DIVERGENT);
@@ -47,7 +47,7 @@ describe("the two projections share the detection", () => {
     );
   });
 
-  test("offsets convert to STRIPPED-text line numbers exactly", () => {
+  test("offsetsToStrippedLineNumbers", () => {
     // Legitimate because `stripLeanComments` blanks comments to equal length
     // rather than deleting them, so an offset into the stripped text indexes
     // the same character position.
@@ -82,7 +82,7 @@ describe("the two projections share the detection", () => {
     ]);
   });
 
-  test("a line span indexes the stripped text it will be sliced from", () => {
+  test("lineSpanSlicesItsDecl", () => {
     // The contract that actually matters to `scopeLeanToDecl`: whatever the
     // numbers are, slicing the stripped text by them yields the declaration.
     // True today and stays true once `vrfx` is fixed, which is why it is
@@ -95,7 +95,7 @@ describe("the two projections share the detection", () => {
     }
   });
 
-  test("a match cannot begin on a blank line above its declaration", () => {
+  test("matchNotStartOnBlankLine", () => {
     // Why the pattern uses `[^\S\n]*` and not `\s*`: `\s` matches a newline,
     // so under /m a match could start on an earlier blank line. Harmless for
     // byte spans, a wrong answer for line spans.
@@ -122,7 +122,7 @@ def AlgElement.sub {G} {k} [Ring k] (f g : AlgElement G k) : AlgElement G k :=
   AlgElement.add f g
 `;
 
-  test("the namespace members are distinct keys, not one", () => {
+  test("namespaceMembersDistinctKeys", () => {
     // Truncated, all four `AlgElement*` spans shared the key `AlgElement`, so
     // `new Map(...)` kept the LAST while `find` returned the FIRST — one name
     // meaning two different spans inside one function.
@@ -131,7 +131,7 @@ def AlgElement.sub {G} {k} [Ring k] (f g : AlgElement G k) : AlgElement G k :=
     expect(names).toEqual(["Monomial", "AlgElement", "AlgElement.add", "AlgElement.sub"]);
   });
 
-  test("a scope reaches what it references, not its namespace siblings", () => {
+  test("scopeReachesReferencesNotSiblings", () => {
     // `structure AlgElement` references `Monomial` and nothing else here.
     // Before: it pulled in `AlgElement.sub`, the last colliding key, which it
     // does not reference.
@@ -166,7 +166,7 @@ describe("non-canonical declaration patterns in folio-assistant-sci/pipeline", (
     return [...hits].sort();
   }
 
-  test("only the five pre-existing modules carry a local pattern, and the list may only shrink", () => {
+  test("onlyFiveModulesCarryLocalPattern", () => {
     expect(patternFiles()).toEqual([
       "pipeline/conjectural-propagation-audit.ts",
       "pipeline/generate-lean-stubs.ts",

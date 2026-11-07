@@ -7,7 +7,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const KNOWN_MACROS_PATH = join(__dirname, "latex-known-macros.json");
 
 describe("latex-known-macros", () => {
-  it("loads valid JSON with sorted and deduplicated macros", () => {
+  it("macrosAndUnicodeSortedUnique", () => {
     const raw = readFileSync(KNOWN_MACROS_PATH, "utf8");
     const data = JSON.parse(raw);
     expect(Array.isArray(data.macros)).toBe(true);
@@ -25,7 +25,7 @@ describe("latex-known-macros", () => {
     expect(uniqueUnicode.size).toBe(data.unicode.length);
   });
 
-  it("contains \\phantom (LaTeX core) and \\lessgtr (amssymb) (bean tdi0)", () => {
+  it("containsPhantomAndLessgtr", () => {
     const raw = readFileSync(KNOWN_MACROS_PATH, "utf8");
     const data = JSON.parse(raw);
     expect(data.macros).toContain("\\phantom");

@@ -22,20 +22,20 @@ const ts = join(dir, "thm-lagrange.ts"); // no sibling .lean
 afterAll(() => rmSync(dir, { recursive: true, force: true }));
 
 describe("resolveLeanFile follows lean.ref for any package", () => {
-  test("a non-qou package prefix resolves into the library tree", () => {
+  test("nonQouPrefixResolvesToLibrary", () => {
     const src = `export default theorem({ label: "thm:lagrange", lean: { ref: "demo:Demo.Algebra.Groups.lagrange" } });`;
     expect(resolveLeanFile(ts, src, leanRoot)).toBe(lib);
     expect(leanFileStatus(lib).validation).toBe("leanok");
   });
 
-  test("the qou prefix still resolves (no regression for the folio it was written for)", () => {
+  test("qouPrefixStillResolves", () => {
     const src = `export default theorem({ label: "thm:lagrange", lean: { ref: "qou:Demo.Algebra.Groups.lagrange" } });`;
     expect(resolveLeanFile(ts, src, leanRoot)).toBe(lib);
   });
 });
 
 describe("the block-status-overlay slot overlays live Lean status (bean saqd)", () => {
-  test("a block with a lean field takes sorryFree and validation from its resolved .lean", async () => {
+  test("overlayTakesStatusFromResolvedLean", async () => {
     const { overlayBlockStatus } = await import("../../pipeline/lean-status-overlay");
     // The overlay resolves under <paperDir>/lean; `dir` is the paper here.
     writeFileSync(ts, `export default theorem({ label: "thm:lagrange", lean: { ref: "demo:Demo.Algebra.Groups.lagrange" } });`);
@@ -44,7 +44,7 @@ describe("the block-status-overlay slot overlays live Lean status (bean saqd)", 
     expect(block.lean).toMatchObject({ sorryFree: true, validation: "leanok" });
   });
 
-  test("a stronger recorded verdict is kept, and a block with no lean field is left alone", async () => {
+  test("overlayKeepsStrongerVerdictSkipsBare", async () => {
     const { overlayBlockStatus } = await import("../../pipeline/lean-status-overlay");
     writeFileSync(ts, `export default theorem({ label: "thm:lagrange", lean: { ref: "demo:Demo.Algebra.Groups.lagrange" } });`);
     const ci = { kind: "theorem", label: "thm:lagrange", lean: { ref: "demo:Demo.Algebra.Groups.lagrange", validation: "stub" } };

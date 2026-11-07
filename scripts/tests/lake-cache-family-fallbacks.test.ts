@@ -39,13 +39,13 @@ const LITERALS: Record<string, string> = {
 
 describe("the Lean cache scripts carry the same built-in family name, and no retired one", () => {
   for (const [file, literal] of Object.entries(LITERALS)) {
-    test(`${file}: the new family only`, () => {
+    test(`scriptNamesNewFamilyOnly[${file}]`, () => {
       const text = readFileSync(resolve(SCRIPTS, file), "utf-8");
       expect(text).toContain(literal);
     });
   }
 
-  test("lake-cache.sh writes the new name when nothing is declared", () => {
+  test("lakeCacheWritesNewNameByDefault", () => {
     const text = readFileSync(resolve(SCRIPTS, "lake-cache.sh"), "utf-8");
     expect(text).toContain('CACHE_PREFIX="cat/folio-assistant-sci/lake-cache"');
   });

@@ -21,12 +21,12 @@ import {
 const THEOREM_LEAN = "theorem foo_bar (n : Nat) : n = n := rfl\n";
 
 describe("extractKind", () => {
-  test("reads the builder call", () => {
+  test("kindFromBuilderCall", () => {
     expect(extractKind('export default definition({\n  label: "def:x",\n});')).toBe("definition");
     expect(extractKind('export default conjecture({\n  label: "conj:x",\n});')).toBe("conjecture");
   });
 
-  test("is NOT fooled by a `kind:` inside authorNotes", () => {
+  test("kindNotFooledByAuthorNotes", () => {
     // The live bug: a bare /kind:\s*"(\w+)"/ ran FIRST and matched the author
     // note, so every block carrying one was typed `note` / `caveat` / `status`
     // and the kind-vs-declaration checks compared against the wrong kind.
@@ -40,52 +40,52 @@ describe("extractKind", () => {
     expect(extractKind(ts)).toBe("definition");
   });
 
-  test("still honours an explicit top-level kind when there is no builder", () => {
+  test("kindFromTopLevelField", () => {
     expect(extractKind('  kind: "remark",\n')).toBe("remark");
   });
 });
 
 describe("extractMdDeclaredKind", () => {
-  test("reads a bold self-declaration", () => {
+  test("mdKindFromBoldDeclaration", () => {
     expect(extractMdDeclaredKind("**Proposition.** Every gadget is flat.")).toBe("proposition");
     expect(extractMdDeclaredKind("**Conjecture.** *V is the valley.*")).toBe("conjecture");
   });
 
-  test("reads a LaTeX environment and a heading", () => {
+  test("mdKindFromEnvAndHeading", () => {
     expect(extractMdDeclaredKind("\\begin{theorem}\nx\n\\end{theorem}")).toBe("theorem");
     expect(extractMdDeclaredKind("### Lemma\n\nx")).toBe("lemma");
   });
 
-  test("carries the parenthetical form used in the corpus", () => {
+  test("mdKindParentheticalForm", () => {
     expect(
       extractMdDeclaredKind("**Proposition (conditional on [`conj:x`](#conj:x)).**\n\nBody."),
     ).toBe("proposition");
   });
 
-  test("is undefined when the narrative does not self-declare", () => {
+  test("mdKindUndefinedWithoutDeclaration", () => {
     // The quiet case, and the majority of blocks.
     expect(extractMdDeclaredKind("The braid group acts on the tower.")).toBeUndefined();
   });
 
-  test("ignores a kind word inside a fenced code block", () => {
+  test("mdKindIgnoresFencedCode", () => {
     expect(extractMdDeclaredKind("```\n**Theorem.** not prose\n```\n\nReal prose.")).toBeUndefined();
   });
 });
 
 describe("extractMdStatement", () => {
-  test("finds the sentence after a bold marker", () => {
+  test("statementAfterBoldMarker", () => {
     expect(extractMdStatement("**Theorem.** Every gadget is flat.")).toBe("Every gadget is flat.");
   });
 
-  test("falls back to the first substantive line", () => {
+  test("statementFallsBackToFirstLine", () => {
     expect(extractMdStatement("# Title\n\n> quote\n\nThe real claim.")).toBe("The real claim.");
   });
 
-  test("a lone label line is a header, not a statement", () => {
+  test("loneLabelNotStatement", () => {
     expect(extractMdStatement("**Theorem.**\n")).toBeUndefined();
   });
 
-  test("headings and directives only ⇒ undefined", () => {
+  test("headingsDirectivesOnlyUndefined", () => {
     expect(extractMdStatement("# Heading\n\n:::note\n:::\n\n## Another\n")).toBeUndefined();
   });
 });
@@ -94,7 +94,7 @@ describe("checkEquivalence — narrative side", () => {
   const ts = (builder: string, label: string) =>
     `export default ${builder}({\n  label: "${label}",\n});`;
 
-  test("warns when the narrative claims a stronger kind than the metadata", () => {
+  test("warnsNarrativeStrongerThanMetadata", () => {
     // Live example: conj:hydrogen-shell-writhe is `conjecture(...)` while its
     // .md opens "**Proposition (conditional on …).**" — a reader-facing overclaim.
     const r = checkEquivalence(
@@ -107,7 +107,7 @@ describe("checkEquivalence — narrative side", () => {
     expect(r.evidence).toContain("conjecture");
   });
 
-  test("warns when a remark's narrative states a conjecture", () => {
+  test("warnsRemarkStatingConjecture", () => {
     // Live example: rem:periodic-table-demand. §3a — a remark making a formal
     // claim should be promoted or carry `interprets:`.
     const r = checkEquivalence(
@@ -119,7 +119,7 @@ describe("checkEquivalence — narrative side", () => {
     expect(r.notes).toContain("kind mismatch");
   });
 
-  test("does NOT warn on prose-style variation within the provable family", () => {
+  test("noWarnWithinProvableFamily", () => {
     // "Theorem" over a block typed `proposition` is house style, not a defect.
     const r = checkEquivalence(
       "**Theorem.** Every gadget is flat.",
@@ -129,7 +129,7 @@ describe("checkEquivalence — narrative side", () => {
     expect(r.result).not.toBe("warn");
   });
 
-  test("does NOT warn when the narrative makes no self-declaration", () => {
+  test("noWarnWithoutSelfDeclaration", () => {
     const r = checkEquivalence(
       "Every gadget is flat, by the tower argument.",
       THEOREM_LEAN,
@@ -138,7 +138,7 @@ describe("checkEquivalence — narrative side", () => {
     expect(r.result).not.toBe("warn");
   });
 
-  test("warns when a provable block's narrative states nothing at all", () => {
+  test("warnsProvableWithEmptyNarrative", () => {
     const r = checkEquivalence(
       "# Heading\n\n:::note\n:::\n",
       THEOREM_LEAN,
@@ -148,7 +148,7 @@ describe("checkEquivalence — narrative side", () => {
     expect(r.evidence).toContain("no statement");
   });
 
-  test("an empty narrative on a NON-provable block is not this check's business", () => {
+  test("emptyNarrativeNonProvableIgnored", () => {
     const r = checkEquivalence("# Heading\n", THEOREM_LEAN, ts("remark", "rem:x"));
     expect(r.evidence ?? "").not.toContain("no statement");
   });

@@ -69,7 +69,7 @@ afterAll(() => {
 });
 
 describe("compute-lp-dual-present — fires when it should", () => {
-  test("flags a block whose own LP script ships a witness with no dual fields", () => {
+  test("flagsOwnLpWitnessWithoutDuals", () => {
     const p = fixture(
       "solver",
       `  label: "prop:operator-selection-lp-bound",
@@ -80,7 +80,7 @@ describe("compute-lp-dual-present — fires when it should", () => {
     expect(r.result).toBe("fail");
   });
 
-  test("passes the same block once the witness carries the certificate", () => {
+  test("passesWithDualCertificate", () => {
     const p = fixture(
       "solver-ok",
       `  label: "prop:operator-selection-lp-bound",
@@ -105,7 +105,7 @@ describe("compute-lp-dual-present — does not fire on OTHER blocks' references"
   ];
 
   for (const [field, line] of cases) {
-    test(`an LP token in \`${field}\` is not evidence about this block`, () => {
+    test(`lpTokenInRefFieldNotEvidence[${field}]`, () => {
       const p = fixture(
         `ref-${field}`,
         `  label: "prop:some-lp-consuming-result",
@@ -119,11 +119,11 @@ ${line}
 });
 
 describe("compute-lp-dual-present — gating", () => {
-  test("n/a without a ts path", () => {
+  test("naWithoutTsPath", () => {
     expect(checkComputeLpDualPresent(undefined).result).toBe("n/a");
   });
 
-  test("passes a block with no witness at all", () => {
+  test("passesWithoutWitness", () => {
     const p = fixture(
       "no-witness",
       `  label: "prop:lp-duality-discussion",
@@ -132,7 +132,7 @@ describe("compute-lp-dual-present — gating", () => {
     expect(checkComputeLpDualPresent(p).result).toBe("pass");
   });
 
-  test("passes when the LP hint is only theoretical context, not the computation", () => {
+  test("passesWhenLpOnlyContext", () => {
     // Gate two: tags describe what a block is ABOUT; the script and witness
     // names say what it computed.
     const p = fixture(

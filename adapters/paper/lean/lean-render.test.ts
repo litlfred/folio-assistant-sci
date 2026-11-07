@@ -47,13 +47,13 @@ function render(): string {
 }
 
 describe("the pieces", () => {
-  test("Lake bookkeeping is recognised", () => {
+  test("recognisesLakeBookkeeping", () => {
     expect(isBuildBookkeeping("QOU.html.hash")).toBe(true);
     expect(isBuildBookkeeping("QOU.html.trace")).toBe(true);
     expect(isBuildBookkeeping("QOU.html")).toBe(false);
   });
 
-  test("a module root is the upper-case first segment, bookkeeping included", () => {
+  test("moduleRootIsUpperFirstSegment", () => {
     expect(moduleRootOf("Mathlib/Algebra/Group.html")).toBe("Mathlib");
     expect(moduleRootOf("Mathlib.html")).toBe("Mathlib");
     expect(moduleRootOf("QOU.html.hash")).toBe("QOU");
@@ -61,25 +61,25 @@ describe("the pieces", () => {
     expect(moduleRootOf("navbar.html")).toBeUndefined();
   });
 
-  test("an iframe page and an empty-bodied redirect decline the rail; a module page does not", () => {
+  test("iframeAndRedirectDeclineRail", () => {
     expect(shouldDeclineRail(page("x", `<base target="_parent">`))).toBe(true);
     expect(shouldDeclineRail(page(""))).toBe(true);
     expect(shouldDeclineRail(page("<main>decls</main>"))).toBe(false);
   });
 
-  test("the opt-out is the platform's meta, written once", () => {
+  test("optOutMetaWrittenOnce", () => {
     const once = withRailDeclined(page(""));
     expect(once).toContain(NAVBAR_NONE);
     expect(withRailDeclined(once)).toBe(once);
   });
 
-  test("the layout shim is keyed on the rail and written once", () => {
+  test("layoutShimKeyedOnRailOnce", () => {
     const once = withRailOffset(page("x"));
     expect(once).toContain("body:has(nav.fa-nav)>nav.nav");
     expect(withRailOffset(once)).toBe(once);
   });
 
-  test("a link into a dropped module goes to the external docs; kept, fragment-only and absolute links do not move", () => {
+  test("droppedModuleLinkToExternalDocs", () => {
     const html = `<a href="../Mathlib/Algebra.html#Monoid">m</a><a href="../QOU.html">q</a><a href="#x">x</a><a href="https://e.org/">e</a>`;
     const r = rewriteDroppedLinks(html, "QOU/Basic.html", new Set(["QOU"]), DEFAULT_EXTERNAL_BASE);
     expect(r.rewritten).toBe(1);
@@ -91,7 +91,7 @@ describe("the pieces", () => {
 });
 
 describe("stageLeanRender", () => {
-  test("full fidelity by default: everything but Lake's bookkeeping, with the two rail-declining pages marked", () => {
+  test("fullFidelityByDefault", () => {
     const site = mkdtempSync(join(tmpdir(), "lean-site-"));
     const r = stageLeanRender({ docs: render(), site });
     expect(r.dest).toBe(join(site, "lean"));
@@ -104,7 +104,7 @@ describe("stageLeanRender", () => {
     expect(r.droppedModules).toEqual([]);
   });
 
-  test("--modules prunes the rest and repoints every link into it, the iframe navbar included", () => {
+  test("modulesPrunesAndRepointsLinks", () => {
     const site = mkdtempSync(join(tmpdir(), "lean-site-"));
     // By PACKAGE name, lower case: matched to the module root `QOU`.
     const r = stageLeanRender({ docs: render(), site, route: "docs/lean", modules: ["qou"] });
@@ -115,12 +115,12 @@ describe("stageLeanRender", () => {
     expect(readFileSync(join(site, "docs/lean/navbar.html"), "utf-8")).toContain(`${DEFAULT_EXTERNAL_BASE}Mathlib/Algebra.html`);
   });
 
-  test("an input that is not a doc-gen4 render is refused, never staged as nothing", () => {
+  test("refusesNonDocGenInput", () => {
     const empty = mkdtempSync(join(tmpdir(), "not-a-render-"));
     expect(() => stageLeanRender({ docs: empty, site: mkdtempSync(join(tmpdir(), "s-")) })).toThrow(/not a doc-gen4 render/);
   });
 
-  test("a route that leaves the site is refused", () => {
+  test("refusesRouteLeavingSite", () => {
     expect(() => stageLeanRender({ docs: render(), site: mkdtempSync(join(tmpdir(), "s-")), route: "../x" })).toThrow(/--route/);
   });
 });

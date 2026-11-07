@@ -35,12 +35,12 @@ function recordingServer() {
 }
 
 describe("lean_formal_edges is served from its Tool node", () => {
-  test("the folio's dependency tree yields sci's group for it", () => {
+  test("dependencyTreeYieldsSciGroup", () => {
     const sci = servedToolGroups(FOLIO_ROOT).sets.find((s) => s.instance === "folio-assistant-sci");
     expect(sci?.groups.map((g) => g.module)).toContain("pipeline/formal-edges-mcp.ts");
   });
 
-  test("registerServedToolGroups puts it on the server", async () => {
+  test("registersFormalEdgesTool", async () => {
     const server = recordingServer();
     const { outcomes, failures } = await registerServedToolGroups(server, FOLIO_ROOT, [FOLIO_ROOT]);
     expect(failures).toEqual([]);
@@ -48,7 +48,7 @@ describe("lean_formal_edges is served from its Tool node", () => {
     expect(server.tools.map((t) => t.name)).toContain(FORMAL_EDGES_TOOL);
   });
 
-  test("an unbuilt project is reported as could-not-determine and flagged isError", async () => {
+  test("unbuiltProjectIsErrorCouldNotDetermine", async () => {
     const server = recordingServer();
     await registerServedToolGroups(server, FOLIO_ROOT, [FOLIO_ROOT]);
     const tool = server.tools.find((t) => t.name === FORMAL_EDGES_TOOL)!;

@@ -15,7 +15,7 @@ const F = "/tmp/x.lean";
 const fqns = (src: string) => scanDecls(F, src).map((d) => d.fqn);
 
 describe("scanDecls", () => {
-  test("every kind that occupies the flat namespace is scanned", () => {
+  test("scansEveryFlatNamespaceKind", () => {
     const src = [
       "abbrev a := 1",
       "def b := 1",
@@ -34,7 +34,7 @@ describe("scanDecls", () => {
     ]);
   });
 
-  test("a named section does not corrupt the namespace of later declarations", () => {
+  test("namedSectionKeepsNamespace", () => {
     expect(
       fqns(`namespace QOU
 section Helpers
@@ -46,7 +46,7 @@ end QOU
     ).toEqual(["QOU.inside", "QOU.after"]);
   });
 
-  test("an anonymous section is popped too", () => {
+  test("anonymousSectionPopped", () => {
     expect(
       fqns(`namespace QOU
 section
@@ -58,7 +58,7 @@ end QOU
     ).toEqual(["QOU.a", "QOU.b"]);
   });
 
-  test("nested namespaces concatenate", () => {
+  test("nestedNamespacesConcatenate", () => {
     expect(
       fqns(`namespace QOU
 namespace BraidKnot
@@ -69,7 +69,7 @@ end QOU
     ).toEqual(["QOU.BraidKnot.R_q"]);
   });
 
-  test("two namespaces in one file each get their own prefix", () => {
+  test("twoNamespacesOwnPrefixes", () => {
     // `BraidKnot/CasimirShared.lean` does exactly this: it declares
     // `QOU.R_q := RatFunc ℚ` and, further down, `QOU.Braiding.R_q :=
     // LaurentPolynomial ℤ`.
@@ -84,7 +84,7 @@ end QOU.Braiding
     ).toEqual(["QOU.R_q", "QOU.Braiding.R_q"]);
   });
 
-  test("block comments and line comments are skipped", () => {
+  test("skipsBlockAndLineComments", () => {
     expect(
       fqns(`namespace QOU
 /-
@@ -97,7 +97,7 @@ end QOU
     ).toEqual(["QOU.real"]);
   });
 
-  test("a single-line block comment does not open a comment region", () => {
+  test("oneLineBlockCommentNoRegion", () => {
     expect(
       fqns(`namespace QOU
 /-- a docstring on one line -/
@@ -107,7 +107,7 @@ end QOU
     ).toEqual(["QOU.kept"]);
   });
 
-  test("modifiers and attributes do not hide a declaration", () => {
+  test("modifiersAttributesKeepDecl", () => {
     expect(
       fqns(`namespace QOU
 @[simp] theorem a : True := trivial
@@ -119,11 +119,11 @@ end QOU
     ).toEqual(["QOU.a", "QOU.b", "QOU.c", "QOU.d"]);
   });
 
-  test("records the line so a finding can be clicked to source", () => {
+  test("recordsLine", () => {
     expect(scanDecls(F, "\n\n\ndef s := 1\n")[0].line).toBe(4);
   });
 
-  test("a name that merely starts with a keyword is not a declaration", () => {
+  test("keywordPrefixNotDecl", () => {
     // `defaultWeight` begins with `def`; the word boundary must hold.
     expect(fqns("defaultWeight := 1\n")).toEqual([]);
   });
@@ -135,7 +135,7 @@ describe("dotted declaration names", () => {
   // class, a theorem and a def across three modules; the latter two were
   // `SurrealField.IsFinite.pow` and `SurrealField.finiteSubring`, which collide
   // with nothing.
-  test("a dotted name is captured whole, not truncated at the first dot", () => {
+  test("dottedNameCapturedWhole", () => {
     expect(
       fqns(`namespace QOU
 class SurrealField where x : ℕ
@@ -150,7 +150,7 @@ end QOU
     ]);
   });
 
-  test("a dotted name still picks up the enclosing namespace", () => {
+  test("dottedNameGetsNamespace", () => {
     expect(
       fqns("namespace A.B\ntheorem C.d : True := trivial\nend A.B\n"),
     ).toEqual(["A.B.C.d"]);

@@ -70,12 +70,12 @@ const script = (at: string, result = "fail") => ({
 });
 
 describe("human dispensation precedence", () => {
-  test("survives a LATER script entry — the whole point", () => {
+  test("survivesLaterScriptEntry", () => {
     const b = block([human("2026-08-07T00:00:00Z"), script("2026-08-07T23:59:00Z")]);
     expect(hasHumanDispensation(b, CRITERION, HASHES)).toBe(true);
   });
 
-  test("survives many later script entries", () => {
+  test("survivesManyLaterScriptEntries", () => {
     // Every sweep appends one. A dispensation must not decay with sweep count.
     const b = block([
       human("2026-08-01T00:00:00Z"),
@@ -84,18 +84,18 @@ describe("human dispensation precedence", () => {
     expect(hasHumanDispensation(b, CRITERION, HASHES)).toBe(true);
   });
 
-  test("a script entry alone is not a dispensation", () => {
+  test("scriptAloneNotDispensation", () => {
     const b = block([script("2026-08-07T12:00:00Z", "pass")]);
     expect(hasHumanDispensation(b, CRITERION, HASHES)).toBe(false);
   });
 
-  test("a human FAIL is not a dispensation", () => {
+  test("humanFailNotDispensation", () => {
     // A reviewer confirming the finding must not read as clearing it.
     const b = block([human("2026-08-07T12:00:00Z", "fail")]);
     expect(hasHumanDispensation(b, CRITERION, HASHES)).toBe(false);
   });
 
-  test("the most recent HUMAN entry decides between humans", () => {
+  test("latestHumanDecides", () => {
     // Timestamps still order within a kind, so a reviewer can revoke.
     const b = block([
       human("2026-08-01T00:00:00Z", "pass"),
@@ -104,18 +104,18 @@ describe("human dispensation precedence", () => {
     expect(hasHumanDispensation(b, CRITERION, HASHES)).toBe(false);
   });
 
-  test("lapses when the sources it was granted against change", () => {
+  test("lapsesWhenSourcesChange", () => {
     // The hash pin is what stops a dispensation becoming a permanent mute.
     const b = block([human("2026-08-07T00:00:00Z")]);
     expect(hasHumanDispensation(b, CRITERION, { ...HASHES, lean: "dddddddddddd" })).toBe(false);
   });
 
-  test("does not leak across criteria", () => {
+  test("noLeakAcrossCriteria", () => {
     const b = block([human("2026-08-07T00:00:00Z")]);
     expect(hasHumanDispensation(b, "q-usage-fixed-q0-leak", HASHES)).toBe(false);
   });
 
-  test("a block with no sidecar has no dispensation", () => {
+  test("noSidecarNoDispensation", () => {
     const ts = join(DIR, `nosidecar.ts`);
     writeFileSync(ts, "export default conjecture({});\n");
     expect(hasHumanDispensation({ ts }, CRITERION, HASHES)).toBe(false);
