@@ -40,17 +40,17 @@ theorem bar (n : Nat) : 0 + n = n := by
 `;
 
 describe("leanSignatures", () => {
-  test("is invariant under a proof-body rewrite", () => {
+  test("invariantUnderProofRewrite", () => {
     // The whole point: rewriting how something is proved must not read
     // as a change to what it claims.
     expect(leanSignatures(THM)).toBe(leanSignatures(THM_NEW_PROOF));
   });
 
-  test("changes when a signature changes", () => {
+  test("changesWithSignature", () => {
     expect(leanSignatures(THM)).not.toBe(leanSignatures(THM_NEW_STATEMENT));
   });
 
-  test("changes when a statement contains `:=` and its TAIL changes", () => {
+  test("changesWhenTailAfterAssignChanges", () => {
     // Regression. The signature/body cut fired on the first `:=`
     // anywhere, so a `let` in the statement truncated the signature to
     // `theorem t : (let x` — identical for both of these. The statement
@@ -61,13 +61,13 @@ describe("leanSignatures", () => {
     expect(leanSignatures(five)).not.toBe(leanSignatures(six));
   });
 
-  test("a structure instance in the statement does not truncate it", () => {
+  test("structureInstanceNoTruncate", () => {
     const a = `theorem t : ({ a := 1 } : Foo).a = 1 := by rfl\n`;
     const b = `theorem t : ({ a := 1 } : Foo).a = 2 := by rfl\n`;
     expect(leanSignatures(a)).not.toBe(leanSignatures(b));
   });
 
-  test("still invariant under a proof rewrite when the statement holds `:=`", () => {
+  test("invariantWhenStatementHasAssign", () => {
     // The other direction: the fix must not make the hash sensitive to
     // the body, or every proof edit would invalidate every sidecar.
     const p1 = `theorem t : (let x := 5; x) = 5 := by rfl\n`;
@@ -75,14 +75,14 @@ describe("leanSignatures", () => {
     expect(leanSignatures(p1)).toBe(leanSignatures(p2));
   });
 
-  test("changes when a declaration is RENAMED", () => {
+  test("changesOnRename", () => {
     // A rename is a statement change even with an identical type — the
     // narrative names the declaration.
     const renamed = THM.replace("theorem foo", "theorem foo'");
     expect(leanSignatures(THM)).not.toBe(leanSignatures(renamed));
   });
 
-  test("ignores comments, including doc comments", () => {
+  test("ignoresComments", () => {
     const commented = `
 /-- A doc comment that mentions bar and Int and other decls. -/
 theorem foo (n : Nat) : n + 0 = n := by
@@ -94,7 +94,7 @@ theorem bar (n : Nat) : 0 + n = n := by
     expect(leanSignatures(commented)).toBe(leanSignatures(THM));
   });
 
-  test("returns undefined when there are no lexable declarations", () => {
+  test("undefinedWithoutDecls", () => {
     // The fail-safe path — callers fall back to the whole-file hash.
     expect(leanSignatures("import Mathlib.Tactic\nopen Nat\n")).toBeUndefined();
     expect(leanSignatures("")).toBeUndefined();
@@ -112,7 +112,7 @@ describe("entryIsFresh — lean granularity", () => {
     reviewed_at: "2026-01-01T00:00:00Z",
   });
 
-  test("statement granularity survives a proof-body rewrite", () => {
+  test("statementFreshAfterProofRewrite", () => {
     writeFileSync(leanPath, THM);
     const before = hashBlockFiles({ lean: leanPath });
     const entry = entryFor(before);
@@ -127,7 +127,7 @@ describe("entryIsFresh — lean granularity", () => {
     expect(entryIsFresh(entry, after, ["lean"])).toBe(false);
   });
 
-  test("statement granularity DOES invalidate on a signature change", () => {
+  test("statementStaleOnSignatureChange", () => {
     writeFileSync(leanPath, THM);
     const entry = entryFor(hashBlockFiles({ lean: leanPath }));
     writeFileSync(leanPath, THM_NEW_STATEMENT);
@@ -135,7 +135,7 @@ describe("entryIsFresh — lean granularity", () => {
     expect(entryIsFresh(entry, after, ["lean"], undefined, "statement")).toBe(false);
   });
 
-  test("falls back to the whole-file hash when the entry predates lean_statement", () => {
+  test("legacyEntryFallsBackToFileHash", () => {
     // A legacy entry has no `lean_statement`. It must NOT be treated as
     // fresh on the strength of a field it never recorded — that would
     // present a stale verdict as current.
@@ -147,7 +147,7 @@ describe("entryIsFresh — lean granularity", () => {
     expect(entryIsFresh(legacy, after, ["lean"], undefined, "statement")).toBe(false);
   });
 
-  test("falls back when the file has no lexable declarations", () => {
+  test("noDeclsFallsBack", () => {
     writeFileSync(leanPath, "import Mathlib.Tactic\n");
     const before = hashBlockFiles({ lean: leanPath });
     expect(before.lean_statement).toBeUndefined();

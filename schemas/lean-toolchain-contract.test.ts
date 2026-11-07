@@ -36,12 +36,12 @@ const statements = json<{ statements: Statement[] }>("skills/requirements/lean-v
 const tool = leanBuild((n) => `t:${n}`, "https://example.org/");
 
 describe("the role is mechanical, and its contract is a skill it carries", () => {
-  test("played only by a system Actor, carrying lean-toolchain-contract", () => {
+  test("playedBySystemActorWithContract", () => {
     expect(role.actorKinds).toEqual(["system"]);
     expect(role.skills).toContain("lean-toolchain-contract");
   });
 
-  test("the Actor named in the contract plays it, with the lean-toolchain capability", () => {
+  test("actorPlaysRoleWithCapability", () => {
     expect(actor.kind).toBe("system");
     expect(actor.roles).toContain("lean-toolchain");
     expect(actor.capabilities).toContain("lean-toolchain");
@@ -49,11 +49,11 @@ describe("the role is mechanical, and its contract is a skill it carries", () =>
 });
 
 describe("2. build with `lake build` and exit 0 with no compilation errors", () => {
-  test("the capability satisfies req:lean-verification#lean-compiles", () => {
+  test("capabilitySatisfiesLeanCompiles", () => {
     expect(toolchain.satisfies).toContain("req:lean-verification#lean-compiles");
   });
 
-  test("that statement demands exactly that: lake build, exit code 0, no compilation errors, verified by test", () => {
+  test("leanCompilesStatementDemandsCleanBuild", () => {
     const s = statements.find((x) => x.key === "lean-compiles")!;
     expect(s.requirement).toMatch(/`lake build` without errors/);
     expect(s.successCriteria).toHaveLength(1);
@@ -64,11 +64,11 @@ describe("2. build with `lake build` and exit 0 with no compilation errors", () 
 });
 
 describe("3. be detectable — `lean --version`, with lean-mcp the declared fallback", () => {
-  test("detection is the command `lean --version`", () => {
+  test("detectionIsLeanVersion", () => {
     expect(toolchain.detection).toEqual({ method: "command", command: "lean --version" });
   });
 
-  test("the fallback is lean-mcp, which runs Lean server-side and so does not itself need a local toolchain", () => {
+  test("fallbackIsLeanMcp", () => {
     expect(toolchain.fallbackTo).toBe("lean-mcp");
     expect(mcp.id).toBe("lean-mcp");
     expect(mcp.detection?.method).toBe("mcp-probe");
@@ -77,7 +77,7 @@ describe("3. be detectable — `lean --version`, with lean-mcp the declared fall
 });
 
 describe("4. report what it ran, not only that it passed", () => {
-  test("the lean-build Tool writes the committable lean-build-status.json as its output", () => {
+  test("toolWritesCommittableStatus", () => {
     expect(tool.id).toBe("lean-build");
     const status = tool.io.outputs?.find((o) => o.name === "status");
     expect(status).toBeDefined();
@@ -85,13 +85,13 @@ describe("4. report what it ran, not only that it passed", () => {
     expect(status!.description).toMatch(/committable/);
   });
 
-  test("and it says what it needs to run, rather than leaving a caller to find out", () => {
+  test("toolDeclaresRuntimeNeeds", () => {
     expect(tool.requires?.runtime).toEqual(expect.arrayContaining(["lean", "lake"]));
   });
 });
 
 describe("What it is not asked: to decide — sorry tracking is verified by inspection, not by this role", () => {
-  test("req:lean-verification#sorry-tracking is verified by inspection only", () => {
+  test("sorryTrackingByInspectionOnly", () => {
     const s = statements.find((x) => x.key === "sorry-tracking")!;
     expect(s.successCriteria?.map((c) => c.verification)).toEqual(["inspection"]);
   });

@@ -39,7 +39,7 @@ const layout = buildBlueprintLayout({
 const f = layout.files;
 
 describe("the blueprint layout", () => {
-  test("is the layout leanblueprint builds: web, print, content, macros, plastex.cfg", () => {
+  test("layoutHasLeanblueprintFiles", () => {
     expect(Object.keys(f).sort()).toEqual(
       ["content.tex", "extra_styles.css", "latexmkrc", "macros/common.tex", "macros/print.tex", "macros/web.tex", "plastex.cfg", "print.tex", "web.tex"],
     );
@@ -47,20 +47,20 @@ describe("the blueprint layout", () => {
     expect(f["web.tex"]).toContain("\\usepackage[showmore, dep_graph]{blueprint}");
   });
 
-  test("content is the export: generated \\lean and formal \\uses, editorial \\uses gone", () => {
+  test("contentHasLeanAndFormalUses", () => {
     expect(f["content.tex"]).toContain("\\lean{Foo.Group}");
     expect(f["content.tex"]).toContain("\\uses{def:group}");
     expect(f["content.tex"]).not.toContain("rem:why");
     expect(layout.export.removedEditorial).toBe(1);
   });
 
-  test("the platform's margin annotations are read by the export, then stripped", () => {
+  test("marginAnnotationsReadThenStripped", () => {
     expect(f["content.tex"]).not.toMatch(/\\(blockannot|sectionannot|chapterannot)/);
     // ...and were read: the compiled definition is \leanok, the stubbed lemma is not.
     expect(layout.export.leanok).toBe(1);
   });
 
-  test("every environment the renderer emits is declared, theorem first", () => {
+  test("everyEnvDeclaredTheoremFirst", () => {
     const common = f["macros/common.tex"]!;
     const decls = theoremDeclarations();
     expect(decls[0]).toBe("\\newtheorem{theorem}{Theorem}");
@@ -71,23 +71,23 @@ describe("the blueprint layout", () => {
     expect(common.indexOf("\\theoremstyle{definition}")).toBeLessThan(common.indexOf("\\newtheorem{definition}"));
   });
 
-  test("the paper's macros, with their argument counts", () => {
+  test("paperMacrosWithArity", () => {
     expect(macroArity("\\langle #1, #2 \\rangle")).toBe(2);
     expect(f["macros/common.tex"]).toContain("\\newcommand{\\LM}{\\mathrm{LM}}");
     expect(f["macros/common.tex"]).toContain("\\newcommand{\\pair}[2]{\\langle #1, #2 \\rangle}");
   });
 
-  test("title and authors are escaped one by one; \\and only in the PDF", () => {
+  test("titleAuthorsEscapedAndInPdfOnly", () => {
     expect(f["print.tex"]).toContain("\\title{Rings \\& Things\\_2}");
     expect(f["print.tex"]).toContain("\\author{A. One \\and B. Two}");
     expect(f["web.tex"]).toContain("\\author{A. One, B. Two}");
   });
 
-  test("the PDF gets no-op twins of the web-only commands", () => {
+  test("pdfGetsNoOpTwins", () => {
     for (const c of ["\\lean", "\\leanok", "\\uses", "\\proves"]) expect(f["macros/print.tex"]).toContain(c);
   });
 
-  test("every file says it is generated", () => {
+  test("everyFileSaysGenerated", () => {
     for (const [name, text] of Object.entries(f)) expect(text, name).toMatch(/GENERATED/);
   });
 });

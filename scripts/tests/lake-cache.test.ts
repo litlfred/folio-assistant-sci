@@ -127,26 +127,26 @@ afterAll(() => {
 });
 
 describe("lake-cache.sh — resolution", () => {
-  test("finds the Lake root by walking up from a subdirectory", () => {
+  test("findsLakeRootFromSubdir", () => {
     const sub = join(lakeRoot, "TestPkg", "Deep");
     mkdirSync(sub, { recursive: true });
     const r = run(["status", "--package", PKG], sub);
     expect(r.out).toContain(lakeRoot);
   });
 
-  test("derives the toolchain slug from lean-toolchain", () => {
+  test("slugFromLeanToolchain", () => {
     const r = run(["status", "--package", PKG], lakeRoot);
     expect(r.out).toContain(SLUG);
     expect(r.out).toContain(BRANCH);
   });
 
-  test("unknown command exits 2", () => {
+  test("unknownCommandExits2", () => {
     expect(run(["nonsense"], lakeRoot).code).toBe(2);
   });
 });
 
 describe("lake-cache.sh — status", () => {
-  test("exits 1 when no cache is present", () => {
+  test("statusAbsentExits1", () => {
     const r = run(["status", "--package", PKG], lakeRoot);
     expect(r.code).toBe(1);
     expect(r.out).toContain("cache ABSENT");
@@ -154,7 +154,7 @@ describe("lake-cache.sh — status", () => {
 });
 
 describe("lake-cache.sh — restore", () => {
-  test("restores from a split-tarball branch, run from the Lake root", () => {
+  test("restoresFromSplitTarball", () => {
     // Pins the cwd-relative `git ls-tree` bug: without --full-tree this
     // listed a path the orphan branch does not contain and returned
     // nothing, reporting a perfectly good cache as carrying neither
@@ -165,20 +165,20 @@ describe("lake-cache.sh — restore", () => {
     expect(existsSync(join(lakeRoot, ".lake"))).toBe(true);
   });
 
-  test("reports own-package oleans separately from dependencies", () => {
+  test("reportsOwnOleansSeparately", () => {
     const r = run(["status", "--package", PKG], lakeRoot);
     expect(r.code).toBe(0);
     expect(r.out).toContain("own pkg:    3");
     expect(r.out).toContain("cache PRESENT");
   });
 
-  test("is idempotent — a second restore no-ops", () => {
+  test("secondRestoreNoOps", () => {
     const r = run(["restore", "--package", PKG], lakeRoot);
     expect(r.code).toBe(0);
     expect(r.out).toContain("already present");
   });
 
-  test("a missing branch exits 1, not 0", () => {
+  test("missingBranchExits1", () => {
     // Must run against a CLEAN Lake root. With a cache already on disk,
     // `restore` correctly no-ops (exit 0) before it ever consults the
     // branch — so testing this against the restored root would assert
@@ -197,7 +197,7 @@ describe("lake-cache.sh — restore", () => {
 });
 
 describe("lake-cache.sh — gutted detection", () => {
-  test("a shortfall against the restore stamp reports GUTTED with exit 3", () => {
+  test("shortfallReportsGutted", () => {
     // Sibling-session behaviour (#67): `lake build` can evict most of a
     // restored tree, leaving a nonzero count that any `> 0` test passes.
     const dep = join(lakeRoot, ".lake", "packages", "mathlib", ".lake", "build", "lib", "lean", "Mathlib");
@@ -208,7 +208,7 @@ describe("lake-cache.sh — gutted detection", () => {
     expect(r.out).toContain("GUTTED");
   });
 
-  test("restore repairs a gutted tree", () => {
+  test("restoreRepairsGutted", () => {
     const r = run(["restore", "--package", PKG], lakeRoot);
     expect(r.code).toBe(0);
     expect(run(["status", "--package", PKG], lakeRoot).code).toBe(0);
@@ -216,7 +216,7 @@ describe("lake-cache.sh — gutted detection", () => {
 });
 
 describe("lake-cache.sh — seed guard", () => {
-  test("refuses to seed when the package's own oleans are absent", () => {
+  test("seedRefusesWithoutOwnOleans", () => {
     // The defect that shipped on lake-cache/qou-v4-24-0: thousands of
     // dependency oleans, zero from the package. Total looked healthy.
     const bad = mkdtempSync(join(tmpdir(), "lakecache-bad-"));
@@ -229,7 +229,7 @@ describe("lake-cache.sh — seed guard", () => {
     rmSync(bad, { recursive: true, force: true });
   });
 
-  test("exempts mathlib, whose dependencies ARE the payload", () => {
+  test("seedExemptsMathlib", () => {
     const ml = mkdtempSync(join(tmpdir(), "lakecache-ml-"));
     execFileSync("bash", ["-c", `cp -r '${lakeRoot}'/lakefile.toml '${lakeRoot}'/lean-toolchain '${ml}/'`], { stdio: "pipe" });
     makeLake(ml, 5, 0);
@@ -245,7 +245,7 @@ describe("lake-cache.sh — seed guard", () => {
   // its payload — but it reads exactly like a gutted per-package cache, and
   // was mistaken for one (bean folio-assistant-5d7z). Both callers now go
   // through `own_oleans_expected`.
-  test("status applies the same mathlib exemption as seed", () => {
+  test("statusExemptsMathlib", () => {
     const ml = mkdtempSync(join(tmpdir(), "lakecache-mlstatus-"));
     execFileSync("bash", ["-c", `cp -r '${lakeRoot}'/lakefile.toml '${lakeRoot}'/lean-toolchain '${ml}/'`], { stdio: "pipe" });
     makeLake(ml, 5, 0);
@@ -256,7 +256,7 @@ describe("lake-cache.sh — seed guard", () => {
     rmSync(ml, { recursive: true, force: true });
   });
 
-  test("status still reports a genuinely gutted per-package cache", () => {
+  test("statusReportsGuttedPackage", () => {
     const bad = mkdtempSync(join(tmpdir(), "lakecache-badstatus-"));
     execFileSync("bash", ["-c", `cp -r '${lakeRoot}'/lakefile.toml '${lakeRoot}'/lean-toolchain '${bad}/'`], { stdio: "pipe" });
     makeLake(bad, 5, 0);
@@ -266,7 +266,7 @@ describe("lake-cache.sh — seed guard", () => {
     rmSync(bad, { recursive: true, force: true });
   });
 
-  test("refuses to seed an empty tree", () => {
+  test("seedRefusesEmptyTree", () => {
     const empty = mkdtempSync(join(tmpdir(), "lakecache-empty-"));
     execFileSync("bash", ["-c", `cp -r '${lakeRoot}'/lakefile.toml '${lakeRoot}'/lean-toolchain '${empty}/'`], { stdio: "pipe" });
     git(["init", "-q"], empty);
@@ -333,14 +333,14 @@ function makeMirror(withLibs = true): string {
 }
 
 describe("lake-cache.sh — install-toolchain (argument handling)", () => {
-  test("declines a nightly rather than guessing an asset name", () => {
+  test("installDeclinesNightly", () => {
     const r = run(["install-toolchain", "--toolchain", "leanprover/lean4:nightly-2025-01-01"], lakeRoot);
     expect(r.code).toBe(2);
     expect(r.out).toContain("nightly");
     expect(r.out).toContain("elan toolchain install");
   });
 
-  test("fails clearly when no pin can be resolved", () => {
+  test("installFailsWithoutPin", () => {
     const bare = mkdtempSync(join(tmpdir(), "lakecache-nopin-"));
     git(["init", "-q"], bare);
     const r = run(["install-toolchain"], bare);
@@ -351,7 +351,7 @@ describe("lake-cache.sh — install-toolchain (argument handling)", () => {
 });
 
 describe.skipIf(!HAS_ZSTD)("lake-cache.sh — install-toolchain (install path)", () => {
-  test("installs under elan's real directory name, not the tr '/:' one", () => {
+  test("installsUnderElanName", () => {
     // The regression: `tr '/:' '--'` yields `leanprover-lean4-v4.24.0`,
     // which matches no elan install — so the guard meant to catch a
     // non-linking toolchain tested a path that never exists.
@@ -366,7 +366,7 @@ describe.skipIf(!HAS_ZSTD)("lake-cache.sh — install-toolchain (install path)",
     rmSync(home, { recursive: true, force: true });
   });
 
-  test("reports the static libs it landed", () => {
+  test("reportsStaticLibsLanded", () => {
     const mirror = makeMirror();
     const home = mkdtempSync(join(tmpdir(), "elan-home-"));
     const r = run(["install-toolchain", "--toolchain", PIN], lakeRoot,
@@ -376,7 +376,7 @@ describe.skipIf(!HAS_ZSTD)("lake-cache.sh — install-toolchain (install path)",
     rmSync(home, { recursive: true, force: true });
   });
 
-  test("is idempotent — a linkable toolchain is left alone", () => {
+  test("installIdempotent", () => {
     const mirror = makeMirror();
     const home = mkdtempSync(join(tmpdir(), "elan-home-"));
     const env = { LEAN_RELEASE_BASE: `file://${mirror}`, ELAN_HOME: home };
@@ -388,7 +388,7 @@ describe.skipIf(!HAS_ZSTD)("lake-cache.sh — install-toolchain (install path)",
     rmSync(home, { recursive: true, force: true });
   });
 
-  test("--force reinstalls over a linkable toolchain", () => {
+  test("forceReinstalls", () => {
     const mirror = makeMirror();
     const home = mkdtempSync(join(tmpdir(), "elan-home-"));
     const env = { LEAN_RELEASE_BASE: `file://${mirror}`, ELAN_HOME: home };
@@ -400,7 +400,7 @@ describe.skipIf(!HAS_ZSTD)("lake-cache.sh — install-toolchain (install path)",
     rmSync(home, { recursive: true, force: true });
   });
 
-  test("replaces a toolchain that has NO static libs — the ga7e trap", () => {
+  test("replacesToolchainWithoutStaticLibs", () => {
     // A tree at exactly the path elan expects makes elan (and every
     // staleness check) conclude a toolchain is installed and skip the
     // download, leaving a `lean` that elaborates but cannot link.
@@ -421,7 +421,7 @@ describe.skipIf(!HAS_ZSTD)("lake-cache.sh — install-toolchain (install path)",
     rmSync(home, { recursive: true, force: true });
   });
 
-  test("refuses to publish an archive with no static libs, leaving nothing behind", () => {
+  test("refusesArchiveWithoutStaticLibs", () => {
     // Verification happens in a staging dir: a toolchain that would not
     // link must never reach the path everything treats as installed.
     const mirror = makeMirror(false);
@@ -435,7 +435,7 @@ describe.skipIf(!HAS_ZSTD)("lake-cache.sh — install-toolchain (install path)",
     rmSync(home, { recursive: true, force: true });
   });
 
-  test("a missing asset fails with exit 1 and installs nothing", () => {
+  test("missingAssetExits1", () => {
     const empty = mkdtempSync(join(tmpdir(), "lean-mirror-empty-"));
     const home = mkdtempSync(join(tmpdir(), "elan-home-"));
     const r = run(["install-toolchain", "--toolchain", PIN], lakeRoot,
@@ -471,7 +471,7 @@ describe("lake-cache.sh — trace coverage is a real pairing, not a ratio of cou
     return run(["status", "--package", PKG, "--lake-root", dir], dir);
   }
 
-  test("decoy traces cannot push coverage above 100%", () => {
+  test("decoyTracesCapCoverage", () => {
     // The regression: total .trace / oleans. A partially built qou tree
     // had 13 oleans and 25 traces and reported 192% coverage — which then
     // sailed past every >= 90% gate.
@@ -484,7 +484,7 @@ describe("lake-cache.sh — trace coverage is a real pairing, not a ratio of cou
     rmSync(d, { recursive: true, force: true });
   });
 
-  test("counts only oleans that carry their OWN trace", () => {
+  test("countsOnlyOwnTraces", () => {
     const d = mkdtempSync(join(tmpdir(), "lakecache-cov-"));
     makeTraced(d, 10, 4, 30); // decoys must not make up the shortfall
     const r = statusOf(d);
@@ -492,7 +492,7 @@ describe("lake-cache.sh — trace coverage is a real pairing, not a ratio of cou
     rmSync(d, { recursive: true, force: true });
   });
 
-  test("an untraced tree reads 0%, not 'plenty of traces'", () => {
+  test("untracedTreeReadsZero", () => {
     // lake-cache/qou-v4-24-0's actual shape: oleans present, no traces,
     // so Lake rebuilds and evicts every one.
     const d = mkdtempSync(join(tmpdir(), "lakecache-cov-"));
@@ -502,7 +502,7 @@ describe("lake-cache.sh — trace coverage is a real pairing, not a ratio of cou
     rmSync(d, { recursive: true, force: true });
   });
 
-  test("the lakefile.olean form (X.olean -> X.olean.trace) also counts", () => {
+  test("lakefileOleanTraceCounts", () => {
     const d = mkdtempSync(join(tmpdir(), "lakecache-cov-"));
     mkdirSync(join(d, ".lake"), { recursive: true });
     writeFileSync(join(d, ".lake", "lakefile.olean"), "x");
@@ -514,13 +514,13 @@ describe("lake-cache.sh — trace coverage is a real pairing, not a ratio of cou
 });
 
 describe("lake-cache.sh — contribute (agentic loop)", () => {
-  test("contribute is a recognised command", () => {
+  test("contributeIsCommand", () => {
     // The loop's last step: restore -> draft -> build -> contribute.
     const r = run(["contribute", "--package", PKG], lakeRoot);
     expect(r.out).not.toContain("unknown command");
   });
 
-  test("contribute inherits the seed guards", () => {
+  test("contributeInheritsSeedGuards", () => {
     // A session that compiled nothing must not be able to publish. Same
     // guard as `seed`, reached through the loop's verb.
     const bare = mkdtempSync(join(tmpdir(), "lakecache-contrib-"));
@@ -552,13 +552,13 @@ describe("lake-cache.sh — cat/folio-assistant-sci/lake-cache/ only (beans 32f6
     git(["push", "-q", "origin", "--delete", ...prefixes.map((p) => `${p}/${KEY}`)], cacheWt());
   const resolveKey = () => run(["resolve-branch", "--key", KEY], lakeRoot).out.trim();
 
-  test("the fixture's key resolves to its branch under the new name", () => {
+  test("fixtureKeyResolvesNewName", () => {
     const r = run(["resolve-branch", "--key", `${PKG}-${SLUG}`], lakeRoot);
     expect(r.code).toBe(0);
     expect(r.out.trim()).toBe(BRANCH);
   });
 
-  test("a key that exists nowhere resolves to the new name", () => {
+  test("absentKeyResolvesNewName", () => {
     const r = run(["resolve-branch", "--key", "nope-v9-9-9"], lakeRoot);
     expect(r.out.trim()).toBe(`${NEW}/nope-v9-9-9`);
   });
@@ -566,7 +566,7 @@ describe("lake-cache.sh — cat/folio-assistant-sci/lake-cache/ only (beans 32f6
   // `lake-cache/` is a substring of the new prefix; a resolver that still
   // matched it, anchored or not, would return the legacy branch here.
   for (const legacy of [INTERIM, OLDEST]) {
-    test(`a key that exists only under the retired ${legacy}/ resolves to the new name`, () => {
+    test(`retiredPrefixResolvesNewName[${legacy}]`, () => {
       push(legacy);
       try {
         expect(resolveKey()).toBe(`${NEW}/${KEY}`);
@@ -576,7 +576,7 @@ describe("lake-cache.sh — cat/folio-assistant-sci/lake-cache/ only (beans 32f6
     });
   }
 
-  test("all three exist: the new name wins, and status reports it", () => {
+  test("newNameWinsStatusReportsIt", () => {
     push(OLDEST, INTERIM, NEW);
     try {
       expect(resolveKey()).toBe(`${NEW}/${KEY}`);
@@ -589,7 +589,7 @@ describe("lake-cache.sh — cat/folio-assistant-sci/lake-cache/ only (beans 32f6
     }
   });
 
-  test(`restore reads a cache under ${NEW}/`, () => {
+  test("restoreReadsNewFamilyCache", () => {
     push(NEW);
     const fresh = mkdtempSync(join(tmpdir(), "lakecache-cat-"));
     try {
@@ -603,7 +603,7 @@ describe("lake-cache.sh — cat/folio-assistant-sci/lake-cache/ only (beans 32f6
     }
   });
 
-  test(`restore does not read a cache left only under the retired ${INTERIM}/`, () => {
+  test("restoreSkipsRetiredInterimCache", () => {
     push(INTERIM);
     const fresh = mkdtempSync(join(tmpdir(), "lakecache-cat-"));
     try {
@@ -617,7 +617,7 @@ describe("lake-cache.sh — cat/folio-assistant-sci/lake-cache/ only (beans 32f6
     }
   });
 
-  test("resolve-branch without --key is a usage error", () => {
+  test("resolveBranchWithoutKeyUsageError", () => {
     expect(run(["resolve-branch"], lakeRoot).code).toBe(2);
   });
 
@@ -638,7 +638,7 @@ describe("lake-cache.sh — cat/folio-assistant-sci/lake-cache/ only (beans 32f6
         }),
       );
 
-    test("a key that exists nowhere resolves to the declared name", () => {
+    test("absentKeyResolvesDeclaredName", () => {
       writeDeclaration();
       try {
         expect(resolveKey()).toBe(`${DECLARED}/${KEY}`);
@@ -647,7 +647,7 @@ describe("lake-cache.sh — cat/folio-assistant-sci/lake-cache/ only (beans 32f6
       }
     });
 
-    test("a key under the built-in name is still found, as the newest legacy", () => {
+    test("builtInFoundAsNewestLegacy", () => {
       writeDeclaration();
       push(OLDEST, NEW);
       try {
@@ -658,7 +658,7 @@ describe("lake-cache.sh — cat/folio-assistant-sci/lake-cache/ only (beans 32f6
       }
     });
 
-    test("the declared name wins over the built-in one when both exist", () => {
+    test("declaredNameWinsOverBuiltIn", () => {
       writeDeclaration();
       push(NEW, DECLARED);
       try {
@@ -669,7 +669,7 @@ describe("lake-cache.sh — cat/folio-assistant-sci/lake-cache/ only (beans 32f6
       }
     });
 
-    test("with no declaration the built-in name is unchanged", () => {
+    test("noDeclarationBuiltInUnchanged", () => {
       expect(existsSync(declPath())).toBe(false);
       expect(resolveKey()).toBe(`${NEW}/${KEY}`);
     });

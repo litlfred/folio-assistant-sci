@@ -45,17 +45,17 @@ function tried(f: string): string[] {
 }
 
 describe("lake-cache-fetch.sh candidate order (bean rva2)", () => {
-  test("the folio's declared family is tried first, then the built-in name", () => {
+  test("declaredFamilyFirstThenBuiltIn", () => {
     const order = tried(folio("my/lake-cache/"));
     expect(order[0]).toBe("my/lake-cache/qou-v4-24-0");
     expect(order[1]).toBe(BUILT_IN);
   });
 
-  test("with no declaration the built-in name is tried first", () => {
+  test("noDeclarationBuiltInFirst", () => {
     expect(tried(folio())[0]).toBe(BUILT_IN);
   });
 
-  test("a declaration naming the built-in family adds no duplicate", () => {
+  test("builtInDeclarationNoDuplicate", () => {
     const order = tried(folio("cat/folio-assistant-sci/lake-cache/"));
     expect(order.filter((b) => b === BUILT_IN)).toHaveLength(1);
   });
@@ -78,18 +78,18 @@ describe("the Python mirrors read the same declaration (bean rva2)", () => {
   };
 
   for (const script of ["lake-cache-fetch-multi.py", "lake-cache-produce.py"]) {
-    test(`${script}: the declared family first, then the built-in names`, () => {
+    test(`declaredFamilyThenBuiltIns[${script}]`, () => {
       expect(prefixes(folio("my/lake-cache/"), script)).toEqual(["my/lake-cache/", ...BUILT_INS]);
     });
 
-    test(`${script}: no declaration leaves the built-in names`, () => {
+    test(`noDeclarationLeavesBuiltIns[${script}]`, () => {
       expect(prefixes(folio(), script)).toEqual(BUILT_INS);
     });
   }
 });
 
 describe("lake-cache archive member-type whitelist (bean folio-assistant-8eyy)", () => {
-  test("lake-cache-fetch.sh refuses a cache tarball containing a symlink", () => {
+  test("fetchRefusesSymlinkTarball", () => {
     const f = folio();
     const root = resolve(f, "..");
     const bare = join(root, "o.git");
@@ -116,7 +116,7 @@ describe("lake-cache archive member-type whitelist (bean folio-assistant-8eyy)",
     expect(`${r.stdout}${r.stderr}`).toContain("non-regular/non-directory entries");
   });
 
-  test("lake-cache.sh refuses a split-tarball cache branch containing a symlink", () => {
+  test("restoreRefusesSymlinkSplitTarball", () => {
     const f = folio();
     const root = resolve(f, "..");
     const bare = join(root, "o.git");
@@ -146,7 +146,7 @@ describe("lake-cache archive member-type whitelist (bean folio-assistant-8eyy)",
     expect(`${r.stdout}${r.stderr}`).toContain("non-regular/non-directory member");
   });
 
-  test("lake-cache-fetch-multi.py refuses an archive containing a symlink or unsafe path", () => {
+  test("multiRefusesSymlinkArchive", () => {
     const f = folio();
     const multiScript = resolve(import.meta.dir, "..", "lake-cache-fetch-multi.py");
     copyFileSync(multiScript, join(f, "scripts", "lake-cache-fetch-multi.py"));

@@ -48,7 +48,7 @@ function inRepo<T>(root: string, fn: () => T): T {
 }
 
 describe("lean-ref-owns-decl", () => {
-  test("a prop + proof pair sharing one decl is LEGITIMATE", () => {
+  test("propProofPairSharingDeclPasses", () => {
     // The distinction that makes this criterion usable. On a real corpus
     // 5 of 7 shared decls were pairs like this; reporting them would
     // bury the 2 genuine collisions in noise.
@@ -62,7 +62,7 @@ describe("lean-ref-owns-decl", () => {
     rmSync(root, { recursive: true, force: true });
   });
 
-  test("two definitions claiming one decl FAILS, from both sides", () => {
+  test("twoDefinitionsSharingDeclFailBoth", () => {
     const { root, paths } = makeRepo([
       { slug: "a", label: "def:a", kind: "definition", ref: "p:P.Thing" },
       { slug: "b", label: "def:b", kind: "definition", ref: "p:P.Thing" },
@@ -77,7 +77,7 @@ describe("lean-ref-owns-decl", () => {
     rmSync(root, { recursive: true, force: true });
   });
 
-  test("distinct decls pass", () => {
+  test("distinctDeclsPass", () => {
     const { root, paths } = makeRepo([
       { slug: "a", label: "def:a", kind: "definition", ref: "p:P.A" },
       { slug: "b", label: "def:b", kind: "definition", ref: "p:P.B" },
@@ -87,7 +87,7 @@ describe("lean-ref-owns-decl", () => {
     rmSync(root, { recursive: true, force: true });
   });
 
-  test("n/a for a block with no lean.ref", () => {
+  test("naWithoutLeanRef", () => {
     const { root, paths } = makeRepo([
       { slug: "a", label: "rem:a", kind: "remark" },
     ]);
@@ -98,7 +98,7 @@ describe("lean-ref-owns-decl", () => {
 });
 
 describe("graph decl ownership tie-break", () => {
-  test("a decl resolves to the STATEMENT block, not its proof", () => {
+  test("declResolvesToStatementNotProof", () => {
     // Formal edges must attach to the proposition. This was
     // first-writer-wins, so the graph's shape depended on filesystem
     // walk order — and could hang a decl off the proof block.

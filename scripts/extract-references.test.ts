@@ -139,28 +139,28 @@ om/AlexKontorovich/PrimeNumberTheoremAnd.`;
 // ── Splitting ────────────────────────────────────────────────────────────────
 
 describe("splitting a reference list into entries", () => {
-  test("[n] lists split on the next number, and a one-word-per-line entry stays one entry", () => {
+  test("bracketListSplitsOnNextNumber", () => {
     const es = split(IEEE);
     expect(detectStyle(lines(IEEE))).toBe("bracket");
     expect(es.map((e) => e.n)).toEqual([8, 9, 10]);
     expect(es[1].lines.join(" ")).toContain("Y. Deng, A. Kanervisto, J. Ling, and A. M. Rush,");
   });
 
-  test("n. lists split on the next number in sequence; an out-of-sequence number starts nothing", () => {
+  test("dottedListSplitsInSequence", () => {
     expect(split(LNCS, LNCS_DOC).map((e) => e.n)).toEqual([13, 14, 15]);
     expect(split(LNCS_ACCESSED).map((e) => e.n)).toEqual([24, 25, 26]);
     // A minimal case, not library text: `7.` inside entry 2 is not the 3 that comes next.
     expect(splitEntries(["1. A, B.: One. (2001)", "2. C, D.: Two, see", "7. more. (2002)", "3. E, F.: Three. (2003)"]).map((e) => e.n)).toEqual([1, 2, 3]);
   });
 
-  test("page numbers and running heads are dropped; a number that finishes the line before is kept", () => {
+  test("dropsPageNumbersAndRunningHeads", () => {
     const es = split(LNCS, LNCS_DOC);
     expect(es.map((e) => e.lines.join(" ")).join("\n")).not.toContain("P. Horn and J. Keuper");
     expect(es[0].lines.join(" ")).toEndWith("(DAS). pp. 599–606 (2008)");
     expect(split(LNCS_ACCESSED)[1].lines.join(" ")).toEndWith("accessed: 2025-12- 01");
   });
 
-  test("author-year paragraphs split where a line opens an author list after a closed sentence", () => {
+  test("authorYearSplitsOnAuthorList", () => {
     const es = split(AUTHOR_YEAR, AUTHOR_YEAR_DOC);
     expect(detectStyle(lines(AUTHOR_YEAR))).toBe("author-year");
     expect(es.map((e) => e.lines[0].slice(0, 20))).toEqual([
@@ -177,13 +177,13 @@ describe("splitting a reference list into entries", () => {
     expect(last).toEndWith("emnlp-main.218.");
   });
 
-  test("an editor's `(ed.).` does not end the entry, and a title line is not a name list", () => {
+  test("editorMarkerNotEntryEnd", () => {
     const es = split(EDITED);
     expect(es).toHaveLength(2);
     expect(es[0].lines.join(" ")).toBe("Christian Szegedy (ed.). A Promising Path Towards Autoformalization and General Artificial Intelligence, 2020.");
   });
 
-  test("footnotes and a running head between two entries belong to neither", () => {
+  test("footnotesAndHeadBelongToNeither", () => {
     const es = split(ACM, ACM_DOC);
     expect(es.map((e) => e.n)).toEqual([12, 13]);
     expect(es[0].lines.join(" ")).toEndWith("ACM Transactions on Information Systems (2023).");
@@ -195,25 +195,25 @@ describe("splitting a reference list into entries", () => {
 describe("parsing only what the entry makes unambiguous", () => {
   const vocab = vocabulary([...lines(AUTHOR_YEAR), ...lines(ACM), "mathematical expressions", "learning to-markup"]);
 
-  test("a URL broken after its own punctuation is rejoined", () => {
+  test("rejoinsUrlBrokenAfterPunctuation", () => {
     const es = split(AUTHOR_YEAR, AUTHOR_YEAR_DOC);
     expect(joinForParsing(es[1].lines, vocab)).toContain("URL https://www.anthropic.com/news/claude-3-family.");
     expect(joinForParsing(es[2].lines, vocab)).toContain("https://doi.org/10.48550/arXiv.2310.10631.");
   });
 
-  test("a URL cut mid-word is not rejoined: the result would be a guess", () => {
+  test("urlCutMidWordNotRejoined", () => {
     const text = joinForParsing(split(CUT_URL)[0].lines, vocab);
     expect(text).toContain(UNSURE);
     expect(text).not.toContain("https://github.c");
   });
 
-  test("a hyphen at a line break is rejoined only on the paper's own evidence", () => {
+  test("hyphenRejoinedOnPaperEvidence", () => {
     // `chal-` / `lenges`: neither `challenges` nor `chal-lenges` is in this vocabulary.
     expect(joinForParsing(["taxonomy, chal-", "lenges, and"], vocab)).toContain(UNSURE);
     expect(joinForParsing(["mathe-", "matical expressions"], vocab)).toBe("mathematical expressions");
   });
 
-  test("an IEEE entry: the quoted title, the name list before it", () => {
+  test("ieeeTitleAndAuthors", () => {
     const p = parseShape("J. Zhang, J. Du, and L. Dai, “Track, attend, and parse (tap): An end-to-end framework,” IEEE Transactions on Multimedia, 2018.", "bracket");
     expect(p.title).toBe("Track, attend, and parse (tap): An end-to-end framework");
     expect(p.author).toEqual([
@@ -223,21 +223,21 @@ describe("parsing only what the entry makes unambiguous", () => {
     ]);
   });
 
-  test("an ACM entry: the year after the authors; a non-initial abbreviation leaves the authors out", () => {
+  test("acmYearAfterAuthorsNonInitialDropsAuthors", () => {
     const p = parseShape("Shahab Kamali and Frank Wm. Tompa. 2010. A new mathematics retrieval system. In Proc. ACM CIKM. 1413–1416.", "bracket", true);
     expect(p.year).toBe(2010);
     expect(p.title).toBe("A new mathematics retrieval system");
     expect(p.author).toBeUndefined();
   });
 
-  test("one name that is not initials-first stays whole, as `literal`", () => {
+  test("singleNameStaysLiteral", () => {
     expect(parseShape("Anthropic. Introducing the next generation of claude, 2024. URL https://x.org/.", "author-year")).toEqual({
       author: [{ literal: "Anthropic" }],
       title: "Introducing the next generation of claude",
     });
   });
 
-  test("an OCR'd diacritic (`Doll´ar`) leaves the author list out rather than spelling a name wrong", () => {
+  test("ocrDiacriticDropsAuthors", () => {
     const p = parseShape("T.-Y. Lin, P. Goyal, and P. Doll´ar, “Focal loss for dense object detection,” in Proc. ICCV, 2017.", "bracket");
     expect(p.author).toBeUndefined();
     expect(p.title).toBe("Focal loss for dense object detection");
@@ -262,7 +262,7 @@ const flat = (s: string) =>
     .replace(/\s+/g, "");
 
 describe("the committed extracted-references/", () => {
-  test("is what the library gives (the check:extracted-references gate)", () => {
+  test("committedOutputMatchesLibrary", () => {
     const p = plan(LIBRARY);
     const onDisk = new Map(committed().map(({ file }) => [file, readFileSync(join(OUT, file), "utf-8")]));
     expect([...onDisk.keys()].sort()).toEqual([...p.files.keys()].sort());
@@ -270,7 +270,7 @@ describe("the committed extracted-references/", () => {
     expect(p.documents.length).toBeGreaterThanOrEqual(7);
   });
 
-  test("every node passes core's ReferenceNodeSchema, with extracted provenance and a section it came from", () => {
+  test("nodesPassSchemaWithProvenance", () => {
     for (const { file, node } of committed()) {
       const r = ReferenceNodeSchema.safeParse(node);
       expect(r.success, `${file}: ${r.success ? "" : JSON.stringify(r.error.issues)}`).toBe(true);
@@ -283,7 +283,7 @@ describe("the committed extracted-references/", () => {
     }
   });
 
-  test("ids are valid citation keys, unique, `<doc-id>.r<n>`, and name their file", () => {
+  test("idsValidUniqueNameFile", () => {
     const seen = new Set<string>();
     for (const { file, node } of committed()) {
       expect(node.id).toMatch(/^[A-Za-z0-9][A-Za-z0-9._:+-]*$/);
@@ -295,7 +295,7 @@ describe("the committed extracted-references/", () => {
     }
   });
 
-  test("no field is invented: every parsed value is in the entry's own text", () => {
+  test("noInventedField", () => {
     const allowed = new Set(["$schema", "id", "type", "title", "author", "issued", "DOI", "URL", "note", "provenance", "derivedFrom"]);
     for (const { file, node } of committed()) {
       for (const k of Object.keys(node)) expect(allowed.has(k), `${file}: unexpected field ${k}`).toBe(true);
@@ -316,7 +316,7 @@ describe("the committed extracted-references/", () => {
     }
   });
 
-  test("the bibliography viewer's collect() reads every entry, and finds none of them invalid", () => {
+  test("bibliographyCollectReadsAll", () => {
     const c = collect();
     const ours = c.entries.filter((e) => e.subgraph === "sci-extracted-references");
     expect(ours.length).toBe(committed().length);

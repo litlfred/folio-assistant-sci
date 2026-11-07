@@ -22,18 +22,18 @@ const SRC = join(import.meta.dir, "export-json.ts");
 describe("export-json guards every registry touch", () => {
   const src = readFileSync(SRC, "utf-8");
 
-  test("asks whether a registry is configured rather than catching", () => {
+  test("asksRegistryConfiguredNotCatch", () => {
     expect(src).toContain("referenceRegistryConfigured");
     // A try/catch around the Proxy would also "work" and would lose the
     // distinction the predicate exists to preserve.
     expect(src).not.toMatch(/catch[\s\S]{0,80}referenceMap/);
   });
 
-  test("the paper-level `references` field is guarded", () => {
+  test("paperReferencesFieldGuarded", () => {
     expect(src).toMatch(/references:\s*referenceRegistryConfigured\(\)\s*\?\s*references\s*:\s*\[\]/);
   });
 
-  test("the per-chapter bibliography is guarded too", () => {
+  test("chapterBibliographyGuarded", () => {
     // Both touches matter: guarding only the field that threw first would move
     // the crash to the other one on any folio whose blocks carry `cites[]`.
     const bibBlock = src.slice(src.indexOf("const bibliography"), src.indexOf("chapters.push"));
@@ -41,7 +41,7 @@ describe("export-json guards every registry touch", () => {
     expect(bibBlock).toContain("referenceMap.get");
   });
 
-  test("says so in the output rather than exporting an empty list silently", () => {
+  test("saysUnresolvedCitesInOutput", () => {
     expect(src).toContain("no reference registry configured");
     expect(src).toContain("cites[] were NOT resolved");
   });

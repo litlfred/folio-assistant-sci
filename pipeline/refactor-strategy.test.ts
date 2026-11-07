@@ -17,7 +17,7 @@ const strat = (over: Partial<RefactorStrategy> = {}): RefactorStrategy => ({
 });
 
 describe("compareLeanVersions", () => {
-  test("compares numerically, not lexically", () => {
+  test("comparesNumericallyNotLexically", () => {
     // The whole reason this helper exists: string comparison puts
     // "4.9.0" AFTER "4.24.0", which is the range folio actually lives in.
     expect("4.9.0" > "4.24.0").toBe(true); // the trap
@@ -25,34 +25,34 @@ describe("compareLeanVersions", () => {
     expect(compareLeanVersions("4.24.0", "4.9.0")).toBe(1);
   });
 
-  test("equal versions compare equal", () => {
+  test("equalVersionsEqual", () => {
     expect(compareLeanVersions("4.24.0", "4.24.0")).toBe(0);
   });
 
-  test("missing components are treated as zero", () => {
+  test("missingComponentsAreZero", () => {
     expect(compareLeanVersions("4.24", "4.24.0")).toBe(0);
     expect(compareLeanVersions("4.24", "4.24.1")).toBe(-1);
   });
 
-  test("major version dominates", () => {
+  test("majorVersionDominates", () => {
     expect(compareLeanVersions("5.0.0", "4.99.0")).toBe(1);
   });
 });
 
 describe("isApplicableAt", () => {
-  test("min bound is inclusive", () => {
+  test("minBoundInclusive", () => {
     const s = strat({ lean: { min: "4.17.0" } });
     expect(isApplicableAt(s, "4.17.0")).toBe(true);
     expect(isApplicableAt(s, "4.16.9")).toBe(false);
   });
 
-  test("max bound is exclusive", () => {
+  test("maxBoundExclusive", () => {
     const s = strat({ lean: { min: "4.0.0", max: "4.30.0" } });
     expect(isApplicableAt(s, "4.29.9")).toBe(true);
     expect(isApplicableAt(s, "4.30.0")).toBe(false);
   });
 
-  test("an unbounded strategy is NOT applicable under strict gating", () => {
+  test("unboundedNotApplicableStrict", () => {
     // Fail-closed is the point: silently applying a strategy with no
     // declared range is the breakage the metadata exists to prevent.
     const s = strat({ lean: {} });
@@ -60,7 +60,7 @@ describe("isApplicableAt", () => {
     expect(isApplicableAt(s, "4.24.0", false)).toBe(true);
   });
 
-  test("deprecated is never applicable, even in range", () => {
+  test("deprecatedNeverApplicable", () => {
     const s = strat({ confidence: "deprecated", lean: { min: "4.0.0" } });
     expect(isApplicableAt(s, "4.24.0")).toBe(false);
     expect(isApplicableAt(s, "4.24.0", false)).toBe(false);
@@ -70,28 +70,28 @@ describe("isApplicableAt", () => {
 describe("shipped strategy database", () => {
   const all = loadStrategies();
 
-  test("loads the mechanical family", () => {
+  test("loadsMechanicalFamily", () => {
     expect(all.length).toBeGreaterThan(0);
   });
 
-  test("every strategy declares a Lean range", () => {
+  test("everyStrategyHasLeanRange", () => {
     // An unbounded strategy would be silently dropped by strict gating,
     // i.e. shipped but dead. Catch that here rather than in a sweep.
     const unbounded = all.filter((s) => !s.lean?.min && !s.lean?.max);
     expect(unbounded.map((s) => s.id)).toEqual([]);
   });
 
-  test("ids are unique", () => {
+  test("idsUnique", () => {
     const ids = all.map((s) => s.id);
     expect(new Set(ids).size).toBe(ids.length);
   });
 
-  test("every strategy carries a worked example", () => {
+  test("everyStrategyHasExample", () => {
     const missing = all.filter((s) => !s.example?.before || !s.example?.after);
     expect(missing.map((s) => s.id)).toEqual([]);
   });
 
-  test("non-obvious rewrites carry a caveat", () => {
+  test("proposedCarryCaveat", () => {
     // `proposed` means unproven here; shipping one with no stated risk
     // invites an agent to apply it as though it were verified.
     const proposedNoCaveat = all.filter(
@@ -100,7 +100,7 @@ describe("shipped strategy database", () => {
     expect(proposedNoCaveat.map((s) => s.id)).toEqual([]);
   });
 
-  test("superseded_by, where present, resolves to a known strategy", () => {
+  test("supersededByResolves", () => {
     const ids = new Set(all.map((s) => s.id));
     const dangling = all
       .filter((s) => s.superseded_by && !ids.has(s.superseded_by))

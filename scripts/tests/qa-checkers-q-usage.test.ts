@@ -45,7 +45,7 @@ function inChapter(chapter: string, name: string, contents: string): string {
 }
 
 describe("checkQUsageArchimedeanInCategoricalChapter — precision", () => {
-  test("Real.* inside a Lean comment is prose, not a wall crossing", () => {
+  test("realInLeanCommentIsProse", () => {
     // Live example: five `appendix-surreals` conjectures all failed on the
     // same three lines of `Conjectures.lean`, every one of them inside a
     // `/- … -/` block explaining that `surrealExp` is a standard-part
@@ -67,7 +67,7 @@ describe("checkQUsageArchimedeanInCategoricalChapter — precision", () => {
     expect(r.hits).toEqual([]);
   });
 
-  test("Real.* in real code is still reported", () => {
+  test("realInCodeStillReported", () => {
     // The strip must not become a blanket exemption.
     const lean = inChapter(
       "appendix-surreals",
@@ -79,7 +79,7 @@ describe("checkQUsageArchimedeanInCategoricalChapter — precision", () => {
     expect(r.hits.length).toBeGreaterThan(0);
   });
 
-  test("a Lean file that never mentions q is out of this criterion's scope", () => {
+  test("leanWithoutQOutOfScope", () => {
     // Live example: `CoxeterGeometricRepresentationFull.lean` failed on
     // `Real.sin` / `Real.cos` and mentions `q` ZERO times. It is the classical
     // geometric representation of a Coxeter group, *defined* over ℝ via
@@ -93,7 +93,7 @@ describe("checkQUsageArchimedeanInCategoricalChapter — precision", () => {
     expect(r.result).toBe("pass");
   });
 
-  test("the q-gate does NOT suppress the prose scan", () => {
+  test("qGateNotSuppressProseScan", () => {
     // The gate is about what the Lean file does to `q`. A block whose
     // NARRATIVE quotes a ppm-level empirical comparison is flagged on its own
     // evidence, whatever its Lean sibling happens to contain.
@@ -110,7 +110,7 @@ describe("checkQUsageArchimedeanInCategoricalChapter — precision", () => {
 });
 
 describe("checkQUsageArchimedeanInCategoricalChapter — `noncomputable` is not archimedean", () => {
-  test("linarith over ℚ in a file with no ℝ is not a wall crossing", () => {
+  test("linarithOverQNotWallCrossing", () => {
     // `noncomputable` means Lean cannot generate executable code — classical
     // choice, quotients, `finrank`, abstract-field inverses. Live example:
     // `knot-eigenbasis-complete.lean` has zero `ℝ` outside docstrings, and its
@@ -129,7 +129,7 @@ describe("checkQUsageArchimedeanInCategoricalChapter — `noncomputable` is not 
     expect(r.result).toBe("pass");
   });
 
-  test("but linarith beside a genuine `q : ℝ` still fires", () => {
+  test("linarithBesideRealQFires", () => {
     const lean = inChapter(
       "braids-and-knots",
       "realq.lean",
@@ -159,7 +159,7 @@ describe("declaration-scoped attribution", () => {
     "",
   ].join("\n");
 
-  test("a block is not accountable for declarations it does not reach", () => {
+  test("blockNotAccountableForUnreached", () => {
     const lean = inChapter("appendix-surreals", "Conjectures.lean", CONJ);
     const ts = inChapter(
       "appendix-surreals",
@@ -170,7 +170,7 @@ describe("declaration-scoped attribution", () => {
     expect(r.result).toBe("pass");
   });
 
-  test("but IS accountable for the same-file helpers it calls", () => {
+  test("blockAccountableForCalledHelpers", () => {
     // `KashaevSurreal` routes through `surrealLog`'s `Real.log`. Scoping must
     // narrow attribution, not manufacture an exemption.
     //
@@ -188,7 +188,7 @@ describe("declaration-scoped attribution", () => {
     expect(r.hits.some((h) => /Real\.log/.test(h.text))).toBe(true);
   });
 
-  test("a SIBLING .lean is owned whole — adjacent theorems still count", () => {
+  test("siblingLeanOwnedWhole", () => {
     // `figure-eight-reeb-rotation.ts` ↔ `figure-eight-reeb-rotation.lean`.
     // The ref names one theorem; the archimedean content sits in another. The
     // block owns its own file, so scoping must NOT apply.
@@ -210,7 +210,7 @@ describe("declaration-scoped attribution", () => {
     expect(r.result).toBe("fail");
   });
 
-  test("a file NAMED AFTER the ref is owned whole", () => {
+  test("fileNamedAfterRefOwnedWhole", () => {
     // `qou:QOU.Braiding.TrMHopfSigma1SqClosedForm` → the class of that name in
     // `TrMHopfSigma1SqClosedForm.lean`; the `Real.sqrt q` is in the sibling
     // theorem `..._simplified`, which is still the block's content.
@@ -235,7 +235,7 @@ describe("declaration-scoped attribution", () => {
     expect(r.result).toBe("fail");
   });
 
-  test("an unresolvable ref falls back to the whole file", () => {
+  test("unresolvableRefScansWholeFile", () => {
     // A ref naming a MODULE (`qou:QOU.Aeon`) has no declaration to scope to.
     // The fallback must be the permissive one — never silently scan nothing.
     const lean = inChapter(

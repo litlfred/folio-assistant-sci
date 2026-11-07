@@ -89,7 +89,7 @@ const probe = (src: string, decl: string) =>
   probeDeclaration(src, decl, "/nonexistent-lake-root", LEAN!, 120_000);
 
 describe("the ladder actually closes goals (the control for `closed: 0`)", () => {
-  test.skipIf(NO_LEAN)("closes a goal that cheap automation should close", () => {
+  test.skipIf(NO_LEAN)("closesCheapGoal", () => {
     const r = probe(CONTROLS, "trivTrue");
     expect(r.status).toBe("closed");
     if (r.status !== "closed") return;
@@ -97,7 +97,7 @@ describe("the ladder actually closes goals (the control for `closed: 0`)", () =>
     expect(r.steps).toBe(1);
   }, LEAN_TEST_TIMEOUT_MS);
 
-  test.skipIf(NO_LEAN)("walks past rungs that fail and reports the one that worked", () => {
+  test.skipIf(NO_LEAN)("walksPastFailingRungs", () => {
     // `xs ++ [] = xs` is not definitional, so `trivial` and `rfl` must
     // both lose before `simp` wins. If `steps` were the count of rungs
     // attempted, or always 1, this is where it shows.
@@ -109,7 +109,7 @@ describe("the ladder actually closes goals (the control for `closed: 0`)", () =>
     expect(r.ladder.ran.slice(0, 3)).toEqual(["trivial", "rfl", "simp"]);
   }, LEAN_TEST_TIMEOUT_MS);
 
-  test.skipIf(NO_LEAN)("reaches deep rungs — omega at position 5", () => {
+  test.skipIf(NO_LEAN)("reachesOmegaRung", () => {
     const r = probe(CONTROLS, "omegaLinear");
     expect(r.status).toBe("closed");
     if (r.status !== "closed") return;
@@ -117,7 +117,7 @@ describe("the ladder actually closes goals (the control for `closed: 0`)", () =>
     expect(r.steps).toBe(TACTIC_LADDER.indexOf("omega") + 1);
   }, LEAN_TEST_TIMEOUT_MS);
 
-  test.skipIf(NO_LEAN)("leaves a substantive goal open — it does not close everything", () => {
+  test.skipIf(NO_LEAN)("leavesSubstantiveOpen", () => {
     // The negative control. Without it, "closes goals" could just mean
     // "reports closed unconditionally".
     const r = probe(CONTROLS, "substantive");
@@ -126,7 +126,7 @@ describe("the ladder actually closes goals (the control for `closed: 0`)", () =>
 });
 
 describe("an unavailable rung is not a rung that lost", () => {
-  test.skipIf(NO_LEAN)("records `aesop` as unavailable rather than as a failure", () => {
+  test.skipIf(NO_LEAN)("aesopUnavailableNotFailure", () => {
     // `aesop` is not core Lean. It errors with `unknown tactic` and a
     // non-zero exit — indistinguishable, to an exit-code check, from
     // "ran and did not close the goal". Then the ladder silently has
@@ -145,7 +145,7 @@ describe("an unavailable rung is not a rung that lost", () => {
     expect(incompleteRungs(r.ladder)).toEqual(["aesop"]);
   }, LEAN_TEST_TIMEOUT_MS);
 
-  test("incompleteRungs unions both kinds of non-answer", () => {
+  test("incompleteRungsUnion", () => {
     // Pure: the checker keys `n/a` off this, so it must not silently
     // drop either bucket.
     expect(
@@ -156,21 +156,21 @@ describe("an unavailable rung is not a rung that lost", () => {
 });
 
 describe("skip reasons are distinguished, because their fixes differ", () => {
-  test.skipIf(NO_LEAN)("a declaration the lexer never saw", () => {
+  test.skipIf(NO_LEAN)("skipDeclNotFound", () => {
     const r = probe(CONTROLS, "noSuchDeclaration");
     expect(r.status).toBe("skipped");
     if (r.status !== "skipped") return;
     expect(r.reason).toBe("decl-not-found");
   }, LEAN_TEST_TIMEOUT_MS);
 
-  test.skipIf(NO_LEAN)("a declaration with no body to substitute", () => {
+  test.skipIf(NO_LEAN)("skipNoBody", () => {
     const r = probe("theorem stated : True\n", "stated");
     expect(r.status).toBe("skipped");
     if (r.status !== "skipped") return;
     expect(r.reason).toBe("no-body");
   }, LEAN_TEST_TIMEOUT_MS);
 
-  test.skipIf(NO_LEAN)("a file that does not elaborate unmodified", () => {
+  test.skipIf(NO_LEAN)("skipBaselineFails", () => {
     // The old code reported this reason for all four causes. It is the
     // one that means "restore the oleans"; the others do not.
     const r = probe("theorem b : Nat := by exact notAThing\n", "b");
@@ -179,7 +179,7 @@ describe("skip reasons are distinguished, because their fixes differ", () => {
     expect(r.reason).toBe("baseline-fails");
   }, LEAN_TEST_TIMEOUT_MS);
 
-  test.skipIf(NO_LEAN)("a file too slow to probe is not a file that is broken", () => {
+  test.skipIf(NO_LEAN)("skipBaselineTimeout", () => {
     // `execFileSync` signals a timeout by killing the child, which
     // arrives in the same catch as a failed elaboration. Reported as
     // `baseline-fails` it says "restore the oleans" about a file whose
@@ -190,7 +190,7 @@ describe("skip reasons are distinguished, because their fixes differ", () => {
     expect(r.reason).toBe("baseline-timeout");
   }, LEAN_TEST_TIMEOUT_MS);
 
-  test("every skip reason carries an explanation of what would fix it", () => {
+  test("everySkipReasonExplained", () => {
     for (const r of [
       "decl-not-found",
       "no-body",
@@ -203,7 +203,7 @@ describe("skip reasons are distinguished, because their fixes differ", () => {
 });
 
 describe("splicing the body", () => {
-  test.skipIf(NO_LEAN)("a `:=` inside the statement no longer mangles the probe", () => {
+  test.skipIf(NO_LEAN)("assignInStatementNoMangle", () => {
     // `(let x := 5; x) = 5` put the old cut inside the *statement*, so
     // the tactic was spliced over the theorem's own type. The file then
     // failed to elaborate, every rung lost, and it was recorded
@@ -220,7 +220,7 @@ describe("splicing the body", () => {
     expect(r.steps).toBe(1);
   }, LEAN_TEST_TIMEOUT_MS);
 
-  test.skipIf(NO_LEAN)("comment stripping preserves offsets, so the splice lands correctly", () => {
+  test.skipIf(NO_LEAN)("commentStrippingKeepsOffsets", () => {
     // `bodyAt` is an offset into the COMMENT-STRIPPED source, used to
     // slice the ORIGINAL. That is only sound because stripping blanks
     // comments in place rather than removing them. If it ever removes,
@@ -236,7 +236,7 @@ theorem commented (n : Nat) : n + 0 = n := by
 });
 
 describe("leanPathFor", () => {
-  test("returns empty for a root with no restored packages", () => {
+  test("emptyPathWithoutPackages", () => {
     // Empty is correct and must stay distinguishable from a wrong path:
     // pointing at a directory that exists but holds no oleans reads as
     // "unknown module prefix", which looks like a missing dependency.
@@ -273,7 +273,7 @@ describe("leanPathFor", () => {
 
     afterEach(() => rmSync(tmp, { recursive: true, force: true }));
 
-    test("emits workspace package dirs BEFORE the paper root's stubs", () => {
+    test("workspacePackagesBeforeStubs", () => {
       const parts = leanPathFor(paper, workspace).split(":");
       const wsMathlib = parts.indexOf(
         join(workspace, ".lake", "packages", "mathlib", ".lake", "build", "lib", "lean"),
@@ -289,17 +289,17 @@ describe("leanPathFor", () => {
       expect(wsMathlib).toBeLessThan(paperMathlib);
     });
 
-    test("still includes the paper root's own module dir", () => {
+    test("includesPaperModuleDir", () => {
       const parts = leanPathFor(paper, workspace).split(":");
       expect(parts).toContain(join(paper, ".lake", "build", "lib", "lean"));
     });
 
-    test("omitting the workspace root preserves single-root behaviour", () => {
+    test("singleRootWithoutWorkspace", () => {
       const parts = leanPathFor(paper).split(":");
       expect(parts.every((p) => p.startsWith(paper))).toBe(true);
     });
 
-    test("does not duplicate when both roots resolve to the same path", () => {
+    test("noDuplicateWhenSameRoot", () => {
       const parts = leanPathFor(paper, paper).split(":");
       expect(new Set(parts).size).toBe(parts.length);
     });

@@ -61,7 +61,7 @@ function inRepo<T>(root: string, fn: () => T): T {
 }
 
 describe("proof-not-machine-trivial", () => {
-  test("n/a when there is no cache — absence of data, not absence of triviality", () => {
+  test("naWithoutCache", () => {
     const { root, tsPath } = makeRepo();
     const r = inRepo(root, () => checkProofNotMachineTrivial(tsPath));
     expect(r.result).toBe("n/a");
@@ -69,14 +69,14 @@ describe("proof-not-machine-trivial", () => {
     rmSync(root, { recursive: true, force: true });
   });
 
-  test("n/a when the cache has no run for this declaration", () => {
+  test("naWithoutRunForDecl", () => {
     const { root, tsPath } = makeRepo({ "P.other": { closed: true, steps: 1 } });
     const r = inRepo(root, () => checkProofNotMachineTrivial(tsPath));
     expect(r.result).toBe("n/a");
     rmSync(root, { recursive: true, force: true });
   });
 
-  test("warns when the oracle closed the goal in few steps", () => {
+  test("warnsWhenClosedInFewSteps", () => {
     const { root, tsPath } = makeRepo({ "P.foo": { closed: true, steps: 2 } });
     const r = inRepo(root, () => checkProofNotMachineTrivial(tsPath));
     expect(r.result).toBe("warn");
@@ -87,7 +87,7 @@ describe("proof-not-machine-trivial", () => {
     rmSync(root, { recursive: true, force: true });
   });
 
-  test("passes when the oracle could not close the goal", () => {
+  test("passesWhenNotClosed", () => {
     const { root, tsPath } = makeRepo({ "P.foo": { closed: false } });
     const r = inRepo(root, () => checkProofNotMachineTrivial(tsPath));
     expect(r.result).toBe("pass");
@@ -95,7 +95,7 @@ describe("proof-not-machine-trivial", () => {
     rmSync(root, { recursive: true, force: true });
   });
 
-  test("passes when the goal took more than the threshold", () => {
+  test("passesAboveThreshold", () => {
     const { root, tsPath } = makeRepo({
       "P.foo": { closed: true, steps: TRIVIAL_STEP_THRESHOLD + 1 },
     });
@@ -104,7 +104,7 @@ describe("proof-not-machine-trivial", () => {
     rmSync(root, { recursive: true, force: true });
   });
 
-  test("n/a when the measurement is stale relative to the .lean", () => {
+  test("naWhenMeasurementStale", () => {
     // A measurement taken against different source says nothing about
     // the current statement — reporting it would be a confident wrong
     // answer rather than a weak one.
@@ -122,7 +122,7 @@ describe("proof-not-machine-trivial", () => {
     rmSync(root, { recursive: true, force: true });
   });
 
-  test("a `not closed` from a SHORT ladder is n/a, not pass", () => {
+  test("shortLadderNotClosedIsNa", () => {
     // The probe runs six rungs. `aesop` is not core Lean, so in a folio
     // without Mathlib it errors with `unknown tactic` — which, to an
     // exit-code check, looks exactly like "ran and did not close the
@@ -138,7 +138,7 @@ describe("proof-not-machine-trivial", () => {
     rmSync(root, { recursive: true, force: true });
   });
 
-  test("a `not closed` from the FULL ladder is still a pass", () => {
+  test("fullLadderNotClosedPasses", () => {
     // The complement: the n/a path must not swallow real measurements.
     const { root, tsPath } = makeRepo({ "P.foo": { closed: false } });
     const r = inRepo(root, () => checkProofNotMachineTrivial(tsPath));
@@ -146,7 +146,7 @@ describe("proof-not-machine-trivial", () => {
     rmSync(root, { recursive: true, force: true });
   });
 
-  test("an incomplete ladder does not suppress a goal that WAS closed", () => {
+  test("shortLadderKeepsClosedWarn", () => {
     // If `simp` closed it at rung 3, aesop never running is irrelevant —
     // the hit stands. Only "not closed" is weakened by a short ladder.
     const { root, tsPath } = makeRepo({
@@ -157,7 +157,7 @@ describe("proof-not-machine-trivial", () => {
     rmSync(root, { recursive: true, force: true });
   });
 
-  test("never returns fail — it is warn-only by construction", () => {
+  test("neverFails", () => {
     for (const entry of [
       { closed: true, steps: 0 },
       { closed: true, steps: 1 },

@@ -28,7 +28,7 @@ describe("checkWallSide — §7c acknowledgement via .ts authorNotes", () => {
     tmp("a.lean", "noncomputable def f : Real := Real.pi\n");
   const plainMd = () => tmp("a.md", "The map f is defined.");
 
-  test("§7c note in authorNotes → pass (no .md acknowledgement)", () => {
+  test("ackInAuthorNotesPasses", () => {
     const ts = tmp(
       "ack.ts",
       `export const b = { authorNotes: [{ kind: "note", body: "archimedean specialisation over R (§7c)." }] };`,
@@ -36,12 +36,12 @@ describe("checkWallSide — §7c acknowledgement via .ts authorNotes", () => {
     expect(checkWallSide(plainMd(), archLean(), ts).result).toBe("pass");
   });
 
-  test("no acknowledgement anywhere → fail (checker not neutered)", () => {
+  test("noAckFails", () => {
     const ts = tmp("noack.ts", `export const b = { title: "f", uses: [] };`);
     expect(checkWallSide(plainMd(), archLean(), ts).result).toBe("fail");
   });
 
-  test("']' inside a note body does not truncate extraction of a later §7c note", () => {
+  test("bracketInNoteNoTruncate", () => {
     const ts = tmp(
       "brackets.ts",
       `export const b = { authorNotes: [{ kind: "note", body: "see [ref](x) and footnote [1]; archimedean specialisation over R." }] };`,
@@ -49,19 +49,19 @@ describe("checkWallSide — §7c acknowledgement via .ts authorNotes", () => {
     expect(checkWallSide(plainMd(), archLean(), ts).result).toBe("pass");
   });
 
-  test("'over \\\\mathbb{R}' acknowledgement in .md matches case-insensitively", () => {
+  test("overMathbbRAckCaseInsensitive", () => {
     const md = tmp("mr.md", "Defined over $\\mathbb{R}$ here.");
     const ts = tmp("bare.ts", `export const b = { title: "f" };`);
     expect(checkWallSide(md, archLean(), ts).result).toBe("pass");
   });
 
-  test("algebraic .lean (generic R) is unaffected → pass", () => {
+  test("genericRLeanPasses", () => {
     const lean = tmp("g.lean", "def f {R : Type*} [CommRing R] (x : R) := x\n");
     const ts = tmp("bare2.ts", `export const b = { title: "f" };`);
     expect(checkWallSide(plainMd(), lean, ts).result).toBe("pass");
   });
 
-  test("generic [Field R] closing a literal with norm_num is NOT a mixed-signal fail (bring-residue pattern)", () => {
+  test("fieldRWithNormNumNotMixed", () => {
     // No ℝ / Real TYPE anywhere — only `[Field R]` + `norm_num`. The
     // arithmetic tactics (`norm_num` / `linarith` / `positivity` /
     // `nlinarith`) discharge goals over any ordered field / ℕ / ℤ and are
@@ -81,7 +81,7 @@ describe("checkWallSide — §7c acknowledgement via .ts authorNotes", () => {
     expect(checkWallSide(mdAck, lean, ts).result).toBe("pass");
   });
 
-  test("genuine ℝ-TYPE marker (Real.*) alongside generic-R is still flagged as mixed", () => {
+  test("realTypeWithGenericRFlaggedMixed", () => {
     // A real-field type (here `Real.pi`) coexisting with generic-R markers
     // IS a real mixed placement — the split flag must survive.
     const lean = tmp(
@@ -92,7 +92,7 @@ describe("checkWallSide — §7c acknowledgement via .ts authorNotes", () => {
     expect(checkWallSide(plainMd(), lean, ts).result).toBe("fail");
   });
 
-  test("broadened ℝ detection: `(x : ℝ)` spaced form alongside generic-R is flagged", () => {
+  test("spacedRealWithGenericRFlagged", () => {
     // The narrow `: ℝ\\b` token missed `(x : ℝ)`; the broadened bare-ℝ
     // matcher catches it, so an unacknowledged R→ℝ mix is now flagged.
     const lean = tmp(
@@ -103,7 +103,7 @@ describe("checkWallSide — §7c acknowledgement via .ts authorNotes", () => {
     expect(checkWallSide(plainMd(), lean, ts).result).toBe("fail");
   });
 
-  test("mixed-signal ACK-ESCAPE: `(x : ℝ)` + generic-R WITH a §7c ack → pass", () => {
+  test("mixedWithAckPasses", () => {
     // A legitimate R→ℝ realisation that acknowledges the specialisation is
     // not forced to split (an acknowledged mix passes, mirroring the ack
     // branch's philosophy).
@@ -123,7 +123,7 @@ describe("checkWallSide — §7c acknowledgement via .ts authorNotes", () => {
 describe("checkWallSide — ack branch keyed on hasRealType, not tactic-inclusive isArchimedean", () => {
   const plainMd = () => tmp("p.md", "The statement holds.");
 
-  test("tactic-only block (norm_num, NO ℝ / Real / generic-R) → pass (false-positive drop)", () => {
+  test("tacticOnlyPasses", () => {
     // The prior ack branch keyed on the tactic-inclusive `isArchimedean`, so a
     // purely-algebraic block whose only "archimedean" marker was a `norm_num`
     // closing an integer identity (e.g. a partition-function count) was
@@ -139,7 +139,7 @@ describe("checkWallSide — ack branch keyed on hasRealType, not tactic-inclusiv
     expect(checkWallSide(plainMd(), lean, ts).result).toBe("pass");
   });
 
-  test("colonless bare-ℝ return type `→ ℝ` (no `: ℝ` token), no ack → fail (broadening)", () => {
+  test("colonlessRealNoAckFails", () => {
     // The narrow `: ℝ\\b` token required a colon, so a colonless `→ ℝ` /
     // `ℝ³` form slipped through the ack requirement. The bare-`ℝ`
     // `hasRealType` matcher catches it: an unacknowledged real-valued block
@@ -152,7 +152,7 @@ describe("checkWallSide — ack branch keyed on hasRealType, not tactic-inclusiv
     expect(checkWallSide(plainMd(), lean, ts).result).toBe("fail");
   });
 
-  test("colonless bare-ℝ `→ ℝ` WITH a §7c ack → pass (ack escape)", () => {
+  test("colonlessRealWithAckPasses", () => {
     const lean = tmp(
       "colonlessack.lean",
       "noncomputable def energy : ℕ → ℝ := fun n => (n : ℝ)\n",
@@ -165,7 +165,7 @@ describe("checkWallSide — ack branch keyed on hasRealType, not tactic-inclusiv
     expect(checkWallSide(mdAck, lean, ts).result).toBe("pass");
   });
 
-  test("Real.exp (real-analysis fn, subsumed by \\bReal\\b) with no ack → fail", () => {
+  test("realExpNoAckFails", () => {
     // hasRealType's `\\bReal\\b` already subsumes every `Real.*` real-analysis
     // function, so dropping the explicit `Real.exp` alternative from the ack
     // key loses no genuine coverage.

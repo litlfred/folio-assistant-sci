@@ -13,7 +13,7 @@ const js = readFileSync(join(dir, "viewer.js"), "utf-8");
 describe("lean-kg-viewer", () => {
   const external = [...html.matchAll(/<script\b[^>]*\bsrc="(https?:[^"]+)"[^>]*>/g)];
 
-  test("every third-party script is version-pinned and carries SRI + crossorigin", () => {
+  test("thirdPartyScriptsPinnedWithSri", () => {
     expect(external.length).toBeGreaterThan(0);
     for (const [tag, src] of external) {
       expect(src).toMatch(/@\d+\.\d+\.\d+\//);
@@ -22,18 +22,18 @@ describe("lean-kg-viewer", () => {
     }
   });
 
-  test("DOMPurify is loaded", () => {
+  test("domPurifyLoaded", () => {
     expect(external.some(([, src]) => /\/dompurify@[^/]+\/dist\/purify(\.min)?\.js$/.test(src!))).toBe(true);
   });
 
-  test("innerHTML is assigned only from DOMPurify's output", () => {
+  test("innerHtmlOnlyFromPurify", () => {
     const sets = [...js.matchAll(/\.innerHTML\s*=([^;]*);/g)];
     expect(sets.length).toBe(1);
     expect(sets[0]![1]!.trim()).toMatch(/^purify\.sanitize\(/);
     expect(js).not.toMatch(/\b(outerHTML\s*=|insertAdjacentHTML|document\.write)\b/);
   });
 
-  test("without DOMPurify the viewer falls back to text, not raw HTML", () => {
+  test("fallsBackToTextWithoutPurify", () => {
     expect(js).toMatch(/else node\.textContent = htmlText\(html\)/);
     expect(js).toMatch(/if \(window\.marked && window\.DOMPurify\)/);
   });

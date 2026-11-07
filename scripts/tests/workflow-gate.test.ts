@@ -19,7 +19,7 @@ import { workflowFile } from "../../../cat-harness-tools/scripts/known-skills.ts
 const HERE = resolve(import.meta.dir, "../..");
 
 describe("the base is strict and the content-type processes are not", () => {
-  test("an advisory process allows a step that is not enabled, and says why", async () => {
+  test("advisoryProcessAllowsDisabledStep", async () => {
     const model = await loadProcessModel(workflowFile(HERE, "authoring-a-paper.bpmn"));
     const state = startInstance(model, { id: "g0", subject: "paper" });
     const v = checkGate(model, state, "Call_ReviewPublish", []);

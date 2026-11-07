@@ -35,7 +35,7 @@ const dirOf = (typology: string) =>
   declaration.directories.find((d) => d.graphTypologies.includes(typology))?.path;
 
 describe("conjecture-register typology and validator", () => {
-  test("declares the conjectures typology (holds: state) and its validator node", () => {
+  test("declaresTypologyAndValidator", () => {
     const kind = JSON.parse(
       readFileSync(join(SCI, dirOf("typologies")!, "conjectures.json"), "utf8"),
     );
@@ -56,7 +56,7 @@ describe("conjecture-register typology and validator", () => {
     expect(ConjectureRegisterKind.id).toBe("folio-conjecture-register");
   });
 
-  test("validates formal and identification register nodes and rejects malformed entries", () => {
+  test("validatesNodesRejectsMalformed", () => {
     const valid = {
       $schema: CONJECTURE_REGISTER_SCHEMA,
       id: "conj-spectral-gap",
@@ -99,7 +99,7 @@ describe("conjecture-register typology and validator", () => {
 });
 
 describe("conjecture status lifecycle DMN and transitions", () => {
-  test("DMN table covers every ConjectureStatus and evaluates deterministically", async () => {
+  test("dmnCoversStatusesDeterministic", async () => {
     const table = await loadConjectureStatusTable();
     expect(table.hitPolicy).toBe("FIRST");
     expect(table.inputs.map((i) => i.expression)).toEqual([
@@ -156,7 +156,7 @@ describe("conjecture status lifecycle DMN and transitions", () => {
     ).toEqual({ status: "superseded", rule: "Rule_Superseded" });
   });
 
-  test("transitionConjectureNode advances open -> attempted -> proved and refuses backward transitions", () => {
+  test("transitionsForwardRefusesBackward", () => {
     const openNode = ConjectureRegisterNodeSchema.parse({
       $schema: CONJECTURE_REGISTER_SCHEMA,
       id: "conj-mass-ratio",
@@ -202,7 +202,7 @@ describe("computeAssumedBy over lean-formal-graph reverse edges", () => {
     { decl: "QOU.Unrelated", type_deps: ["QOU.OtherDef"], value_deps: [] },
   ];
 
-  test("computes direct and transitive reverse dependencies from formal-edge records", () => {
+  test("assumedByDirectAndTransitive", () => {
     expect(computeAssumedBy("qou:QOU.ConjAlpha", edges, { transitive: false })).toEqual([
       "QOU.LemmaStep",
     ]);
@@ -214,7 +214,7 @@ describe("computeAssumedBy over lean-formal-graph reverse edges", () => {
     ]);
   });
 
-  test("maps Lean declaration names to block labels when declToBlockLabel is provided", () => {
+  test("assumedByMapsDeclsToLabels", () => {
     const declToBlockLabel = new Map([
       ["QOU.LemmaStep", "lem:step"],
       ["QOU.ThmMain", "thm:main"],
