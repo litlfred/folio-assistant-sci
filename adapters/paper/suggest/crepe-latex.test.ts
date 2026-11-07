@@ -74,17 +74,17 @@ async function crepe(md: string, repaired: boolean): Promise<Run> {
 const mathSpans = (s: string) => [...s.matchAll(/\$\$[\s\S]+?\$\$|\$[^$\n]+\$/g)].map((m) => m[0]);
 
 describe("the library's math survives Crepe", () => {
-  test("there is math to test", () => {
+  test("thereIsMathToTest", () => {
     expect(MATH_SECTIONS.length).toBeGreaterThanOrEqual(5);
     expect(SEC006).toBeDefined();
   });
 
-  test("the LaTeX-export block round-trips byte for byte, repaired or not", async () => {
+  test("latexExportBlockRoundTrips", async () => {
     expect((await crepe(SEC006.md, false)).markdown).toBe(SEC006.md);
     expect((await crepe(SEC006.md, true)).markdown).toBe(SEC006.md);
   });
 
-  test("with the repairs, every math span in every section comes back unchanged", async () => {
+  test("repairedKeepsEveryMathSpan", async () => {
     for (const s of MATH_SECTIONS) {
       // Prose that only TALKS about `$` (a delimiter list) is not math. Crepe escapes it, and that is right.
       const want = mathSpans(s.md).filter((m) => !/^\$, \$$/.test(m));
@@ -93,7 +93,7 @@ describe("the library's math survives Crepe", () => {
     }
   });
 
-  test("Crepe's own output for a section passes the syntax checks", async () => {
+  test("crepeOutputPassesSyntaxChecks", async () => {
     for (const s of MATH_SECTIONS) {
       const out = (await crepe(s.md, true)).markdown;
       expect({ section: s.name, errors: checkSuggestion(s.md, out, { macros: MACROS }).filter((f) => f.severity === "error") })
@@ -106,11 +106,11 @@ describe("repair 1: inline math gets the paper's macros", () => {
   const MD = "Inline $\\LM(x)$.\n";
   const errorRed = /#cc0000/;
 
-  test("unrepaired, Crepe 7.22.2 ignores katexOptions.macros inline", async () => {
+  test("unrepairedIgnoresInlineMacros", async () => {
     expect((await crepe(MD, false)).html).toMatch(errorRed);
   });
 
-  test("repaired, the macro renders and the source is kept", async () => {
+  test("repairedRendersMacroKeepsSource", async () => {
     const r = await crepe(MD, true);
     expect(r.html).not.toMatch(errorRed);
     expect(r.html).toContain('data-type="math_inline"');
@@ -125,16 +125,16 @@ describe("repair 2: LaTeX outside math is kept verbatim", () => {
     "Before.\n\n\\begin{proof}[Sketch]\nFirst.\n\nSecond, by \\cref{lem:a}.\n\\end{proof}\n\nAfter.\n",
   ];
 
-  test("unrepaired, Crepe escapes optional arguments into broken LaTeX", async () => {
+  test("unrepairedEscapesOptionalArgs", async () => {
     expect((await crepe(CASES[0]!, false)).markdown).toContain("\\begin{theorem}\\[Fermat]");
     expect((await crepe(CASES[1]!, false)).markdown).toContain("\\cite\\[p.\\~3]");
   });
 
-  test("repaired, each comes back byte for byte", async () => {
+  test("repairedLatexRoundTrips", async () => {
     for (const md of CASES) expect((await crepe(md, true)).markdown).toBe(md);
   });
 
-  test("an edit outside the LaTeX still lands, and the LaTeX beside it is untouched", async () => {
+  test("editOutsideLatexLandsLatexUntouched", async () => {
     const md = CASES[1]!.replace("See", "Compare");
     const out = (await crepe(md, true)).markdown;
     expect(out).toBe(md);
@@ -143,12 +143,12 @@ describe("repair 2: LaTeX outside math is kept verbatim", () => {
 });
 
 describe("what Crepe changes and the repairs leave alone", () => {
-  test("`$$x$$` written inline comes back as `$x$`", async () => {
+  test("inlineDoubleDollarBecomesSingle", async () => {
     // remark-math reads both as inlineMath. The site renders both inline, so the meaning is the same.
     expect((await crepe("Inline $$x^2$$ here.\n", true)).markdown).toBe("Inline $x^2$ here.\n");
   });
 
-  test("display math, with an aligned environment inside it, is Crepe's own and round-trips", async () => {
+  test("displayAlignedRoundTrips", async () => {
     const md = "$$\n\\begin{aligned} a &= b \\\\ c &= d \\end{aligned}\n$$\n";
     expect((await crepe(md, false)).markdown).toBe(md);
     expect((await crepe(md, true)).markdown).toBe(md);

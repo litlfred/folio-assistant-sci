@@ -58,7 +58,7 @@ end QOU.BraidKnot
 `;
 
 describe("lean-no-vacuous-instance-data", () => {
-  test("fires on the motivating case", () => {
+  test("vacuousDataFiresOnMotivatingCase", () => {
     const r = withLean(MOTIVATING_CASE, (p) => checkNoVacuousInstanceData(p));
     expect(r.result).toBe("fail");
     expect(r.hits.length).toBeGreaterThan(0);
@@ -66,12 +66,12 @@ describe("lean-no-vacuous-instance-data", () => {
     expect(r.hits[0].text).toContain("confLevel := 0");
   });
 
-  test("says so when the vacuous decl is an `instance`, not a `def`", () => {
+  test("vacuousInstanceSaysResolvedEverywhere", () => {
     const r = withLean(MOTIVATING_CASE, (p) => checkNoVacuousInstanceData(p));
     expect(r.hits[0].text).toContain("resolved everywhere");
   });
 
-  test("still fires on a `def`, but without the resolution warning", () => {
+  test("vacuousDefFiresWithoutResolution", () => {
     const r = withLean(MOTIVATING_CASE.replace("instance canonical", "def canonical"), (p) =>
       checkNoVacuousInstanceData(p),
     );
@@ -79,7 +79,7 @@ describe("lean-no-vacuous-instance-data", () => {
     expect(r.hits[0].text).not.toContain("resolved everywhere");
   });
 
-  test("does NOT fire when a data field reads its own binder", () => {
+  test("dataReadingBinderPasses", () => {
     // `sl3DemazureLevelOne`, quoted from `QOU/Machinery/KashiwaraCrystalBasic
     // .lean`. This is the declaration written *specifically* to give
     // `demazure_closure` teeth — a proper sub-crystal `{0,1}` of a three-vertex
@@ -103,7 +103,7 @@ def sl3DemazureLevelOne : DemazureSubcrystal standardSl3Crystal 1 where
     expect(r.result).toBe("pass");
   });
 
-  test("a WILDCARD binder is not argument-dependence", () => {
+  test("wildcardBinderNotDependence", () => {
     // Mutation of the pin above: `fun v => v ≠ 2` is the only thing separating
     // it from a laundering. Discard the argument and the veto must not apply,
     // or `mul _ _ := PUnit.unit` would clear every trivial instance in the
@@ -118,7 +118,7 @@ def sl3Bogus : DemazureSubcrystal standardSl3Crystal 1 where
     expect(r.result).toBe("fail");
   });
 
-  test("point-full binders count too — `f x := g x`, not just lambdas", () => {
+  test("pointFullBindersCount", () => {
     const src = `
 def pointFull : MyStructure where
   weight n := n + 1
@@ -129,7 +129,7 @@ def pointFull : MyStructure where
     expect(r.result).toBe("pass");
   });
 
-  test("an instance at a CONCRETE carrier is not the severe form", () => {
+  test("concreteCarrierNotSevere", () => {
     // `instance foo : C SomeObject where …` binds nothing, so resolution
     // supplies it for that one object. Its degenerate fields are a claim about
     // that object, not about every carrier. Both survivors of the 2026-08-24
@@ -147,7 +147,7 @@ instance instR5FullWitness_helium3 : R5FullWitness LightNucleus.helium3 where
     }
   });
 
-  test("an instance over a VARIABLE carrier IS the severe form", () => {
+  test("variableCarrierIsSevere", () => {
     const src = `
 instance canonical (R : Type u) [CommRing R] (q : R) : S R q where
   lhs _ := 0
@@ -159,7 +159,7 @@ instance canonical (R : Type u) [CommRing R] (q : R) : S R q where
     expect(r.hits[0].text).toContain("resolved everywhere");
   });
 
-  test("does NOT fire on degenerate data alone — a genuine zero object", () => {
+  test("degenerateDataAlonePasses", () => {
     const src = `
 /-- The zero module is a legitimate object. -/
 instance zeroModel : MyStructure where
@@ -170,7 +170,7 @@ instance zeroModel : MyStructure where
     expect(r.result).toBe("pass");
   });
 
-  test("does NOT fire on a `rfl` discharge alone — real reflexivity", () => {
+  test("rflAlonePasses", () => {
     const src = `
 /-- A real instance whose one law happens to be reflexivity. -/
 instance realThing : MyStructure where
@@ -182,7 +182,7 @@ instance realThing : MyStructure where
     expect(r.result).toBe("pass");
   });
 
-  test("does NOT fire on an instance with no claim field at all", () => {
+  test("noClaimFieldPasses", () => {
     const src = `
 instance dataOnly : MyStructure where
   a := 0
@@ -192,7 +192,7 @@ instance dataOnly : MyStructure where
     expect(r.result).toBe("pass");
   });
 
-  test("catches PUnit and default as degenerate data", () => {
+  test("punitAndDefaultDegenerate", () => {
     const src = `
 instance punitModel : MyStructure where
   cell _ := PUnit.unit
@@ -203,7 +203,7 @@ instance punitModel : MyStructure where
     expect(r.result).toBe("fail");
   });
 
-  test("catches `by simp` and `trivial` as trivial discharges", () => {
+  test("simpTrivialDecideDischarges", () => {
     for (const discharge of ["by simp", "trivial", "by decide"]) {
       const src = `
 instance m : S where
@@ -216,20 +216,20 @@ instance m : S where
     }
   });
 
-  test("n/a when there is no lean file", () => {
+  test("vacuousDataNaWithoutFile", () => {
     expect(checkNoVacuousInstanceData(undefined).result).toBe("n/a");
     expect(checkNoVacuousInstanceData("/nonexistent/X.lean").result).toBe("n/a");
   });
 });
 
 describe("lean-docstring-honesty", () => {
-  test("fires when the docstring claims a sorry and there is none", () => {
+  test("docstringClaimsAbsentSorryFires", () => {
     const r = withLean(MOTIVATING_CASE, (p) => checkDocstringHonesty(p));
     expect(r.result).toBe("fail");
     expect(r.hits[0].text).toContain("canonical");
   });
 
-  test("does NOT fire when the body really does carry a sorry", () => {
+  test("docstringWithRealSorryPasses", () => {
     const src = `
 /-- Carries the conjecture as a sorry. -/
 theorem open_claim : P = Q := by
@@ -239,7 +239,7 @@ theorem open_claim : P = Q := by
     expect(r.result).toBe("pass");
   });
 
-  test("does NOT fire when the docstring makes no honesty claim", () => {
+  test("docstringWithoutClaimPasses", () => {
     const src = `
 /-- An ordinary instance. -/
 instance ordinary : S where
@@ -251,7 +251,7 @@ instance ordinary : S where
     expect(r.result).toBe("pass");
   });
 
-  test("does NOT fire on a docstring that quotes the lie in order to correct it", () => {
+  test("docstringQuotingLiePasses", () => {
     // The remedy for this criterion is to rewrite the docstring explaining what
     // really discharges the term, which means quoting the false claim. Firing
     // on the fix would punish exactly the change the criterion asks for.
@@ -267,7 +267,7 @@ def canonical : S where
     expect(r.result).toBe("pass");
   });
 
-  test("does NOT fire on `sorry-free` — a false positive found in the corpus", () => {
+  test("sorryFreeDocstringPasses", () => {
     // QOU/SchurWeyl/QJucysMurphy.lean `barSymJMSum_central` and
     // QOU/AlgebraicSubstrate/qou_obstruction_reduction.lean
     // `kappa_vanishes_iff_chi` both say "sorry-free" and were both flagged.
@@ -281,7 +281,7 @@ theorem kappa_vanishes_iff_chi : P ↔ Q := by
     expect(r.result).toBe("pass");
   });
 
-  test("does NOT fire on a PAST-TENSE sorry that has since been removed", () => {
+  test("pastTenseSorryPasses", () => {
     // Recording the history is the docstring doing its job; reading it as a
     // present claim flags the note precisely because it is thorough.
     const src = `
@@ -295,7 +295,7 @@ theorem barSymJMSum_central : P := by
     expect(r.result).toBe("pass");
   });
 
-  test("STILL fires on a present-tense claim with no sorry — the guard is not a hole", () => {
+  test("presentTenseClaimStillFires", () => {
     const src = `
 /-- **Faithful instance.** Carries the explicit research-grade conjecture as a sorry. -/
 def canonical : S where
@@ -307,7 +307,7 @@ def canonical : S where
     expect(r.result).toBe("fail");
   });
 
-  test("a `sorry` mentioned only in a comment does not count as carrying one", () => {
+  test("sorryInCommentNotCarried", () => {
     const src = `
 /-- Carries the conjecture as a sorry. -/
 theorem fake : P = Q := by
@@ -320,20 +320,20 @@ theorem fake : P = Q := by
 });
 
 describe("parsers", () => {
-  test("parseFieldAssigns reads name and value, ignoring binders", () => {
+  test("fieldAssignsNameValueLine", () => {
     const f = parseFieldAssigns("  confLevel _ := 0\n  agree _ := rfl\n", 10);
     expect(f.map((x) => x.name)).toEqual(["confLevel", "agree"]);
     expect(f.map((x) => x.value)).toEqual(["0", "rfl"]);
     expect(f[0].line).toBe(10);
   });
 
-  test("parseFieldAssigns is not fooled by `:` inside a type ascription", () => {
+  test("fieldAssignsIgnoresTypeColon", () => {
     const f = parseFieldAssigns("  d : ∀ c, page c →ₗ[R] page c := 0\n", 1);
     expect(f[0].name).toBe("d");
     expect(f[0].value).toBe("0");
   });
 
-  test("parseDecls attaches the preceding docstring", () => {
+  test("parseDeclsAttachesDocstring", () => {
     const d = parseDecls("/-- Doc here. -/\ninstance foo : S where\n  a := 0\n");
     expect(d).toHaveLength(1);
     expect(d[0].name).toBe("foo");
@@ -341,12 +341,12 @@ describe("parsers", () => {
     expect(d[0].docstring).toContain("Doc here");
   });
 
-  test("parseDecls handles a multi-line docstring", () => {
+  test("parseDeclsMultilineDocstring", () => {
     const d = parseDecls("/-- Line one\n    line two. -/\ndef bar : S where\n  a := 0\n");
     expect(d[0].docstring).toContain("line two");
   });
 
-  test("parseStructureDecls reads a class's fields and their types", () => {
+  test("structureDeclsFieldsAndTypes", () => {
     const d = parseStructureDecls(SUBSTRATE_WIDTH_RULE);
     expect(d).toHaveLength(1);
     expect(d[0].kind).toBe("class");
@@ -355,7 +355,7 @@ describe("parsers", () => {
     expect(d[0].fields[1].type).toBe("∀ A, w A = cableWidthColor");
   });
 
-  test("parseStructureDecls absorbs a field type that wraps onto later lines", () => {
+  test("structureDeclsWrappedFieldType", () => {
     const d = parseStructureDecls(CRYSTAL_R_MATRIX);
     expect(d[0].fields.map((f) => f.name)).toEqual([
       "poleIndicator",
@@ -364,7 +364,7 @@ describe("parsers", () => {
     expect(d[0].fields[1].type).toBe("∀ rho : ℤ, poleIndicator rho = decide (rho ≤ -1)");
   });
 
-  test("parseStructureDecls skips the header binders, which precede `where`", () => {
+  test("structureDeclsSkipsHeaderBinders", () => {
     // `class C (R : Type u) [CommRing R] (q : R)` wraps onto a second line and
     // only then reaches `where`. Reading the binders as fields would invent a
     // field per binder group.
@@ -477,7 +477,7 @@ instance canonical : BorromeanQuark where
 `;
 
 describe("lean-no-definitional-laundering — argument-ignoring bodies", () => {
-  test("fires on `: Prop := True` behind a discarded `let`", () => {
+  test("launderingPropTrueBehindLet", () => {
     const r = withLean(TOROIDAL_ODE, (p) => checkNoDefinitionalLaundering(p));
     expect(r.result).toBe("fail");
     expect(r.hits.map((h) => h.text).join("\n")).toContain("ToroidalHarmonicODE");
@@ -485,21 +485,21 @@ describe("lean-no-definitional-laundering — argument-ignoring bodies", () => {
     expect(r.metrics?.constant_prop_defs).toBe(2);
   });
 
-  test("fires on `: Prop := False` ignoring all four arguments", () => {
+  test("launderingPropFalseIgnoringArgs", () => {
     const r = withLean(IN_TENSOR_SPAN_BEFORE, (p) => checkNoDefinitionalLaundering(p));
     expect(r.result).toBe("fail");
     expect(r.hits[0].text).toContain("InTensorSpan");
     expect(r.hits[0].text).toContain("constant `False`");
   });
 
-  test("does NOT fire on the `opaque` repair of that same declaration", () => {
+  test("opaqueRepairPasses", () => {
     // Sealing the body is the fix the criterion asks for. Firing on it would
     // make the criterion unfixable.
     const r = withLean(IN_TENSOR_SPAN_AFTER, (p) => checkNoDefinitionalLaundering(p));
     expect(r.result).toBe("pass");
   });
 
-  test("does NOT fire on a `def` that genuinely computes from its arguments", () => {
+  test("computingDefPasses", () => {
     const src = `
 def jointTraceStrands (A w : ℕ) : ℕ := A * w
 
@@ -510,7 +510,7 @@ def ToroidalWellPosed (n m : ℝ) (F : ℝ → ℝ) (η : ℝ) : Prop :=
     expect(r.result).toBe("pass");
   });
 
-  test("does NOT fire on an argument-free `def X : Prop := True`", () => {
+  test("argumentFreePropTruePasses", () => {
     // `QOU/Infra/DirichletL.lean` `beta3IsLChi4_3` is exactly this, and it is
     // a real defect — but it is `proof-no-trivial-true`'s `def-disguised-true`
     // pattern, already in the registry. Reporting it twice adds noise, not
@@ -523,7 +523,7 @@ def beta3IsLChi4_3 : Prop := True
     expect(r.result).toBe("pass");
   });
 
-  test("counts top-level argument groups, not parentheses", () => {
+  test("countsTopLevelArgGroups", () => {
     // The arity is quoted back to the reader, so `(f : (ℕ → ℕ))` must read as
     // one group.
     const src = `
@@ -533,7 +533,7 @@ def Bogus (f : (ℕ → ℕ)) [Inhabited ℕ] : Prop := True
     expect(r.hits[0].text).toContain("takes 2 argument groups");
   });
 
-  test("does NOT fire when the `let` result is actually returned", () => {
+  test("returnedLetPasses", () => {
     const src = `
 def RealODE (n : ℝ) (F : ℝ → ℝ) (η : ℝ) : Prop :=
   let V := n ^ 2 - (1 / 4 : ℝ)
@@ -545,13 +545,13 @@ def RealODE (n : ℝ) (F : ℝ → ℝ) (η : ℝ) : Prop :=
 });
 
 describe("lean-no-definitional-laundering — a constant behind a lambda", () => {
-  test("reports `member := fun _ => True` beside a reflexivity discharge", () => {
+  test("lambdaConstantBesideRflReported", () => {
     const r = withLean(DEMAZURE_SUBCRYSTAL, (p) => checkNoDefinitionalLaundering(p));
     expect(r.hits[0].text).toContain("member := fun _ => True");
     expect(r.hits[0].text).toContain("highest_mem");
   });
 
-  test("grades detection 2 `warn`, not `fail` — the constant may be correct", () => {
+  test("lambdaConstantGradedWarn", () => {
     // This exact declaration is the reason. `sl₂` has one simple root, so
     // `B(Λ₁)` has two Demazure sub-crystals and the level-1 one is the whole
     // two-vertex crystal: `fun _ => True` is the value the mathematics forces.
@@ -563,7 +563,7 @@ describe("lean-no-definitional-laundering — a constant behind a lambda", () =>
     expect(r.hits[0].text).toContain("REVIEW (not a verdict)");
   });
 
-  test("detection 1 is still a verdict — a tautology is wrong either way", () => {
+  test("propTautologyStillFails", () => {
     // The grade split: `def F args : Prop := True` admits no reading that
     // rescues it, so it stays `fail` where detections 2 and 3 are `warn`.
     const src = `
@@ -573,7 +573,7 @@ def Bogus (n : ℕ) : Prop := True
     expect(r.result).toBe("fail");
   });
 
-  test("the sibling criterion misses it — that is why this one exists", () => {
+  test("siblingMissesLambdaConstant", () => {
     // `DEGENERATE_VALUE` is anchored `^…$`, so one `fun _ =>` defeats it.
     // If this ever starts failing, the two criteria have stopped partitioning
     // the defect and one of them is now redundant.
@@ -581,7 +581,7 @@ def Bogus (n : ℕ) : Prop := True
     expect(r.result).toBe("pass");
   });
 
-  test("does NOT fire on a constant function with a NAMED binder", () => {
+  test("namedBinderConstantPasses", () => {
     // `fun n => 0` may well be the intended function. The wildcard is the
     // signal: it says the author is not looking at the argument.
     const src = `
@@ -593,7 +593,7 @@ instance zeroWeight : MyStructure where
     expect(r.result).toBe("pass");
   });
 
-  test("does NOT fire when some law needed a real proof", () => {
+  test("realProofLawPasses", () => {
     // `verlindeData_two` in `KeystoneVerlindeSMatrixBridge.lean`: a small model
     // exhibited to show the class is inhabited. `qDim := fun _ => 1` is its
     // degenerate corner, not a laundering — `D_sq` and `D_ne` are proved.
@@ -613,7 +613,7 @@ instance verlindeData_two : VerlindeModularData ℝ where
     expect(r.result).toBe("pass");
   });
 
-  test("does NOT fire on a declared inhabitation witness", () => {
+  test("inhabitationWitnessPasses", () => {
     // `rtData_two` in `KeystoneRTSurgeryConstruction.lean`. Every field is a
     // one-liner, so no structural signal separates it from a laundering — only
     // the stated intent does. The registry's own remedy for the sibling
@@ -632,7 +632,7 @@ def rtData_two : RTSurgeryData Bool ℚ where
     expect(r.result).toBe("pass");
   });
 
-  test("does NOT double-report what the sibling criterion already flags", () => {
+  test("noDoubleReportWithSibling", () => {
     // `HasGeneratorAction_punit` has BOTH a bare degenerate field and a
     // lambda-wrapped one. One report, from the criterion whose model fits.
     const src = `
@@ -647,7 +647,7 @@ def HasGeneratorAction_punit : S where
 });
 
 describe("lean-no-definitional-laundering — data defined to BE the claim", () => {
-  test("fires on the `poleIndicator` shape, fields inside a tactic `exact { … }`", () => {
+  test("poleIndicatorShapeInExact", () => {
     const r = withLean(CRYSTAL_R_MATRIX, (p) => checkNoDefinitionalLaundering(p));
     expect(r.result).toBe("warn");
     expect(r.hits).toHaveLength(1);
@@ -655,11 +655,11 @@ describe("lean-no-definitional-laundering — data defined to BE the claim", () 
     expect(r.hits[0].text).toContain("CrystalRMatrixSubLemma.pole_indicator_correct");
   });
 
-  test("neither sibling check sees the `poleIndicator` shape", () => {
+  test("siblingMissesPoleIndicator", () => {
     expect(withLean(CRYSTAL_R_MATRIX, (p) => checkNoVacuousInstanceData(p)).result).toBe("pass");
   });
 
-  test("matches up to renaming of the instance's binder", () => {
+  test("matchesUpToBinderRename", () => {
     const renamed = CRYSTAL_R_MATRIX.replace(
       "poleIndicator := fun rho => decide (rho ≤ -1)",
       "poleIndicator := fun x => decide (x ≤ -1)",
@@ -669,7 +669,7 @@ describe("lean-no-definitional-laundering — data defined to BE the claim", () 
     expect(r.hits).toHaveLength(1);
   });
 
-  test("the binder rename does not collide with a numeral in the body", () => {
+  test("binderRenameNoNumeralCollision", () => {
     // The rename routes each binder through a placeholder. A printable one
     // collides: sending `y → n` via `" 0 "` rewrites `g 0 y` to `g n n` and
     // manufactures a match. Pinned because the failure mode is a false
@@ -688,7 +688,7 @@ instance shiftedCanonical : Shifted where
     expect(r.hits[0].text).toContain("`f n = g 0 n`");
   });
 
-  test("does NOT fire when only a numeral, not the binder, lines up", () => {
+  test("onlyNumeralLinesUpPasses", () => {
     const src = `
 class Shifted where
   f : ℕ → ℕ
@@ -702,7 +702,7 @@ instance shiftedOther : Shifted where
     expect(r.result).toBe("pass");
   });
 
-  test("does NOT fire once the data is a class PARAMETER rather than a field", () => {
+  test("classParameterRepairPasses", () => {
     // The 2026-08-24 repair (bean `qou-2y13`): take the width as a parameter so
     // the class can no longer choose its own datum. The instance still closes
     // by `rfl` and must no longer be reported — the class now has models it
@@ -719,13 +719,13 @@ instance colorRule : SubstrateWidthRule (fun _ => cableWidthColor) where
     expect(r.result).toBe("pass");
   });
 
-  test("fires on the pre-repair form of that same class", () => {
+  test("preRepairWidthRuleWarns", () => {
     const r = withLean(SUBSTRATE_WIDTH_RULE, (p) => checkNoDefinitionalLaundering(p));
     expect(r.result).toBe("warn");
     expect(r.hits[0].text).toContain("w := fun _ => cableWidthColor");
   });
 
-  test("fires on a point-free field pinned to a named constant", () => {
+  test("pointFreeNamedConstantWarns", () => {
     // `ArchimedeanRealizationFunctor.q0 := q_zero` with `q0_canonical : q0 =
     // q_zero`. No lambda, no arguments, and `q0_canonical` matches no
     // claim-name heuristic — the CLASS is what identifies the claim here.
@@ -749,7 +749,7 @@ noncomputable instance canonical : ArchimedeanRealizationFunctor where
     expect(r.hits[0].text).toContain("q0 := q_zero");
   });
 
-  test("reports the contested case at lower severity and says the author disputes it", () => {
+  test("contestedCaseLowerSeverity", () => {
     const r = withLean(BORROMEAN_QUARK, (p) => checkNoDefinitionalLaundering(p));
     // `warn`, not `fail` — the schema's "borderline; flags but does not block".
     expect(r.result).toBe("warn");
@@ -757,7 +757,7 @@ noncomputable instance canonical : ArchimedeanRealizationFunctor where
     expect(r.hits[0].text).toContain("docstring disputes this reading");
   });
 
-  test("does NOT fire when the instance's data differs from the claim's RHS", () => {
+  test("dataDiffersFromRhsPasses", () => {
     const src = `
 class BorromeanQuark where
   topological_mass : ℝ → ℝ
@@ -773,7 +773,7 @@ instance canonical : BorromeanQuark where
     expect(r.result).toBe("pass");
   });
 
-  test("does NOT read an `=` inside a hypothesis as the field's conclusion", () => {
+  test("hypothesisEqualsNotConclusion", () => {
     // `demazure_closure : ∀ i, i < level → ∀ v w, member v → G.f i v = some w
     // → member w` contains an `=`. Matching it would invent an RHS the author
     // never wrote and compare the instance against a fiction.
@@ -792,7 +792,7 @@ instance realSubcrystal : DemazureSubcrystal standardSl2Crystal 1 where
     expect(r.result).toBe("pass");
   });
 
-  test("does NOT fire on a `theorem` that exhibits a record to prove an `∃`", () => {
+  test("theoremExhibitingWitnessPasses", () => {
     // `markov_trace_product`. Building a witness IS how one proves an
     // existential; theorem-shaped vacuity belongs to `proof-no-trivial-true`.
     const src = `
@@ -807,7 +807,7 @@ theorem markov_trace_product (z : R_q) (n : ℕ) (q : R_q) :
     expect(r.result).toBe("pass");
   });
 
-  test("does NOT fire when the class is not declared in this file", () => {
+  test("undeclaredClassPasses", () => {
     // Detection 3 needs the `class … where` block. Guessing across an import
     // would produce a confident report about a declaration never read.
     const src = `
@@ -821,12 +821,12 @@ instance canonical : SomeImportedClass where
 });
 
 describe("lean-no-definitional-laundering — grading and plumbing", () => {
-  test("a hard finding grades `fail`; a definitional identity alone grades `warn`", () => {
+  test("hardFailIdentityWarn", () => {
     expect(withLean(TOROIDAL_ODE, (p) => checkNoDefinitionalLaundering(p)).result).toBe("fail");
     expect(withLean(BORROMEAN_QUARK, (p) => checkNoDefinitionalLaundering(p)).result).toBe("warn");
   });
 
-  test("counts each detection separately in `metrics`", () => {
+  test("metricsCountEachDetection", () => {
     const r = withLean(BORROMEAN_QUARK, (p) => checkNoDefinitionalLaundering(p));
     expect(r.metrics).toEqual({
       constant_prop_defs: 0,
@@ -835,7 +835,7 @@ describe("lean-no-definitional-laundering — grading and plumbing", () => {
     });
   });
 
-  test("a clean file passes", () => {
+  test("cleanFilePasses", () => {
     const src = `
 /-- An honest instance. -/
 instance realThing : MyStructure where
@@ -847,14 +847,14 @@ instance realThing : MyStructure where
     expect(r.result).toBe("pass");
   });
 
-  test("n/a when there is no lean file", () => {
+  test("launderingNaWithoutFile", () => {
     expect(checkNoDefinitionalLaundering(undefined).result).toBe("n/a");
     expect(checkNoDefinitionalLaundering("/nonexistent/X.lean").result).toBe("n/a");
   });
 });
 
 describe("proof-no-placeholder-stub", () => {
-  test("fails on a bare placeholder stub comment", () => {
+  test("bareStubCommentFails", () => {
     const src = `-- Manuscript.Chapter1.Theorem1 — placeholder stub\n`;
     const r = withLean(src, (p) => checkProofNoPlaceholderStub(p));
     expect(r.result).toBe("fail");
@@ -863,7 +863,7 @@ describe("proof-no-placeholder-stub", () => {
     expect(r.hits[0].text).toContain("bare placeholder stub");
   });
 
-  test("fails on a stub with imports and module docstring", () => {
+  test("stubWithImportsDocstringFails", () => {
     const src = `import Mathlib\n\n/-! # Theorem 1 — placeholder stub -/\n`;
     const r = withLean(src, (p) => checkProofNoPlaceholderStub({ lean: p }));
     expect(r.result).toBe("fail");
@@ -871,21 +871,21 @@ describe("proof-no-placeholder-stub", () => {
     expect(r.hits[0].line).toBe(3);
   });
 
-  test("passes on actual Lean mathematical declarations", () => {
+  test("realDeclarationsPass", () => {
     const src = `import Mathlib\n\ntheorem trivial_equality (n : Nat) : n = n := rfl\n`;
     const r = withLean(src, (p) => checkProofNoPlaceholderStub(p));
     expect(r.result).toBe("pass");
     expect(r.hits).toEqual([]);
   });
 
-  test("passes when placeholder stub is mentioned in comments but substantive declarations exist", () => {
+  test("stubMentionWithDeclsPasses", () => {
     const src = `import Mathlib\n\n-- Replaces the earlier placeholder stub with formal proof\ntheorem add_comm_test (a b : Nat) : a + b = b + a := Nat.add_comm a b\n`;
     const r = withLean(src, (p) => checkProofNoPlaceholderStub(p));
     expect(r.result).toBe("pass");
     expect(r.hits).toEqual([]);
   });
 
-  test("returns n/a when no file or empty file", () => {
+  test("stubNaWithoutContent", () => {
     expect(checkProofNoPlaceholderStub(undefined).result).toBe("n/a");
     expect(checkProofNoPlaceholderStub("/nonexistent/Test.lean").result).toBe("n/a");
     expect(withLean("   \n\n  ", (p) => checkProofNoPlaceholderStub(p)).result).toBe("n/a");

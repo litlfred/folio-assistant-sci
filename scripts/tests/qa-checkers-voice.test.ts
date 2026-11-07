@@ -22,7 +22,7 @@ import { SCI_ROOT } from "./sci-consumer";
 
 describe("checkEditorializing — proof economy is not an opinion (bean 2t41)", () => {
 
-  test("the exemplar scores exactly ONE finding — not zero", () => {
+  test("milnorlinkExemplarScoresOneFinding", () => {
     // The gate this change was verified against, and the direction that would
     // have meant over-correcting. A criterion that never fires on its own
     // exemplar has stopped measuring anything; the survivor is p194's

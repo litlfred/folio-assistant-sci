@@ -29,7 +29,7 @@ describe("the process says whether running it is logged", () => {
   // Diagrams by NAME through the declared `processes` graphs (placement PR3, bean `63wl`).
   const diagram = (name: string): string => workflowFile(join(import.meta.dir, "../.."), name);
 
-  test("an unmarked process leaves capture UNDETERMINED, not off", async () => {
+  test("unmarkedProcessCaptureUnknown", async () => {
     // The whole reason the field is three-valued. `undefined` here resolves
     // to `unknown` in the writer — nobody decided — which is a different
     // claim from a process that declared `off`.

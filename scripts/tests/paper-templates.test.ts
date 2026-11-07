@@ -34,13 +34,13 @@ function triggersOnPush(yml: string): boolean {
 }
 
 describe("dispatch-only paper workflow templates never gate on push", () => {
-  test("there are templates to check (the rule is not vacuous)", () => {
+  test("templatesExist", () => {
     expect(workflows.length).toBeGreaterThan(0);
   });
 
   for (const { rel, text } of workflows) {
     if (triggersOnPush(text)) continue;
-    test(`${rel} has no job or step that waits for a push`, () => {
+    test(`noPushGateInDispatchOnly[${rel}]`, () => {
       const dead = text
         .split("\n")
         .map((line, i) => ({ line, n: i + 1 }))
@@ -52,7 +52,7 @@ describe("dispatch-only paper workflow templates never gate on push", () => {
 });
 
 describe("the lake-cache restore template probes the new family name only (bean oycs)", () => {
-  test("its fallback loop names cat/folio-assistant-sci/lake-cache and no retired name", () => {
+  test("restoreProbesNewFamilyOnly", () => {
     const text = readFileSync(join(TEMPLATES, "paper/github/actions/lake-cache-restore/action.yml"), "utf-8");
     expect(text).toContain("for p in cat/folio-assistant-sci/lake-cache; do");
     expect(text).not.toMatch(/for p in [^;\n]*(?<![\w/-])(cat-lake-cache|lake-cache)(?=[ ;])/);

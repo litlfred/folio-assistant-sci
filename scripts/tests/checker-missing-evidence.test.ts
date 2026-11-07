@@ -58,26 +58,26 @@ afterAll(() => {
 });
 
 describe("checkCanonicalScriptNotDeprecated", () => {
-  test("n/a when the declared script is not on disk", () => {
+  test("scriptNotOnDiskIsNa", () => {
     const p = tsFile("missing.ts", 'export default theorem({ label: "thm:a", script: "'+comp("gone.py")+'" });\n');
     const r = (checkCanonicalScriptNotDeprecated(p));
     expect(r.result).toBe("n/a");
     expect(r.notes).toContain("not found");
   });
 
-  test("pass when the block declares NO script — vacuously satisfied", () => {
+  test("noScriptDeclaredPasses", () => {
     // The other direction. A block without a script cannot have a
     // deprecated one; turning this into n/a would empty the criterion.
     const p = tsFile("noscript.ts", 'export default theorem({ label: "thm:b" });\n');
     expect((checkCanonicalScriptNotDeprecated(p)).result).toBe("pass");
   });
 
-  test("n/a when there is no manifest to read at all", () => {
+  test("noManifestIsNa", () => {
     expect(checkCanonicalScriptNotDeprecated(undefined).result).toBe("n/a");
     expect(checkCanonicalScriptNotDeprecated("/nonexistent/x.ts").result).toBe("n/a");
   });
 
-  test("still FAILS on a script that is actually deprecated", () => {
+  test("deprecatedScriptFails", () => {
     // The criterion must keep working — the point is to stop reporting
     // success without evidence, not to stop reporting.
     writeFileSync(join(root, "computations", "old.py"), '"""DEPRECATED: superseded."""\n');
@@ -86,7 +86,7 @@ describe("checkCanonicalScriptNotDeprecated", () => {
     expect(r.result).toBe("fail");
   });
 
-  test("passes on a live script", () => {
+  test("liveScriptPasses", () => {
     writeFileSync(join(root, "computations", "live.py"), '"""Computes a thing."""\n');
     const p = tsFile("live.ts", 'export default theorem({ label: "thm:d", script: "'+comp("live.py")+'" });\n');
     expect((checkCanonicalScriptNotDeprecated(p)).result).toBe("pass");
@@ -97,14 +97,14 @@ describe("checkComputeLpDualPresent", () => {
   const LP_BLOCK = (witness: string) =>
     `export default theorem({\n  label: "thm:lp-shadow-price",\n  computation: { script: "computations/lp_solve.py", witness: "${witness}" },\n});\n`;
 
-  test("n/a when the witness file is missing", () => {
+  test("missingWitnessIsNa", () => {
     const p = tsFile("lpmissing.ts", LP_BLOCK(comp("gone.json")));
     const r = (checkComputeLpDualPresent(p));
     expect(r.result).toBe("n/a");
     expect(r.notes).toContain("not found");
   });
 
-  test("n/a — not pass — when the witness does not parse", () => {
+  test("unparsableWitnessIsNa", () => {
     // The sharpest case: a CORRUPT witness used to assert success.
     writeFileSync(join(root, "computations", "broken.json"), "{ not json at all ");
     const p = tsFile("lpbroken.ts", LP_BLOCK(comp("broken.json")));
@@ -113,7 +113,7 @@ describe("checkComputeLpDualPresent", () => {
     expect(r.notes).toContain("does not parse");
   });
 
-  test("pass for a block that is not an LP computation at all", () => {
+  test("nonLpBlockPasses", () => {
     // Subject absent, not evidence — the criterion genuinely does not
     // apply, and must not become n/a for every ordinary block.
     writeFileSync(join(root, "computations", "plain.json"), JSON.stringify({ value: 1 }));
@@ -122,7 +122,7 @@ describe("checkComputeLpDualPresent", () => {
     expect((checkComputeLpDualPresent(p)).result).toBe("pass");
   });
 
-  test("n/a when there is no manifest", () => {
+  test("noManifestLpIsNa", () => {
     expect(checkComputeLpDualPresent(undefined).result).toBe("n/a");
   });
 });

@@ -16,7 +16,7 @@ import {
  */
 
 describe("splitInstanceHead — binder colons", () => {
-  test("splits at the colon OUTSIDE the binders", () => {
+  test("splitsAtColonOutsideBinders", () => {
     // The original `[^:]*` regex stopped at the colon inside `(R : Type u)`
     // and produced the wrong result class, so nothing was ever flagged.
     const r = splitInstanceHead("canonical (R : Type u) : GBFiltrationCollapsesAtE2 R");
@@ -25,32 +25,32 @@ describe("splitInstanceHead — binder colons", () => {
     expect(r!.className).toBe("GBFiltrationCollapsesAtE2");
   });
 
-  test("handles instance-implicit and implicit binders", () => {
+  test("handlesImplicitBinders", () => {
     const r = splitInstanceHead("foo {α : Type*} [CommRing α] (n : ℕ) : MyClass α n");
     expect(r!.name).toBe("foo");
     expect(r!.className).toBe("MyClass");
     expect(r!.binders).toContain("[CommRing α]");
   });
 
-  test("anonymous instance has no leading name", () => {
+  test("anonymousInstanceName", () => {
     const r = splitInstanceHead("(R : Type u) : HasThing R");
     expect(r!.name).toBe("«anonymous»");
     expect(r!.className).toBe("HasThing");
   });
 
-  test("no top-level colon yields null rather than a wrong answer", () => {
+  test("noTopLevelColonNull", () => {
     expect(splitInstanceHead("mangled (R : Type u)")).toBeNull();
   });
 });
 
 describe("propDeclNames — result colon, not binder colon", () => {
-  test("finds a Prop-valued def whose binders contain colons", () => {
+  test("findsPropDefWithBinderColons", () => {
     // The original `[^:]*` could not span `{R : Type u} (S : Foo R)`.
     const src = "def CollapsesAt {R : Type u} (S : Foo R) (r₀ : ℕ) : Prop :=\n  True\n";
     expect(propDeclNames(src)).toContain("CollapsesAt");
   });
 
-  test("finds abbrev and ignores non-Prop defs", () => {
+  test("findsAbbrevIgnoresNonProp", () => {
     const src = [
       "abbrev CollapsesAtE2 {R : Type u} (S : Foo R) : Prop := CollapsesAt S 2",
       "def notAClaim (R : Type u) : Type u := R",
@@ -62,30 +62,30 @@ describe("propDeclNames — result colon, not binder colon", () => {
 });
 
 describe("looksPropositional", () => {
-  test("inline propositions", () => {
+  test("inlinePropositions", () => {
     expect(looksPropositional("q0 > 1")).toBe(true);
     expect(looksPropositional("∀ A, w A = 3")).toBe(true);
   });
 
-  test("a NAMED predicate needs the package's Prop set", () => {
+  test("namedPredicateNeedsPropSet", () => {
     // This is what made the checker miss its own flagship case.
     expect(looksPropositional("CollapsesAtE2 ss")).toBe(false);
     expect(looksPropositional("CollapsesAtE2 ss", new Set(["CollapsesAtE2"]))).toBe(true);
   });
 
-  test("data fields are not claims", () => {
+  test("dataFieldsNotClaims", () => {
     expect(looksPropositional("Type u")).toBe(false);
     expect(looksPropositional("M → ℝ")).toBe(false);
   });
 });
 
 describe("isUnconditional", () => {
-  test("type and instance binders only", () => {
+  test("typeAndInstanceBindersUnconditional", () => {
     expect(isUnconditional(" (R : Type u) ")).toBe(true);
     expect(isUnconditional(" {α : Type*} [CommRing α] ")).toBe(true);
   });
 
-  test("an explicit PROOF OBLIGATION makes it conditional, and fine", () => {
+  test("proofObligationMakesConditional", () => {
     // `instance foo (hq : q ≠ 1) : C X` is legitimate — the caller supplies it.
     expect(isUnconditional(" (R : Type u) (hq : q ≠ 1) ")).toBe(false);
     // A named predicate needs the package Prop set, same as field types.
@@ -93,14 +93,14 @@ describe("isUnconditional", () => {
     expect(isUnconditional(" (h : MyClaim R) ", new Set(["MyClaim"]))).toBe(false);
   });
 
-  test("a DATA parameter does not make it conditional", () => {
+  test("dataParameterStaysUnconditional", () => {
     // `instance foo (n : ℕ) : C n` is still supplied for free at every `n` —
     // resolution fills `n` from the goal. Requiring `Type` here was too strict
     // and hid three of the seven known cases in QOU/Mathlib/SpectralSequence.
     expect(isUnconditional(" (R : Type u) (n : ℕ) ")).toBe(true);
   });
 
-  test("nested parens in a binder type are handled", () => {
+  test("nestedParensInBinder", () => {
     // `[^()]*` could not span `(bar R)`, so the binder was skipped entirely and
     // a conditional instance was reported as unconditional.
     expect(isUnconditional(" (h : MyClaim (bar R)) ", new Set(["MyClaim"]))).toBe(false);
@@ -108,14 +108,14 @@ describe("isUnconditional", () => {
 });
 
 describe("isTrivialDischarge", () => {
-  test("by-construction proofs", () => {
+  test("byConstructionProofsTrivial", () => {
     expect(isTrivialDischarge("rfl")).toBe(true);
     expect(isTrivialDischarge("fun _ => rfl")).toBe(true);
     expect(isTrivialDischarge("fun _ _ _ => rfl")).toBe(true);
     expect(isTrivialDischarge("hf.out")).toBe(true);
   });
 
-  test("a real proof term is not trivial", () => {
+  test("realProofTermNotTrivial", () => {
     expect(isTrivialDischarge("q_zero_gt_one")).toBe(false);
     expect(isTrivialDischarge("lt_of_lt_of_le zero_lt_one h")).toBe(false);
   });
@@ -140,7 +140,7 @@ describe("end-to-end", () => {
     "  collapses := h",
   ].join("\n");
 
-  test("catches the unconditional instance of a claim-carrying class", () => {
+  test("catchesUnconditionalClaimInstance", () => {
     const names = new Set(propDeclNames(src));
     const { classes, instances } = parseLean(src, "t.lean", names);
     const cls = new Map(classes.map((c) => [c.name, c]));
@@ -151,7 +151,7 @@ describe("end-to-end", () => {
     expect(caught.map((c) => c.name)).toEqual(["canonical"]);
   });
 
-  test("does NOT flag the conditional instance beside it", () => {
+  test("conditionalInstanceNotFlagged", () => {
     // The discriminator must not become a blanket flag on the class.
     const names = new Set(propDeclNames(src));
     const { instances } = parseLean(src, "t.lean", names);

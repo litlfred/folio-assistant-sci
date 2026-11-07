@@ -14,7 +14,7 @@ import { HARNESS_ROOT } from "@litlfred/cat-harness-tools/scripts/lib/roots.ts";
 const ROOT = resolve(dirname(HARNESS_ROOT));
 
 describe("LaTeX family exit-2 contract (Finding 1 on jh2j)", () => {
-  test("validate-tex exits 2 on could-not-determine (no snippets in platform)", () => {
+  test("validateTexExits2WithoutSnippets", () => {
     const res = Bun.spawnSync(["bun", "run", join(import.meta.dir, "validate-tex.ts")], {
       cwd: ROOT,
       stdout: "pipe",
@@ -23,7 +23,7 @@ describe("LaTeX family exit-2 contract (Finding 1 on jh2j)", () => {
     expect(res.exitCode).toBe(2);
   });
 
-  test("audit-tex-source exits 2 on could-not-determine (no content files in platform)", () => {
+  test("auditTexSourceExits2WithoutContent", () => {
     const res = Bun.spawnSync(["bun", "run", join(import.meta.dir, "audit-tex-source.ts")], {
       cwd: ROOT,
       stdout: "pipe",

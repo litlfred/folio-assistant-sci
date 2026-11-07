@@ -30,7 +30,7 @@ theorem _root_.topLevelFact : True := trivial
 `;
 
 describe("one Lean source", () => {
-  test("declarations are qualified by their namespace and module", () => {
+  test("declsQualifiedByNamespaceModule", () => {
     const ids = declUnitsOf(SRC, "QOU.Mass.Markov").map((u) => u.id);
     expect(ids).toEqual([
       "QOU.Mass.markovZ_conventionD@QOU.Mass.Markov",
@@ -39,7 +39,7 @@ describe("one Lean source", () => {
     ]);
   });
 
-  test("a unit carries the doc comment, the split name and the signature — not the proof", () => {
+  test("unitHasDocNameSignatureNotProof", () => {
     const [def, thm] = declUnitsOf(SRC, "M");
     expect(def!.text).toContain("The convention-D Markov parameter.");
     expect(def!.text).toContain("markov z convention d");
@@ -47,12 +47,12 @@ describe("one Lean source", () => {
     expect(thm!.text).not.toContain("a line comment");
   });
 
-  test("nameWords splits camel case and underscores", () => {
+  test("nameWordsSplitsCamelUnderscore", () => {
     expect(nameWords("QOU.Mass.markovZ_conventionD")).toBe("markov z convention d");
     expect(nameWords("HTMLParser_ok")).toBe("html parser ok");
   });
 
-  test("a doc comment is found across attributes and modifiers, and a line comment is not one", () => {
+  test("docCommentAcrossAttributesNotLine", () => {
     const raw = "/-- doc -/\n@[simp] noncomputable def x := 1";
     expect(docCommentBefore(raw, raw.indexOf("def"))).toBe("doc");
     expect(docCommentBefore("-- c\ndef y := 1", 5)).toBe("");
@@ -60,7 +60,7 @@ describe("one Lean source", () => {
 });
 
 describe("a Lean root", () => {
-  test("modules come from the path, .lake is skipped, and a repeated id is counted not overwritten", () => {
+  test("modulesFromPathSkipLakeCountDuplicates", () => {
     const root = mkdtempSync(join(tmpdir(), "lsi-lean-"));
     dirs.push(root);
     mkdirSync(join(root, "QOU", "Mass"), { recursive: true });
@@ -76,13 +76,13 @@ describe("a Lean root", () => {
 });
 
 describe("lsiNearUnits (the `lean-decl` provider for cross-graph lsi:near)", () => {
-  test("with no Lean root it is not searched, never an empty index", () => {
+  test("noLeanRootNotSearched", () => {
     const r = lsiNearUnits({ checkoutRoot: "/nowhere", roots: [] });
     expect(r.notSearched).toBe("no Lean root given (--root lean-decl=<dir>)");
     expect(r.units).toEqual([]);
   });
 
-  test("a namespaced name and the full id are explicit references; a bare top-level name is not", () => {
+  test("namespacedAndFullIdAreRefs", () => {
     const root = mkdtempSync(join(tmpdir(), "lsi-decl-near-"));
     dirs.push(root);
     mkdirSync(join(root, "QOU", "Mass"), { recursive: true });

@@ -38,7 +38,7 @@ function tmp(name: string, contents: string): string {
 }
 
 describe("detectRegimes — `\\bq\\b` na-guard ignores `.ts` label metadata", () => {
-  test("q-free block whose only 'q' is a uses[] label → na (not symbolic)", () => {
+  test("qInUsesLabelOnlyIsNa", () => {
     const md = tmp("t.md", "An observation inserts a new crossing into the braid word.");
     const ts = tmp(
       "t.ts",
@@ -48,7 +48,7 @@ describe("detectRegimes — `\\bq\\b` na-guard ignores `.ts` label metadata", ()
     expect([...regimes]).toEqual(["na"]);
   });
 
-  test("real q-math in the .md is still detected (na-guard does not over-strip)", () => {
+  test("qMathInMdStillDetected", () => {
     const md = tmp("t2.md", "The Hecke relation $(\\sigma_i - q)(\\sigma_i + q^{-1}) = 0$ holds.");
     const ts = tmp("t2.ts", `export default remark({ label: "rem:hecke" });`);
     const { regimes } = detectRegimes(md, ts, undefined);
@@ -56,7 +56,7 @@ describe("detectRegimes — `\\bq\\b` na-guard ignores `.ts` label metadata", ()
     expect(regimes.has("symbolic")).toBe(true);
   });
 
-  test("real q-math in a .ts title is still detected via MENTIONS_Q_RE", () => {
+  test("qMathInTsTitleStillDetected", () => {
     const md = tmp("t3.md", "See the deformation below.");
     const ts = tmp("t3.ts", `export default remark({ title: "The $q$-deformation" });`);
     const { regimes } = detectRegimes(md, ts, undefined);
@@ -65,7 +65,7 @@ describe("detectRegimes — `\\bq\\b` na-guard ignores `.ts` label metadata", ()
 });
 
 describe("no shipped chapter-profile default", () => {
-  test("loading the checker configures nothing", async () => {
+  test("loadingConfiguresNoChapterProfiles", async () => {
     // Moved from cat-harness-tools' chapter-profile-registry-di.test.ts with
     // the checker (bean `saqd`): chapter profiles are a folio's own data.
     const di = await import("../../../cat-harness-tools/pipeline/chapter-profile-registry-di.ts");

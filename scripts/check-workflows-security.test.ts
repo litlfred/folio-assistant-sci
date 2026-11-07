@@ -21,7 +21,7 @@ import {
 } from "./check-workflows-security.ts";
 
 describe("folio-assistant-sci security gate on the live repository (beans 6zcw, vbhb, wox6)", () => {
-  test("every security check passes on folio-assistant-sci", () => {
+  test("allChecksPassOnLiveRepo", () => {
     const results = runSciSecurityGate(SCI_ROOT);
     expect(results.map((r) => ({ check: r.check, state: r.state }))).toEqual([
       { check: "action-sha-pinning", state: "pass" },
@@ -34,7 +34,7 @@ describe("folio-assistant-sci security gate on the live repository (beans 6zcw, 
 });
 
 describe("folio-assistant-sci security gate falsifiers", () => {
-  test("refuses an unpinned uses: line, including a reusable workflow @main", () => {
+  test("refusesUnpinnedUses", () => {
     const tmp = mkdtempSync(join(tmpdir(), "sci-sec-pin-"));
     try {
       const wf = join(tmp, ".github", "workflows");
@@ -51,7 +51,7 @@ describe("folio-assistant-sci security gate falsifiers", () => {
     }
   });
 
-  test("refuses a workflow without a top-level permissions block", () => {
+  test("refusesMissingPermissions", () => {
     const tmp = mkdtempSync(join(tmpdir(), "sci-sec-perm-"));
     try {
       const wf = join(tmp, ".github", "workflows");
@@ -65,7 +65,7 @@ describe("folio-assistant-sci security gate falsifiers", () => {
     }
   });
 
-  test("refuses a free-text expression in a workflow run: block", () => {
+  test("refusesFreeTextExpressionInRun", () => {
     const tmp = mkdtempSync(join(tmpdir(), "sci-sec-inj-"));
     try {
       const wf = join(tmp, ".github", "workflows");
@@ -82,7 +82,7 @@ describe("folio-assistant-sci security gate falsifiers", () => {
     }
   });
 
-  test("refuses a lockfile resolving happy-dom or undici below the advisory floor", () => {
+  test("refusesLockBelowAdvisoryFloor", () => {
     const tmp = mkdtempSync(join(tmpdir(), "sci-sec-deps-"));
     try {
       writeFileSync(
@@ -104,7 +104,7 @@ describe("folio-assistant-sci security gate falsifiers", () => {
     }
   });
 
-  test("checkSecretLeaks passes on a clean tree", () => {
+  test("secretLeaksPassClean", () => {
     const tmp = mkdtempSync(join(tmpdir(), "sci-sec-leaks-"));
     try {
       mkdirSync(join(tmp, ".github"), { recursive: true });

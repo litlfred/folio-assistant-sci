@@ -20,17 +20,17 @@ const declared = readdirSync(join(ROOT, "block-kinds"))
 const adapter = JSON.parse(readFileSync(join(ROOT, "content-adapters", "mathpaper.json"), "utf-8")) as { vocabulary?: string };
 
 describe("the mathpaper vocabulary module", () => {
-  test("is the module the adapter node names", () => {
+  test("isModuleAdapterNames", () => {
     expect(adapter.vocabulary).toBe("schemas/mathpaper-vocabulary.ts");
   });
 
-  test("types exactly the kinds this layer declares, and keeps the contract", () => {
+  test("typesDeclaredKindsKeepsContract", () => {
     const v = readVocabulary("mathpaper", adapter.vocabulary!, mathpaper, declared);
     expect([...v.schemas.keys()].sort()).toEqual([...declared].sort());
     expect(v.constraintRules.map((r) => r.id).sort()).toEqual(["lean-file-exists", "lean-stub-conjecture-kind-check", "mathpaper-md-exists", "provable-lean-warning"]);
   });
 
-  test("each builder builds a block its schema accepts, and a label of the wrong kind is refused", () => {
+  test("buildersBuildAcceptedRefuseWrongLabel", () => {
     expect(mathpaper.theorem({ label: "thm:x", title: "X" }).kind).toBe("theorem");
     expect(mathpaper.proof({ label: "prf:x", of: "thm:x" }).of).toBe("thm:x");
     expect(mathpaper.definition({ label: "def:widget" }).lean.ref).toBe("qou:QOU.Widget");
@@ -38,7 +38,7 @@ describe("the mathpaper vocabulary module", () => {
     for (const name of Object.keys(mathpaper.builders)) expect(declared).toContain(name);
   });
 
-  test("conjecture() supports formal | identification classification and rejects conflicts", () => {
+  test("conjectureClassificationRejectsConflicts", () => {
     const bare = mathpaper.conjecture({ label: "conj:bare", title: "Bare" });
     expect(bare.kind).toBe("conjecture");
     expect(bare.conjectureKind).toBeUndefined();
@@ -75,7 +75,7 @@ describe("the mathpaper vocabulary module", () => {
     ).toThrow();
   });
 
-  test("contributes the Lean constraint context its rules read (bean saqd)", () => {
+  test("contributesLeanConstraintContext", () => {
     const tmp = mkdtempSync(join(tmpdir(), "mathpaper-ctx-"));
     try {
       mkdirSync(join(tmp, "ch"), { recursive: true });
