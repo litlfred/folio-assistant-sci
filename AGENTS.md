@@ -42,7 +42,7 @@ reason to say so, not a reason to file it under the nearest one.
 
 <!-- skills:index:begin -->
 
-_70 skills in 7 directories, generated from each skill's front matter. `bun run cat readme:sync` rewrites this list and `readme:sync:check` fails when it is stale. Skills this repository inherits are listed by the repositories that publish them._
+_71 skills in 7 directories, generated from each skill's front matter. `bun run cat readme:sync` rewrites this list and `readme:sync:check` fails when it is stale. Skills this repository inherits are listed by the repositories that publish them._
 
 **`skills/content/authoring-math/`** (11)
 
@@ -60,7 +60,7 @@ _70 skills in 7 directories, generated from each skill's front matter. `bun run 
 | [`paper-voice-audit`](skills/content/authoring-math/paper-voice-audit.md) | The paper-folio half of the harness's one-voice-audit, one-voice-integration-watcher, and one-voice-style-guide: scholarly voice across proof bodies, pdflatex Unicode crash remediation, mathematical… |
 | [`proof-verification`](skills/content/authoring-math/proof-verification.md) | Decide, and record, whether a block's formal claim is actually verified — separately from whether it builds. |
 
-**`skills/content/folio-paper-adapter/`** (53)
+**`skills/content/folio-paper-adapter/`** (54)
 
 | Skill | What it is for |
 |---|---|
@@ -96,6 +96,7 @@ _70 skills in 7 directories, generated from each skill's front matter. `bun run 
 | [`lean-substantive-pass`](skills/content/folio-paper-adapter/lean-substantive-pass.md) | Convert abstract `holds : Prop` / `claim : Prop` placeholder Lean stubs into typed sub-claim contexts with manuscript-semantic field names. |
 | [`lean-witness-audit`](skills/content/folio-paper-adapter/lean-witness-audit.md) | Audit computation scripts (typically Python) that produce witness statements for Lean formalization. |
 | [`math-render-check`](skills/content/folio-paper-adapter/math-render-check.md) | The math half of the harness's markdown-render-check: grep checks for display math, KaTeX and LaTeX patterns that GitHub's renderer breaks, and the fix recipe for multi-line display equations. |
+| [`paper-glossary-build`](skills/content/folio-paper-adapter/paper-glossary-build.md) | The paper half of core's glossary-build: the typeset glossary chapter, the defined-term markers in `.tex`, and the formal synonyms module a paper with a Lean pipeline regenerates from `glossary.json`. |
 | [`paper-importer`](skills/content/folio-paper-adapter/paper-importer.md) | Import external papers from PDF, LaTeX, or arXiv into the content object system. |
 | [`proof-conciseness`](skills/content/folio-paper-adapter/proof-conciseness.md) | Tighten narrative (human-readable) proofs without changing mathematical content. |
 | [`proof-editor`](skills/content/folio-paper-adapter/proof-editor.md) | Coordinator skill for proof review and repair. |

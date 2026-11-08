@@ -188,7 +188,8 @@
     {
       "role": "docs-authoring-agent",
       "skills": [
-        "formal-layer-editing"
+        "formal-layer-editing",
+        "paper-glossary-build"
       ]
     }
   ]
