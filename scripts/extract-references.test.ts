@@ -237,6 +237,13 @@ describe("parsing only what the entry makes unambiguous", () => {
     });
   });
 
+  test("lncsOrganisationAuthorInLncsList", () => {
+    const t = "Mathpix, Inc.: Mathpix: Document conversion for stem. https://mathpix.com (2025), accessed: 2025-11-28";
+    expect(parseShape(t, "dotted", false, true)).toEqual({ author: [{ literal: "Mathpix, Inc." }], title: "Mathpix: Document conversion for stem", year: 2025 });
+    // Outside an LNCS list the same text sets nothing: its shape is not known.
+    expect(parseShape(t, "dotted")).toEqual({});
+  });
+
   test("ocrDiacriticDropsAuthors", () => {
     const p = parseShape("T.-Y. Lin, P. Goyal, and P. Doll´ar, “Focal loss for dense object detection,” in Proc. ICCV, 2017.", "bracket");
     expect(p.author).toBeUndefined();
