@@ -494,7 +494,21 @@ export function isAcmShaped(text: string): boolean {
  * its entries plainly are), so an entry whose author list holds a non-initial
  * abbreviation (`Frank Wm. Tompa`) is still read as one, not cut at the `.`.
  */
-export function parseShape(text: string, docStyle: ListStyle, acm = false): Parsed {
+/** Springer LNCS: `Author, A., Author, B.: Title. Venue (YEAR)`. */
+const LNCS_SHAPE = /^((?:[^:.]+?,\s(?:\p{Lu}[\p{L}]?\.\s?-?)+,?\s?)+(?:et al\.)?):\s/u;
+/**
+ * The same list's entry by an organisation: `Mathpix, Inc.: Title. URL (YEAR)`,
+ * `Gemini Team, Google DeepMind: Title.` A short name with no sentence in it
+ * (a company suffix's `.` aside), then `: `.
+ */
+const LNCS_ORG = /^((?:[^:.\d]|\b(?:Inc|Ltd|Co|Corp|LLC)\.)(?:[^:.]|\b(?:Inc|Ltd|Co|Corp|LLC)\.){1,78}?):\s/u;
+
+/** Whether an entry plainly has the LNCS shape, with personal authors. */
+export function isLncsShaped(text: string): boolean {
+  return LNCS_SHAPE.test(text);
+}
+
+export function parseShape(text: string, docStyle: ListStyle, acm = false, lncsList = false): Parsed {
   // IEEE: `A. Author, B. Author, and C. Author, “Title,” in Venue, YEAR.`
   const quoted = [...text.matchAll(/“([^”]+)”/g)];
   if (quoted.length === 1) {
@@ -503,13 +517,17 @@ export function parseShape(text: string, docStyle: ListStyle, acm = false): Pars
     return { title: cleanTitle(q[1]), author: parseGivenFamilyList(block) };
   }
   // Springer LNCS: `Author, A., Author, B.: Title. Venue (YEAR)`
-  const lncs = /^((?:[^:.]+?,\s(?:\p{Lu}[\p{L}]?\.\s?-?)+,?\s?)+(?:et al\.)?):\s/u.exec(text);
-  if (docStyle === "dotted" && lncs) {
-    const rest = text.slice(lncs[0].length);
+  const lncs = LNCS_SHAPE.exec(text);
+  // In a list most of whose entries are LNCS, an organisation's entry is too:
+  // its author is the name as printed, one `literal`.
+  const org = !lncs && lncsList ? LNCS_ORG.exec(text) : null;
+  if (docStyle === "dotted" && (lncs || org)) {
+    const head = (lncs ?? org)!;
+    const rest = text.slice(head[0].length);
     const end = sentenceEnd(rest, 0);
     const paren = new Set([...proseOnly(rest).matchAll(/\((?:[^()]*\s)?((?:19|20)\d\d)\)/g)].map((m) => Number(m[1])));
     return {
-      author: parseFamilyInitialsList(lncs[1]),
+      author: lncs ? parseFamilyInitialsList(lncs[1]) : [{ literal: head[1].trim() }],
       title: cleanTitle(end === undefined ? undefined : rest.slice(0, end)),
       year: paren.size === 1 ? [...paren][0] : undefined,
     };
@@ -571,8 +589,9 @@ export function extractList(list: ReferenceList, instanceRoot: string = INSTANCE
     text: joinForParsing(e.lines.map(unligature), vocab).replace(/[ \t]+/g, " ").trim(),
   }));
   const acm = entries.filter((x) => isAcmShaped(x.text)).length >= 0.6 * entries.length;
+  const lncsList = style === "dotted" && entries.filter((x) => isLncsShaped(x.text)).length >= 0.6 * entries.length;
   return entries.map(({ e, note, text }) => {
-    const shape = parseShape(text, style, acm);
+    const shape = parseShape(text, style, acm, lncsList);
     const urls = urlsOf(text);
     const DOI = doiOf(text, urls);
     const arxiv = arxivOf(text, urls, DOI);

@@ -2,6 +2,12 @@
   "$schema": "folio-reference/v1",
   "id": "arxiv-2512.09874v3.r31",
   "type": "document",
+  "title": "pypdf: A pure-python pdf library",
+  "author": [
+    {
+      "literal": "pypdf Contributors"
+    }
+  ],
   "issued": {
     "date-parts": [
       [
