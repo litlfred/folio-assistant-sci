@@ -35,6 +35,7 @@
     "lean-substantive-pass",
     "lean-witness-audit",
     "math-render-check",
+    "paper-glossary-build",
     "paper-importer",
     "proof-conciseness",
     "proof-editor",
