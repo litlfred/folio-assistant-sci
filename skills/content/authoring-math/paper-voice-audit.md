@@ -9,8 +9,8 @@ description: >-
 
 # Paper voice audit and watcher rules
 
-The harness skills [`one-voice-audit`](../../../../cat-harness/skills/authoring/authoring-core/one-voice-audit.md),
-[`one-voice-integration-watcher`](../../../../cat-harness/skills/authoring/authoring-core/one-voice-integration-watcher.md),
+The harness skills `one-voice-audit` (opt-in `cat-harness.editorial`),
+`one-voice-integration-watcher`,
 and [`one-voice-style-guide`](../../../../cat-harness/skills/authoring/authoring-core/one-voice-style-guide.md)
 govern voice consistency and multi-reviewer `<block>.qa.json` sidecars across any
 folio. For a paper folio with LaTeX compilation and a Lean 4 formal layer, apply

@@ -9,9 +9,9 @@ description: >-
 
 # Paper chapter complexity and block density
 
-The harness skills [`chapter-complexity-review`](../../../../cat-harness/skills/authoring/authoring-core/chapter-complexity-review.md)
+The harness skills `chapter-complexity-review` (opt-in `cat-harness.editorial`)
 (`skill_fetch chapter-complexity-review`) and
-[`block-density`](../../../../cat-harness/skills/authoring/authoring-core/block-density.md)
+`block-density`
 (`skill_fetch block-density`) govern intra-chapter dependency-graph energy and
 single-topic block atomicity for any folio. In a paper folio, where mathematical
 claim kinds carry formal proof obligations and chapters cross-reference across

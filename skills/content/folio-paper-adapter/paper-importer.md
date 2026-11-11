@@ -17,7 +17,7 @@ allowed-tools: Read Write Edit Bash Grep Glob Agent WebFetch
 > and drive the ref's status through [`bib-human-review`](../../../../folio-assistant-core/skills/library/cataloguing/bib-human-review.md)
 > (`source-in-repo` once the cited passage is identified → `validated` after
 > source-match + bib validation). The on-photo automation lives in
-> [`bib-photo-ingestion-watcher`](../../../../folio-assistant-core/skills/library/cataloguing/bib-photo-ingestion-watcher.md).
+> `bib-photo-ingestion-watcher` (opt-in `folio-assistant-core.library-extras`).
 
 ## Overview
 
