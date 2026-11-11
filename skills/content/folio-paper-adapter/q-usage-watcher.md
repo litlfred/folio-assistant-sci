@@ -316,9 +316,9 @@ bun run folio-assistant-sci/pipeline/q-usage-audit.ts --no-write --strict
   [`proof-integration-watcher`](proof-integration-watcher.md),
   [`compute-integration-watcher`](compute-integration-watcher.md),
   [`detangler-integration-watcher`](detangler-integration-watcher.md),
-  [`one-voice-integration-watcher`](../../../../cat-harness/skills/authoring/authoring-core/one-voice-integration-watcher.md).
+  `one-voice-integration-watcher` (opt-in `cat-harness.editorial`).
 - Skill for placement decisions:
-  [`production-vs-exploratory-discipline`](../../../../cat-harness/skills/authoring/authoring-core/production-vs-exploratory-discipline.md).
+  `production-vs-exploratory-discipline`.
 - Checker source: [`folio-assistant-sci/pipeline/qa-checkers-q-usage.ts`](../../../pipeline/qa-checkers-q-usage.ts).
 - CLI runner: [`folio-assistant-sci/pipeline/q-usage-audit.ts`](../../../pipeline/q-usage-audit.ts).
 - Criterion registry entries:
