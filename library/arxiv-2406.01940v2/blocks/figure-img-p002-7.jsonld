@@ -89,6 +89,6 @@
     }
   ],
   "derivedFrom": "library/arxiv-2406.01940v2/sections/sec-000",
-  "sourceDocument": "https://litlfred.github.io/folio-assistant/assets/library/jsonld/folio-assistant-sci/arxiv-2406.01940v2/manifest.jsonld",
+  "sourceDocument": "https://litlfred.github.io/folio-assistant/assets/library/jsonld/folio-assistant-sci/source/arxiv-2406.01940v2",
   "provenance": "ingested"
 }

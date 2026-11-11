@@ -16,7 +16,7 @@
   "pageStart": 178,
   "pageEnd": 178,
   "text": "../sections/page-178.md",
-  "derivedFrom": "https://litlfred.github.io/folio-assistant/assets/library/jsonld/folio-assistant-sci/milnorlink/manifest.jsonld",
-  "sourceDocument": "https://litlfred.github.io/folio-assistant/assets/library/jsonld/folio-assistant-sci/milnorlink/manifest.jsonld",
+  "derivedFrom": "https://litlfred.github.io/folio-assistant/assets/library/jsonld/folio-assistant-sci/source/milnorlink",
+  "sourceDocument": "https://litlfred.github.io/folio-assistant/assets/library/jsonld/folio-assistant-sci/source/milnorlink",
   "provenance": "ingested"
 }

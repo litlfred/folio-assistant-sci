@@ -16,7 +16,7 @@
   "pageStart": 31,
   "pageEnd": 31,
   "text": "../sections/sec-043-data-postprocessing.md",
-  "derivedFrom": "https://litlfred.github.io/folio-assistant/assets/library/jsonld/folio-assistant-sci/arxiv-2406.01940v2/manifest.jsonld",
-  "sourceDocument": "https://litlfred.github.io/folio-assistant/assets/library/jsonld/folio-assistant-sci/arxiv-2406.01940v2/manifest.jsonld",
+  "derivedFrom": "https://litlfred.github.io/folio-assistant/assets/library/jsonld/folio-assistant-sci/source/arxiv-2406.01940v2",
+  "sourceDocument": "https://litlfred.github.io/folio-assistant/assets/library/jsonld/folio-assistant-sci/source/arxiv-2406.01940v2",
   "provenance": "ingested"
 }

@@ -5,7 +5,7 @@
       "@base": "https://litlfred.github.io/folio/"
     }
   ],
-  "@id": "https://litlfred.github.io/folio-assistant/assets/library/jsonld/folio-assistant-sci/codata-2022/manifest.jsonld",
+  "@id": "https://litlfred.github.io/folio-assistant/assets/library/jsonld/folio-assistant-sci/source/codata-2022",
   "@type": [
     "cat-harness:SourceDocument"
   ],
