@@ -32,7 +32,7 @@ allowed-tools: Read Edit Write Bash Grep Glob Agent Monitor Skill
 > `cat-harness-tools/pipeline/qa-criteria-registry.ts`.
 
 
-A concrete instance of [`integration-watcher`](../../../../cat-harness/sdlc/skills/sdlc-core/integration-watcher.md).
+A concrete instance of `integration-watcher` (opt-in `cat-harness.sdlc`).
 The parent encodes the shared mechanics; this file fills the nine
 domain-specific slots A–I and documents the q-regime taxonomy.
 
@@ -311,7 +311,7 @@ bun run folio-assistant-sci/pipeline/q-usage-audit.ts --no-write --strict
 
 ## Cross-references
 
-- Parent: [`integration-watcher`](../../../../cat-harness/sdlc/skills/sdlc-core/integration-watcher.md)
+- Parent: `integration-watcher`
 - Sibling watchers: [`canonical-watcher`](../../../../cat-harness/skills/authoring/authoring-core/canonical-watcher.md),
   [`proof-integration-watcher`](proof-integration-watcher.md),
   [`compute-integration-watcher`](compute-integration-watcher.md),
