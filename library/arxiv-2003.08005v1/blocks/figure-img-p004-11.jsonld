@@ -89,6 +89,6 @@
     }
   ],
   "derivedFrom": "library/arxiv-2003.08005v1/sections/sec-front-matter",
-  "sourceDocument": "https://litlfred.github.io/folio-assistant/assets/library/jsonld/folio-assistant-sci/arxiv-2003.08005v1/manifest.jsonld",
+  "sourceDocument": "https://litlfred.github.io/folio-assistant/assets/library/jsonld/folio-assistant-sci/source/arxiv-2003.08005v1",
   "provenance": "ingested"
 }
