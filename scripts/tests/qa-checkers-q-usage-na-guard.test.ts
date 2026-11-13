@@ -37,7 +37,7 @@ function tmp(name: string, contents: string): string {
   return p;
 }
 
-describe("detectRegimes — `\\bq\\b` na-guard ignores `.ts` label metadata", () => {
+describe("detectRegimes — the word-boundary q na-guard ignores `.ts` label metadata", () => {
   test("qInUsesLabelOnlyIsNa", () => {
     const md = tmp("t.md", "An observation inserts a new crossing into the braid word.");
     const ts = tmp(
