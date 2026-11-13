@@ -4,7 +4,7 @@
 
 # sci-processes
 
-The BPMN and DMN this layer OWNS: the paper's content processes, grouped by concern exactly as the harness groups its own (`processes/<group>/`, a DMN in `processes/<group>/decisions/`). `content/authoring-a-paper.bpmn` with `content/decisions/lean-build-gate.dmn`, `content/atomic-mass-drift-check.bpmn` and `content/lean-docs-publish.bpmn`. They name Lean and paper skills that live here, which cat-harness cannot reach. Their calls and skill refs that stay generic point DOWN through core to the harness.
+The BPMN and DMN this layer OWNS: the paper's content processes, grouped by concern exactly as the harness groups its own (`processes/<group>/`, a DMN in `processes/<group>/decisions/`). `content/atomic-mass-drift-check.bpmn` and `content/lean-docs-publish.bpmn`. They name Lean and paper skills that live here, which cat-harness cannot reach. Their calls and skill refs that stay generic point DOWN through core to the harness. `authoring-a-paper.bpmn` and its `lean-build-gate.dmn` run on the work plan, so they moved to the opt-in `collab/` sub-graph (owner, 2026-11-13).
 
 Part of [folio-assistant-sci](../README.md) 0.1.0, declared as `sci-processes`, holding `processes`.
 

@@ -1,8 +1,8 @@
-<!-- GENERATED from folio-assistant-sci/processes/content/authoring-a-paper.bpmn by cat-harness-tools/scripts/bpmn-checklist.ts. Do not edit: change the diagram and regenerate (bun run cat bpmn:checklist). -->
+<!-- GENERATED from folio-assistant-sci/collab/processes/content/authoring-a-paper.bpmn by cat-harness-tools/scripts/bpmn-checklist.ts. Do not edit: change the diagram and regenerate (bun run cat bpmn:checklist). -->
 
 # Checklist — Authoring a paper
 
-> **Generated, and not the authority.** This is `folio-assistant-sci/processes/content/authoring-a-paper.bpmn` (process `Process_PaperAuthoring`) walked as a state machine. The diagram and the workflow engine decide; this list only reads them. Follow the `next:` line of each step rather than the order on the page, and record each step with the call it names, so the engine's committed state — not this list — says which edge was taken.
+> **Generated, and not the authority.** This is `folio-assistant-sci/collab/processes/content/authoring-a-paper.bpmn` (process `Process_PaperAuthoring`) walked as a state machine. The diagram and the workflow engine decide; this list only reads them. Follow the `next:` line of each step rather than the order on the page, and record each step with the call it names, so the engine's committed state — not this list — says which edge was taken.
 
 How a scientific paper or book folio is authored end to end, with Lean for its formal claims and LaTeX for its typesetting.
 

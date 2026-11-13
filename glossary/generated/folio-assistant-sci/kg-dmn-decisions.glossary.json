@@ -10,7 +10,7 @@
       "id": "decision_leanbuildgate",
       "prefLabel": "Build green, no sorries?",
       "notation": "Decision_LeanBuildGate",
-      "source": "folio-assistant-sci/processes/content/decisions/lean-build-gate.dmn#Decision_LeanBuildGate",
+      "source": "folio-assistant-sci/collab/processes/content/decisions/lean-build-gate.dmn#Decision_LeanBuildGate",
       "status": "candidate"
     }
   ]
