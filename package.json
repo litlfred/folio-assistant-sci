@@ -24,6 +24,7 @@
     "extract:references": "bun run folio-assistant-sci/scripts/extract-references.ts",
     "check:extracted-references": "bun run folio-assistant-sci/scripts/extract-references.ts --check",
     "check:editor-checkers": "bun run folio-assistant-sci/scripts/check-editor-checkers.ts",
+    "check:test-gherkin:sci": "bun run cat-harness-tools/scripts/check-test-gherkin.ts --root folio-assistant-sci",
     "latex:validate": "bun run folio-assistant-sci/pipeline/validate-tex.ts",
     "latex:audit-source": "bun run folio-assistant-sci/pipeline/audit-tex-source.ts",
     "check:workflows:security": "bun run folio-assistant-sci/scripts/check-workflows-security.ts"
