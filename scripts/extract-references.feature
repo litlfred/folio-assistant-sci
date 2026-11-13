@@ -73,6 +73,14 @@ Feature: extract-references — the library papers' reference lists, split into 
     When "Anthropic. Introducing the next generation of claude, 2024. ..." is parsed as author-year
     Then the author is the literal "Anthropic" and the title "Introducing the next generation of claude", and nothing else
 
+  @test:scripts/extract-references.test.ts::parsing_only_what_the_entry_makes_unambiguous::lncsOrganisationAuthorInLncsList
+  Scenario: an organisation author before a colon is read only inside an LNCS list
+    Given the entry "Mathpix, Inc.: Mathpix: Document conversion for stem. https://mathpix.com (2025), accessed: 2025-11-28"
+    When it is parsed as dotted style in an LNCS list
+    Then the author is the literal "Mathpix, Inc.", the title "Mathpix: Document conversion for stem" and the year 2025, and nothing else
+    When the same entry is parsed as dotted style outside an LNCS list
+    Then nothing is set
+
   @test:scripts/extract-references.test.ts::parsing_only_what_the_entry_makes_unambiguous::ocrDiacriticDropsAuthors
   Scenario: an OCR'd diacritic (`Doll´ar`) leaves the author list out rather than spelling a name wrong
     When an entry naming "P. Doll´ar" is parsed as bracket style
