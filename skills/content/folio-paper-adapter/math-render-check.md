@@ -65,7 +65,7 @@ These are the rows a paper folio adds to its known limitations:
 
 | Pattern | Issue | Fix |
 |---------|-------|-----|
-| `` ```tex `` without rendered SVG | Shows raw LaTeX code | Run `bun run render-tex` then `bun run export-json` |
+| A `tex` code fence without rendered SVG | Shows raw LaTeX code | Run `bun run render-tex` then `bun run export-json` |
 | `\operatorname{X}` | KaTeX error | Use `\mathrm{X}` |
 | `$$` without preceding blank line | May parse as inline | Add blank line before `$$` |
 | `$...$` with newlines inside | Works (regex allows it) | OK |
