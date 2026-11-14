@@ -135,7 +135,7 @@ It scans the *generated compile unit* (`main.tex` + every `\input`'d
 | **A** duplicate-newcommand | `Command \X already defined` | Define the macro **once** — in `latex/preamble.tex` *or* the paper manifest `macros:` block, never both. Use `\providecommand`/`\renewcommand` for an intentional override. |
 | **B** undefined-macro | `! Undefined control sequence` | Define it in the preamble/manifest, or use an existing command (e.g. `\mathrm{tr}`, not `\tr`). If it is a genuine standard/package command (and its package is loaded in the preamble), add it via re-seed: `bun run latex-preflight:seed`. |
 | **C** fragile-accent-script | `! Missing { inserted` at a math accent | Never use a math accent (`\check`,`\hat`,`\tilde`,…) as a **bare** sub/superscript. Brace it: `X^{\check{q}}`, not `X^\check{q}`. |
-| **D** missing-input | `File \`…' not found` | Make sure an unconditional `\input`/`\include` target exists; guard optional includes with `\IfFileExists`. |
+| **D** missing-input | ``File `…' not found`` | Make sure an unconditional `\input`/`\include` target exists; guard optional includes with `\IfFileExists`. |
 | **E** math-delimiter-imbalance | `! Missing $ inserted` | Balance `$`…`$` within each file; use `\$` for a literal dollar. |
 | **F** environment-mismatch | `\begin{X} … ended by \end{Y}` | Match every `\begin{env}` with its `\end{env}`; check nesting. |
 | **H** unmapped-unicode | `Unicode character … not set up for use with LaTeX` | Add a `\newunicodechar{X}{…}` to `latex/preamble.tex`, use a LaTeX command, or re-seed if inputenc handles it. |
