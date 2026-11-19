@@ -28,7 +28,7 @@
 import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { ingest, type IndexFile } from "./lean-kg-ingest.ts";
-import { findPlatform, runRail } from "./lean-render.ts";
+import { RAIL_SCRIPTS, findPlatform, runRail } from "./lean-render.ts";
 
 const VIEWER = join(import.meta.dir, "lean-kg-viewer");
 
@@ -133,7 +133,7 @@ async function main(): Promise<number> {
   }
   const platform = findPlatform(at("--platform"));
   if (!platform) {
-    console.error("? no index checkout with cat-harness/scripts/rail-standalone-pages.ts found — published but NOT railed, and that is not a pass");
+    console.error(`? no index checkout with ${RAIL_SCRIPTS.join(" or ")} found — published but NOT railed, and that is not a pass`);
     return 1;
   }
   if (!runRail(platform, site, at("--home-label"), at("--instance"))) return 1;

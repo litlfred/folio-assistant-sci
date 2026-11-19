@@ -4,12 +4,14 @@
  * what is pinned here is what this layer adds before it runs.
  */
 import { describe, expect, test } from "bun:test";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 
 import {
   DEFAULT_EXTERNAL_BASE,
+  findPlatform,
+  railScriptIn,
   NAVBAR_NONE,
   isBuildBookkeeping,
   moduleRootOf,
@@ -122,5 +124,23 @@ describe("stageLeanRender", () => {
 
   test("refusesRouteLeavingSite", () => {
     expect(() => stageLeanRender({ docs: render(), site: mkdtempSync(join(tmpdir(), "s-")), route: "../x" })).toThrow(/--route/);
+  });
+});
+
+describe("the rail pass is found where the tools layer keeps it", () => {
+  test("cat-harness-tools/scripts first, then the pre-split cat-harness/scripts", () => {
+    const root = mkdtempSync(join(tmpdir(), "lean-render-rail-"));
+    try {
+      expect(railScriptIn(root)).toBeUndefined();
+      mkdirSync(join(root, "cat-harness", "scripts"), { recursive: true });
+      writeFileSync(join(root, "cat-harness", "scripts", "rail-standalone-pages.ts"), "");
+      expect(railScriptIn(root)).toBe(join(root, "cat-harness", "scripts", "rail-standalone-pages.ts"));
+      mkdirSync(join(root, "cat-harness-tools", "scripts"), { recursive: true });
+      writeFileSync(join(root, "cat-harness-tools", "scripts", "rail-standalone-pages.ts"), "");
+      expect(railScriptIn(root)).toBe(join(root, "cat-harness-tools", "scripts", "rail-standalone-pages.ts"));
+      expect(findPlatform(root)).toBe(root);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
   });
 });
