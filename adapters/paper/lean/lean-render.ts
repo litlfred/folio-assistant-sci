@@ -7,7 +7,7 @@
  * lean html render (but wrapped w/ cat-harness navbar chrome/rails)"*. The
  * render is doc-gen4's; this script does not re-render anything. It STAGES the
  * render into the folio's site tree and then runs the platform's own rail pass,
- * `cat-harness/scripts/rail-standalone-pages.ts --foreign-site`, exactly as
+ * `cat-harness-tools/scripts/rail-standalone-pages.ts --foreign-site`, exactly as
  * `folio-assistant-core/scripts/stage-folio-local.ts` does for the folio's own
  * pages. One rail implementation; this file only prepares its input.
  *
@@ -258,19 +258,36 @@ export function stageLeanRender(o: StageOptions): StageReport {
 }
 
 /**
+ * Where an index checkout keeps the rail pass. It moved from cat-harness to
+ * cat-harness-tools with the code split (scripts live in the tools layer), and
+ * this file still looked only at the old place, so every run without a
+ * matching checkout exited 1, "staged but NOT railed", whatever `--platform`
+ * said (2026-11-19). The new place first; the old one for an index pinned
+ * before the move.
+ */
+export const RAIL_SCRIPTS = [
+  join("cat-harness-tools", "scripts", "rail-standalone-pages.ts"),
+  join("cat-harness", "scripts", "rail-standalone-pages.ts"),
+] as const;
+
+/** The rail pass in `root`, or undefined when it holds none. */
+export function railScriptIn(root: string): string | undefined {
+  return RAIL_SCRIPTS.map((r) => join(root, r)).find((p) => existsSync(p));
+}
+
+/**
  * The index checkout that holds the rail pass: `--platform`, then
- * `$FOLIO_ASSISTANT_ROOT`, then the first ancestor of this file that has
- * `cat-harness/scripts/rail-standalone-pages.ts` (true when this layer is
- * mounted in an index, and through a folio's `folio-assistant/` link).
+ * `$FOLIO_ASSISTANT_ROOT`, then the first ancestor of this file that has one
+ * of {@link RAIL_SCRIPTS} (true when this layer is mounted in an index, and
+ * through a folio's `folio-assistant/` link).
  */
 export function findPlatform(explicit?: string): string | undefined {
-  const RAIL = join("cat-harness", "scripts", "rail-standalone-pages.ts");
   for (const c of [explicit, process.env.FOLIO_ASSISTANT_ROOT]) {
-    if (c && existsSync(join(c, RAIL))) return resolve(c);
+    if (c && railScriptIn(c)) return resolve(c);
   }
   let d = import.meta.dir;
   for (;;) {
-    if (existsSync(join(d, RAIL))) return d;
+    if (railScriptIn(d)) return d;
     const up = dirname(d);
     if (up === d) return undefined;
     d = up;
@@ -282,7 +299,12 @@ export function findPlatform(explicit?: string): string | undefined {
  * `stage-folio-local.ts` does. Returns false (and says so) when it fails.
  */
 export function runRail(platform: string, site: string, homeLabel?: string, instance?: string): boolean {
-  const args = ["run", join(platform, "cat-harness/scripts/rail-standalone-pages.ts"), "--site", resolve(site), "--built", "cat-harness", "--foreign-site"];
+  const script = railScriptIn(platform);
+  if (!script) {
+    console.error(`✗ ${platform} holds no rail pass (${RAIL_SCRIPTS.join(" or ")})`);
+    return false;
+  }
+  const args = ["run", script, "--site", resolve(site), "--built", "cat-harness", "--foreign-site"];
   if (homeLabel) args.push("--home-label", homeLabel);
   if (instance) args.push("--instance", instance);
   try {
@@ -334,7 +356,7 @@ function main(): number {
   }
   const platform = findPlatform(at("--platform"));
   if (!platform) {
-    console.error("? no index checkout with cat-harness/scripts/rail-standalone-pages.ts found (pass --platform or set FOLIO_ASSISTANT_ROOT) — staged but NOT railed, and that is not a pass");
+    console.error(`? no index checkout with ${RAIL_SCRIPTS.join(" or ")} found (pass --platform or set FOLIO_ASSISTANT_ROOT) — staged but NOT railed, and that is not a pass`);
     return 1;
   }
   if (!runRail(platform, site, at("--home-label"), at("--instance"))) return 1;
