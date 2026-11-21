@@ -96,9 +96,10 @@ idiomatic and not a defect.
 An `axiom` carrying **no bibliographic `-- Ref:` justification** (and no
 `[cite]` / DOI / URL in its docstring) asserts content with nothing backing
 it — it should either be **proved** (converted to a `theorem`) or **cited**
-(marked a genuine external input). This is the dual of `proof-no-axiom-growth`
-(which guards against *adding* axioms): this guards against *leaving provable
-or unjustified content as a global axiom*.
+(marked a genuine external input). It guards against *leaving provable or
+unjustified content as a global axiom*; guarding against *adding* axioms is a
+consuming folio's `#print axioms` gate (the `proof-no-axiom-growth` stub that
+once named it was retired 2026-11-21).
 
 ```lean
 axiom my_identity (x : R) : f x = g x          -- no -- Ref:, looks provable → flag
