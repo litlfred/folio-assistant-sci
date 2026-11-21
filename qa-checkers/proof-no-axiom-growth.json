@@ -1,5 +1,0 @@
-{
-  "$schema": "folio-qa-checker/v1",
-  "criterion": "proof-no-axiom-growth",
-  "check": "pipeline/qa-checkers-extended.ts#EXTENDED_AUTOMATED_CHECKERS"
-}
