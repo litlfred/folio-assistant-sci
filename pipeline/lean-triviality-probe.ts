@@ -491,10 +491,37 @@ if (import.meta.main) {
   --limit N         Blocks to probe (default 20)
   --lean PATH       lean binary (default: 'lean' on PATH)
   --out FILE        Output cache (default docs/audits/lean-triviality.json)
+  --lean-packages M Module exporting LEAN_PACKAGES (default schemas/lean-packages.ts)
 
 Ladder (cheapest first): ${TACTIC_LADDER.join(", ")}
 Needs: the lean-cache tool's lake-cache.sh restore-toolchain && ... restore`);
     process.exit(2);
+  }
+
+  // A block whose `lean.ref` points into the library has no sibling `.lean`;
+  // `walkBlocks` finds its file only through the Lean resolver, which needs
+  // the folio's package list. Without it those blocks are dropped before the
+  // loop sees them, silently: on qou (2026-11-22) 394 provable blocks, more
+  // than a third of the corpus.
+  const pkgModule = arg("--lean-packages") ?? join(repoRoot, "schemas", "lean-packages.ts");
+  let pkgCount = 0;
+  if (existsSync(resolve(repoRoot, pkgModule))) {
+    const { configureLeanPackages } = await import("./lean-formal-ref.ts");
+    const m = (await import(resolve(repoRoot, pkgModule))) as {
+      LEAN_PACKAGES?: Parameters<typeof configureLeanPackages>[0];
+      default?: Parameters<typeof configureLeanPackages>[0];
+    };
+    const pkgs = m.LEAN_PACKAGES ?? m.default;
+    if (Array.isArray(pkgs)) {
+      configureLeanPackages(pkgs);
+      pkgCount = pkgs.length;
+    }
+  }
+  if (!pkgCount) {
+    console.log(
+      `  !! no Lean packages configured (looked for ${pkgModule}): blocks whose lean.ref points into the ` +
+        `library have no file to probe and are left out of this run, not skipped.`,
+    );
   }
 
   const abs = join(repoRoot, lakeRoot);
