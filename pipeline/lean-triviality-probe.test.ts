@@ -32,6 +32,7 @@ import {
   indexLakeDeclarations,
   resolveInLakeIndex,
   qualifiedDeclarationNames,
+  resolveByModulePath,
 } from "./lean-triviality-probe.ts";
 
 /** `lean` on PATH, else any elan toolchain. `undefined` when there is none. */
@@ -232,6 +233,13 @@ theorem outside : True := trivial
       const idx = indexLakeDeclarations(root);
       expect(idx.get("u")).toBeUndefined();
       expect([...idx.values()].flat().some((f) => f.includes(".lake"))).toBe(false);
+    });
+
+    test("modulePathSpellingResolves", () => {
+      // `QOU.A.One.t`: file `QOU/A/One.lean`, declaration `QOU.A.t`.
+      expect(resolveByModulePath(root, "QOU.A.One.t")).toBe(join(root, "QOU", "A", "One.lean"));
+      expect(resolveByModulePath(root, "QOU.A.One.missing")).toBeUndefined();
+      expect(resolveByModulePath(root, "QOU.NoFile.t")).toBeUndefined();
     });
 
     test("sameShortNameResolvedByNamespace", () => {
