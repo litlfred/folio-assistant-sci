@@ -494,6 +494,35 @@ export function resolveInLakeIndex(index: Map<string, string[]>, ref: string): s
   return files.length === 1 ? files[0] : undefined;
 }
 
+/**
+ * The file a ref names by its MODULE PATH, when it declares the ref's last
+ * component exactly once.
+ *
+ * A `lean.ref` has two spellings in use. Most give the declaration's fully
+ * qualified name (`QOU.BraidKnot.mass_tower_coefficient_stratification`).
+ * Others give the file's module path and then the short name
+ * (`QOU.LiftingDescent.CosimplicialCrossedGroupoid.YekutieliTriple`: file
+ * `QOU/LiftingDescent/CosimplicialCrossedGroupoid.lean`, declaration
+ * `QOU.LiftingDescent.YekutieliTriple`). The platform's resolver accepts
+ * both, so the probe must too; reading only the first spelling reported
+ * three valid qou refs as unresolved.
+ */
+export function resolveByModulePath(lakeRoot: string, ref: string): string | undefined {
+  const i = ref.lastIndexOf(".");
+  if (i <= 0) return undefined;
+  const file = join(lakeRoot, `${ref.slice(0, i).replace(/\./g, "/")}.lean`);
+  if (!existsSync(file)) return undefined;
+  const short = ref.slice(i + 1);
+  let text: string;
+  try {
+    text = readFileSync(file, "utf-8");
+  } catch {
+    return undefined;
+  }
+  const hits = splitDeclarations(stripLeanComments(text)).filter((d) => d.name.split(".").pop() === short);
+  return hits.length === 1 ? file : undefined;
+}
+
 // ── CLI ─────────────────────────────────────────────────────────────
 
 if (import.meta.main) {
@@ -586,7 +615,7 @@ Needs: the lean-cache tool's lake-cache.sh restore-toolchain && ... restore`);
     const own = stripLeanComments(src);
     if (!findDeclaration(splitDeclarations(own), decl, qualifiedDeclarationNames(own))) {
       lakeIndex ??= indexLakeDeclarations(abs);
-      const hit = resolveInLakeIndex(lakeIndex, decl);
+      const hit = resolveInLakeIndex(lakeIndex, decl) ?? resolveByModulePath(abs, decl);
       if (hit && hit !== leanFile) {
         leanFile = hit;
         src = readFileSync(leanFile, "utf-8");

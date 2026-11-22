@@ -142,3 +142,8 @@ Feature: the Lean triviality probe — controls showing the tactic ladder closes
   Scenario: a ref that names a structure is not probed
     When "structure S where x : Nat" is probed as S
     Then it is skipped as "not-a-proof"
+
+  @test:pipeline/lean-triviality-probe.test.ts::a_ref_names_its_declaration_by_its_qualified_name::following_the_ref_into_the_lake_root::modulePathSpellingResolves
+  Scenario: a ref spelled as module path plus short name resolves to that file
+    Then QOU.A.One.t resolves to QOU/A/One.lean
+    And a missing name or a missing file resolves to nothing
