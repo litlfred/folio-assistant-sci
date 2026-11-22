@@ -501,7 +501,7 @@ Needs: the lean-cache tool's lake-cache.sh restore-toolchain && ... restore`);
   // A block whose `lean.ref` points into the library has no sibling `.lean`;
   // `walkBlocks` finds its file only through the Lean resolver, which needs
   // the folio's package list. Without it those blocks are dropped before the
-  // loop sees them, silently: on qou (2026-11-22) 394 provable blocks, more
+  // loop sees them, silently: on qou (2026-11-22) 397 provable blocks, more
   // than a third of the corpus.
   const pkgModule = arg("--lean-packages") ?? join(repoRoot, "schemas", "lean-packages.ts");
   let pkgCount = 0;
