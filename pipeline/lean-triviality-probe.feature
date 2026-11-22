@@ -59,7 +59,7 @@ Feature: the Lean triviality probe — controls showing the tactic ladder closes
 
   @test:pipeline/lean-triviality-probe.test.ts::skip_reasons_are_distinguished,_because_their_fixes_differ::everySkipReasonExplained
   Scenario: every skip reason carries an explanation of what would fix it
-    Then decl-not-found, no-body, baseline-fails and baseline-timeout each have an explanation
+    Then decl-not-found, no-body, not-a-proof, baseline-fails and baseline-timeout each have an explanation
 
   @test:pipeline/lean-triviality-probe.test.ts::splicing_the_body::assignInStatementNoMangle
   Scenario: a `:=` inside the statement no longer mangles the probe
@@ -137,3 +137,8 @@ Feature: the Lean triviality probe — controls showing the tactic ladder closes
   Scenario: two files declaring the same short name are told apart by namespace
     Then QOU.A.t and QOU.B.t resolve to their own files
     And QOU.C.t and a missing name resolve to nothing
+
+  @test:pipeline/lean-triviality-probe.test.ts::skip_reasons_are_distinguished,_because_their_fixes_differ::skipNotAProof
+  Scenario: a ref that names a structure is not probed
+    When "structure S where x : Nat" is probed as S
+    Then it is skipped as "not-a-proof"

@@ -292,6 +292,14 @@ describe("skip reasons are distinguished, because their fixes differ", () => {
     expect(r.reason).toBe("no-body");
   }, LEAN_TEST_TIMEOUT_MS);
 
+  test("skipNotAProof", () => {
+    // Needs no Lean: the kind is decided before anything is elaborated.
+    const r = probe("structure S where\n  x : Nat\n", "S");
+    expect(r.status).toBe("skipped");
+    if (r.status !== "skipped") return;
+    expect(r.reason).toBe("not-a-proof");
+  });
+
   test.skipIf(NO_LEAN)("skipBaselineFails", () => {
     // The old code reported this reason for all four causes. It is the
     // one that means "restore the oleans"; the others do not.
@@ -316,6 +324,7 @@ describe("skip reasons are distinguished, because their fixes differ", () => {
     for (const r of [
       "decl-not-found",
       "no-body",
+      "not-a-proof",
       "baseline-fails",
       "baseline-timeout",
     ] as const) {
