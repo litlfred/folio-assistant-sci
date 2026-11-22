@@ -15,7 +15,7 @@
  * subject is absent is the same defect one level up.
  */
 import { describe, test, expect, beforeEach, afterEach } from "bun:test";
-import { existsSync, readdirSync, mkdirSync, mkdtempSync, rmSync } from "fs";
+import { existsSync, readdirSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "fs";
 import { join } from "path";
 import { tmpdir } from "os";
 import { execFileSync } from "child_process";
@@ -25,6 +25,13 @@ import {
   TACTIC_LADDER,
   SKIP_EXPLANATION,
   leanPathFor,
+  rungTactic,
+  explicitBinderNames,
+  declNameMatches,
+  findDeclaration,
+  indexLakeDeclarations,
+  resolveInLakeIndex,
+  qualifiedDeclarationNames,
 } from "./lean-triviality-probe.ts";
 
 /** `lean` on PATH, else any elan toolchain. `undefined` when there is none. */
@@ -125,6 +132,121 @@ describe("the ladder actually closes goals (the control for `closed: 0`)", () =>
   }, LEAN_TEST_TIMEOUT_MS);
 });
 
+describe("a finite table check falls to cases-decide", () => {
+  // The qou declaration that motivated the rung, reduced to core Lean:
+  // `decide` cannot see through the free binder and `simp` does not unfold
+  // the table, so before the rung this was reported "not closed".
+  const TABLE = `inductive Term
+  | a | b | c
+
+def depth : Term → Nat
+  | .a => 0
+  | .b => 1
+  | .c => 4
+
+theorem depth_le (t : Term) : depth t ≤ 4 := by
+  cases t <;> decide
+
+theorem noBinder : depth .c = 4 := by
+  rfl
+`;
+
+  test.skipIf(NO_LEAN)("casesDecideClosesTableCheck", () => {
+    const r = probe(TABLE, "depth_le");
+    expect(r.status).toBe("closed");
+    if (r.status !== "closed") return;
+    expect(r.tactic).toBe("cases-decide");
+    expect(r.steps).toBe(TACTIC_LADDER.indexOf("cases-decide") + 1);
+  }, LEAN_TEST_TIMEOUT_MS);
+
+  test("casesDecideNeedsABinder", () => {
+    expect(rungTactic("cases-decide", "theorem noBinder : depth .c = 4 ")).toBeUndefined();
+    expect(rungTactic("cases-decide", "theorem depth_le (t : Term) : depth t ≤ 4 ")).toBe(
+      "first | (cases t <;> decide)",
+    );
+    expect(rungTactic("simp", "anything")).toBe("simp");
+  });
+
+  test("explicitBinderNamesSkipsUnnameable", () => {
+    expect(explicitBinderNames("theorem f (a b : T) {c : U} (_h : P) [inst : C] (x := 5) : Q ")).toEqual([
+      "a",
+      "b",
+      "c",
+    ]);
+  });
+});
+
+describe("a ref names its declaration by its qualified name", () => {
+  test("qualifiedSpellingMatches", () => {
+    // `theorem AtomKnot.exists` inside `namespace QOU.BraidKnot`.
+    expect(declNameMatches("AtomKnot.exists", "QOU.BraidKnot.AtomKnot.exists")).toBe(true);
+    expect(declNameMatches("exists", "QOU.BraidKnot.AtomKnot.exists")).toBe(true);
+    expect(declNameMatches("foo", "foo")).toBe(true);
+    // Suffix must be dot-aligned, and the spelled prefix must agree.
+    expect(declNameMatches("xists", "QOU.AtomKnot.exists")).toBe(false);
+    expect(declNameMatches("Other.exists", "QOU.AtomKnot.exists")).toBe(false);
+  });
+
+  test("namespacesQualifyDeclarations", () => {
+    const src = `namespace QOU.BraidKnot
+theorem AtomKnot.exists : True := trivial
+section S
+def inSection : Nat := 1
+end S
+theorem _root_.topLevel : True := trivial
+end QOU.BraidKnot
+theorem outside : True := trivial
+`;
+    expect(qualifiedDeclarationNames(src)).toEqual([
+      "QOU.BraidKnot.AtomKnot.exists",
+      "QOU.BraidKnot.inSection",
+      "topLevel",
+      "outside",
+    ]);
+  });
+
+  test("longestMatchWins", () => {
+    const decls = [{ name: "exists" }, { name: "AtomKnot.exists" }];
+    expect(findDeclaration(decls, "QOU.AtomKnot.exists")?.name).toBe("AtomKnot.exists");
+  });
+
+  describe("following the ref into the lake root", () => {
+    let root: string;
+    beforeEach(() => {
+      root = mkdtempSync(join(tmpdir(), "lakeidx-"));
+      mkdirSync(join(root, "QOU", "A"), { recursive: true });
+      mkdirSync(join(root, ".lake", "packages", "dep"), { recursive: true });
+      writeFileSync(join(root, "QOU", "A", "One.lean"), "namespace QOU.A\ntheorem t : True := trivial\nend QOU.A\n");
+      writeFileSync(join(root, "QOU", "Two.lean"), "namespace QOU.B\ntheorem t : True := trivial\nend QOU.B\n");
+      writeFileSync(join(root, "QOU", "Three.lean"), "theorem Y.u : True := trivial\n");
+      writeFileSync(join(root, ".lake", "packages", "dep", "V.lean"), "theorem u : True := trivial\n");
+    });
+    afterEach(() => rmSync(root, { recursive: true, force: true }));
+
+    test("uniqueFileResolves", () => {
+      const idx = indexLakeDeclarations(root);
+      expect(resolveInLakeIndex(idx, "Y.u")).toBe(join(root, "QOU", "Three.lean"));
+    });
+
+    test("vendoredDependenciesAreNotIndexed", () => {
+      const idx = indexLakeDeclarations(root);
+      expect(idx.get("u")).toBeUndefined();
+      expect([...idx.values()].flat().some((f) => f.includes(".lake"))).toBe(false);
+    });
+
+    test("sameShortNameResolvedByNamespace", () => {
+      // Both files spell `theorem t`; only the enclosing namespace tells
+      // which one the ref means.
+      const idx = indexLakeDeclarations(root);
+      expect(resolveInLakeIndex(idx, "QOU.A.t")).toBe(join(root, "QOU", "A", "One.lean"));
+      expect(resolveInLakeIndex(idx, "QOU.B.t")).toBe(join(root, "QOU", "Two.lean"));
+      // A short-name match in another namespace is not the ref's declaration.
+      expect(resolveInLakeIndex(idx, "QOU.C.t")).toBeUndefined();
+      expect(resolveInLakeIndex(idx, "QOU.Missing.zz")).toBeUndefined();
+    });
+  });
+});
+
 describe("an unavailable rung is not a rung that lost", () => {
   test.skipIf(NO_LEAN)("aesopUnavailableNotFailure", () => {
     // `aesop` is not core Lean. It errors with `unknown tactic` and a
@@ -139,7 +261,7 @@ describe("an unavailable rung is not a rung that lost", () => {
     expect(r.ladder.ran).not.toContain("aesop");
     // Everything core still ran: the detection is specific, not a
     // blanket "any error means unavailable".
-    expect(r.ladder.ran).toEqual(["trivial", "rfl", "simp", "decide", "omega"]);
+    expect(r.ladder.ran).toEqual(["trivial", "rfl", "simp", "decide", "omega", "cases-decide"]);
     // Nothing timed out at this budget, so the two buckets stay distinct.
     expect(r.ladder.timedOut).toEqual([]);
     expect(incompleteRungs(r.ladder)).toEqual(["aesop"]);
