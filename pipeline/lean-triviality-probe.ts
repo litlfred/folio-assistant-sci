@@ -86,6 +86,7 @@ import { mkdtempSync } from "fs";
 import { walkBlocks } from "@litlfred/cat-harness-tools/pipeline/qa-utils.ts";
 import { parseLeanRef, refToDecl } from "@litlfred/cat-harness-tools/pipeline/content-graph.ts";
 import {
+  DECL_RE,
   declarationStarts,
   splitDeclarations,
   stripLeanComments,
@@ -190,6 +191,17 @@ export function qualifiedDeclarationNames(stripped: string): string[] {
 }
 
 /**
+ * The keyword (`theorem`, `def`, `structure`, …) of the `i`-th declaration
+ * that `declarationStarts` reports in a comment-stripped source.
+ */
+export function declarationKind(stripped: string, i: number): string | undefined {
+  const start = declarationStarts(stripped)[i];
+  if (!start) return undefined;
+  const m = new RegExp(DECL_RE.source, "m").exec(stripped.slice(start.at));
+  return m?.[1];
+}
+
+/**
  * The declaration in `decls` that `ref` names.
  *
  * With `qualified` (from `qualifiedDeclarationNames`, index-aligned) an
@@ -274,6 +286,8 @@ export type SkipReason =
   | "decl-not-found"
   /** The declaration has no top-level `:=` body to substitute. */
   | "no-body"
+  /** A `structure`, `class` or `inductive`: a type, with no proof to replace. */
+  | "not-a-proof"
   /** The file does not elaborate unmodified — usually missing oleans. */
   | "baseline-fails"
   /** The file elaborates too slowly to probe. Not the same as broken. */
@@ -283,6 +297,7 @@ export type SkipReason =
 export const SKIP_EXPLANATION: Record<SkipReason, string> = {
   "decl-not-found": "the lexer saw no declaration by that name — check the lean.ref, not the oleans",
   "no-body": "declaration has no top-level `:=` body; the probe was never applicable",
+  "not-a-proof": "the ref names a structure, class or inductive type; there is no proof to replace",
   "baseline-fails": "file does not elaborate unmodified — usually missing oleans; restore the cache",
   "baseline-timeout": "file elaborates too slowly to probe — raise the timeout, do not read as broken",
 };
@@ -350,6 +365,15 @@ export function probeDeclaration(
   const decls = splitDeclarations(stripped);
   const target = findDeclaration(decls, declName, qualifiedDeclarationNames(stripped));
   if (!target) return { status: "skipped", decl: declName, reason: "decl-not-found" };
+  // Following refs into the library reaches type declarations far more often
+  // than a block sibling did: 27 of the 133 qou refs found on 2026-11-22.
+  // Splicing `by simp` over a `structure … where` cannot mean anything, so
+  // say so instead of recording "open". `def`/`abbrev`/`instance` stay in:
+  // a Prop-valued `def` is exactly the self-assuming shape worth probing.
+  const kind = declarationKind(stripped, decls.indexOf(target));
+  if (kind === "structure" || kind === "class" || kind === "inductive") {
+    return { status: "skipped", decl: declName, reason: "not-a-proof" };
+  }
   if (!target.body || target.bodyAt < 0) {
     return { status: "skipped", decl: declName, reason: "no-body" };
   }
@@ -532,6 +556,7 @@ Needs: the lean-cache tool's lake-cache.sh restore-toolchain && ... restore`);
   const skips: Record<SkipReason, number> = {
     "decl-not-found": 0,
     "no-body": 0,
+    "not-a-proof": 0,
     "baseline-fails": 0,
     "baseline-timeout": 0,
   };
