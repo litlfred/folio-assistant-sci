@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                  xmlns:bootstrap.processes="https://litlfred.github.io/bootstrap/0.1.0/processes/ns/"
+                  xmlns:cat-harness.processes="https://litlfred.github.io/cat-harness/0.1.0/processes/ns/"
+                  id="Definitions_Process_FormalizedPublicationAuthoring" targetNamespace="https://litlfred.github.io/folio-assistant/workflows"
+                  exporter="folio-assistant" exporterVersion="1">
+  <bpmn:resource id="author" name="Author"/>
+  <bpmn:resource id="authoring-agent" name="Authoring agent"/>
+  <bpmn:resource id="build-pipeline" name="Build pipeline"/>
+  <bpmn:resource id="lean-toolchain" name="Lean toolchain"/>
+  <bpmn:resource id="qc-reviewer" name="QA reviewer (independent)"/>
+  <bpmn:collaboration id="Collaboration_Process_FormalizedPublicationAuthoring">
+    <bpmn:participant id="Participant_Process_FormalizedPublicationAuthoring" name="Formalized Scientific Publication Authoring — one mathematical result" processRef="Process_FormalizedPublicationAuthoring"/>
+  </bpmn:collaboration>
+  <bpmn:process id="Process_FormalizedPublicationAuthoring" name="Formalized Scientific Publication Authoring" isExecutable="false">
+    <bpmn:documentation>One mathematical result, from the author's intent to a merged change set. The result is a triple: a narrative statement, a narrative proof (both in the block's `.md`) and a Lean statement and proof (the block's `.lean`).
+
+The Lean kernel shows only that the Lean proof proves the Lean statement. Whether that statement is the theorem the narrative claims is decided separately, by independent reviewers who translate each side without seeing the other and then judge semantic equivalence. Mechanical checks (schema, references, render, Lean, vacuity, witnesses) run before them, so reviewers never spend a reading on a block that does not build.
+
+Empirical inputs never enter the triple: a measured value appears only in a marked comparison block, and a number quoted in prose is read from its witness. A result that cannot be closed is kept as a conjecture or as a stated, cited gap; it is never weakened until it passes. Only the author merges.</bpmn:documentation>
+    <bpmn:extensionElements>
+      <!-- STRICT: a block reaches End_Merged only through GW_Equivalent's
+           "yes"; a mechanical pass alone never publishes a formal result. -->
+      <cat-harness.processes:policy enforcement="strict"/>
+    </bpmn:extensionElements>
+    <bpmn:laneSet id="LaneSet_Process_FormalizedPublicationAuthoring">
+      <bpmn:lane id="Lane_Author" name="Author (person)" partitionElementRef="author">
+        <bpmn:documentation>States what is to be proved and from which sources, and is the only lane that merges.</bpmn:documentation>
+        <bpmn:extensionElements><bootstrap.processes:role ref="author"/></bpmn:extensionElements>
+        <bpmn:flowNodeRef>Start_Intent</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_StateIntent</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Merge</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_Merged</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Agent" name="Authoring agent (system)" partitionElementRef="authoring-agent">
+        <bpmn:documentation>Searches for prior work, drafts the triple, revises it on findings, and records an honest gap when a finding cannot be closed.</bpmn:documentation>
+        <bpmn:extensionElements><bootstrap.processes:role ref="authoring-agent"/></bpmn:extensionElements>
+        <bpmn:flowNodeRef>Task_PriorWork</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GW_AlreadyHeld</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_Cited</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_DraftTriple</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GW_Closable</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_RecordGap</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Lean" name="Lean toolchain (lean-mcp)" partitionElementRef="lean-toolchain">
+        <bpmn:documentation>Compiles the block's Lean against its real import cone and reports sorry and axiom status.</bpmn:documentation>
+        <bpmn:extensionElements><bootstrap.processes:role ref="lean-toolchain"/></bpmn:extensionElements>
+        <bpmn:flowNodeRef>Task_LeanCheck</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Build" name="Build pipeline (mechanical checks)" partitionElementRef="build-pipeline">
+        <bpmn:documentation>Runs the programs: schema, references, render, vacuity, witness staleness. Deterministic and cheap.</bpmn:documentation>
+        <bpmn:extensionElements><bootstrap.processes:role ref="build-pipeline"/></bpmn:extensionElements>
+        <bpmn:flowNodeRef>Task_Mechanical</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GW_MechanicalGreen</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Reviewer" name="Independent reviewers (agents)" partitionElementRef="qc-reviewer">
+        <bpmn:documentation>Agents that did not write the block. Each translation is done blind to the other side; the equivalence judge sees both translations and both originals.</bpmn:documentation>
+        <bpmn:extensionElements><bootstrap.processes:role ref="qc-reviewer"/></bpmn:extensionElements>
+        <bpmn:flowNodeRef>Task_BlindLeanToProse</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_BlindProseToLean</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_JudgeEquivalence</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Adversarial</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GW_Equivalent</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="Start_Intent" name="A result is to be&#10;added to the paper">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Task_StateIntent" name="State the result&#10;and its sources">
+      <bpmn:documentation>The author names the claim, the objects it is about, and the sources it rests on, before any text is drafted.</bpmn:documentation>
+      <bpmn:extensionElements><bootstrap.processes:skill ref="content-plan"/></bpmn:extensionElements>
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:task id="Task_PriorWork" name="Search the folio and&#10;library for prior work">
+      <bpmn:documentation>Search the folio's blocks, its compute and its ingested library (section text and extracted candidates of every held source) before drafting. A result settled in a held paper is cited, not re-derived.</bpmn:documentation>
+      <bpmn:extensionElements><bootstrap.processes:skill ref="deep-document-research"/></bpmn:extensionElements>
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="GW_AlreadyHeld" name="Already proved in&#10;the folio or library?">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="End_Cited" name="Cited, not re-derived">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:task id="Task_DraftTriple" name="Draft the triple: statement,&#10;proof, Lean">
+      <bpmn:documentation>Write the narrative statement and narrative proof in the block's `.md` and the formal statement and proof in its `.lean`. Write the Lean statement first and ask whether it could be false. An unproved step is `sorry` with a citation; a dependence on a conjecture is an explicit class hypothesis. A number in prose is read from its witness.</bpmn:documentation>
+      <bpmn:extensionElements><bootstrap.processes:skill ref="lean-formalization"/></bpmn:extensionElements>
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:incoming>Flow_12</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_LeanCheck" name="Compile the Lean and&#10;report sorry and axioms">
+      <bpmn:documentation>Compile against the real import cone; record `#print axioms` for the new declarations.</bpmn:documentation>
+      <bpmn:extensionElements><bootstrap.processes:skill ref="lean-proof-review"/></bpmn:extensionElements>
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:incoming>Flow_14</bpmn:incoming>
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_Mechanical" name="Run the mechanical checks">
+      <bpmn:documentation>Schema validation, reference and citation resolution, math render, vacuity audit (no `True` conclusions, no empty conjecture classes, no uncited `sorry`), and witness staleness for every quoted number.</bpmn:documentation>
+      <bpmn:extensionElements>
+        <bootstrap.processes:skill ref="content-validate"/>
+        <bootstrap.processes:skill ref="lean-proof-vacuity-audit"/>
+        <bootstrap.processes:skill ref="witnessed-values"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+      <bpmn:outgoing>Flow_8</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="GW_MechanicalGreen" name="Mechanical&#10;checks green?">
+      <bpmn:incoming>Flow_8</bpmn:incoming>
+      <bpmn:outgoing>Flow_9</bpmn:outgoing>
+      <bpmn:outgoing>Flow_10</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:parallelGateway id="GW_Fork" name="">
+      <bpmn:incoming>Flow_9</bpmn:incoming>
+      <bpmn:outgoing>Flow_15</bpmn:outgoing>
+      <bpmn:outgoing>Flow_16</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:task id="Task_BlindLeanToProse" name="Translate the Lean to prose,&#10;without the narrative">
+      <bpmn:extensionElements><bootstrap.processes:skill ref="proof-narrative-lean-equivalence"/></bpmn:extensionElements>
+      <bpmn:incoming>Flow_15</bpmn:incoming>
+      <bpmn:outgoing>Flow_17</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_BlindProseToLean" name="Translate the narrative to a&#10;formal claim, without the Lean">
+      <bpmn:extensionElements><bootstrap.processes:skill ref="proof-narrative-lean-equivalence"/></bpmn:extensionElements>
+      <bpmn:incoming>Flow_16</bpmn:incoming>
+      <bpmn:outgoing>Flow_18</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:parallelGateway id="GW_Join" name="">
+      <bpmn:incoming>Flow_17</bpmn:incoming>
+      <bpmn:incoming>Flow_18</bpmn:incoming>
+      <bpmn:outgoing>Flow_19</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:task id="Task_JudgeEquivalence" name="Judge semantic equivalence&#10;both ways">
+      <bpmn:documentation>Same hypotheses, same quantifier order, same conclusion, same objects, in both directions. The narrative proof's logical skeleton is compared with the Lean proof's in the same way. A difference either way is a finding.</bpmn:documentation>
+      <bpmn:extensionElements><bootstrap.processes:skill ref="proof-narrative-lean-equivalence"/></bpmn:extensionElements>
+      <bpmn:incoming>Flow_19</bpmn:incoming>
+      <bpmn:outgoing>Flow_20</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_Adversarial" name="Make the strongest case&#10;that the block is wrong">
+      <bpmn:extensionElements><bootstrap.processes:skill ref="devils-advocate-paper"/></bpmn:extensionElements>
+      <bpmn:incoming>Flow_20</bpmn:incoming>
+      <bpmn:outgoing>Flow_21</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="GW_Equivalent" name="Equivalent, and no&#10;open finding?">
+      <bpmn:incoming>Flow_21</bpmn:incoming>
+      <bpmn:outgoing>Flow_22</bpmn:outgoing>
+      <bpmn:outgoing>Flow_23</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="GW_Closable" name="Can the finding&#10;be closed?">
+      <bpmn:incoming>Flow_10</bpmn:incoming>
+      <bpmn:incoming>Flow_23</bpmn:incoming>
+      <bpmn:outgoing>Flow_12</bpmn:outgoing>
+      <bpmn:outgoing>Flow_13</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_RecordGap" name="Keep it as a conjecture&#10;or a cited gap">
+      <bpmn:documentation>Demote the block to a conjecture, or state the open step with `sorry` and a citation, and record the gap in the work plan. Never weaken the statement until it passes.</bpmn:documentation>
+      <bpmn:extensionElements><bootstrap.processes:skill ref="proof-gap-audit"/></bpmn:extensionElements>
+      <bpmn:incoming>Flow_13</bpmn:incoming>
+      <bpmn:outgoing>Flow_14</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:userTask id="Task_Merge" name="Review the change set&#10;and merge">
+      <bpmn:extensionElements><bootstrap.processes:skill ref="content-review"/></bpmn:extensionElements>
+      <bpmn:incoming>Flow_22</bpmn:incoming>
+      <bpmn:outgoing>Flow_24</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="End_Merged" name="Result published">
+      <bpmn:incoming>Flow_24</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="Start_Intent" targetRef="Task_StateIntent"/>
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Task_StateIntent" targetRef="Task_PriorWork"/>
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="Task_PriorWork" targetRef="GW_AlreadyHeld"/>
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="GW_AlreadyHeld" targetRef="End_Cited" name="yes"/>
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="GW_AlreadyHeld" targetRef="Task_DraftTriple" name="no"/>
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="Task_DraftTriple" targetRef="Task_LeanCheck"/>
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="Task_LeanCheck" targetRef="Task_Mechanical"/>
+    <bpmn:sequenceFlow id="Flow_8" sourceRef="Task_Mechanical" targetRef="GW_MechanicalGreen"/>
+    <bpmn:sequenceFlow id="Flow_9" sourceRef="GW_MechanicalGreen" targetRef="GW_Fork" name="yes"/>
+    <bpmn:sequenceFlow id="Flow_10" sourceRef="GW_MechanicalGreen" targetRef="GW_Closable" name="no"/>
+    <bpmn:sequenceFlow id="Flow_12" sourceRef="GW_Closable" targetRef="Task_DraftTriple" name="yes — revise"/>
+    <bpmn:sequenceFlow id="Flow_13" sourceRef="GW_Closable" targetRef="Task_RecordGap" name="no"/>
+    <bpmn:sequenceFlow id="Flow_14" sourceRef="Task_RecordGap" targetRef="Task_LeanCheck"/>
+    <bpmn:sequenceFlow id="Flow_15" sourceRef="GW_Fork" targetRef="Task_BlindLeanToProse"/>
+    <bpmn:sequenceFlow id="Flow_16" sourceRef="GW_Fork" targetRef="Task_BlindProseToLean"/>
+    <bpmn:sequenceFlow id="Flow_17" sourceRef="Task_BlindLeanToProse" targetRef="GW_Join"/>
+    <bpmn:sequenceFlow id="Flow_18" sourceRef="Task_BlindProseToLean" targetRef="GW_Join"/>
+    <bpmn:sequenceFlow id="Flow_19" sourceRef="GW_Join" targetRef="Task_JudgeEquivalence"/>
+    <bpmn:sequenceFlow id="Flow_20" sourceRef="Task_JudgeEquivalence" targetRef="Task_Adversarial"/>
+    <bpmn:sequenceFlow id="Flow_21" sourceRef="Task_Adversarial" targetRef="GW_Equivalent"/>
+    <bpmn:sequenceFlow id="Flow_22" sourceRef="GW_Equivalent" targetRef="Task_Merge" name="yes"/>
+    <bpmn:sequenceFlow id="Flow_23" sourceRef="GW_Equivalent" targetRef="GW_Closable" name="no"/>
+    <bpmn:sequenceFlow id="Flow_24" sourceRef="Task_Merge" targetRef="End_Merged"/>
+  </bpmn:process>
+</bpmn:definitions>
