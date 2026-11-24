@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { mkdirSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { CHUNK_SIZE, ingest, moduleOfDocPath, rewriteHeader, type IndexFile } from "./lean-kg-ingest.ts";
+import { CHUNK_SIZE, ingest, linkFor, moduleOfDocPath, parseSiblings, rerouteSignature, rewriteHeader, splitFromKg, type IndexFile } from "./lean-kg-ingest.ts";
 import { signatureStyles } from "./lean-kg-publish.ts";
 
 const decl = (name: string, kind = "theorem") => ({
@@ -70,6 +70,80 @@ describe("lean-kg-ingest", () => {
 
   test("refusesNonDocGenDir", () => {
     expect(() => ingest({ docData: mkdtempSync(join(tmpdir(), "lkg-empty-")), out: mkdtempSync(join(tmpdir(), "x-")), modules: [] })).toThrow(/not a doc-gen4/);
+  });
+});
+
+describe("lean-kg-ingest — one sub-KG per package (root bases, split)", () => {
+  const fred = (name: string) => ({
+    header: `<a href="./Fred2005/F.html#${name}">${name}</a> <a href="./QOU/A.html#QOU.A.x">x</a> <a href="./Mathlib/Algebra/Field/Defs.html#Field">Field</a>`,
+    info: { name, kind: "theorem" },
+  });
+
+  test("parseSiblingsMapsEachRootToItsPackageBesideThisOne", () => {
+    expect([...parseSiblings(["qou/QOU,qou/MassTheory", "ugb/UGB"])]).toEqual([["qou", "../qou/"], ["masstheory", "../qou/"], ["ugb", "../ugb/"]]);
+    expect(() => parseSiblings(["QOU"])).toThrow(/<package>\/<Root>/);
+    expect(() => parseSiblings(["../x/QOU"])).toThrow();
+    expect(() => parseSiblings(["qou/QOU;rm"])).toThrow();
+  });
+
+  test("rewriteHeaderSendsSiblingRootToItsSubKgAndMathlibOutside", () => {
+    const h = rewriteHeader(fred("Fred2005.F.t").header, new Set(["fred2005"]), "https://ext/", parseSiblings(["qou/QOU"]));
+    expect(h).toContain(`href="#/m/Fred2005.F/Fred2005.F.t"`);
+    expect(h).toContain(`href="../qou/#/m/QOU.A/QOU.A.x"`);
+    expect(h).toContain(`href="https://ext/Mathlib/Algebra/Field/Defs.html#Field"`);
+  });
+
+  test("linkForWithoutSiblingFallsBackToExternalDocPath", () => {
+    expect(linkFor("QOU.A", "QOU.A.x", new Set(["fred2005"]), "https://ext")).toBe("https://ext/QOU/A.html#QOU.A.x");
+  });
+
+  test("rerouteSignatureRewritesOnlyRoutesOutOfTheKeptRoots", () => {
+    const html = `<a href="#/m/QOU.A/QOU.A.x">x</a><a href="#/m/UGB.B/UGB.B.y">y</a><a href="#/m/Other.C">c</a><a href="https://ext/Mathlib/X.html#z">z</a>`;
+    const r = rerouteSignature(html, new Set(["qou"]), "https://ext/", parseSiblings(["ugb/UGB"]));
+    expect(r).toContain(`href="#/m/QOU.A/QOU.A.x"`);
+    expect(r).toContain(`href="../ugb/#/m/UGB.B/UGB.B.y"`);
+    expect(r).toContain(`href="https://ext/Other/C.html"`);
+    expect(r).toContain(`href="https://ext/Mathlib/X.html#z"`);
+  });
+
+  test("splitFromKgCutsOnePackageWithNoDocData", () => {
+    const root = mkdtempSync(join(tmpdir(), "lkg-split-"));
+    const docData = join(root, "doc-data");
+    mkdirSync(docData);
+    const write = (m: string, decls: unknown[]) =>
+      writeFileSync(join(docData, `declaration-data-${m}.bmp`), JSON.stringify({ name: m, imports: ["QOU.A"], declarations: decls, instances: [] }));
+    write("QOU.A", [decl("QOU.A.x"), decl("QOU.A.y", "def")]);
+    write("Fred2005.F", [fred("Fred2005.F.t")]);
+    const combined = join(root, "combined");
+    ingest({ docData, out: combined, modules: ["QOU", "Fred2005"] });
+    // The combined graph routes the Fred2005 → QOU link inside itself.
+    expect(readFileSync(join(combined, "m", "Fred2005.F.0.sig.json"), "utf-8")).toContain(`#/m/QOU.A/QOU.A.x`);
+
+    const out = join(root, "fred");
+    const r = splitFromKg({ kg: combined, out, modules: ["Fred2005"], externalBase: "https://ext/", rootBases: parseSiblings(["qou/QOU"]) });
+    expect(r).toMatchObject({ modules: 1, decls: 1, written: 1, overlay: false });
+    const index = JSON.parse(readFileSync(join(out, "index.json"), "utf-8")) as IndexFile;
+    expect(index.modules.map((m) => m.name)).toEqual(["Fred2005.F"]);
+    expect(index.totals).toEqual({ modules: 1, decls: 1, formalized: 0 });
+    expect(JSON.parse(readFileSync(join(out, "names.json"), "utf-8"))).toEqual([["Fred2005.F.t", 0, 0]]);
+    const sig = readFileSync(join(out, "m", "Fred2005.F.0.sig.json"), "utf-8");
+    expect(sig).toContain(`../qou/#/m/QOU.A/QOU.A.x`);
+    expect(sig).toContain(`#/m/Fred2005.F/Fred2005.F.t`);
+    expect(readdirSync(join(out, "m")).some((f) => f.startsWith("QOU."))).toBe(false);
+
+    const qou = splitFromKg({ kg: combined, out: join(root, "qou"), modules: ["QOU"] });
+    expect(qou).toMatchObject({ modules: 1, decls: 2 });
+    expect(JSON.parse(readFileSync(join(root, "qou", "names.json"), "utf-8")).map((n: unknown[]) => n[1])).toEqual([0, 0]);
+  });
+
+  test("splitFromKgRefusesOverlayEmptySelectionAndNonKg", () => {
+    const d = mkdtempSync(join(tmpdir(), "lkg-bad-"));
+    expect(() => splitFromKg({ kg: d, out: join(d, "o"), modules: ["QOU"] })).toThrow(/no index.json/);
+    writeFileSync(join(d, "index.json"), JSON.stringify({ schema: "folio-lean-kg/v1", chunkSize: 500, modules: [], kinds: [], totals: {} }));
+    writeFileSync(join(d, "names.json"), "[]");
+    expect(() => splitFromKg({ kg: d, out: join(d, "o"), modules: [] })).toThrow(/module roots/);
+    writeFileSync(join(d, "overlay.json"), "{}");
+    expect(() => splitFromKg({ kg: d, out: join(d, "o"), modules: ["QOU"] })).toThrow(/overlay/);
   });
 });
 

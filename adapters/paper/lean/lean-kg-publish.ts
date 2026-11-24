@@ -17,6 +17,15 @@
  *     [--base <published data dir or URL>]     # branches/ overlay
  *     [--home-label qou] [--instance <name>] [--platform <index root>] [--no-rail]
  *
+ * One sub-KG per Lake package (owner, 2026-11-24: "separate qou, UGB and
+ * Fred2005 into own lean sub-KGs"): run once per package with that package's
+ * module roots, `--route lean/<package>`, and `--sibling <other>/<Root>` for
+ * each root of the other packages, so a cross-package link lands on the
+ * sibling sub-KG published beside it (`lean/<other>/`). With `--from-kg <published viewer or data dir>` in place of
+ * `--doc-data`, the sub-KG is cut out of an already-published combined KG (the
+ * folio's Lean store) and no Lean build or doc-gen4 run is needed; its
+ * extracted `style.css` is reused.
+ *
  * `--doc-style` defaults to `<doc-data>/../doc/style.css` (doc-gen4's own); the
  * viewer still works without it, signatures just lose doc-gen4's styling.
  *
@@ -27,7 +36,7 @@
  */
 import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
-import { ingest, type IndexFile } from "./lean-kg-ingest.ts";
+import { ingest, parseSiblings, splitFromKg, type IndexFile } from "./lean-kg-ingest.ts";
 import { RAIL_SCRIPTS, findPlatform, runRail } from "./lean-render.ts";
 
 const VIEWER = join(import.meta.dir, "lean-kg-viewer");
@@ -91,9 +100,10 @@ async function main(): Promise<number> {
     return i >= 0 ? argv[i + 1] : undefined;
   };
   const docData = at("--doc-data");
+  const fromKg = at("--from-kg");
   const site = at("--site");
-  if (!docData || !site) {
-    console.error("usage: lean-kg-publish.ts --doc-data <dir> --site <dir> [--route lean] [--modules A,B] [--content-root <dir>] [--repo o/r --ref <sha> --content-prefix <p>] [--base <dir|url>] [--home-label <n>] [--instance <n>] [--platform <dir>] [--no-rail]");
+  if ((!docData && !fromKg) || (docData && fromKg) || !site) {
+    console.error("usage: lean-kg-publish.ts (--doc-data <dir> | --from-kg <published viewer or data dir>) --site <dir> [--route lean] [--modules A,B] [--sibling <package>/<Root>[,…]]... [--content-root <dir>] [--repo o/r --ref <sha> --content-prefix <p>] [--base <dir|url>] [--home-label <n>] [--instance <n>] [--platform <dir>] [--no-rail]");
     return 2;
   }
   const route = (at("--route") ?? "lean").replace(/^\/+|\/+$/g, "");
@@ -106,24 +116,56 @@ async function main(): Promise<number> {
     .map((s) => s.trim())
     .filter(Boolean);
   const base = at("--base");
+  let rootBases: Map<string, string>;
+  try {
+    rootBases = parseSiblings(argv.flatMap((a, i) => (a === "--sibling" && argv[i + 1] ? [argv[i + 1]!] : [])));
+  } catch (e) {
+    console.error(`? ${(e as Error).message}`);
+    return 2;
+  }
+  // The published KG to split: a viewer directory (`<dir>/data/index.json`) or its `data/`.
+  const kgDir = fromKg === undefined ? undefined : existsSync(join(resolve(fromKg), "data", "index.json")) ? resolve(fromKg) : undefined;
+  const kgData = fromKg === undefined ? undefined : kgDir !== undefined ? join(kgDir, "data") : resolve(fromKg);
+  if (kgData !== undefined && resolve(kgData).startsWith(resolve(dest))) {
+    console.error(`? --from-kg ${fromKg} is inside the route it would replace (${dest})`);
+    return 2;
+  }
+  if (fromKg !== undefined && base !== undefined) {
+    console.error("? --base (a staging overlay) applies to --doc-data only");
+    return 2;
+  }
+  if (fromKg !== undefined && modules.length === 0) {
+    console.error("? --from-kg needs --modules: the roots of the package this sub-KG holds");
+    return 2;
+  }
 
   rmSync(dest, { recursive: true, force: true });
   mkdirSync(dest, { recursive: true });
   for (const f of readdirSync(VIEWER)) copyFileSync(join(VIEWER, f), join(dest, f));
-  const style = at("--doc-style") ?? join(dirname(resolve(docData)), "doc", "style.css");
-  if (existsSync(style)) writeFileSync(join(dest, "style.css"), signatureStyles(readFileSync(style, "utf-8")));
-  else console.log(`  no doc-gen4 style.css at ${style}; signatures render unstyled`);
-  writeFileSync(join(dest, "config.json"), JSON.stringify({ repo: at("--repo"), ref: at("--ref"), contentPrefix: at("--content-prefix") }));
+  const publishedStyle = kgDir !== undefined ? join(kgDir, "style.css") : undefined;
+  const style = at("--doc-style") ?? (docData ? join(dirname(resolve(docData)), "doc", "style.css") : undefined);
+  if (style !== undefined && existsSync(style)) writeFileSync(join(dest, "style.css"), signatureStyles(readFileSync(style, "utf-8")));
+  else if (publishedStyle !== undefined && existsSync(publishedStyle)) copyFileSync(publishedStyle, join(dest, "style.css"));
+  else console.log(`  no doc-gen4 style.css${style ? ` at ${style}` : ""}; signatures render unstyled`);
+  // `siblings`: the viewer links an import into another package's sub-KG (`<base>#/m/<Module>`).
+  writeFileSync(
+    join(dest, "config.json"),
+    JSON.stringify({ repo: at("--repo"), ref: at("--ref"), contentPrefix: at("--content-prefix"), ...(rootBases.size ? { siblings: Object.fromEntries(rootBases) } : {}) }),
+  );
 
   let r;
   try {
-    r = ingest({ docData, out: join(dest, "data"), modules, contentRoot: at("--content-root"), externalBase: at("--external-base"), base, baseIndex: base ? await loadBase(base) : undefined });
+    r =
+      kgData !== undefined
+        ? splitFromKg({ kg: kgData, out: join(dest, "data"), modules, externalBase: at("--external-base"), rootBases })
+        : ingest({ docData: docData!, out: join(dest, "data"), modules, contentRoot: at("--content-root"), externalBase: at("--external-base"), rootBases, base, baseIndex: base ? await loadBase(base) : undefined });
   } catch (e) {
     console.error(`? ${(e as Error).message}`);
     return 2;
   }
   console.log(
     `lean-kg-publish: viewer + ${r.modules} module shard(s), ${r.decls} declaration(s) into ${dest}` +
+      (kgData !== undefined ? ` (split from ${kgData})` : "") +
       (r.overlay ? `; overlay of ${r.written} changed module(s) on ${base}` : ""),
   );
 

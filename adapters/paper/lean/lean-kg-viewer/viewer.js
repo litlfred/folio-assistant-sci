@@ -222,7 +222,10 @@ async function modulePage(name, target) {
     el("p", { class: "lkg-imports" }, "Imports: ", ...mod.imports.flatMap((id, j) => {
       const m = id.replace(/^lean:module:/, "");
       const known = state.index.modules.some((x) => x.name === m);
-      return [j ? ", " : "", known ? el("a", { href: `#/m/${m}`, text: m }) : m];
+      // An import from another package's sub-KG links there (config.siblings: root → its viewer).
+      const sib = state.config.siblings?.[m.split(".")[0].toLowerCase()];
+      const there = !known && typeof sib === "string" ? safeHref(`${sib}#/m/${m}`) : null;
+      return [j ? ", " : "", known ? el("a", { href: `#/m/${m}`, text: m }) : there ? el("a", { href: there, text: m }) : m];
     })),
     el("p", { class: "lkg-note", text: `${decls.length} declaration(s).` }),
   ];

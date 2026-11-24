@@ -41,8 +41,17 @@
  *
  * doc-gen4 writes root-relative hrefs (`./Mathlib/Algebra/Field/Defs.html#Field`).
  * A link into a KEPT module root becomes a viewer route (`#/m/<Module>/<decl>`);
- * anything else goes to `--external-base` (default: the community mathlib4
- * docs). Same stated limit as lean-render.ts: the external docs are built from
+ * a link into a root `--sibling <package>/<Root>` names goes to that sibling
+ * sub-KG's viewer, published beside this one (`../<package>/#/m/<Module>/<decl>`:
+ * one sub-KG per Lake package, owner 2026-11-24); anything else goes to `--external-base` (default: the
+ * community mathlib4 docs).
+ *
+ * ## Splitting a published KG (`splitFromKg`)
+ *
+ * A combined KG already published (the folio's Lean store) is cut into one
+ * package's sub-KG with no Lean build: its shards are copied, its signature
+ * routes into roots it no longer keeps are re-routed as above, and its index
+ * and name list are rewritten. `lean-kg-publish.ts --from-kg` is the CLI. Same stated limit as lean-render.ts: the external docs are built from
  * their Mathlib, not the folio's pin.
  *
  * Exit 0 written; 2 usage or the input is not a doc-gen4 doc-data directory.
@@ -82,17 +91,78 @@ export function moduleOfDocPath(path: string): { module: string; frag: string } 
   return { module: m[1]!.split("/").join("."), frag: m[2] ?? "" };
 }
 
+/**
+ * Where a link into ANOTHER package's sub-KG goes, by module root: lower-cased
+ * root (`qou`, `massTheory` → `masstheory`) → the sibling viewer's page directory
+ * (`../qou/`). Owner, 2026-11-24, "separate qou, UGB and Fred2005 into own lean
+ * sub-KGs": a declaration Fred2005 imports from QOU is a cross-subgraph link to
+ * the qou sub-KG, not a link to the community Mathlib docs.
+ */
+export type RootBases = ReadonlyMap<string, string>;
+
+/**
+ * Parse `--sibling <package>/<Root>[,<package>/<Root>…]` values into a
+ * {@link RootBases}. Sub-KGs are published side by side (`<route>/<package>/`,
+ * e.g. `lean/qou/`, `lean/ugb/`), so a root of package `p` is served by the
+ * sibling viewer at `../p/`; the CLI names packages and roots only, never a
+ * path, and every value is an id list.
+ */
+export function parseSiblings(values: readonly string[]): Map<string, string> {
+  const out = new Map<string, string>();
+  for (const v of values.flatMap((x) => x.split(","))) {
+    const m = /^([a-z0-9][a-z0-9-]*)\/([A-Za-z0-9_]+)$/.exec(v.trim());
+    if (!m) throw new Error(`--sibling takes <package>/<Root>[,…], got "${v}"`);
+    out.set(m[2]!.toLowerCase(), `../${m[1]}/`);
+  }
+  return out;
+}
+
+/**
+ * The href for a declaration of `module` (fragment `frag`, undecoded): a viewer
+ * route when its root is kept here, the sibling sub-KG's viewer route when
+ * `rootBases` names its root, else doc-gen4's page under `externalBase`.
+ */
+export function linkFor(module: string, frag: string, keepRoots: ReadonlySet<string>, externalBase: string, rootBases: RootBases = new Map()): string {
+  const route = `#/m/${module}${frag ? `/${encodeURIComponent(frag)}` : ""}`;
+  const root = module.split(".")[0]!.toLowerCase();
+  if (keepRoots.has(root)) return route;
+  const sibling = rootBases.get(root);
+  if (sibling !== undefined) return `${sibling}${route}`;
+  const base = externalBase.endsWith("/") ? externalBase : `${externalBase}/`;
+  return `${base}${module.split(".").join("/")}.html${frag ? `#${frag}` : ""}`;
+}
+
 /** Rewrite doc-gen4's root-relative hrefs for the viewer. */
-export function rewriteHeader(html: string, keepRoots: ReadonlySet<string>, externalBase: string): string {
+export function rewriteHeader(html: string, keepRoots: ReadonlySet<string>, externalBase: string, rootBases: RootBases = new Map()): string {
   const base = externalBase.endsWith("/") ? externalBase : `${externalBase}/`;
   return html.replace(/\bhref="([^"]*)"/g, (whole, href: string) => {
     if (/^[a-z][a-z0-9+.-]*:/i.test(href) || href.startsWith("#")) return whole;
     const target = href.replace(/^\.\//, "");
     const mod = moduleOfDocPath(target);
-    if (mod && keepRoots.has(mod.module.split(".")[0]!.toLowerCase())) {
-      return `href="#/m/${mod.module}${mod.frag ? `/${encodeURIComponent(mod.frag)}` : ""}"`;
+    if (mod && (keepRoots.has(mod.module.split(".")[0]!.toLowerCase()) || rootBases.has(mod.module.split(".")[0]!.toLowerCase()))) {
+      return `href="${linkFor(mod.module, mod.frag, keepRoots, externalBase, rootBases)}"`;
     }
     return `href="${base}${target}"`;
+  });
+}
+
+/**
+ * Re-route a signature chunk that is ALREADY in viewer form (a published KG's
+ * `m/<Module>.<k>.sig.json`) for a sub-KG keeping only `keepRoots`: a route
+ * `#/m/<Module>[/<frag>]` whose root is no longer kept goes to its sibling
+ * sub-KG ({@link RootBases}) or, when no sibling is named, to `externalBase`.
+ * Every other href is left as it is.
+ */
+export function rerouteSignature(html: string, keepRoots: ReadonlySet<string>, externalBase: string, rootBases: RootBases = new Map()): string {
+  return html.replace(/\bhref="#\/m\/([^"/]+)(?:\/([^"]*))?"/g, (whole, module: string, frag: string | undefined) => {
+    if (keepRoots.has(module.split(".")[0]!.toLowerCase())) return whole;
+    let f = frag ?? "";
+    try {
+      f = decodeURIComponent(f);
+    } catch {
+      return whole;
+    }
+    return `href="${linkFor(module, f, keepRoots, externalBase, rootBases)}"`;
   });
 }
 
@@ -130,6 +200,8 @@ export interface IngestOptions {
   modules: readonly string[];
   contentRoot?: string;
   externalBase?: string;
+  /** Sibling sub-KGs, by module root ({@link RootBases}). */
+  rootBases?: RootBases;
   /** Directory (or URL) of a published base `index.json`; enables overlay mode. */
   base?: string;
   baseIndex?: IndexFile;
@@ -210,7 +282,7 @@ export function ingest(o: IngestOptions): IngestReport {
       "@graph": [{ "@id": `lean:module:${mod.name}`, "@type": "LeanModule", name: mod.name, imports: mod.imports.map((m) => `lean:module:${m}`), declarations: decls.length, chunks }, ...nodes],
     };
     const sigChunks: string[][] = [];
-    for (let c = 0; c < chunks; c++) sigChunks.push(decls.slice(c * CHUNK_SIZE, (c + 1) * CHUNK_SIZE).map((d) => rewriteHeader(d.header, keep, externalBase)));
+    for (let c = 0; c < chunks; c++) sigChunks.push(decls.slice(c * CHUNK_SIZE, (c + 1) * CHUNK_SIZE).map((d) => rewriteHeader(d.header, keep, externalBase, o.rootBases)));
     const shardText = JSON.stringify(shard);
     const sigText = sigChunks.map((s) => JSON.stringify(s));
     const hash = sha12(shardText + sigText.join("\n"));
@@ -237,6 +309,80 @@ export function ingest(o: IngestOptions): IngestReport {
   return report;
 }
 
+export interface SplitOptions {
+  /** A published KG's `data/` directory: `index.json`, `names.json`, `m/`. */
+  kg: string;
+  out: string;
+  /** Module roots this sub-KG keeps (`QOU`, `MassTheory`, …). Must not be empty. */
+  modules: readonly string[];
+  externalBase?: string;
+  rootBases?: RootBases;
+}
+
+/**
+ * One package's sub-KG cut out of an already-published combined KG, with no
+ * Lean build and no doc-gen4 run (owner, 2026-11-24: "separate qou, UGB and
+ * Fred2005 into own lean sub-KGs"). The published render is the folio's Lean
+ * store (`lean-html-docs`, kept on a branch and mounted), so a site build can
+ * split it per package where it could not run doc-gen4.
+ *
+ * Keeps the modules whose root is in `modules`; copies their shards as they
+ * are; re-routes each signature chunk with {@link rerouteSignature}, so a link
+ * into a module this sub-KG no longer holds goes to its sibling sub-KG or to
+ * the external docs instead of a route that would not resolve; and writes a
+ * fresh `index.json` (hashes over the written text) and `names.json`
+ * (module indices renumbered). An overlay or a stale index is refused: the
+ * split reads only a complete graph.
+ */
+export function splitFromKg(o: SplitOptions): IngestReport {
+  const kg = resolve(o.kg);
+  const idxPath = join(kg, "index.json");
+  if (!existsSync(idxPath)) throw new Error(`${kg}: no index.json — not a published Lean KG data directory`);
+  if (existsSync(join(kg, "overlay.json"))) throw new Error(`${kg}: an overlay (overlay.json) is not a complete graph; split its base`);
+  const src = JSON.parse(readFileSync(idxPath, "utf-8")) as IndexFile;
+  if (src.schema !== "folio-lean-kg/v1" || !Array.isArray(src.modules)) throw new Error(`${idxPath}: not a folio-lean-kg/v1 index`);
+  const names = JSON.parse(readFileSync(join(kg, "names.json"), "utf-8")) as [string, number, number][];
+  const keep = new Set(o.modules.map((m) => m.toLowerCase()));
+  if (keep.size === 0) throw new Error("splitFromKg: name the module roots this sub-KG keeps");
+  const externalBase = o.externalBase ?? DEFAULT_EXTERNAL_BASE;
+  const chunkSize = src.chunkSize ?? CHUNK_SIZE;
+
+  const out = resolve(o.out);
+  rmSync(out, { recursive: true, force: true });
+  mkdirSync(join(out, "m"), { recursive: true });
+
+  const index: IndexFile = { schema: "folio-lean-kg/v1", chunkSize, modules: [], kinds: src.kinds ?? KINDS, totals: { modules: 0, decls: 0, formalized: 0 } };
+  const report: IngestReport = { modules: 0, decls: 0, formalized: 0, written: 0, unchanged: 0, overlay: false };
+  const newIdx = new Map<number, number>();
+  src.modules.forEach((m, i) => {
+    if (!keep.has(m.name.split(".")[0]!.toLowerCase())) return;
+    const shardFile = join(kg, "m", `${m.name}.jsonld`);
+    if (!existsSync(shardFile)) throw new Error(`${shardFile}: listed in index.json but absent`);
+    const shardText = readFileSync(shardFile, "utf-8");
+    const shard = JSON.parse(shardText) as { "@graph"?: Array<{ "@type"?: string; formalizes?: unknown[] }> };
+    report.formalized += (shard["@graph"] ?? []).filter((n) => n["@type"] === "LeanDeclaration" && Array.isArray(n.formalizes) && n.formalizes.length > 0).length;
+    const sigText: string[] = [];
+    for (let c = 0; c < m.chunks; c++) {
+      const f = join(kg, "m", `${m.name}.${c}.sig.json`);
+      if (!existsSync(f)) throw new Error(`${f}: listed in index.json but absent`);
+      const sigs = JSON.parse(readFileSync(f, "utf-8")) as string[];
+      sigText.push(JSON.stringify(sigs.map((h) => rerouteSignature(h, keep, externalBase, o.rootBases))));
+    }
+    writeFileSync(join(out, "m", `${m.name}.jsonld`), shardText);
+    sigText.forEach((t, c) => writeFileSync(join(out, "m", `${m.name}.${c}.sig.json`), t));
+    newIdx.set(i, index.modules.length);
+    index.modules.push({ name: m.name, decls: m.decls, chunks: m.chunks, hash: sha12(shardText + sigText.join("\n")) });
+    report.modules++;
+    report.decls += m.decls;
+    report.written++;
+  });
+  index.totals = { modules: report.modules, decls: report.decls, formalized: report.formalized };
+  const kept = names.flatMap(([n, mi, k]) => (newIdx.has(mi) ? [[n, newIdx.get(mi)!, k] as [string, number, number]] : []));
+  writeFileSync(join(out, "index.json"), JSON.stringify(index));
+  writeFileSync(join(out, "names.json"), JSON.stringify(kept));
+  return report;
+}
+
 async function loadBaseIndex(base: string): Promise<IndexFile> {
   const url = base.replace(/\/+$/, "") + "/index.json";
   if (/^https?:/.test(url)) {
@@ -256,7 +402,7 @@ async function main(): Promise<number> {
   const docData = at("--doc-data");
   const out = at("--out");
   if (!docData || !out) {
-    console.error("usage: lean-kg-ingest.ts --doc-data <lake>/.lake/build/doc-data --out <dir> [--modules QOU,UGB] [--module <root>]... [--content-root <dir>] [--external-base <url>] [--base <dir|url>]");
+    console.error("usage: lean-kg-ingest.ts --doc-data <lake>/.lake/build/doc-data --out <dir> [--modules QOU,UGB] [--module <root>]... [--content-root <dir>] [--external-base <url>] [--sibling <package>/<Root>[,…]]... [--base <dir|url>]");
     return 2;
   }
   const modules = [...(at("--modules")?.split(",") ?? []), ...argv.flatMap((a, i) => (a === "--module" && argv[i + 1] ? [argv[i + 1]!] : []))]
@@ -264,7 +410,8 @@ async function main(): Promise<number> {
     .filter(Boolean);
   const base = at("--base");
   try {
-    const r = ingest({ docData, out, modules, contentRoot: at("--content-root"), externalBase: at("--external-base"), base, baseIndex: base ? await loadBaseIndex(base) : undefined });
+    const rootBases = parseSiblings(argv.flatMap((a, i) => (a === "--sibling" && argv[i + 1] ? [argv[i + 1]!] : [])));
+    const r = ingest({ docData, out, modules, contentRoot: at("--content-root"), externalBase: at("--external-base"), rootBases, base, baseIndex: base ? await loadBaseIndex(base) : undefined });
     console.log(
       `lean-kg-ingest: ${r.modules} module(s), ${r.decls} declaration(s), ${r.formalized} formalizing a content block; ` +
         (r.overlay ? `overlay: ${r.written} changed, ${r.unchanged} unchanged against the base` : `${r.written} shard(s) written`),
