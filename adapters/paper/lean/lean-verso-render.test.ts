@@ -45,10 +45,13 @@ describe("the .ilean index", () => {
     const d = mkdtempSync(join(tmpdir(), "verso-ilean-"));
     mkdirSync(join(d, "QOU"), { recursive: true });
     writeFileSync(join(d, "QOU", "X.ilean"), ilean("QOU.X", [["QOU.X", "QOU.X.thm"], ["Mathlib.Foo", "Real"]]));
+    writeFileSync(join(d, "QOU", "X.olean"), "");
+    writeFileSync(join(d, "QOU", "Y.ilean"), ilean("QOU.Y", [["QOU.Y", "QOU.Y.unbuilt"]])); // no olean: not importable
     const idx = indexIleans([d], new Set(["QOU"]));
     expect(idx.get("QOU.X.thm")).toBe("QOU.X");
     expect(idx.has("Real")).toBe(false);
     expect(idx.modules?.has("QOU.X")).toBe(true);
+    expect(idx.has("QOU.Y.unbuilt")).toBe(false);
   });
 });
 

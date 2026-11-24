@@ -135,6 +135,10 @@ export function indexIleans(dirs: readonly string[], keepRoots?: ReadonlySet<str
       const abs = join(dir, e.name);
       if (e.isDirectory()) walk(abs);
       else if (e.name.endsWith(".ilean")) {
+        // An ilean without its olean cannot be imported: a build in progress
+        // (measured 2026-11-24, a concurrent rebuild on a shared host) or a
+        // partial restore. Indexing it would plan an import that fails.
+        if (!existsSync(abs.replace(/\.ilean$/, ".olean"))) continue;
         const text = readFileSync(abs, "utf-8");
         const mod = /"module":"([^"]+)"/.exec(text)?.[1];
         if (!mod || (keepRoots && !keepRoots.has(mod.split(".")[0]!))) continue;
@@ -293,7 +297,10 @@ export function generateVersoDoc(plan: Plan, o: DocOptions): string {
     "",
   );
   for (const [module, entries] of plan.byModule) {
-    L.push(`# ${versoText(module)}`, "", "%%%", `tag := ${JSON.stringify(`mod-${module}`)}`, "%%%", "");
+    // No `%%%` part metadata: with qou's 486 modules imported, `{ tag := … }`
+    // stopped elaborating at the 13th part ("invalid {...} notation, expected
+    // type is not of the form (C ...)"), measured 2026-11-24; Verso's own ids suffice.
+    L.push(`# ${versoText(module)}`, "");
     const whole = plan.moduleRefs.get(module);
     if (whole?.length) L.push(`The whole module is the formal side of ${whole.map(link).join(", ")}.`, "");
     for (const e of entries) {
