@@ -148,6 +148,6 @@ _71 skills in 7 directories, generated from each skill's front matter. `bun run 
 | Skill | What it is for |
 |---|---|
 | [`lean-formal-edges`](skills/lean/lean-formal-edges.md) | Extract ELABORATED formal dependencies between a folio's lean.ref declarations — the trustworthy replacement for the lexical `--scan` cache. |
-| [`lean-html-docs`](skills/lean/lean-html-docs.md) | Build and publish the visualiser of a folio's declared `lean` directory: the package's doc-gen4 HTML render, staged under the folio's site and wrapped in the harness navbar and rail. |
+| [`lean-html-docs`](skills/lean/lean-html-docs.md) | Build a folio's Lean render (the Lean knowledge-graph viewer made from doc-gen4's declaration data for its Lake packages), keep it on the folio's branch-mounted Lean store, and publish it under the… |
 
 <!-- skills:index:end -->
