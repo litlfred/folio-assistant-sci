@@ -9,5 +9,6 @@
   "docoType": "doco:Section",
   "heading": "Conjecture",
   "headingPlural": "Conjectures",
-  "indexRank": 6
+  "indexRank": 6,
+  "libraryOrigin": "extracted"
 }

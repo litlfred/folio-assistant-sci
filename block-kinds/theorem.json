@@ -9,5 +9,6 @@
   "docoType": "doco:Section",
   "heading": "Theorem",
   "headingPlural": "Theorems",
-  "indexRank": 2
+  "indexRank": 2,
+  "libraryOrigin": "extracted"
 }
