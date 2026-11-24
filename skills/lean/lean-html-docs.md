@@ -190,55 +190,90 @@ Only modules whose content hash differs from the base are written, plus
 `data/overlay.json`; the viewer loads changed modules from the branch and the
 rest from the base. A branch with no Lean change writes no module files.
 
-## 5. Verso: the library as a document (prototype, `lean-verso-render`)
+## 5. Verso and Verso Blueprint: the library as a document (`lean-verso-render`)
 
 Owner, 2026-11-24: *"Verso & Verso Blueprint. should be a fol-ass-sci tool to
-render lean libary in a harnessed repo"*, then *"2 verso"*: qou's Lean
-library render moves to Verso. The KG viewer is the harness's general graph
-viewer (cat-harness `kg-viewer`), not a Lean renderer: *"KG viewer graph is
-more than just lean"*. So the Verso render is a separate site route
-(`verso/` by default), and a Lean declaration is a node the KG viewer links
-to, not something it renders.
+render lean libary in a harnessed repo"*; *"upgrade lean and do verso"* (qou
+moves to Lean v4.35.0); *"separate qou, UGB and Fred2005 into own lean
+sub-KGs"*; *"use lean cache, build iteratively"*. The KG viewer is the
+harness's general graph viewer (cat-harness `kg-viewer`), not a Lean renderer
+(*"KG viewer graph is more than just lean"*). So the Verso render is its own
+route, `verso/`, beside the KG viewer's `lean/`, and a Lean declaration is a
+node the KG viewer links to through the render's `xref.json`.
 
-What the Tool does: one Verso Manual page per Lean module, one
-`{docstring X}` block per declaration a content block's `lean.ref` names, each
-saying which block it formalizes, elaborated `lean`-direct against the
-folio's restored oleans plus a built Verso. Declarations are located through
-the `.ilean` files beside the oleans, so no doc-gen4 run is needed.
+The engine follows the folio's toolchain. **Verso Blueprint**
+(`leanprover/verso-blueprint`) has release branches only for Lean v4.28.0 to
+v4.35.0, and the Tool pins v4.35.0 at `509987a`. **Verso Manual**
+(`leanprover/verso`, tagged from v4.10.0) is the fallback for older
+toolchains.
+
+### Verso Blueprint (v4.28.0 and later): one site per Lake package
 
 ```sh
 bun run folio-assistant-sci/adapters/paper/lean/lean-verso-render.ts \
-  --content-root folio/quantum-observable-universe \
-  --lean-path <paper>/lean/.lake/build/lib/lean --lean-path <each package>/.lake/build/lib/lean \
-  --module QOU --verso <verso checkout at the toolchain tag, `lake build VersoManual` done> \
-  --toolchain v4.24.0 --site _site --route verso [--chapter <dir>] [--limit n]
+  --toolchain v4.35.0 --content-root folio/quantum-observable-universe \
+  --package qou=folio/quantum-observable-universe/lean \
+  --package ugb=folio/unital-groebner-bases/lean \
+  --package fred2005=folio/fred2005-formal-groups/lean \
+  --work _verso-work --site _site --route verso
 ```
 
-Engine by toolchain: **Verso Blueprint** (`leanprover/verso-blueprint`) has
-release branches only for Lean v4.28.0 to v4.35.0; **Verso** itself is tagged
-from v4.10.0. A folio on v4.24.0 (qou) gets the Verso Manual engine; Verso
-Blueprint needs a toolchain bump first.
+For each package the Tool writes a small Lake workspace that requires Verso
+Blueprint (pinned) and the folio package **by path**. In it the Tool puts a
+generated Blueprint document with one node per content block whose
+`lean.ref` prefix is that package:
 
-Traps, each measured:
+- `(lean := <decl>)` gives the progress and `sorry` state;
+- `(uses := …)`, taken from the block's `uses[]`, draws the dependency graph.
 
-- **Verso must be built at exactly the folio's toolchain**, and is the only
-  thing built (118 Lake jobs, about 4 minutes on 4 shared cores). Never
-  `lake build` the folio: it would evict the restored cache.
-- **MD4Lean is native C.** A `lean`-direct elaboration must
-  `--load-dynlib` its `.so` files, or Lean aborts with *"Could not find native
-  implementation of external declaration 'MD4Lean.parse'"*. The script does.
-- **Verso's generator needs a `lean-toolchain` above its working directory**,
-  or exits 1. The script writes one into `--work`.
+It then runs upstream's own `lake exe vbp build` and stages the result at
+`<site>/verso/<package>/`, so each package has its own `xref.json`. All the
+workspaces share one `.lake/packages`, so Verso Blueprint is cloned and built
+once.
+
+**Restore the warm cache first** (skill `lean-cache-restore`). The
+workspace runs `lake build @<package>`, which is a no-op on a restored,
+traced tree, and that build is what writes the `.ilean` files the Tool uses
+to place each declaration in its module. Building Verso Blueprint is the only
+real build: 826 Lake jobs, 737 s on 4 shared cores, and 1.4 GB of
+`.lake/packages`, measured 2026-11-24.
+
+### Verso Manual (older toolchains)
+
+```sh
+bun run folio-assistant-sci/adapters/paper/lean/lean-verso-render.ts \
+  --engine verso-manual --toolchain v4.24.0 --content-root <dir> \
+  --lean-path <lib oleans> --lean-path <each package's oleans> --module QOU \
+  --verso <verso checkout at the toolchain tag, `lake build VersoManual` done>
+```
+
+This engine writes one Verso Manual page per module, with one `{docstring X}`
+block per declaration. It compiles `lean`-direct against the restored oleans.
+Measured on qou at v4.24.0: 586 declarations, 27.5 min of single-threaded
+elaboration, 8.8 GB peak memory, 487 pages, 103 MB.
+
+### Traps, each measured
+
 - **A library need not be importable as a whole.** qou's is not: two modules
-  define `QOU.Archimedean.NuclearConfig`, and Lean refuses the second import.
-  The script picks a compatible set from the `.ilean` definitions and import
-  lists, and writes the rest to `<work>/skipped.json`.
-- **Content-block sibling `.lean` files are not in the library**, so their
-  `lean.ref`s have no olean and are listed in `<work>/unresolved.txt`
-  (718 of 1,318 qou refs on 2026-11-24).
-- Verso writes `xref.json`, mapping each rendered declaration to its page and
-  anchor (`QOU.X.y` is `#QOU___X___y`): that is the file a KG node for the
-  declaration should link through.
+  both define `QOU.Archimedean.NuclearConfig`, and Lean refuses the second
+  import. Both engines choose a compatible set of modules from the `.ilean`
+  definitions and import lists, and write the rest to `skipped.json`.
+- **An `.ilean` without its `.olean` is skipped.** A concurrent build on a
+  shared host deletes and rewrites oleans.
+- **Content-block sibling `.lean` files are not in the library.** Their
+  `lean.ref`s have no olean, so they are listed in `unresolved.txt`: 719 of
+  qou's 1,318 refs on 2026-11-24. Compiling them first is the qou side's job.
+- **Verso Manual engine only:**
+  - MD4Lean is native C, so a `lean`-direct run must `--load-dynlib` its
+    `.so` files.
+  - Verso's generator needs a `lean-toolchain` file above its working
+    directory.
+  - `%%% tag %%%` part metadata stopped elaborating at the 13th part with
+    qou's modules imported, so the Tool does not emit it.
+- **The Verso Blueprint graph page loads d3, d3-graphviz and marked from
+  cdn.jsdelivr.net** when it is viewed. A sandboxed headless browser shows an
+  empty graph unless those requests are served locally (npm has the same
+  packages).
 
 ## Declaring the store
 

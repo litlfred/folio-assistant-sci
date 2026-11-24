@@ -57,6 +57,8 @@ import { join, resolve } from "node:path";
 
 import { collectLeanRefs, type BlockRef } from "./lean-kg-ingest";
 import { findPlatform, runRail } from "./lean-render";
+import { collectBlueprintBlocks, generateBlueprintDoc, generateBlueprintLakefile, generateBlueprintMain, lakePackageName, type BlueprintBlock } from "./lean-verso-blueprint";
+import { mkdtempSync, symlinkSync, lstatSync } from "node:fs";
 
 /** Lean toolchains with a `leanprover/verso-blueprint` release branch (measured 2026-11-24). */
 export const VERSO_BLUEPRINT_TOOLCHAINS = ["v4.28.0", "v4.29.0", "v4.30.0", "v4.31.0", "v4.32.0", "v4.33.0", "v4.34.0", "v4.35.0"] as const;
@@ -345,8 +347,108 @@ function args(argv: string[], flag: string): string[] {
   return argv.flatMap((a, i) => (a === flag && argv[i + 1] ? [argv[i + 1]!] : []));
 }
 
+/**
+ * The Verso Blueprint engine: one Lake workspace and one site per Lake package
+ * (`--package qou=<lake root>`, repeatable), all sharing one `.lake/packages`
+ * so Verso Blueprint is cloned and built once. Each site is staged at
+ * `<site>/<route>/<package>/` with its own `xref.json`.
+ */
+export function blueprintMain(argv: string[]): number {
+  const contentRoot = arg(argv, "--content-root");
+  const packages = args(argv, "--package").map((p) => {
+    const [name, dir] = p.split("=");
+    return { name: name!, dir: resolve(dir!) };
+  });
+  const toolchain = arg(argv, "--toolchain");
+  if (!contentRoot || !packages.length || !toolchain) {
+    console.error("usage: lean-verso-render --engine verso-blueprint --toolchain v4.35.0 --content-root <dir> --package <pkg>=<lake root>... [--work dir] [--site _site --route verso] [--chapter c] [--limit n]");
+    return 2;
+  }
+  const tcv = parseToolchain(toolchain);
+  const work = resolve(arg(argv, "--work") ?? "_verso-work");
+  const shared = join(work, "_packages");
+  mkdirSync(shared, { recursive: true });
+  const repo = arg(argv, "--repo");
+  const prefix = arg(argv, "--content-prefix");
+  const blockBase = repo ? `https://github.com/${repo}/blob/${arg(argv, "--ref") ?? "main"}/${prefix ? `${prefix}/` : ""}` : undefined;
+  const limitArg = arg(argv, "--limit");
+  const chapter = arg(argv, "--chapter");
+  const all = collectBlueprintBlocks(resolve(contentRoot)).filter((b) => !chapter || b.md.startsWith(`${chapter}/`));
+  const site = arg(argv, "--site");
+  const route = arg(argv, "--route") ?? "verso";
+  const lake = process.env.LAKE ?? "lake";
+  const run = (cwd: string, a: string[]): void => {
+    const t = Date.now();
+    execFileSync("nice", ["-n", "15", lake, ...a], { cwd, stdio: "inherit", env: { ...process.env, LEAN_NUM_THREADS: process.env.LEAN_NUM_THREADS ?? "2" } });
+    console.log(`  lake ${a.join(" ")}: ${((Date.now() - t) / 1000).toFixed(1)} s`);
+  };
+  for (const pkg of packages) {
+    const lakeName = lakePackageName(pkg.dir);
+    if (!lakeName) {
+      console.error(`✗ ${pkg.dir}: no lakefile declaring a package`);
+      return 1;
+    }
+    const ws = join(work, pkg.name);
+    mkdirSync(join(ws, ".lake"), { recursive: true });
+    const link = join(ws, ".lake", "packages");
+    try {
+      lstatSync(link);
+    } catch {
+      symlinkSync(shared, link);
+    }
+    writeFileSync(join(ws, "lean-toolchain"), `leanprover/lean4:v${tcv!.join(".")}\n`);
+    writeFileSync(join(ws, "lakefile.lean"), generateBlueprintLakefile({ packageName: "FolioBlueprint", folio: { name: lakeName, path: pkg.dir } }));
+    // Iterative: the folio's library is built (or found already built in its restored cache) first, so its .ilean files say where each declaration lives.
+    if (!existsSync(join(ws, "FolioBlueprint.lean"))) writeFileSync(join(ws, "FolioBlueprint.lean"), "");
+    const libs = args(argv, `--lib-${pkg.name}`);
+    // `@<package>` is the folio package's default targets; `--lib-<name> <Lib>` narrows it.
+    run(ws, ["build", ...(libs.length ? libs : [`@${lakeName}`])]);
+    const index = indexIleans([join(pkg.dir, ".lake", "build", "lib", "lean")]);
+    const blocks = all.filter((b) => b.pkg === pkg.name);
+    const byModule = new Map<string, BlueprintBlock[]>();
+    const unresolved: string[] = [];
+    let n = 0;
+    for (const b of blocks.sort((x, y) => x.decl.localeCompare(y.decl))) {
+      const m = index.get(b.decl);
+      if (!m) {
+        unresolved.push(b.decl);
+        continue;
+      }
+      if (limitArg && n >= Number(limitArg)) break;
+      n++;
+      byModule.set(m, [...(byModule.get(m) ?? []), b]);
+    }
+    const { kept, skipped } = compatibleModules([...byModule.keys()].sort(), index);
+    const keptMap = new Map(kept.map((m) => [m, byModule.get(m)!]));
+    const count = [...keptMap.values()].reduce((a, e) => a + e.length, 0);
+    console.log(`${pkg.name}: ${blocks.length} blocks name a declaration of this package; ${count} nodes in ${kept.length} modules; ${skipped.length} modules skipped (import-incompatible); ${unresolved.length} unresolved`);
+    writeFileSync(join(ws, "unresolved.txt"), unresolved.join("\n") + "\n");
+    writeFileSync(join(ws, "skipped.json"), JSON.stringify(skipped, null, 2) + "\n");
+    if (!count) continue;
+    writeFileSync(join(ws, "FolioBlueprint.lean"), generateBlueprintDoc(keptMap, { title: arg(argv, `--title-${pkg.name}`) ?? `${pkg.name} blueprint`, docModule: "FolioBlueprint", imports: kept, blockBase }));
+    writeFileSync(join(ws, "FolioBlueprintMain.lean"), generateBlueprintMain("FolioBlueprint"));
+    run(ws, ["build", "FolioBlueprint", "vbp"]);
+    const out = join(ws, "_out", "site");
+    run(ws, ["exe", "vbp", "build", "--output", out]);
+    if (site) {
+      const dest = join(resolve(site), route, pkg.name);
+      rmSync(dest, { recursive: true, force: true });
+      cpSync(join(out, "html-multi"), dest, { recursive: true });
+      console.log(`  staged → ${dest}`);
+    }
+  }
+  if (site && !argv.includes("--no-rail")) {
+    const platform = findPlatform(arg(argv, "--platform"));
+    if (!platform || !runRail(platform, site, arg(argv, "--home-label"), arg(argv, "--instance"))) return 1;
+  }
+  return 0;
+}
+
 function main(): number {
   const argv = process.argv.slice(2);
+  const tcArg = arg(argv, "--toolchain");
+  const engine = arg(argv, "--engine") ?? (tcArg ? engineFor(tcArg).engine : "verso-manual");
+  if (engine === "verso-blueprint") return blueprintMain(argv);
   const contentRoot = arg(argv, "--content-root");
   const verso = arg(argv, "--verso");
   const work = resolve(arg(argv, "--work") ?? "_verso-work");
