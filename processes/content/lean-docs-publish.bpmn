@@ -89,6 +89,9 @@ Only End_Ready publishes: a refused guard, a failed build, a store that did not 
     </bpmn:endEvent>
     <bpmn:task id="Task_Mount" name="Mount the Lean&#10;branch store">
       <bpmn:documentation>`bun run cat state:mount` (or `branch-store.ts mount --id &lt;id&gt;`) at the start of the site build, as for `beans/`: puts the branch tip on disk at the declared path. Reads the RENDER; writes nothing to the branch. A site build of a folio whose Lean did not change starts here.</bpmn:documentation>
+      <bpmn:extensionElements>
+        <bootstrap.processes:skill ref="lean-html-docs"/>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_8</bpmn:incoming>
       <bpmn:outgoing>Flow_10</bpmn:outgoing>
     </bpmn:task>

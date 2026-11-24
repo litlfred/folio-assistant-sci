@@ -19,7 +19,7 @@ msgstr ""
 msgid "`bun run cat state:mount` (or `branch-store.ts mount --id <id>`) at the start of the site build, as for `beans/`: puts the branch tip on disk at the declared path. Reads the RENDER; writes nothing to the branch. A site build of a folio whose Lean did not change starts here."
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/lean-docs-publish.bpmn:105
+#: ../folio-assistant-sci/processes/content/lean-docs-publish.bpmn:108
 #. Diagram element documentation
 msgid "A site step of the folio's declared build (`site.build.siteSteps`). Reads the mounted RENDER, writes the PUBLISHED pages at `<site>/<route>/`, the route the declaration's `coverage.visualiser` names: the KG viewer and its `data/` shards are copied as they are, and the site build's own rail pass (`rail-standalone-pages.ts --foreign-site`, which runs after every site step) puts the harness rail on the viewer page, so the rail's assets are the site's and nothing extra lands at its root. Fallback, when the store holds doc-gen4's static HTML instead: Tool `lean-render-publish` (`adapters/paper/lean/lean-render.ts --docs <mount path> --site <site> --route <route> --no-rail`) stages it without Lake's bookkeeping, marks its iframe navbar and `find/` redirect rail-declined and adds the layout shim. The document site's ∀ panel links each declaration to the viewer opened at it, `<route>/#/m/<Module>/<name>`."
 msgstr ""
@@ -29,7 +29,7 @@ msgstr ""
 msgid "Answered by `branch-store.ts push`: `pushed` (or `current`) continues; a `conflict` or a failed push stops here, and the previous render on the branch stays what a site build mounts."
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/lean-docs-publish.bpmn:96
+#: ../folio-assistant-sci/processes/content/lean-docs-publish.bpmn:99
 #. Diagram element documentation
 msgid "Answered by `state:mount`'s row for the store: `mounted` continues; a `miss` (no such branch) or any failure stops here. An empty mount is not a pass: a site published from it would drop its Lean pages without saying so."
 msgstr ""
@@ -39,7 +39,7 @@ msgstr ""
 msgid "Answered by Task_Build's exit code: 0 and a render directory, or a refusal (2: a guard; 3: no warm cache) or a failed build (1). Only 0 continues."
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/lean-docs-publish.bpmn:113
+#: ../folio-assistant-sci/processes/content/lean-docs-publish.bpmn:116
 #. Diagram element documentation
 msgid "Answered by Task_Publish's own closing assertion: a staged page carrying neither the harness rail nor the `folio-navbar: none` opt-out fails it (exit 1)."
 msgstr ""
@@ -64,12 +64,12 @@ msgstr ""
 msgid "Did the store take it?"
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/lean-docs-publish.bpmn:112
+#: ../folio-assistant-sci/processes/content/lean-docs-publish.bpmn:115
 #. Diagram label
 msgid "Every page railed or declined?"
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/lean-docs-publish.bpmn:95
+#: ../folio-assistant-sci/processes/content/lean-docs-publish.bpmn:98
 #. Diagram label
 msgid "Is the render on disk?"
 msgstr ""
@@ -79,7 +79,7 @@ msgstr ""
 msgid "Is there a render?"
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/lean-docs-publish.bpmn:118
+#: ../folio-assistant-sci/processes/content/lean-docs-publish.bpmn:121
 #. Diagram label
 msgid "Lean pages ready for the chrome check and deploy"
 msgstr ""
@@ -99,12 +99,12 @@ msgstr ""
 msgid "Mount the Lean branch store"
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/lean-docs-publish.bpmn:127
+#: ../folio-assistant-sci/processes/content/lean-docs-publish.bpmn:130
 #. Diagram label
 msgid "no"
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/lean-docs-publish.bpmn:101
+#: ../folio-assistant-sci/processes/content/lean-docs-publish.bpmn:104
 #. Diagram label
 msgid "No mounted render — Lean pages not published"
 msgstr ""
@@ -129,7 +129,7 @@ msgstr ""
 msgid "Owns the site. Mounts the render from the branch store, rails it with the platform's own pass, and either hands it on to the folio's chrome check and deploy or stops it at End_NoMount or End_Unrailed."
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/lean-docs-publish.bpmn:121
+#: ../folio-assistant-sci/processes/content/lean-docs-publish.bpmn:124
 #. Diagram label
 msgid "Pages without chrome — not published"
 msgstr ""
@@ -139,7 +139,7 @@ msgstr ""
 msgid "Publish a folio's Lean render with the harness chrome"
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/lean-docs-publish.bpmn:104
+#: ../folio-assistant-sci/processes/content/lean-docs-publish.bpmn:107
 #. Diagram label
 msgid "Publish the render at its route, railed"
 msgstr ""
@@ -159,7 +159,7 @@ msgstr ""
 msgid "Write the KG render to the Lean branch store"
 msgstr ""
 
-#: ../folio-assistant-sci/processes/content/lean-docs-publish.bpmn:126
+#: ../folio-assistant-sci/processes/content/lean-docs-publish.bpmn:129
 #. Diagram label
 msgid "yes"
 msgstr ""

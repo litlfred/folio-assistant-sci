@@ -49,6 +49,7 @@ Build a folio's Lean render — the doc-gen4 HTML of the Lake packages the folio
 ### 3. Mount the Lean branch store (`Task_Mount`)
 
 - Who: the `CI/CD Pipeline` lane (role `build-pipeline`).
+- Skill: `lean-html-docs`.
 - What: `bun run cat state:mount` (or `branch-store.ts mount --id <id>`) at the start of the site build, as for `beans/`: puts the branch tip on disk at the declared path.
 - Record it: `workflow_complete` with `node: "Task_Mount"`.
 - next: → `GW_Mounted` (Is the render on disk?)
