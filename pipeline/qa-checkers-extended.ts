@@ -1258,23 +1258,6 @@ export function checkProofSubstantive(
   };
 }
 
-// `proof-no-axiom-growth` and `proof-build-green` both read CI
-// artefacts that are produced by `lean_ci.yml` (`axiom-report.txt`
-// + `proof-objects.json`). Local sweeps return n/a; the CI sweep
-// reads the artefacts and writes pass/fail entries.
-
-export function checkProofNoAxiomGrowth(
-  _leanPath: string | undefined,
-): CheckerResult {
-  return { result: "n/a", hits: [], notes: "not implemented: stub checker" };
-}
-
-export function checkProofBuildGreen(
-  _leanPath: string | undefined,
-): CheckerResult {
-  return { result: "n/a", hits: [], notes: "not implemented: stub checker" };
-}
-
 // `proof-lean-compiles` reads a cached diagnostics JSON produced by
 // the lean-lsp MCP server (`lean_diagnostic_messages`). The cache is
 // at `docs/audits/lean-compile-diagnostics.json`, populated by agent
@@ -1615,8 +1598,6 @@ export const EXTENDED_AUTOMATED_CHECKERS: Record<
   // proof
   "proof-no-bare-sorries": (p) => checkProofNoBareSorries(p.lean),
   "proof-substantive": (p) => checkProofSubstantive(p.lean),
-  "proof-no-axiom-growth": (p) => checkProofNoAxiomGrowth(p.lean),
-  "proof-build-green": (p) => checkProofBuildGreen(p.lean),
   // proof — cached-witness-driven (read the docs/audits/*.json
   // artefacts emitted by the standalone audit scripts)
   "proof-no-conj-propagation-violation": (p) =>

@@ -92,8 +92,6 @@ batch.
 | Criterion | Reviewer kind | Routes to | Failure handler |
 |-----------|---------------|-----------|-----------------|
 | `proof-no-bare-sorries` | script | `proof-status-tracking` + `proof-gap-audit` | Add `-- Ref: [key] <url>` per the project authoring conventions |
-| `proof-no-axiom-growth` | script | `lean-witness-audit` | Investigate new axiom dep; usually demands a proof refactor or an `axiom` declaration with `-- Ref:` |
-| `proof-build-green` | script | `lean-build-fix` | Walk failure log → patch `.lean` → re-build |
 | `proof-lean-compiles` | script | `lean-build-fix` | Invoke `mcp__lean-lsp__lean_diagnostic_messages` on the `.lean` file; read compiler errors; patch → re-check |
 | `proof-narrative-lean-equiv` | agent | `proof-narrative-lean-equivalence` | Adjudicate the four drift classes A/B/C/D |
 | `proof-substantive` | script | `lean-substantive-pass` | Bulk-split typed sub-claims; replace `holds:Prop` with hypothesis |
@@ -131,8 +129,10 @@ Watcher invocation pattern:
 #### `proof-lean-compiles` — lean-lsp-driven compilation audit
 
 This criterion uses the lean-lsp MCP server to get real compiler
-diagnostics per `.lean` file, rather than relying solely on CI
-artefacts (`proof-build-green`). The workflow:
+diagnostics per `.lean` file. (The former `proof-build-green` and
+`proof-no-axiom-growth` criteria were never implemented and were retired
+on 2026-11-21; this criterion covers compilation, and axiom status is a
+consuming folio's `#print axioms` gate.) The workflow:
 
 1. **Populate the diagnostics cache.** Either:
    - Agent calls `mcp__lean-lsp__lean_diagnostic_messages(file_path)`

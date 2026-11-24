@@ -29,7 +29,7 @@ Feature: the Lean triviality probe — controls showing the tactic ladder closes
     When substantive is probed
     Then it stays open
     And aesop is recorded as unavailable and not among the rungs run
-    And the rungs run are trivial, rfl, simp, decide and omega, with none timed out
+    And the rungs run are trivial, rfl, simp, decide, omega and cases-decide, with none timed out
     And the incomplete rungs are aesop only
 
   @test:pipeline/lean-triviality-probe.test.ts::an_unavailable_rung_is_not_a_rung_that_lost::incompleteRungsUnion
@@ -59,7 +59,7 @@ Feature: the Lean triviality probe — controls showing the tactic ladder closes
 
   @test:pipeline/lean-triviality-probe.test.ts::skip_reasons_are_distinguished,_because_their_fixes_differ::everySkipReasonExplained
   Scenario: every skip reason carries an explanation of what would fix it
-    Then decl-not-found, no-body, baseline-fails and baseline-timeout each have an explanation
+    Then decl-not-found, no-body, not-a-proof, baseline-fails and baseline-timeout each have an explanation
 
   @test:pipeline/lean-triviality-probe.test.ts::splicing_the_body::assignInStatementNoMangle
   Scenario: a `:=` inside the statement no longer mangles the probe
@@ -96,3 +96,54 @@ Feature: the Lean triviality probe — controls showing the tactic ladder closes
   Scenario: does not duplicate when both roots resolve to the same path
     When leanPathFor is asked with the paper root as both roots
     Then no entry is repeated
+
+  @test:pipeline/lean-triviality-probe.test.ts::a_finite_table_check_falls_to_cases-decide::casesDecideClosesTableCheck
+  Scenario: a finite table check is closed by case analysis then decide
+    When depth_le (depth t ≤ 4 over a three-constructor inductive) is probed
+    Then it is closed by cases-decide, at cases-decide's position in the ladder
+
+  @test:pipeline/lean-triviality-probe.test.ts::a_finite_table_check_falls_to_cases-decide::casesDecideNeedsABinder
+  Scenario: cases-decide has nothing to try without an explicit binder
+    Then the cases-decide rung for a signature with no binders is undefined
+    And for a signature with binder t it is "first | (cases t <;> decide)"
+    And every other rung is its own tactic
+
+  @test:pipeline/lean-triviality-probe.test.ts::a_finite_table_check_falls_to_cases-decide::explicitBinderNamesSkipsUnnameable
+  Scenario: binder names leave out underscore, instance and default-value binders
+    Then the binder names of "(a b : T) {c : U} (_h : P) [inst : C] (x := 5)" are a, b and c
+
+  @test:pipeline/lean-triviality-probe.test.ts::a_ref_names_its_declaration_by_its_qualified_name::qualifiedSpellingMatches
+  Scenario: a spelled name matches a ref it is a dot-aligned suffix of
+    Then AtomKnot.exists and exists match QOU.BraidKnot.AtomKnot.exists
+    And xists and Other.exists do not match QOU.AtomKnot.exists
+
+  @test:pipeline/lean-triviality-probe.test.ts::a_ref_names_its_declaration_by_its_qualified_name::namespacesQualifyDeclarations
+  Scenario: enclosing namespaces qualify declaration names
+    Then namespace blocks are joined to the spelled name, sections add nothing, and _root_ discards the namespace
+
+  @test:pipeline/lean-triviality-probe.test.ts::a_ref_names_its_declaration_by_its_qualified_name::longestMatchWins
+  Scenario: the most qualified spelled name wins when several match
+    Then findDeclaration of QOU.AtomKnot.exists picks AtomKnot.exists over exists
+
+  @test:pipeline/lean-triviality-probe.test.ts::a_ref_names_its_declaration_by_its_qualified_name::following_the_ref_into_the_lake_root::uniqueFileResolves
+  Scenario: a ref declared in exactly one lake-root file resolves to that file
+    Then Y.u resolves to QOU/Three.lean
+
+  @test:pipeline/lean-triviality-probe.test.ts::a_ref_names_its_declaration_by_its_qualified_name::following_the_ref_into_the_lake_root::vendoredDependenciesAreNotIndexed
+  Scenario: the lake build directory is not indexed
+    Then no indexed file lies under .lake
+
+  @test:pipeline/lean-triviality-probe.test.ts::a_ref_names_its_declaration_by_its_qualified_name::following_the_ref_into_the_lake_root::sameShortNameResolvedByNamespace
+  Scenario: two files declaring the same short name are told apart by namespace
+    Then QOU.A.t and QOU.B.t resolve to their own files
+    And QOU.C.t and a missing name resolve to nothing
+
+  @test:pipeline/lean-triviality-probe.test.ts::skip_reasons_are_distinguished,_because_their_fixes_differ::skipNotAProof
+  Scenario: a ref that names a structure is not probed
+    When "structure S where x : Nat" is probed as S
+    Then it is skipped as "not-a-proof"
+
+  @test:pipeline/lean-triviality-probe.test.ts::a_ref_names_its_declaration_by_its_qualified_name::following_the_ref_into_the_lake_root::modulePathSpellingResolves
+  Scenario: a ref spelled as module path plus short name resolves to that file
+    Then QOU.A.One.t resolves to QOU/A/One.lean
+    And a missing name or a missing file resolves to nothing

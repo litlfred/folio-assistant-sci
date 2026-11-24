@@ -31,11 +31,9 @@ Part of [folio-assistant-sci](../README.md) 0.1.0, declared as `folio-assistant-
 | [`lean-no-definitional-laundering.json`](lean-no-definitional-laundering.json) | data |  |
 | [`lean-no-vacuous-instance-data.json`](lean-no-vacuous-instance-data.json) | data |  |
 | [`lean-ref-owns-decl.json`](lean-ref-owns-decl.json) | data |  |
-| [`proof-build-green.json`](proof-build-green.json) | data |  |
 | [`proof-compile-cost.json`](proof-compile-cost.json) | data |  |
 | [`proof-conditional-class-banner.json`](proof-conditional-class-banner.json) | data |  |
 | [`proof-lean-compiles.json`](proof-lean-compiles.json) | data |  |
-| [`proof-no-axiom-growth.json`](proof-no-axiom-growth.json) | data |  |
 | [`proof-no-bare-sorries.json`](proof-no-bare-sorries.json) | data |  |
 | [`proof-no-conj-propagation-violation.json`](proof-no-conj-propagation-violation.json) | data |  |
 | [`proof-no-cost-regression.json`](proof-no-cost-regression.json) | data |  |
