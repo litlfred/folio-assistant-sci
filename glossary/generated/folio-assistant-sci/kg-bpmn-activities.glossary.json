@@ -15,6 +15,94 @@
       "status": "candidate"
     },
     {
+      "id": "process_formalizedpublicationauthoring.task_adversarial",
+      "prefLabel": "Challenge the block",
+      "definition": "An independent adversarial reviewer builds the strongest mathematical and formal case that the statement, proof or model framing is false, vacuous, over-claimed or missing a hypothesis.",
+      "notation": "Task_Adversarial",
+      "source": "folio-assistant-sci/processes/content/formalized-publication-authoring.bpmn#Task_Adversarial",
+      "status": "candidate"
+    },
+    {
+      "id": "process_formalizedpublicationauthoring.task_blindleantoprose",
+      "prefLabel": "Translate Lean to prose blind",
+      "definition": "An independent reviewer reads only the `.lean` declaration and proof and states in mathematical prose what hypotheses, quantifiers, objects and conclusion it proves, without seeing the block's `.md` narrative.",
+      "notation": "Task_BlindLeanToProse",
+      "source": "folio-assistant-sci/processes/content/formalized-publication-authoring.bpmn#Task_BlindLeanToProse",
+      "status": "candidate"
+    },
+    {
+      "id": "process_formalizedpublicationauthoring.task_blindprosetolean",
+      "prefLabel": "Translate prose to claim blind",
+      "definition": "A second independent reviewer reads only the `.md` narrative statement and proof and writes the formal hypotheses, quantifiers, objects and conclusion it claims, without seeing the `.lean` file.",
+      "notation": "Task_BlindProseToLean",
+      "source": "folio-assistant-sci/processes/content/formalized-publication-authoring.bpmn#Task_BlindProseToLean",
+      "status": "candidate"
+    },
+    {
+      "id": "process_formalizedpublicationauthoring.task_drafttriple",
+      "prefLabel": "Draft triple: prose and Lean",
+      "definition": "Write the narrative statement and narrative proof in the block's `.md` and the formal statement and proof in its `.lean`. Write the Lean statement first and ask whether it could be false. An unproved step is `sorry` with a citation; a dependence on a conjecture is an explicit class hypothesis. A number in prose is read from its witness.",
+      "notation": "Task_DraftTriple",
+      "source": "folio-assistant-sci/processes/content/formalized-publication-authoring.bpmn#Task_DraftTriple",
+      "status": "candidate"
+    },
+    {
+      "id": "process_formalizedpublicationauthoring.task_judgeequivalence",
+      "prefLabel": "Judge two-way equivalence",
+      "definition": "Same hypotheses, same quantifier order, same conclusion, same objects, in both directions. The narrative proof's logical skeleton is compared with the Lean proof's in the same way. A difference either way is a finding.",
+      "notation": "Task_JudgeEquivalence",
+      "source": "folio-assistant-sci/processes/content/formalized-publication-authoring.bpmn#Task_JudgeEquivalence",
+      "status": "candidate"
+    },
+    {
+      "id": "process_formalizedpublicationauthoring.task_leancheck",
+      "prefLabel": "Compile Lean; report axioms",
+      "definition": "Compile against the real import cone; record `#print axioms` and `sorry` status for the new declarations.",
+      "notation": "Task_LeanCheck",
+      "source": "folio-assistant-sci/processes/content/formalized-publication-authoring.bpmn#Task_LeanCheck",
+      "status": "candidate"
+    },
+    {
+      "id": "process_formalizedpublicationauthoring.task_mechanical",
+      "prefLabel": "Run mechanical checks",
+      "definition": "Schema validation, reference and citation resolution, math render, vacuity audit (no `True` conclusions, no empty conjecture classes, no uncited `sorry`), and witness staleness for every quoted number.",
+      "notation": "Task_Mechanical",
+      "source": "folio-assistant-sci/processes/content/formalized-publication-authoring.bpmn#Task_Mechanical",
+      "status": "candidate"
+    },
+    {
+      "id": "process_formalizedpublicationauthoring.task_merge",
+      "prefLabel": "Merge PR",
+      "definition": "The author inspects the block triple, its mechanical verdicts and the independent equivalence and adversarial review records on the pull request, and merges the change set.",
+      "notation": "Task_Merge",
+      "source": "folio-assistant-sci/processes/content/formalized-publication-authoring.bpmn#Task_Merge",
+      "status": "candidate"
+    },
+    {
+      "id": "process_formalizedpublicationauthoring.task_priorwork",
+      "prefLabel": "Search folio and library",
+      "definition": "Search the folio's blocks, its compute and its ingested library (section text and extracted candidates of every held source) before drafting. A result settled in a held paper is cited, not re-derived.",
+      "notation": "Task_PriorWork",
+      "source": "folio-assistant-sci/processes/content/formalized-publication-authoring.bpmn#Task_PriorWork",
+      "status": "candidate"
+    },
+    {
+      "id": "process_formalizedpublicationauthoring.task_recordgap",
+      "prefLabel": "Record gap or conjecture",
+      "definition": "Demote the block to a conjecture, or state the open step with `sorry` and a citation, and record the gap in the work plan. Never weaken the statement until it passes.",
+      "notation": "Task_RecordGap",
+      "source": "folio-assistant-sci/processes/content/formalized-publication-authoring.bpmn#Task_RecordGap",
+      "status": "candidate"
+    },
+    {
+      "id": "process_formalizedpublicationauthoring.task_stateintent",
+      "prefLabel": "Set claim",
+      "definition": "The author names the claim, the objects it is about, and the sources it rests on, before any text is drafted.",
+      "notation": "Task_StateIntent",
+      "source": "folio-assistant-sci/processes/content/formalized-publication-authoring.bpmn#Task_StateIntent",
+      "status": "candidate"
+    },
+    {
       "id": "process_leandocspublish.task_build",
       "prefLabel": "Build the doc-gen4 render over the warm cache",
       "definition": "Tool `lean-html-docs` (`adapters/paper/lean/lean-docs-build.sh --lake-root <pkg> --lib <Lib>`). Refuses while another lake/lean process holds `.lake/`, refuses over a restored tree with no traces, checks or restores the warm cache, enables the sentinel-commented doc-gen4 require for this build only, then `lake -R -Kenv=dev build <Lib>:docs`. Output: `<pkg>/.lake/build/doc`.",
