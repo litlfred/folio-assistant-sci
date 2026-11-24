@@ -190,6 +190,56 @@ Only modules whose content hash differs from the base are written, plus
 `data/overlay.json`; the viewer loads changed modules from the branch and the
 rest from the base. A branch with no Lean change writes no module files.
 
+## 5. Verso: the library as a document (prototype, `lean-verso-render`)
+
+Owner, 2026-11-24: *"Verso & Verso Blueprint. should be a fol-ass-sci tool to
+render lean libary in a harnessed repo"*, then *"2 verso"*: qou's Lean
+library render moves to Verso. The KG viewer is the harness's general graph
+viewer (cat-harness `kg-viewer`), not a Lean renderer: *"KG viewer graph is
+more than just lean"*. So the Verso render is a separate site route
+(`verso/` by default), and a Lean declaration is a node the KG viewer links
+to, not something it renders.
+
+What the Tool does: one Verso Manual page per Lean module, one
+`{docstring X}` block per declaration a content block's `lean.ref` names, each
+saying which block it formalizes, elaborated `lean`-direct against the
+folio's restored oleans plus a built Verso. Declarations are located through
+the `.ilean` files beside the oleans, so no doc-gen4 run is needed.
+
+```sh
+bun run folio-assistant-sci/adapters/paper/lean/lean-verso-render.ts \
+  --content-root folio/quantum-observable-universe \
+  --lean-path <paper>/lean/.lake/build/lib/lean --lean-path <each package>/.lake/build/lib/lean \
+  --module QOU --verso <verso checkout at the toolchain tag, `lake build VersoManual` done> \
+  --toolchain v4.24.0 --site _site --route verso [--chapter <dir>] [--limit n]
+```
+
+Engine by toolchain: **Verso Blueprint** (`leanprover/verso-blueprint`) has
+release branches only for Lean v4.28.0 to v4.35.0; **Verso** itself is tagged
+from v4.10.0. A folio on v4.24.0 (qou) gets the Verso Manual engine; Verso
+Blueprint needs a toolchain bump first.
+
+Traps, each measured:
+
+- **Verso must be built at exactly the folio's toolchain**, and is the only
+  thing built (118 Lake jobs, about 4 minutes on 4 shared cores). Never
+  `lake build` the folio: it would evict the restored cache.
+- **MD4Lean is native C.** A `lean`-direct elaboration must
+  `--load-dynlib` its `.so` files, or Lean aborts with *"Could not find native
+  implementation of external declaration 'MD4Lean.parse'"*. The script does.
+- **Verso's generator needs a `lean-toolchain` above its working directory**,
+  or exits 1. The script writes one into `--work`.
+- **A library need not be importable as a whole.** qou's is not: two modules
+  define `QOU.Archimedean.NuclearConfig`, and Lean refuses the second import.
+  The script picks a compatible set from the `.ilean` definitions and import
+  lists, and writes the rest to `<work>/skipped.json`.
+- **Content-block sibling `.lean` files are not in the library**, so their
+  `lean.ref`s have no olean and are listed in `<work>/unresolved.txt`
+  (718 of 1,318 qou refs on 2026-11-24).
+- Verso writes `xref.json`, mapping each rendered declaration to its page and
+  anchor (`QOU.X.y` is `#QOU___X___y`): that is the file a KG node for the
+  declaration should link through.
+
 ## Declaring the store
 
 A folio declares its Lean render as a directory of graph typology `lean`
