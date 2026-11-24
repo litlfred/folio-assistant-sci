@@ -9,5 +9,6 @@
   "docoType": "doco:Section",
   "heading": "Corollary",
   "headingPlural": "Corollaries",
-  "indexRank": 5
+  "indexRank": 5,
+  "libraryOrigin": "extracted"
 }
