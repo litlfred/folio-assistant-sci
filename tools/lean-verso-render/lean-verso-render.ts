@@ -40,7 +40,7 @@ export default toolFactory((t) =>
       when: "When the folio wants its Lean read as a document — each formal statement next to the block it formalizes, highlighted against the folio's own Mathlib — rather than browsed as a graph (`lean-kg-publish`) or as API docs (`lean-render-publish`).",
       limits:
         "Renders only declarations whose module has an olean on the path: content-block sibling `.lean` files are compiled outside the library and are listed as unresolved (718 of 1,318 qou refs on 2026-11-24). Verso Blueprint (progress tracking, dependency graph) needs Lean v4.28.0 or later. Verso must be built at exactly the folio's toolchain.",
-      cost: "Measured 2026-11-24 on a 4-core shared host: building Verso v4.24.0 (VersoManual, 118 Lake jobs) once; indexing qou's 3,608 ileans 0.5-2 s; per-render times are in the PR that added this Tool.",
+      cost: "Measured 2026-11-24 on a 4-core shared host: building Verso v4.24.0 (VersoManual, 118 Lake jobs) once, about 4 min. qou in full: 586 declarations in 481 modules (4 skipped as import-incompatible), index 0.7 s, elaboration 27.5 min single-threaded with peak 8.8 GB RSS, HTML 84 s, 487 pages / 103 MB, rail 488 pages. One chapter (7 declarations) takes about 28 s.",
     },
   }),
 );
