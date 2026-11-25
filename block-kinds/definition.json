@@ -10,5 +10,6 @@
   "heading": "Definition",
   "headingPlural": "Definitions",
   "indexRank": 1,
+  "libraryOrigin": "extracted",
   "rationale": "The one kind whose `lean` field is REQUIRED rather than optional, which is what makes the document/paper line machine-checkable at its sharpest point."
 }
