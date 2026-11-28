@@ -103,7 +103,7 @@ function renderDoc(md) {
 function paperOf(b) { return String(b.md).split("/")[0]; }
 function blockHref(b) {
   const c = state.config;
-  if (typeof c.paperBase === "string") return `${c.paperBase}${paperOf(b)}/#${encodeURIComponent(b.label)}`;
+  if (typeof c.paperBase === "string") return `${c.paperBase}${paperOf(b)}/#${encodeURIComponent(b.label).replace(/%3A/g, ":")}`;
   if (!c.repo) return b.md;
   return `https://github.com/${c.repo}/blob/${c.ref || "main"}/${c.contentPrefix || ""}${b.md}`;
 }
