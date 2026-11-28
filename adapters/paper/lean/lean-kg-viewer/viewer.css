@@ -70,3 +70,7 @@ body.lkg:has(nav.fa-nav) { padding-left: 56px; }
   .lkg-body { flex-direction: column; }
   .lkg-tree { position: static; max-height: 40vh; flex-basis: auto; border-right: 0; border-bottom: 1px solid var(--lkg-line); }
 }
+.lkg-tree-h { margin: .8rem 0 .25rem; font-size: .72rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--lkg-muted); }
+.lkg-tree-h:first-child { margin-top: .4rem; }
+.lkg-formalizes { margin: .2rem 0 .6rem; }
+a.lkg-block { text-decoration: none; }

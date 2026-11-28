@@ -22,3 +22,16 @@ Feature: lean-kg-viewer — static guards on the published viewer's source
     Given the source of viewer.js
     Then it renders HTML only when both window.marked and window.DOMPurify exist
     And otherwise it sets the node's textContent
+
+  @test:adapters/paper/lean/lean-kg-viewer.test.ts::lean-kg-viewer::blockBadgeOpensThePaperWhenPaperBaseIsSet
+  Scenario: a block badge opens the rendered paper when config.json names paperBase
+    Given the source of viewer.js
+    Then with config.paperBase a block links to <paperBase><paper>/#<label>
+    And every block href passes through safeHref
+
+  @test:adapters/paper/lean/lean-kg-viewer.test.ts::lean-kg-viewer::treeHidesEmptyModulesAndListsBlocksApart
+  Scenario: the module list hides empty modules and lists block files apart from the libraries
+    Given the source of viewer.js
+    Then a module with no declarations is listed only when the reader asks for empty modules
+    And the library tree holds only modules that are not a block's own Lean file
+    And block files are listed under "Formalized blocks"

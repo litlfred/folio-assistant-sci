@@ -12,7 +12,7 @@
  *
  *   bun run folio-assistant-sci/adapters/paper/lean/lean-kg-publish.ts \
  *     --doc-data <lake>/.lake/build/doc-data --site _site [--route lean] \
- *     --modules QOU,UGB,Fred2005 [--content-root folio] \
+ *     --modules QOU,UGB,Fred2005 [--content-root folio] [--paper-base ../../] \
  *     [--repo litlfred/qou --ref <sha> --content-prefix folio/] \
  *     [--base <published data dir or URL>]     # branches/ overlay
  *     [--home-label qou] [--instance <name>] [--platform <index root>] [--no-rail]
@@ -26,6 +26,13 @@
  * folio's Lean store) and no Lean build or doc-gen4 run is needed; its
  * extracted `style.css` is reused.
  *
+ * `--content-root` re-links every declaration to the current content blocks,
+ * in both modes: by `lean.ref`, and by the block whose `.lean` sibling holds it
+ * (matched on the declaration's `sourceLink`), so a split of a stale store
+ * still links to the paper as it is now. `--paper-base` makes a block badge
+ * open the rendered document (`<paper-base><paper>/#<label>`) instead of the
+ * block's source on GitHub.
+ *
  * `--doc-style` defaults to `<doc-data>/../doc/style.css` (doc-gen4's own); the
  * viewer still works without it, signatures just lose doc-gen4's styling.
  *
@@ -36,7 +43,7 @@
  */
 import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
-import { ingest, parseSiblings, splitFromKg, type IndexFile } from "./lean-kg-ingest.ts";
+import { collectContentBlocks, ingest, parseSiblings, splitFromKg, type IndexFile } from "./lean-kg-ingest.ts";
 import { RAIL_SCRIPTS, findPlatform, runRail } from "./lean-render.ts";
 
 const VIEWER = join(import.meta.dir, "lean-kg-viewer");
@@ -103,7 +110,7 @@ async function main(): Promise<number> {
   const fromKg = at("--from-kg");
   const site = at("--site");
   if ((!docData && !fromKg) || (docData && fromKg) || !site) {
-    console.error("usage: lean-kg-publish.ts (--doc-data <dir> | --from-kg <published viewer or data dir>) --site <dir> [--route lean] [--modules A,B] [--sibling <package>/<Root>[,…]]... [--content-root <dir>] [--repo o/r --ref <sha> --content-prefix <p>] [--base <dir|url>] [--home-label <n>] [--instance <n>] [--platform <dir>] [--no-rail]");
+    console.error("usage: lean-kg-publish.ts (--doc-data <dir> | --from-kg <published viewer or data dir>) --site <dir> [--route lean] [--modules A,B] [--sibling <package>/<Root>[,…]]... [--content-root <dir>] [--repo o/r --ref <sha> --content-prefix <p>] [--paper-base <rel dir>] [--base <dir|url>] [--home-label <n>] [--instance <n>] [--platform <dir>] [--no-rail]");
     return 2;
   }
   const route = (at("--route") ?? "lean").replace(/^\/+|\/+$/g, "");
@@ -147,18 +154,35 @@ async function main(): Promise<number> {
   if (style !== undefined && existsSync(style)) writeFileSync(join(dest, "style.css"), signatureStyles(readFileSync(style, "utf-8")));
   else if (publishedStyle !== undefined && existsSync(publishedStyle)) copyFileSync(publishedStyle, join(dest, "style.css"));
   else console.log(`  no doc-gen4 style.css${style ? ` at ${style}` : ""}; signatures render unstyled`);
+  // `paperBase`: where the folio's rendered documents sit, relative to this
+  // viewer page; a block badge opens `<paperBase><paper>/#<label>` there rather
+  // than the block's source on GitHub (owner, 2026-11-28: "lean rendering
+  // linked back to paper references").
+  const paperBase = at("--paper-base");
+  if (paperBase !== undefined && !/^(\.\.?\/)*([A-Za-z0-9_-]+\/)*$/.test(paperBase)) {
+    console.error(`? --paper-base takes a relative directory ending in "/" (e.g. ../../), got "${paperBase}"`);
+    return 2;
+  }
   // `siblings`: the viewer links an import into another package's sub-KG (`<base>#/m/<Module>`).
   writeFileSync(
     join(dest, "config.json"),
-    JSON.stringify({ repo: at("--repo"), ref: at("--ref"), contentPrefix: at("--content-prefix"), ...(rootBases.size ? { siblings: Object.fromEntries(rootBases) } : {}) }),
+    JSON.stringify({
+      repo: at("--repo"),
+      ref: at("--ref"),
+      contentPrefix: at("--content-prefix"),
+      ...(paperBase !== undefined ? { paperBase } : {}),
+      ...(rootBases.size ? { siblings: Object.fromEntries(rootBases) } : {}),
+    }),
   );
+  const contentRoot = at("--content-root");
+  const blocks = contentRoot !== undefined ? collectContentBlocks(resolve(contentRoot), at("--content-prefix")) : undefined;
 
   let r;
   try {
     r =
       kgData !== undefined
-        ? splitFromKg({ kg: kgData, out: join(dest, "data"), modules, externalBase: at("--external-base"), rootBases })
-        : ingest({ docData: docData!, out: join(dest, "data"), modules, contentRoot: at("--content-root"), externalBase: at("--external-base"), rootBases, base, baseIndex: base ? await loadBase(base) : undefined });
+        ? splitFromKg({ kg: kgData, out: join(dest, "data"), modules, externalBase: at("--external-base"), rootBases, blocks })
+        : ingest({ docData: docData!, out: join(dest, "data"), modules, contentRoot, contentPrefix: at("--content-prefix"), externalBase: at("--external-base"), rootBases, base, baseIndex: base ? await loadBase(base) : undefined });
   } catch (e) {
     console.error(`? ${(e as Error).message}`);
     return 2;

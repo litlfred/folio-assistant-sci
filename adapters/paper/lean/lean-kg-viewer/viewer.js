@@ -7,13 +7,22 @@
 //   data/m/<Module>.<k>.sig.json  rendered signatures, fetched as cards scroll in
 //   data/overlay.json          optional: a branches/ overlay; modules not in
 //                              `changed` are fetched from `base` instead
-//   config.json                { repo, ref, contentPrefix } for block links
+//   config.json                { repo, ref, contentPrefix, paperBase?, siblings? }
+//                              for block links: with paperBase a block badge
+//                              opens the rendered document at
+//                              <paperBase><paper>/#<label>, else the block's
+//                              .md on GitHub
+//
+// The module list hides modules with no declarations (a block sibling that
+// only imports its library, an aggregator file) and lists a block's own .lean
+// sibling under "Formalized blocks", by paper, rather than in the library
+// tree, so the tree shows the libraries.
 //
 // Routes: #/  ·  #/m/<Module>  ·  #/m/<Module>/<declName>
 
 const DATA = "data/";
 const $ = (id) => document.getElementById(id);
-const state = { index: null, names: null, overlay: null, config: {}, shards: new Map(), chunks: new Map() };
+const state = { showEmpty: false, index: null, names: null, overlay: null, config: {}, shards: new Map(), chunks: new Map() };
 
 async function getJSON(url) {
   const r = await fetch(url);
@@ -90,11 +99,20 @@ function renderDoc(md) {
   return d;
 }
 
+/** The paper a block belongs to: the first directory of its `.md` path. */
+function paperOf(b) { return String(b.md).split("/")[0]; }
 function blockHref(b) {
   const c = state.config;
+  if (typeof c.paperBase === "string") return `${c.paperBase}${paperOf(b)}/#${encodeURIComponent(b.label)}`;
   if (!c.repo) return b.md;
   return `https://github.com/${c.repo}/blob/${c.ref || "main"}/${c.contentPrefix || ""}${b.md}`;
 }
+function blockBadge(b) {
+  const title = b.via === "sibling" ? "the content block whose Lean file holds this declaration" : "the content block whose lean.ref names this declaration";
+  return el("a", { class: "lkg-badge lkg-block", href: safeHref(blockHref(b)), title, text: b.label });
+}
+/** Modules the tree lists: no empty ones unless asked. */
+function listed() { return state.index.modules.filter((m) => state.showEmpty || m.decls > 0); }
 
 // ── Module tree ─────────────────────────────────────────────────────────────
 function countMods(node) {
@@ -102,38 +120,70 @@ function countMods(node) {
   for (const k of Object.keys(node)) if (k !== "__mod") n += countMods(node[k]);
   return n;
 }
-function buildTree() {
+function nsTree(mods) {
   const root = {};
-  for (const m of state.index.modules) {
+  for (const m of mods) {
     let node = root;
     for (const part of m.name.split(".")) node = (node[part] ??= {});
     node.__mod = m;
   }
-  const render = (node, prefix) => {
-    const frag = document.createDocumentFragment();
-    for (const key of Object.keys(node).filter((k) => k !== "__mod").sort()) {
-      const child = node[key];
-      const name = prefix ? `${prefix}.${key}` : key;
-      const subs = Object.keys(child).filter((k) => k !== "__mod");
-      const count = subs.length ? `${countMods(child)} modules` : `${child.__mod?.decls ?? 0}`;
-      const link = child.__mod
-        ? el("a", { href: `#/m/${name}`, "data-mod": name, text: key }, " ", el("span", { class: "n", text: `(${count})` }))
-        : el("span", { text: key }, " ", el("span", { class: "n", text: `(${count})` }));
-      if (subs.length === 0) frag.append(el("div", {}, link));
-      else {
-        const d = el("details", { "data-ns": name }, el("summary", {}, link));
-        d.addEventListener("toggle", () => { if (d.open && !d.dataset.filled) { d.append(render(child, name)); d.dataset.filled = "1"; } }, { once: false });
-        frag.append(d);
-      }
+  return root;
+}
+function renderNs(node, prefix) {
+  const frag = document.createDocumentFragment();
+  for (const key of Object.keys(node).filter((k) => k !== "__mod").sort()) {
+    const child = node[key];
+    const name = prefix ? `${prefix}.${key}` : key;
+    const subs = Object.keys(child).filter((k) => k !== "__mod");
+    const count = subs.length ? `${countMods(child)} modules` : `${child.__mod?.decls ?? 0}`;
+    const link = child.__mod
+      ? el("a", { href: `#/m/${name}`, "data-mod": name, text: key }, " ", el("span", { class: "n", text: `(${count})` }))
+      : el("span", { text: key }, " ", el("span", { class: "n", text: `(${count})` }));
+    if (subs.length === 0) frag.append(el("div", {}, link));
+    else frag.append(lazyDetails(el("summary", {}, link), () => renderNs(child, name), { "data-ns": name }));
+  }
+  return frag;
+}
+/** A <details> whose body is built the first time it opens. */
+function lazyDetails(summary, fill, attrs = {}) {
+  const d = el("details", attrs, summary);
+  d.addEventListener("toggle", () => { if (d.open && !d.dataset.filled) { d.append(fill()); d.dataset.filled = "1"; } });
+  return d;
+}
+function buildTree() {
+  const mods = listed();
+  const libs = mods.filter((m) => !m.block);
+  const blocks = mods.filter((m) => m.block);
+  const byPaper = new Map();
+  for (const m of blocks) {
+    const p = paperOf(m.block);
+    if (!byPaper.has(p)) byPaper.set(p, []);
+    byPaper.get(p).push(m);
+  }
+  const hidden = state.index.modules.length - mods.length;
+  const kids = [el("div", { class: "lkg-tree-h", text: "Libraries" }), renderNs(nsTree(libs), "")];
+  if (blocks.length) {
+    kids.push(el("div", { class: "lkg-tree-h", text: "Formalized blocks" }));
+    for (const [p, ms] of [...byPaper].sort((a, b) => a[0].localeCompare(b[0]))) {
+      ms.sort((a, b) => a.block.label.localeCompare(b.block.label));
+      kids.push(lazyDetails(el("summary", {}, el("span", { text: p }), " ", el("span", { class: "n", text: `(${ms.length} blocks)` })),
+        () => { const f = document.createDocumentFragment(); for (const m of ms) f.append(el("div", {}, el("a", { href: `#/m/${m.name}`, "data-mod": m.name, title: m.name, text: m.block.label }, " ", el("span", { class: "n", text: `(${m.decls})` })))); return f; },
+        { "data-paper": p }));
     }
-    return frag;
-  };
-  $("tree").replaceChildren(render(root, ""));
+  }
+  if (hidden > 0 || state.showEmpty) {
+    const toggle = el("a", { href: "#", text: state.showEmpty ? "hide empty modules" : `show ${hidden} empty module(s)` });
+    toggle.addEventListener("click", (e) => { e.preventDefault(); state.showEmpty = !state.showEmpty; buildTree(); });
+    kids.push(el("p", { class: "lkg-note" }, toggle));
+  }
+  $("tree").replaceChildren(...kids);
+}
+function wireFilter() {
   $("filter").addEventListener("input", () => {
     const q = $("filter").value.trim().toLowerCase();
     if (!q) return buildTree();
-    const hits = state.index.modules.filter((m) => m.name.toLowerCase().includes(q)).slice(0, 300);
-    $("tree").replaceChildren(...hits.map((m) => el("div", {}, el("a", { href: `#/m/${m.name}`, "data-mod": m.name, text: m.name }, " ", el("span", { class: "n", text: `(${m.decls})` })))));
+    const hits = listed().filter((m) => m.name.toLowerCase().includes(q) || (m.block && m.block.label.toLowerCase().includes(q))).slice(0, 300);
+    $("tree").replaceChildren(...hits.map((m) => el("div", {}, el("a", { href: `#/m/${m.name}`, "data-mod": m.name, text: m.block ? `${m.block.label} — ${m.name}` : m.name }, " ", el("span", { class: "n", text: `(${m.decls})` })))));
   });
 }
 function markCurrent(name) {
@@ -179,12 +229,25 @@ function wireSearch() {
 // ── Pages ───────────────────────────────────────────────────────────────────
 function home() {
   const t = state.index.totals;
-  const roots = [...new Set(state.index.modules.map((m) => m.name.split(".")[0]))];
+  const mods = state.index.modules;
+  const empty = mods.filter((m) => m.decls === 0).length;
+  const libs = new Map();
+  for (const m of mods) {
+    if (m.block || m.decls === 0) continue;
+    const r = m.name.split(".")[0];
+    const e = libs.get(r) ?? { modules: 0, decls: 0 };
+    e.modules++; e.decls += m.decls;
+    libs.set(r, e);
+  }
+  const blocks = mods.filter((m) => m.block && m.decls > 0).length;
   $("main").replaceChildren(...[
     el("h1", { text: "Lean declarations" }),
     el("p", { text: `${t.modules} modules, ${t.decls} declarations; ${t.formalized} formalize a content block.` }),
     state.overlay ? el("p", { class: "lkg-note", text: `Staging overlay: ${state.overlay.changed.length} module(s) changed; the rest load from the base graph.` }) : null,
-    el("ul", {}, ...roots.map((r) => el("li", {}, el("a", { href: `#/m/${r}`, text: r })))),
+    el("h2", { text: "Libraries" }),
+    el("ul", {}, ...[...libs].sort((a, b) => a[0].localeCompare(b[0])).map(([r, e]) => el("li", {}, el("a", { href: `#/m/${r}`, text: r }), ` — ${e.modules} modules, ${e.decls} declarations`))),
+    blocks ? el("p", { text: `${blocks} module(s) are a content block's own Lean file; they are listed under "Formalized blocks" and each declaration links back to its block in the paper.` }) : null,
+    empty ? el("p", { class: "lkg-note", text: `${empty} module(s) with no declarations are hidden from the list.` }) : null,
   ].filter(Boolean));
 }
 
@@ -227,15 +290,16 @@ async function modulePage(name, target) {
       const there = !known && typeof sib === "string" ? safeHref(`${sib}#/m/${m}`) : null;
       return [j ? ", " : "", known ? el("a", { href: `#/m/${m}`, text: m }) : there ? el("a", { href: there, text: m }) : m];
     })),
+    mod.block ? el("p", { class: "lkg-formalizes" }, "The Lean file of content block ", blockBadge(mod.block), ".") : null,
     el("p", { class: "lkg-note", text: `${decls.length} declaration(s).` }),
-  ];
+  ].filter(Boolean);
   let targetCard = null;
   decls.forEach((d, i) => {
     const meta = el("div", { class: "lkg-meta" },
       el("span", { class: "lkg-badge", text: d.kind }),
       el("a", { href: `#/m/${name}/${encodeURIComponent(d.name)}`, text: d.name.slice(name.length + 1) || d.name }),
       safeHref(d.sourceLink) ? el("a", { href: safeHref(d.sourceLink), target: "_blank", rel: "noopener", text: `source${d.line ? ` L${d.line}` : ""}` }) : null,
-      ...(d.formalizes ?? []).map((b) => el("a", { class: "lkg-badge", href: safeHref(blockHref(b)), target: "_blank", rel: "noopener", title: "content block formalized by this declaration", text: b.label })),
+      ...(d.formalizes ?? []).map(blockBadge),
     );
     const card = el("section", { class: "lkg-decl", id: d.name, "data-i": String(i), "data-k": String(d.signatureChunk) },
       meta, el("div", { class: "lkg-sig pending", text: "signature loading…" }));
@@ -265,6 +329,7 @@ async function start() {
   const t = state.index.totals;
   $("totals").textContent = `${t.modules} modules · ${t.decls} declarations`;
   buildTree();
+  wireFilter();
   wireSearch();
   addEventListener("hashchange", route);
   route();

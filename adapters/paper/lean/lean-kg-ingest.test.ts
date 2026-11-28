@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { mkdirSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { CHUNK_SIZE, ingest, linkFor, moduleOfDocPath, parseSiblings, rerouteSignature, rewriteHeader, splitFromKg, type IndexFile } from "./lean-kg-ingest.ts";
+import { CHUNK_SIZE, attachBlocks, collectContentBlocks, ingest, linkFor, moduleOfDocPath, parseSiblings, rerouteSignature, rewriteHeader, sourcePath, splitFromKg, type IndexFile } from "./lean-kg-ingest.ts";
 import { signatureStyles } from "./lean-kg-publish.ts";
 
 const decl = (name: string, kind = "theorem") => ({
@@ -50,7 +50,7 @@ describe("lean-kg-ingest", () => {
     expect(readdirSync(join(out, "m")).filter((f) => f.startsWith("QOU.Big.")).sort()).toEqual(["QOU.Big.0.sig.json", "QOU.Big.1.sig.json", "QOU.Big.jsonld"]);
     const shard = JSON.parse(readFileSync(join(out, "m", "QOU.A.jsonld"), "utf-8"));
     const x = shard["@graph"].find((n: { name?: string }) => n.name === "QOU.A.x");
-    expect(x.formalizes).toEqual([{ "@id": "block:prop:x", label: "prop:x", md: "ch/blk.md" }]);
+    expect(x.formalizes).toEqual([{ "@id": "block:prop:x", label: "prop:x", md: "ch/blk.md", via: "lean.ref" }]);
   });
 
   test("overlayWritesOnlyChangedModules", () => {
@@ -156,5 +156,85 @@ describe("signatureStyles", () => {
     expect(out).toContain(".lkg-sig .impl_arg");
     expect(out).not.toMatch(/(^|[},\n])\s*(body|nav|\*)\s*\{/);
     expect(out).toContain("@media (prefers-color-scheme: dark){:root{ --x: 2 }}");
+  });
+});
+
+describe("lean-kg-ingest-paper-links", () => {
+  /** A content tree with a block that has a .lean sibling and a block that names QOU.A.x by lean.ref. */
+  function tree(): string {
+    const root = mkdtempSync(join(tmpdir(), "lkg-blocks-"));
+    const ch = join(root, "folio", "paper", "ch");
+    mkdirSync(ch, { recursive: true });
+    writeFileSync(join(ch, "sib.ts"), `export default { label: "def:sib" }`);
+    writeFileSync(join(ch, "sib.lean"), "theorem t : 1 = 1 := rfl");
+    writeFileSync(join(ch, "lib.ts"), `export default { label: "prop:lib", lean: { ref: "qou:QOU.A.x" } }`);
+    return join(root, "folio");
+  }
+  const node = (name: string, src: string) => ({ "@type": "LeanDeclaration", name, sourceLink: `https://github.com/o/r/blob/abc/${src}#L1-L2` });
+
+  test("sourcePathReadsTheRepositoryPath", () => {
+    expect(sourcePath("https://github.com/o/r/blob/abc123/folio/p/c/x.lean#L3-L9")).toBe("folio/p/c/x.lean");
+    expect(sourcePath("https://example/x.lean#L1")).toBeUndefined();
+    expect(sourcePath(undefined)).toBeUndefined();
+  });
+
+  test("collectContentBlocksFindsRefsAndSiblings", () => {
+    const b = collectContentBlocks(tree(), "folio/");
+    expect(b.byRef.get("QOU.A.x")).toEqual([{ label: "prop:lib", md: "paper/ch/lib.md" }]);
+    expect([...b.bySource]).toEqual([["folio/paper/ch/sib.lean", { label: "def:sib", md: "paper/ch/sib.md" }]]);
+  });
+
+  test("attachBlocksLinksSiblingAndRefAndMarksTheModule", () => {
+    const blocks = collectContentBlocks(tree(), "folio/");
+    const graph: any[] = [
+      { "@type": "LeanModule", name: "Ch.Sib" },
+      node("QOU.A.x", "folio/paper/ch/sib.lean"),
+      { ...node("Ch.Sib.t", "folio/paper/ch/sib.lean"), formalizes: [{ "@id": "block:stale", label: "stale", md: "x.md", via: "lean.ref" }] },
+    ];
+    const r = attachBlocks(graph, blocks);
+    expect(r.formalized).toBe(2);
+    expect(r.block).toEqual({ label: "def:sib", md: "paper/ch/sib.md" });
+    expect(graph[0].block).toEqual({ label: "def:sib", md: "paper/ch/sib.md" });
+    expect(graph[1].formalizes.map((e: any) => [e.label, e.via])).toEqual([["prop:lib", "lean.ref"], ["def:sib", "sibling"]]);
+    expect(graph[2].formalizes.map((e: any) => e.label)).toEqual(["def:sib"]);
+  });
+
+  test("attachBlocksMarksTheModuleWhenTheBlockAlsoNamesItByLeanRef", () => {
+    const root = mkdtempSync(join(tmpdir(), "lkg-both-"));
+    const ch = join(root, "folio", "paper", "ch");
+    mkdirSync(ch, { recursive: true });
+    writeFileSync(join(ch, "b.ts"), `export default { label: "prop:b", lean: { ref: "qou:Ch.B.t" } }`);
+    writeFileSync(join(ch, "b.lean"), "");
+    const graph: any[] = [{ "@type": "LeanModule", name: "Ch.B" }, node("Ch.B.t", "folio/paper/ch/b.lean")];
+    const r = attachBlocks(graph, collectContentBlocks(join(root, "folio"), "folio/"));
+    expect(r.block).toEqual({ label: "prop:b", md: "paper/ch/b.md" });
+    expect(graph[1].formalizes).toEqual([{ "@id": "block:prop:b", label: "prop:b", md: "paper/ch/b.md", via: "lean.ref" }]);
+  });
+
+  test("attachBlocksLeavesALibraryModuleUnmarked", () => {
+    const graph: any[] = [{ "@type": "LeanModule", name: "QOU.A", block: { label: "old", md: "x.md" } }, node("QOU.A.x", "folio/paper/lean/QOU/A.lean"), node("QOU.A.y", "folio/paper/lean/QOU/A.lean")];
+    const r = attachBlocks(graph, collectContentBlocks(tree(), "folio/"));
+    expect(r).toEqual({ formalized: 1 });
+    expect(graph[0].block).toBeUndefined();
+    expect(graph[2].formalizes).toBeUndefined();
+  });
+
+  test("splitFromKgRelinksAStaleStoreAgainstCurrentContent", () => {
+    const root = mkdtempSync(join(tmpdir(), "lkg-relink-"));
+    const docData = join(root, "doc-data");
+    mkdirSync(docData);
+    const d = (name: string, src: string) => ({ header: name, info: { name, kind: "theorem", sourceLink: `https://github.com/o/r/blob/abc/${src}#L1-L2` } });
+    writeFileSync(join(docData, "declaration-data-Ch.Sib.bmp"), JSON.stringify({ name: "Ch.Sib", imports: [], declarations: [d("Ch.Sib.t", "folio/paper/ch/sib.lean")] }));
+    writeFileSync(join(docData, "declaration-data-Ch.Empty.bmp"), JSON.stringify({ name: "Ch.Empty", imports: ["Ch.Sib"], declarations: [] }));
+    const combined = join(root, "kg");
+    ingest({ docData, out: combined, modules: ["Ch"] });
+    const out = join(root, "out");
+    const r = splitFromKg({ kg: combined, out, modules: ["Ch"], blocks: collectContentBlocks(tree(), "folio/") });
+    expect(r.formalized).toBe(1);
+    const index = JSON.parse(readFileSync(join(out, "index.json"), "utf-8")) as IndexFile;
+    expect(index.modules.find((m) => m.name === "Ch.Sib")?.block).toEqual({ label: "def:sib", md: "paper/ch/sib.md" });
+    expect(index.modules.find((m) => m.name === "Ch.Empty")?.block).toBeUndefined();
+    const shard = JSON.parse(readFileSync(join(out, "m", "Ch.Sib.jsonld"), "utf-8"));
+    expect(shard["@graph"][1].formalizes[0]).toMatchObject({ label: "def:sib", via: "sibling" });
   });
 });

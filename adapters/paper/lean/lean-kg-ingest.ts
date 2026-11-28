@@ -166,9 +166,32 @@ export function rerouteSignature(html: string, keepRoots: ReadonlySet<string>, e
   });
 }
 
-/** Map `<pkg>:<Decl>` lean.refs in the content tree to the blocks that carry them. */
-export function collectLeanRefs(contentRoot: string): Map<string, BlockRef[]> {
-  const out = new Map<string, BlockRef[]>();
+/** A formalizes edge: the block, and whether its `lean.ref` names the declaration or the declaration sits in the block's own `.lean` sibling. */
+export interface FormalizesEdge {
+  "@id": string;
+  label: string;
+  md: string;
+  via: "lean.ref" | "sibling";
+}
+
+/** The content blocks a Lean graph can link to, read once from the content tree. */
+export interface ContentBlocks {
+  /** `<Decl>` (the part of a `<pkg>:<Decl>` lean.ref after the package) → the blocks whose lean.ref names it. */
+  byRef: Map<string, BlockRef[]>;
+  /** Repository path of a block's `.lean` sibling (`<contentPrefix><md with .lean>`) → that block. */
+  bySource: Map<string, BlockRef>;
+}
+
+/**
+ * Read every block manifest under `contentRoot`: its `label`, its `lean.ref`
+ * when it has one, and whether a `.lean` sibling sits beside it. `contentPrefix`
+ * is the content root's path in the repository (`folio/`), so a declaration's
+ * `sourceLink` path can be matched against the sibling's path.
+ */
+export function collectContentBlocks(contentRoot: string, contentPrefix = ""): ContentBlocks {
+  const byRef = new Map<string, BlockRef[]>();
+  const bySource = new Map<string, BlockRef>();
+  const prefix = contentPrefix === "" || contentPrefix.endsWith("/") ? contentPrefix : `${contentPrefix}/`;
   const walk = (dir: string): void => {
     for (const e of readdirSync(dir, { withFileTypes: true })) {
       if (e.name === "node_modules" || e.name.startsWith(".") || e.name === "lean") continue;
@@ -176,18 +199,88 @@ export function collectLeanRefs(contentRoot: string): Map<string, BlockRef[]> {
       if (e.isDirectory()) walk(abs);
       else if (e.name.endsWith(".ts")) {
         const src = readFileSync(abs, "utf-8");
-        const ref = /\bref:\s*"[a-z0-9]+:([^"]+)"/.exec(src);
         const label = /\blabel:\s*"([^"]+)"/.exec(src);
-        if (!ref || !label) continue;
+        if (!label) continue;
         const md = relative(contentRoot, abs.replace(/\.ts$/, ".md")).split(sep).join("/");
-        const list = out.get(ref[1]!) ?? [];
-        list.push({ label: label[1]!, md });
-        out.set(ref[1]!, list);
+        const block = { label: label[1]!, md };
+        const ref = /\bref:\s*"[a-z0-9]+:([^"]+)"/.exec(src);
+        if (ref) {
+          const list = byRef.get(ref[1]!) ?? [];
+          list.push(block);
+          byRef.set(ref[1]!, list);
+        }
+        if (existsSync(abs.replace(/\.ts$/, ".lean"))) bySource.set(`${prefix}${md.replace(/\.md$/, ".lean")}`, block);
       }
     }
   };
   walk(contentRoot);
-  return out;
+  return { byRef, bySource };
+}
+
+/** Map `<pkg>:<Decl>` lean.refs in the content tree to the blocks that carry them. */
+export function collectLeanRefs(contentRoot: string): Map<string, BlockRef[]> {
+  return collectContentBlocks(contentRoot).byRef;
+}
+
+/** The repository path in a doc-gen4 `sourceLink` (`https://github.com/o/r/blob/<ref>/<path>#L1-L9` → `<path>`). */
+export function sourcePath(sourceLink: string | undefined): string | undefined {
+  if (!sourceLink) return undefined;
+  const m = /\/blob\/[^/]+\/([^#?]+)/.exec(sourceLink);
+  return m ? decodeURIComponent(m[1]!) : undefined;
+}
+
+interface GraphNode {
+  "@type"?: string;
+  name?: string;
+  sourceLink?: string;
+  formalizes?: FormalizesEdge[];
+  block?: BlockRef;
+}
+
+/**
+ * Link one module graph to the paper: each declaration gets a `formalizes`
+ * edge to every block whose `lean.ref` names it AND to the block whose `.lean`
+ * sibling holds it (owner, 2026-11-28: "lean rendering linked back to paper
+ * references"); edges already on the nodes are replaced, so a stale store is
+ * re-linked against the current content. The module node gets `block` when
+ * every declaration with a source sits in one block's sibling. Mutates `graph`.
+ */
+export function attachBlocks(graph: GraphNode[], blocks: ContentBlocks): { formalized: number; block?: BlockRef } {
+  let formalized = 0;
+  const siblings = new Map<string, BlockRef | undefined>();
+  let sourced = 0;
+  for (const n of graph) {
+    if (n["@type"] !== "LeanDeclaration" || !n.name) continue;
+    const edges: FormalizesEdge[] = [];
+    const seen = new Set<string>();
+    const add = (b: BlockRef, via: FormalizesEdge["via"]): void => {
+      if (seen.has(b.label)) return;
+      seen.add(b.label);
+      edges.push({ "@id": `block:${b.label}`, label: b.label, md: b.md, via });
+    };
+    for (const b of blocks.byRef.get(n.name) ?? []) add(b, "lean.ref");
+    const path = sourcePath(n.sourceLink);
+    if (path !== undefined) {
+      sourced++;
+      const sib = blocks.bySource.get(path);
+      if (sib) {
+        add(sib, "sibling");
+        siblings.set(sib.label, sib);
+      } else siblings.set("", undefined);
+    }
+    if (edges.length) {
+      n.formalizes = edges;
+      formalized++;
+    } else delete n.formalizes;
+  }
+  const mod = graph.find((n) => n["@type"] === "LeanModule");
+  const only = sourced > 0 && siblings.size === 1 ? [...siblings.values()][0] : undefined;
+  const block: BlockRef | undefined = only ? { label: only.label, md: only.md } : undefined;
+  if (mod) {
+    if (block) mod.block = block;
+    else delete mod.block;
+  }
+  return { formalized, ...(block ? { block } : {}) };
 }
 
 function sha12(s: string): string {
@@ -199,6 +292,8 @@ export interface IngestOptions {
   out: string;
   modules: readonly string[];
   contentRoot?: string;
+  /** The content root's path in the repository (`folio/`), to match declarations to block siblings by `sourceLink`. */
+  contentPrefix?: string;
   externalBase?: string;
   /** Sibling sub-KGs, by module root ({@link RootBases}). */
   rootBases?: RootBases;
@@ -212,6 +307,8 @@ export interface IndexModule {
   decls: number;
   chunks: number;
   hash: string;
+  /** The content block whose `.lean` sibling this module is, when it is one. */
+  block?: BlockRef;
 }
 export interface IndexFile {
   schema: "folio-lean-kg/v1";
@@ -237,7 +334,7 @@ export function ingest(o: IngestOptions): IngestReport {
   const keep = new Set(o.modules.map((m) => m.toLowerCase()));
   const files = readdirSync(dir).filter((f) => f.startsWith("declaration-data-") && f.endsWith(".bmp"));
   if (files.length === 0) throw new Error(`${dir}: no declaration-data-*.bmp files — not a doc-gen4 doc-data directory`);
-  const refs = o.contentRoot ? collectLeanRefs(resolve(o.contentRoot)) : new Map<string, BlockRef[]>();
+  const blocks: ContentBlocks = o.contentRoot ? collectContentBlocks(resolve(o.contentRoot), o.contentPrefix) : { byRef: new Map(), bySource: new Map() };
   const externalBase = o.externalBase ?? DEFAULT_EXTERNAL_BASE;
   const baseHashes = new Map((o.baseIndex?.modules ?? []).map((m) => [m.name, m.hash]));
   const overlay = o.baseIndex !== undefined;
@@ -261,8 +358,6 @@ export function ingest(o: IngestOptions): IngestReport {
     const decls = mod.declarations;
     const chunks = Math.ceil(decls.length / CHUNK_SIZE);
     const nodes = decls.map((d, i) => {
-      const blocks = refs.get(d.info.name) ?? [];
-      if (blocks.length) report.formalized++;
       const k = (KINDS as readonly string[]).indexOf(d.info.kind);
       names.push([d.info.name, mi, k < 0 ? KINDS.length - 1 : k]);
       return {
@@ -273,20 +368,19 @@ export function ingest(o: IngestOptions): IngestReport {
         ...(d.info.line !== undefined ? { line: d.info.line } : {}),
         ...(d.info.sourceLink ? { sourceLink: d.info.sourceLink } : {}),
         ...(d.info.doc ? { doc: d.info.doc } : {}),
-        ...(blocks.length ? { formalizes: blocks.map((b) => ({ "@id": `block:${b.label}`, label: b.label, md: b.md })) } : {}),
         signatureChunk: Math.floor(i / CHUNK_SIZE),
       };
     });
-    const shard = {
-      "@context": { lean: "lean:", block: "block:", imports: { "@type": "@id" } },
-      "@graph": [{ "@id": `lean:module:${mod.name}`, "@type": "LeanModule", name: mod.name, imports: mod.imports.map((m) => `lean:module:${m}`), declarations: decls.length, chunks }, ...nodes],
-    };
+    const graph: GraphNode[] = [{ "@id": `lean:module:${mod.name}`, "@type": "LeanModule", name: mod.name, imports: mod.imports.map((m) => `lean:module:${m}`), declarations: decls.length, chunks } as GraphNode, ...nodes];
+    const linked = attachBlocks(graph, blocks);
+    report.formalized += linked.formalized;
+    const shard = { "@context": { lean: "lean:", block: "block:", imports: { "@type": "@id" } }, "@graph": graph };
     const sigChunks: string[][] = [];
     for (let c = 0; c < chunks; c++) sigChunks.push(decls.slice(c * CHUNK_SIZE, (c + 1) * CHUNK_SIZE).map((d) => rewriteHeader(d.header, keep, externalBase, o.rootBases)));
     const shardText = JSON.stringify(shard);
     const sigText = sigChunks.map((s) => JSON.stringify(s));
     const hash = sha12(shardText + sigText.join("\n"));
-    index.modules.push({ name: mod.name, decls: decls.length, chunks, hash });
+    index.modules.push({ name: mod.name, decls: decls.length, chunks, hash, ...(linked.block ? { block: linked.block } : {}) });
     report.modules++;
     report.decls += decls.length;
     if (overlay && baseHashes.get(mod.name) === hash) {
@@ -317,6 +411,8 @@ export interface SplitOptions {
   modules: readonly string[];
   externalBase?: string;
   rootBases?: RootBases;
+  /** Re-link every declaration to the current content blocks ({@link attachBlocks}); without it the store's own edges are kept. */
+  blocks?: ContentBlocks;
 }
 
 /**
@@ -358,9 +454,18 @@ export function splitFromKg(o: SplitOptions): IngestReport {
     if (!keep.has(m.name.split(".")[0]!.toLowerCase())) return;
     const shardFile = join(kg, "m", `${m.name}.jsonld`);
     if (!existsSync(shardFile)) throw new Error(`${shardFile}: listed in index.json but absent`);
-    const shardText = readFileSync(shardFile, "utf-8");
-    const shard = JSON.parse(shardText) as { "@graph"?: Array<{ "@type"?: string; formalizes?: unknown[] }> };
-    report.formalized += (shard["@graph"] ?? []).filter((n) => n["@type"] === "LeanDeclaration" && Array.isArray(n.formalizes) && n.formalizes.length > 0).length;
+    let shardText = readFileSync(shardFile, "utf-8");
+    const shard = JSON.parse(shardText) as { "@graph"?: GraphNode[] };
+    let block: BlockRef | undefined;
+    if (o.blocks) {
+      const linked = attachBlocks(shard["@graph"] ?? [], o.blocks);
+      report.formalized += linked.formalized;
+      block = linked.block;
+      shardText = JSON.stringify(shard);
+    } else {
+      report.formalized += (shard["@graph"] ?? []).filter((n) => n["@type"] === "LeanDeclaration" && Array.isArray(n.formalizes) && n.formalizes.length > 0).length;
+      block = (shard["@graph"] ?? []).find((n) => n["@type"] === "LeanModule")?.block;
+    }
     const sigText: string[] = [];
     for (let c = 0; c < m.chunks; c++) {
       const f = join(kg, "m", `${m.name}.${c}.sig.json`);
@@ -371,7 +476,7 @@ export function splitFromKg(o: SplitOptions): IngestReport {
     writeFileSync(join(out, "m", `${m.name}.jsonld`), shardText);
     sigText.forEach((t, c) => writeFileSync(join(out, "m", `${m.name}.${c}.sig.json`), t));
     newIdx.set(i, index.modules.length);
-    index.modules.push({ name: m.name, decls: m.decls, chunks: m.chunks, hash: sha12(shardText + sigText.join("\n")) });
+    index.modules.push({ name: m.name, decls: m.decls, chunks: m.chunks, hash: sha12(shardText + sigText.join("\n")), ...(block ? { block } : {}) });
     report.modules++;
     report.decls += m.decls;
     report.written++;
@@ -402,7 +507,7 @@ async function main(): Promise<number> {
   const docData = at("--doc-data");
   const out = at("--out");
   if (!docData || !out) {
-    console.error("usage: lean-kg-ingest.ts --doc-data <lake>/.lake/build/doc-data --out <dir> [--modules QOU,UGB] [--module <root>]... [--content-root <dir>] [--external-base <url>] [--sibling <package>/<Root>[,…]]... [--base <dir|url>]");
+    console.error("usage: lean-kg-ingest.ts --doc-data <lake>/.lake/build/doc-data --out <dir> [--modules QOU,UGB] [--module <root>]... [--content-root <dir> [--content-prefix <p>]] [--external-base <url>] [--sibling <package>/<Root>[,…]]... [--base <dir|url>]");
     return 2;
   }
   const modules = [...(at("--modules")?.split(",") ?? []), ...argv.flatMap((a, i) => (a === "--module" && argv[i + 1] ? [argv[i + 1]!] : []))]
@@ -411,7 +516,7 @@ async function main(): Promise<number> {
   const base = at("--base");
   try {
     const rootBases = parseSiblings(argv.flatMap((a, i) => (a === "--sibling" && argv[i + 1] ? [argv[i + 1]!] : [])));
-    const r = ingest({ docData, out, modules, contentRoot: at("--content-root"), externalBase: at("--external-base"), rootBases, base, baseIndex: base ? await loadBaseIndex(base) : undefined });
+    const r = ingest({ docData, out, modules, contentRoot: at("--content-root"), contentPrefix: at("--content-prefix"), externalBase: at("--external-base"), rootBases, base, baseIndex: base ? await loadBaseIndex(base) : undefined });
     console.log(
       `lean-kg-ingest: ${r.modules} module(s), ${r.decls} declaration(s), ${r.formalized} formalizing a content block; ` +
         (r.overlay ? `overlay: ${r.written} changed, ${r.unchanged} unchanged against the base` : `${r.written} shard(s) written`),
