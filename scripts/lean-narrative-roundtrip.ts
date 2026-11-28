@@ -30,7 +30,7 @@
 import { existsSync, readdirSync, readFileSync, statSync, writeFileSync, mkdirSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { dirname, join, relative } from "node:path";
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 
 export const CRITERION = "lean-narrative-roundtrip";
 export const FIDELITY = "lean-narrative-fidelity";
@@ -198,7 +198,7 @@ export function writeEntry(repoRoot: string, block: Block, criterion: string, en
 
 function tree(root: string): string {
   try {
-    return execSync(`git -C ${JSON.stringify(root)} rev-parse HEAD^{tree}`).toString().trim();
+    return execFileSync("git", ["-C", root, "rev-parse", "HEAD^{tree}"]).toString().trim();
   } catch {
     return "unknown";
   }
