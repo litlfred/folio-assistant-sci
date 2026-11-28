@@ -90,5 +90,6 @@ did not.
 
 ## See also
 
-- `witnessed-values` (`folio-paper-adapter`) — the `{{ … }}` syntax, prefixes and filters.
+- `witnessed-values` (`folio-paper-adapter`) — the `{{ … }}` syntax, prefixes and filters, and fast `<folio>-values` evaluators in `crates/`.
+- `literature-search` & `library-ingestion` — the broader topic-shortlist, multi-database retrieval (Crossref/DOI, arXiv, PubMed, InspireHEP, OpenAlex, Semantic Scholar, Google Scholar, and reference data registries), KG ingestion, relevancy/claim-boundary assessment, and authoring-provenance (`authorNotes` + formal citations) workflow executed during paper authoring (`formalized-publication-authoring.bpmn`).
 - `document-intake` / the ingestion pipeline — the tabular rung this uses.

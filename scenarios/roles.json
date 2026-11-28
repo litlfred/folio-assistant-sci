@@ -105,7 +105,10 @@
     {
       "role": "authoring-agent",
       "skills": [
-        "semantic-review-scoping"
+        "semantic-review-scoping",
+        "deep-document-research",
+        "literature-search",
+        "reference-dataset-ingestion"
       ]
     },
     {

@@ -226,6 +226,36 @@ cite it with a Liquid reference to the witness; never hard-code it. In a
 folio still on `:val`, check the registry first, and add a missing entry
 (with `needsReview: true` if the witness is uncertain) before citing it.
 
+## Fast native witnessed-value evaluators (`crates/<folio>-values`) & `tools` KG registration
+
+For canonical observable tables, derived constants, and cross-block assertions
+that must refresh deterministically in milliseconds rather than re-running slow
+script loops, implement a **fast native witnessed-value evaluator CLI** inside
+the folio's top-level **`crates/` Cargo workspace** (`compute-author` §4.1,
+`tool-authoring` §4):
+
+1. **Three-tier workspace layering (`crates/Cargo.toml`):**
+   - **Core computer-algebra crates (`crates/<algebra-core>/`):** pure Rust
+     exact symbolic/rational/polynomial kernels with **`0` C-FFI** and zero
+     domain/application clutter, reusable across `folio-assistant-sci`;
+   - **High-precision evaluation / solver crates (`crates/<eval-or-solver>/`):**
+     `MPFR` arbitrary-precision evaluation and conic/LP solvers (`Clarabel.rs`
+     MPFR, etc.) layered above the exact core;
+   - **Fast witnessed-value CLI (`crates/<folio>-values/`):** evaluates every
+     registered canonical observable and cross-check assertion at the precision
+     floor in a single native invocation and writes deterministic
+     `*.witness.json` artifacts consumed by Liquid `{{ <prefix>.<dir>.<entry>.data.<field> }}`
+     and `:leanval[...]`.
+2. **Declare `crates/` and register the CLI in the `tools` KG:**
+   - Declare `{ "id": "crates", "path": "crates/", "graphTypologies": ["code"], "description": "..." }`
+     in `<folio>.json`;
+   - Register `tools/<folio>-values/<folio>-values.json` (`"$schema": "tool-definition/v1"`,
+     `satisfies: ["witnessed-values"]`, typed `io` ports, and `invoke.shell`
+     pointing to `crates/Cargo.toml`), verified with `bun run cat check:tools`;
+   - When migrating legacy evaluator paths into `crates/`, declare the move in
+     `<folio>.json` `moves` (`two-phase-move`) until all links and workflows
+     point to `crates/`.
+
 ## Formal-source companion: `:leanval[...]` codemod
 
 When the project carries a formal-proof layer, numeric literals inside

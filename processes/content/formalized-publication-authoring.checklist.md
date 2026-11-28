@@ -23,8 +23,8 @@ One mathematical result, from the author's intent to a merged change set.
 ### 2. Search folio and library (`Task_PriorWork`)
 
 - Who: the `Authoring agent` lane (role `authoring-agent`).
-- Skill: `deep-document-research`.
-- What: Search the folio's blocks, its compute and its ingested library (section text and extracted candidates of every held source) before drafting.
+- Skill: `deep-document-research`, `literature-search`, `library-ingestion`, `reference-dataset-ingestion`.
+- What: Decompose topic areas, check the folio's blocks, compute, and ingested library, shortlist needed external papers and reference datasets (CODATA, PDG, AME), query accessible scholarly databases (Crossref/DOI, arXiv, PubMed, InspireHEP, OpenAlex, Semantic Scholar, Google Scholar), ingest retrieved ref
 - Record it: `workflow_complete` with `node: "Task_PriorWork"`.
 - next: → `GW_AlreadyHeld` (Already proved?)
 
