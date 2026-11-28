@@ -202,6 +202,35 @@ unless you specifically need them. Use the build tool's `build` +
 install flow when no virtualenv is available (the `develop` flow may
 require one).
 
+### §4.1 Standard top-level `crates/` Cargo workspace & `tools` KG registration (STRICT)
+
+Every scientific folio (`folio-assistant-sci` and paper folios) organises
+native Rust compute kernels, high-precision solvers, and fast witnessed-value
+evaluators in a single top-level **`crates/` Cargo workspace**
+(`crates/Cargo.toml`) split cleanly into three tiers:
+
+| Tier | Workspace member shape | Dependency & domain boundary |
+|---|---|---|
+| **Tier 1 — Domain-agnostic core computer-algebra crates** | `crates/<algebra-core>/` | **Zero C-FFI (`0` system C links)** and **zero domain, particle, or application clutter**. Pure exact arithmetic (big integers/rationals, polynomial & Laurent rings, Gröbner / normal-form bases, combinatorics) reusable across `folio-assistant-sci` and multiple paper folios. |
+| **Tier 2 — High-precision (`MPFR`) evaluation & solver crates** | `crates/<eval-or-solver>/` | Arbitrary-precision `MPFR` / interval evaluation and conic / interior-point / LP solvers (`Clarabel.rs` MPFR, etc.) layered strictly *above* Tier 1 so C-FFI system libraries (`libmpfr`, `libgmp`) never leak into exact algebraic cores. |
+| **Tier 3 — Fast witnessed-value evaluators & application probes** | `crates/<folio>-values/`, `crates/<probe>/` | High-precision observable / witness CLI evaluators (`<folio>-values` pattern) and folio-specific probes built *on top* of Tiers 1–2, evaluating all canonical witnessed values and assertions in one native batch invocation. |
+
+**Mandatory Knowledge Graph declarations (`tool-authoring` §4):**
+
+1. **Instance directory declaration:** declare `"crates"` in `<folio>.json`
+   under `directories`:
+   `{ "id": "crates", "path": "crates/", "graphTypologies": ["code"], "description": "..." }`.
+2. **`tools` KG node (`tool-definition/v1`):** register every executable crate
+   binary and fast `<folio>-values` evaluator as a folder-per-tool node
+   `tools/<tool-id>/<tool-id>.json` (`"$schema": "tool-definition/v1"`, typed
+   `io.inputs` / `io.outputs`, `invoke.shell`, `satisfies: ["witnessed-values"]`
+   or `["compute-author"]`), validated by `bun run cat check:tools`.
+3. **Legacy path migration (`two-phase-move`):** when moving legacy per-tool
+   crates (for example `tools/<engine>/`) into `crates/`, declare a timed
+   `moves` entry in `<folio>.json` (`two-phase-move`) so cross-layer links and
+   CI workflows (such as `build-clarabel-mpfr.yml` `with: crate: crates/...`)
+   migrate without broken-pin cycles.
+
 ## §5. Witness-emission discipline
 
 Every compute script ships a `*.witness.json` via the project's witness
@@ -237,7 +266,8 @@ unbuffered with logging.
 - [ ] Coefficient types are **exact** — no machine float in production
 - [ ] An equivalence cross-check at the floor vs the reference path is planned
 - [ ] If exploiting a shortcut: §3 algebraic preflight on the smallest case
-- [ ] If porting to native: granularity is whole-compute per boundary call (§2.1)
+- [ ] If porting to native: granularity is whole-compute per boundary call (§2.1), placed in top-level `crates/` with `0` C-FFI in core algebra crates (§4.1)
+- [ ] Every native crate workspace (`"id": "crates"`, `graphTypologies: ["code"]`) and CLI evaluator (`tool-definition/v1` in `tools/`) passes `bun run cat check:tools`
 - [ ] Witness emission plan includes parameters, assertions, mandated solver outputs
 - [ ] Long-compute scripts launch unbuffered + teed to a log
 - [ ] Branch name follows the project convention; combined with related work on one PR

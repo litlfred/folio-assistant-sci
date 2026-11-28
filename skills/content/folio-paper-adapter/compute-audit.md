@@ -120,6 +120,13 @@ with project-specific ones.
   verified invariants and their residuals, with a strict-mode CI gate
   failing on any residual above tolerance (tighter for symbolic/exact,
   looser for arbitrary-precision, loosest for machine float).
+- **Unlayered native crate or unregistered evaluator CLI.** Native Rust
+  crates placed outside the top-level `crates/` Cargo workspace (without an
+  active `two-phase-move` entry), domain/application clutter or `MPFR` C-FFI
+  dependencies leaking into a pure core computer-algebra crate (`0` C-FFI
+  rule, `compute-author` §4.1), or crate / `<folio>-values` witnessed-value
+  CLIs missing `"id": "crates"` (`graphTypologies: ["code"]`) or a validated
+  `tool-definition/v1` node in `tools/` (`bun run cat check:tools`).
 
 ## Verification checklist before landing any speedup
 

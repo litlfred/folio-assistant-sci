@@ -120,11 +120,17 @@ column recording when each is discharged.
 
 ## How to add a new batch API (F-B)
 
-1. **Native kernel**: add a `compute_all(...)` that enumerates the work
-   internally and parallelises (data-parallel map → collect).
-2. **Binding layer**: add a wrapper returning a vector of `(key, value)`
-   or `(key, decimal-string)` pairs (the string variant for arbitrary
-   precision).
+1. **Native kernel (`crates/` tiering, `compute-author` §4.1)**: place exact
+   domain-agnostic algebraic kernels in a Tier-1 `crates/<algebra-core>/` crate
+   (`0` C-FFI), high-precision `MPFR` / solver evaluation in a Tier-2 crate, and
+   batch observable/witness emission in a Tier-3 `<folio>-values` or probe crate
+   that enumerates and parallelises the work internally.
+2. **Binding or CLI layer**: expose a single batch binding or CLI invocation
+   returning a vector of `(key, decimal-string)` pairs (or writing the canonical
+   `.witness.json` directly), and ensure `"id": "crates"` (`graphTypologies: ["code"]`)
+   and the `tool-definition/v1` node in `tools/<id>/<id>.json` pass
+   `bun run cat check:tools` (using `two-phase-move` when relocating legacy
+   paths).
 3. **Build manifest**: bump the version (minor for a new public API).
 4. **Caller**: replace the loop with the batch call.
 5. **Cross-check** at the target point on a representative input — floor

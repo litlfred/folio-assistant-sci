@@ -75,8 +75,13 @@ Empirical inputs never enter the triple: a measured value appears only in a mark
       <bpmn:outgoing>Flow_2</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:task id="Task_PriorWork" name="Search folio&#10;and library">
-      <bpmn:documentation>Search the folio's blocks, its compute and its ingested library (section text and extracted candidates of every held source) before drafting. A result settled in a held paper is cited, not re-derived.</bpmn:documentation>
-      <bpmn:extensionElements><bootstrap.processes:skill ref="deep-document-research"/></bpmn:extensionElements>
+      <bpmn:documentation>Decompose topic areas, check the folio's blocks, compute, and ingested library, shortlist needed external papers and reference datasets (CODATA, PDG, AME), query accessible scholarly databases (Crossref/DOI, arXiv, PubMed, InspireHEP, OpenAlex, Semantic Scholar, Google Scholar), ingest retrieved references, texts, and datasets into the Knowledge Graph, and assess relevancy and claim boundaries before drafting. A result settled in a held paper is cited, not re-derived.</bpmn:documentation>
+      <bpmn:extensionElements>
+        <bootstrap.processes:skill ref="deep-document-research"/>
+        <bootstrap.processes:skill ref="literature-search"/>
+        <bootstrap.processes:skill ref="library-ingestion"/>
+        <bootstrap.processes:skill ref="reference-dataset-ingestion"/>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_2</bpmn:incoming>
       <bpmn:outgoing>Flow_3</bpmn:outgoing>
     </bpmn:task>
@@ -90,7 +95,7 @@ Empirical inputs never enter the triple: a measured value appears only in a mark
       <bpmn:incoming>Flow_4</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:task id="Task_DraftTriple" name="Draft triple:&#10;prose and Lean">
-      <bpmn:documentation>Write the narrative statement and narrative proof in the block's `.md` and the formal statement and proof in its `.lean`. Write the Lean statement first and ask whether it could be false. An unproved step is `sorry` with a citation; a dependence on a conjecture is an explicit class hypothesis. A number in prose is read from its witness.</bpmn:documentation>
+      <bpmn:documentation>Write the narrative statement and narrative proof in the block's `.md` and the formal statement and proof in its `.lean`. Write the Lean statement first and ask whether it could be false. Record source retrieval and verification provenance (database/API, DOI/arXiv/PMID, date, exact theorem/equation/dataset locator, and relevancy boundary) in authoring notes and attestations, and link formal citations (`\cite{...}` / `cites`) and Liquid dataset or witness values (`{{ ... }}`). An unproved step is `sorry` with a citation; a dependence on a conjecture is an explicit class hypothesis.</bpmn:documentation>
       <bpmn:extensionElements><bootstrap.processes:skill ref="lean-formalization"/></bpmn:extensionElements>
       <bpmn:incoming>Flow_5</bpmn:incoming>
       <bpmn:incoming>Flow_10</bpmn:incoming>
