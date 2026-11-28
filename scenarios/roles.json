@@ -109,7 +109,9 @@
         "deep-document-research",
         "evidence-gathering-and-provenance",
         "literature-search",
-        "reference-dataset-ingestion"
+        "reference-dataset-ingestion",
+        "handover-report",
+        "stalled-agent-triage"
       ]
     },
     {

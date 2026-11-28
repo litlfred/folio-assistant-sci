@@ -37,6 +37,21 @@ should not have to compile it again. `contribute` is safe to run
 unconditionally — every guard below applies, so a session that built
 nothing, or only a subtree, simply gets refused.
 
+## Donor-cache & `/tmp` overlay preservation across stall takeovers and re-entry
+
+When multiple worktrees share a host or a session resumes after a stall
+(`stalled-agent-triage`, `agent-handoff`), treat warm `.lake` directories and
+`/tmp` `.olean` overlays as first-class entries in the parent epic's
+**Worktree / Branch / Scratch / Donor-Cache Lease Table**:
+
+- **Never run `git reset --hard`, `lake clean`, or branch switches on a
+  designated `.lake` donor worktree** (keep donor checkouts pinned to
+  `origin/<default-branch>` so untraced neighbour eviction never occurs).
+- **Record active `/tmp` `.olean` overlays** (`LEAN_PATH="/tmp/<overlay>:..."`)
+  in write-ahead `checkpoint:` / `handover:` / `reentry:` notes on
+  `cat/cat-harness/beans` so a takeover or returning agent can reuse compiled
+  `.olean` artefacts immediately or rebuild reproducibly if `/tmp` was cleared.
+
 ## Why contributing is safe
 
 `contribute` publishes only if all four hold:

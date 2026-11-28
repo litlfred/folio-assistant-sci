@@ -218,6 +218,34 @@ I-pattern for every recommended fix; for dual paths (probe-only vs
 production), preserve the probe-only path as an opt-out — never delete
 it.
 
+## Bidirectional relay continuity (write-ahead readiness ↔ returning re-entry)
+
+Compute sweeps and multi-script verification waves regularly span quota caps,
+context limits, or alternating agent turns. Follow `stalled-agent-triage`,
+`agent-handoff`, and `handover-report`:
+
+1. **Write-ahead epic checkpointing at dispatch time (`STRICT`):**
+   Whenever opening child work items, launching background probes, or assigning
+   worktrees, write-ahead checkpoint the parent epic body and/or a parent Epic
+   note (`beans/notes/*` titled `checkpoint: <epic/wave> <UTC>`, `handover:`,
+   `triage:`, or `reentry:`) on `cat/cat-harness/beans` **at dispatch** — never
+   wait until post-merge, and **never** mutate a claimed child executor bean's
+   `.md` file (`agent-handoff` §1). Record:
+   - newly opened child IDs with canonical 3-slot dispatch lines
+     (`Do bean <bean-id> on branch <branch-to-create> of repo <owner>/<repo>.`);
+   - active compute/analytic hypotheses, target witnesses, and `.wip.json` paths;
+   - negative / falsified routes already ruled out so a successor never re-runs them;
+   - the **Worktree / Branch / Scratch / Donor-Cache Lease Table** (including
+     `Cargo` target caches and single-core compute PIDs).
+2. **5-step non-destructive takeover & returning-turn re-entry (`STRICT`):**
+   On cold takeover OR when resuming on a later turn after another session
+   advanced `main`, PRs, or `beans`, execute before dispatching:
+   - **(1)** Fetch `origin/<default-branch>` and `origin/cat/cat-harness/beans`; audit `git log <last-known-sha>..origin/<default-branch>`.
+   - **(2)** Read the epic's Live Relay Snapshot and `checkpoint:` / `handover:` / `triage:` / `reentry:` notes.
+   - **(3)** Classify open/draft PRs into `ready-to-merge`, `active external sibling draft`, `stalled with uncommitted/unpushed work`, and `owner-fenced`.
+   - **(4)** Inspect all local worktrees (`git status --short --branch`, ahead/behind), `/tmp` scratch dirs, `.wip.json` checkpoints, and `Cargo`/`Lean` donor caches **without ever running `git reset --hard`**. Cold triage rescues dirty/ahead stalled work onto `claude/salvage-<topic>-<yyyymmdd>`; if a returning/unfrozen agent finds `holder != self`, a superseding `triage:` note, or remote `<branch>` advanced, it **never pushes to `<branch>` or `--force`** — it quarantine-saves unpushed commits (`@{u}..HEAD` non-empty) onto `wip/reentry-<bean-id>-<short-session>`, writes a `reentry:` pointer note, and yields cleanly.
+   - **(5)** Reconcile the epic lease table on `beans`, post sibling coordination notes if scopes shifted, and resume Merge Steward + worker queues.
+
 ## Harness skills that dispatch here
 
 - `integration-watcher`: the abstract parent this skill instantiates (`watch_arg: compute`).
