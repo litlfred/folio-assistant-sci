@@ -9,5 +9,6 @@
   "docoType": "doco:Section",
   "heading": "Lemma",
   "headingPlural": "Lemmas",
-  "indexRank": 4
+  "indexRank": 4,
+  "libraryOrigin": "extracted"
 }

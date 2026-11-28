@@ -9,5 +9,6 @@
   "docoType": "doco:Section",
   "heading": "Proposition",
   "headingPlural": "Propositions",
-  "indexRank": 3
+  "indexRank": 3,
+  "libraryOrigin": "extracted"
 }
