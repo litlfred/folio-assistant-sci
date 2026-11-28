@@ -1,0 +1,1625 @@
+{
+  "$schema": "qa-reports-manifest/v1",
+  "key": "pr/232/a68d9c3bbc7465ecfec47d2026d1c03a82bd827e",
+  "source": "a68d9c3bbc7465ecfec47d2026d1c03a82bd827e",
+  "pr": 232,
+  "written_at": "2026-11-28T17:09:06.677Z",
+  "producer": {
+    "run": "https://github.com/litlfred/folio-assistant-sci/actions/runs/46168823165"
+  },
+  "roots": [
+    "folio-assistant-sci/test/results"
+  ],
+  "payloadTree": "e5d0a30fb08825fe27843ed1dc0c9bd2765d4b5c",
+  "files": 135,
+  "bytes": 413996,
+  "listing": [
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa.manifest.json",
+      "schema": "kg-qa-manifest/v1",
+      "axis": "kg"
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/collab/processes/content/authoring-a-paper.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "process:Process_PaperAuthoring",
+      "counts": {
+        "pass": 34,
+        "fail": 4,
+        "na": 7,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/collab/processes/content/decisions/lean-build-gate.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "decision:lean-build-gate",
+      "counts": {
+        "pass": 1,
+        "fail": 0,
+        "na": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/processes/content/atomic-mass-drift-check.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "process:Process_AtomicMassDrift",
+      "counts": {
+        "pass": 32,
+        "fail": 1,
+        "na": 12,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/processes/content/formalized-publication-authoring.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "process:Process_FormalizedPublicationAuthoring",
+      "counts": {
+        "pass": 32,
+        "fail": 3,
+        "na": 10,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/processes/content/lean-docs-publish.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "process:Process_LeanDocsPublish",
+      "counts": {
+        "pass": 31,
+        "fail": 4,
+        "na": 10,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/scenarios/compute-authoring-agent.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "role:compute-authoring-agent",
+      "counts": {
+        "pass": 6,
+        "fail": 1,
+        "na": 1,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/scenarios/kg.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "graph:kg",
+      "counts": {
+        "pass": 11,
+        "fail": 1,
+        "na": 16,
+        "unknown": 6
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/scenarios/lean-authoring-agent.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "role:lean-authoring-agent",
+      "counts": {
+        "pass": 6,
+        "fail": 1,
+        "na": 1,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/scenarios/lean-toolchain.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "role:lean-toolchain",
+      "counts": {
+        "pass": 5,
+        "fail": 0,
+        "na": 3,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/scenarios/proof-review-agent.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "role:proof-review-agent",
+      "counts": {
+        "pass": 6,
+        "fail": 1,
+        "na": 1,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/authoring-math/formal-accuracy.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:formal-accuracy",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/authoring-math/formal-layer-editing.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:formal-layer-editing",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/authoring-math/latex-authoring.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:latex-authoring",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/authoring-math/lean-formalization.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:lean-formalization",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/authoring-math/lean-toolchain-contract.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:lean-toolchain-contract",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/authoring-math/math-md-authoring.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:math-md-authoring",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/authoring-math/math-readability-editing.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:math-readability-editing",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/authoring-math/milnor-exposition-standard.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:milnor-exposition-standard",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/authoring-math/paper-chapter-complexity.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:paper-chapter-complexity",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/authoring-math/paper-voice-audit.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:paper-voice-audit",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/authoring-math/proof-verification.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:proof-verification",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/build-docs.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:build-docs",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/build-pdf.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:build-pdf",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/category-theory.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:category-theory",
+      "counts": {
+        "pass": 3,
+        "fail": 3,
+        "na": 1,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/chapter-analysis.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:chapter-analysis",
+      "counts": {
+        "pass": 5,
+        "fail": 1,
+        "na": 0,
+        "unknown": 1
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/compute-audit.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:compute-audit",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/compute-author.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:compute-author",
+      "counts": {
+        "pass": 3,
+        "fail": 2,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/compute-integration-watcher.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:compute-integration-watcher",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/content-block-review.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:content-block-review",
+      "counts": {
+        "pass": 5,
+        "fail": 1,
+        "na": 1,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/content-validation.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:content-validation",
+      "counts": {
+        "pass": 4,
+        "fail": 2,
+        "na": 1,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/critical-path-analysis.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:critical-path-analysis",
+      "counts": {
+        "pass": 5,
+        "fail": 1,
+        "na": 1,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/definition-clarity-audit.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:definition-clarity-audit",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/detangler-integration-watcher.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:detangler-integration-watcher",
+      "counts": {
+        "pass": 3,
+        "fail": 2,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/devils-advocate-paper.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:devils-advocate-paper",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/ffi-roundtrip-audit.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:ffi-roundtrip-audit",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/formalizer.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:formalizer",
+      "counts": {
+        "pass": 5,
+        "fail": 2,
+        "na": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/groebner-basis.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:groebner-basis",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/latex-build-cache.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:latex-build-cache",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/latex-compilation.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:latex-compilation",
+      "counts": {
+        "pass": 5,
+        "fail": 1,
+        "na": 1,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/latex-validation.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:latex-validation",
+      "counts": {
+        "pass": 5,
+        "fail": 1,
+        "na": 0,
+        "unknown": 1
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/lean-build-fix.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:lean-build-fix",
+      "counts": {
+        "pass": 3,
+        "fail": 2,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/lean-cache-restore.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:lean-cache-restore",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/lean-completeness-audit.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:lean-completeness-audit",
+      "counts": {
+        "pass": 3,
+        "fail": 2,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/lean-content-test.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:lean-content-test",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/lean-environment-setup.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:lean-environment-setup",
+      "counts": {
+        "pass": 5,
+        "fail": 1,
+        "na": 1,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/lean-formal-graph.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:lean-formal-graph",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/lean-generation.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:lean-generation",
+      "counts": {
+        "pass": 4,
+        "fail": 2,
+        "na": 0,
+        "unknown": 1
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/lean-mathlibext-curator.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:lean-mathlibext-curator",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/lean-proof-review.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:lean-proof-review",
+      "counts": {
+        "pass": 5,
+        "fail": 1,
+        "na": 1,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/lean-proof-vacuity-audit.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:lean-proof-vacuity-audit",
+      "counts": {
+        "pass": 3,
+        "fail": 2,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/lean-substantive-pass.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:lean-substantive-pass",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/lean-witness-audit.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:lean-witness-audit",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/math-render-check.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:math-render-check",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/paper-glossary-build.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:paper-glossary-build",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/paper-importer.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:paper-importer",
+      "counts": {
+        "pass": 4,
+        "fail": 2,
+        "na": 1,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/proof-conciseness.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:proof-conciseness",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/proof-editor.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:proof-editor",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/proof-exposition-review.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:proof-exposition-review",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/proof-gap-audit.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:proof-gap-audit",
+      "counts": {
+        "pass": 3,
+        "fail": 2,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/proof-integration-watcher.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:proof-integration-watcher",
+      "counts": {
+        "pass": 2,
+        "fail": 3,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/proof-narrative-lean-equivalence.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:proof-narrative-lean-equivalence",
+      "counts": {
+        "pass": 3,
+        "fail": 2,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/proof-simplifier.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:proof-simplifier",
+      "counts": {
+        "pass": 5,
+        "fail": 1,
+        "na": 1,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/proof-status-tracking.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:proof-status-tracking",
+      "counts": {
+        "pass": 6,
+        "fail": 1,
+        "na": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/proof-triage.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:proof-triage",
+      "counts": {
+        "pass": 4,
+        "fail": 2,
+        "na": 1,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/proposition-consolidation-audit.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:proposition-consolidation-audit",
+      "counts": {
+        "pass": 3,
+        "fail": 2,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/q-usage-watcher.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:q-usage-watcher",
+      "counts": {
+        "pass": 3,
+        "fail": 2,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/remark-audit.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:remark-audit",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/rendering-auditor.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:rendering-auditor",
+      "counts": {
+        "pass": 1,
+        "fail": 4,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/rendering-fixes.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:rendering-fixes",
+      "counts": {
+        "pass": 2,
+        "fail": 3,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/semantic-review-scoping.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:semantic-review-scoping",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/simulator-math-audit.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:simulator-math-audit",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/simulator.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:simulator",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/uses-formal-comparison.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:uses-formal-comparison",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/verify-local-substrate.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:verify-local-substrate",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/folio-paper-adapter/witnessed-values.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:witnessed-values",
+      "counts": {
+        "pass": 3,
+        "fail": 2,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/hypothesis-generation/assets/preregistration_scaffold_template.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:preregistration_scaffold_template",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/hypothesis-generation/hypothesis-generation.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:hypothesis-generation",
+      "counts": {
+        "pass": 3,
+        "fail": 2,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/hypothesis-generation/references/causal_inference_and_claims.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:causal_inference_and_claims",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/hypothesis-generation/references/concepts_and_workflow.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:concepts_and_workflow",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/hypothesis-generation/references/ethics_safety_and_ai.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:ethics_safety_and_ai",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/hypothesis-generation/references/experimental_design_patterns.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:experimental_design_patterns",
+      "counts": {
+        "pass": 3,
+        "fail": 2,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/hypothesis-generation/references/hypothesis_quality_criteria.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:hypothesis_quality_criteria",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/hypothesis-generation/references/literature_search_strategies.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:literature_search_strategies",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/hypothesis-generation/references/preregistration_and_open_science.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:preregistration_and_open_science",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/hypothesis-generation/references/security_validation.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:security_validation",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/hypothesis-generation/references/source_ledger.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:source_ledger",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/hypothesis-generation/references/tool_reference.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:tool_reference",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/scientific-critical-thinking/references/common_biases.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:common_biases",
+      "counts": {
+        "pass": 3,
+        "fail": 2,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/scientific-critical-thinking/references/core_capabilities.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:core_capabilities",
+      "counts": {
+        "pass": 2,
+        "fail": 3,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/scientific-critical-thinking/references/evidence_hierarchy.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:evidence_hierarchy",
+      "counts": {
+        "pass": 2,
+        "fail": 3,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/scientific-critical-thinking/references/experimental_design.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:experimental_design",
+      "counts": {
+        "pass": 1,
+        "fail": 4,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/scientific-critical-thinking/references/logical_fallacies.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:logical_fallacies",
+      "counts": {
+        "pass": 2,
+        "fail": 3,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/scientific-critical-thinking/references/scientific_method.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:scientific_method",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/scientific-critical-thinking/references/statistical_pitfalls.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:statistical_pitfalls",
+      "counts": {
+        "pass": 2,
+        "fail": 3,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/scientific-critical-thinking/scientific-critical-thinking.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:scientific-critical-thinking",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/scientific-visualization/references/color_palettes.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:color_palettes",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/scientific-visualization/references/journal_requirements.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:journal_requirements",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/scientific-visualization/references/matplotlib_examples.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:matplotlib_examples",
+      "counts": {
+        "pass": 3,
+        "fail": 2,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/scientific-visualization/references/publication_guidelines.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:publication_guidelines",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/scientific-visualization/references/sources.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:sources",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/content/scientific-visualization/scientific-visualization.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:scientific-visualization",
+      "counts": {
+        "pass": 3,
+        "fail": 2,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/data/reference-dataset-ingestion.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:reference-dataset-ingestion",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/lean/lean-formal-edges.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:lean-formal-edges",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/lean/lean-html-docs.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:lean-html-docs",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/requirements/req%3Alean-verification.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "requirement:req:lean-verification",
+      "counts": {
+        "pass": 3,
+        "fail": 1,
+        "na": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/skills/voices/milnor/SKILL.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "skill:SKILL",
+      "counts": {
+        "pass": 4,
+        "fail": 1,
+        "na": 2,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/tools/check-dependencies.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "tool:check-dependencies",
+      "counts": {
+        "pass": 5,
+        "fail": 0,
+        "na": 3,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/tools/content-manifest-validate.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "tool:content-manifest-validate",
+      "counts": {
+        "pass": 5,
+        "fail": 0,
+        "na": 3,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/tools/headless-render-qc.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "tool:headless-render-qc",
+      "counts": {
+        "pass": 5,
+        "fail": 0,
+        "na": 3,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/tools/latex-image.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "tool:latex-image",
+      "counts": {
+        "pass": 5,
+        "fail": 0,
+        "na": 3,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/tools/latex-overfull.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "tool:latex-overfull",
+      "counts": {
+        "pass": 5,
+        "fail": 0,
+        "na": 3,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/tools/latex-preflight.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "tool:latex-preflight",
+      "counts": {
+        "pass": 5,
+        "fail": 0,
+        "na": 3,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/tools/latexmk-compile.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "tool:latexmk-compile",
+      "counts": {
+        "pass": 5,
+        "fail": 0,
+        "na": 3,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/tools/lean-audit.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "tool:lean-audit",
+      "counts": {
+        "pass": 5,
+        "fail": 0,
+        "na": 3,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/tools/lean-build.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "tool:lean-build",
+      "counts": {
+        "pass": 5,
+        "fail": 0,
+        "na": 3,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/tools/lean-cache.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "tool:lean-cache",
+      "counts": {
+        "pass": 5,
+        "fail": 0,
+        "na": 3,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/tools/lean-coverage.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "tool:lean-coverage",
+      "counts": {
+        "pass": 5,
+        "fail": 0,
+        "na": 3,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/tools/lean-formal-edges.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "tool:lean-formal-edges",
+      "counts": {
+        "pass": 5,
+        "fail": 0,
+        "na": 3,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/tools/lean-html-docs.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "tool:lean-html-docs",
+      "counts": {
+        "pass": 5,
+        "fail": 0,
+        "na": 3,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/tools/lean-kg-publish.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "tool:lean-kg-publish",
+      "counts": {
+        "pass": 5,
+        "fail": 0,
+        "na": 3,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/tools/lean-render-publish.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "tool:lean-render-publish",
+      "counts": {
+        "pass": 5,
+        "fail": 0,
+        "na": 3,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/tools/lean-toolchain-setup.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "tool:lean-toolchain-setup",
+      "counts": {
+        "pass": 5,
+        "fail": 0,
+        "na": 3,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/tools/paper-feature-build.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "tool:paper-feature-build",
+      "counts": {
+        "pass": 5,
+        "fail": 0,
+        "na": 3,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/tools/paper-latex-build.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "tool:paper-latex-build",
+      "counts": {
+        "pass": 5,
+        "fail": 0,
+        "na": 3,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/tools/paper-preferences.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "tool:paper-preferences",
+      "counts": {
+        "pass": 5,
+        "fail": 0,
+        "na": 3,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/tools/paper-preview.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "tool:paper-preview",
+      "counts": {
+        "pass": 5,
+        "fail": 0,
+        "na": 3,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/tools/proof-dependency-graph.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "tool:proof-dependency-graph",
+      "counts": {
+        "pass": 5,
+        "fail": 0,
+        "na": 3,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/tools/proof-objects-extract.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "tool:proof-objects-extract",
+      "counts": {
+        "pass": 5,
+        "fail": 0,
+        "na": 3,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/tools/proof-status-update.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "tool:proof-status-update",
+      "counts": {
+        "pass": 5,
+        "fail": 0,
+        "na": 3,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/tools/tex-install.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "tool:tex-install",
+      "counts": {
+        "pass": 5,
+        "fail": 0,
+        "na": 3,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/tools/tex-snippet-validate.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "tool:tex-snippet-validate",
+      "counts": {
+        "pass": 5,
+        "fail": 0,
+        "na": 3,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/kg-qa/tools/tex-source-audit.kg-qa.json",
+      "schema": "kg-qa/v1",
+      "axis": "kg",
+      "subject": "tool:tex-source-audit",
+      "counts": {
+        "pass": 5,
+        "fail": 0,
+        "na": 3,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/node-views/folio-assistant-sci.node-views.qa.json",
+      "schema": "node-view-coverage/v1",
+      "axis": "site-build",
+      "counts": {
+        "pass": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "path": "folio-assistant-sci/test/results/rendering/paper.render-qa.json",
+      "schema": "folio-paper-render-qa/v1",
+      "axis": "rendering",
+      "subject": "paper-render:paper",
+      "counts": {
+        "na": 5
+      }
+    }
+  ]
+}
