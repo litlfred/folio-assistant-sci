@@ -173,8 +173,12 @@ Empirical inputs never enter the triple: a measured value appears only in a mark
       <bpmn:outgoing>Flow_13</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:task id="Task_RecordGap" name="Record gap or&#10;conjecture">
-      <bpmn:documentation>Demote the block to a conjecture, or state the open step with `sorry` and a citation, and record the gap in the work plan. Never weaken the statement until it passes.</bpmn:documentation>
-      <bpmn:extensionElements><bootstrap.processes:skill ref="proof-gap-audit"/></bpmn:extensionElements>
+      <bpmn:documentation>Demote the block to a conjecture, or state the open step with `sorry` and a citation, and write-ahead checkpoint the parent epic (`checkpoint:` / `handover:` / `reentry:` notes on `cat/cat-harness/beans`, active vs excluded proof/compute routes, and the Worktree / `/tmp`-Overlay / `.lake`-Donor Lease Table — never mutating a claimed child executor bean's `.md` file). Whenever an authoring session stalls or returns on a subsequent turn after another session advanced the repository, reconcile non-destructively via `stalled-agent-triage` before resuming. Never weaken the statement until it passes.</bpmn:documentation>
+      <bpmn:extensionElements>
+        <bootstrap.processes:skill ref="proof-gap-audit"/>
+        <bootstrap.processes:skill ref="handover-report"/>
+        <bootstrap.processes:skill ref="stalled-agent-triage"/>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_13</bpmn:incoming>
       <bpmn:outgoing>Flow_14</bpmn:outgoing>
     </bpmn:task>

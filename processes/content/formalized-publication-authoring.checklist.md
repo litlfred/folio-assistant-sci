@@ -141,7 +141,7 @@ One mathematical result, from the author's intent to a merged change set.
 ### 11. Record gap or conjecture (`Task_RecordGap`)
 
 - Who: the `Authoring agent` lane (role `authoring-agent`).
-- Skill: `proof-gap-audit`.
-- What: Demote the block to a conjecture, or state the open step with `sorry` and a citation, and record the gap in the work plan.
+- Skill: `proof-gap-audit`, `handover-report`, `stalled-agent-triage`.
+- What: Demote the block to a conjecture, or state the open step with `sorry` and a citation, and write-ahead checkpoint the parent epic (`checkpoint:` / `handover:` / `reentry:` notes on `cat/cat-harness/beans`, active vs excluded proof/compute routes, and the Worktree / `/tmp`-Overlay / `.lake`-Donor Leas
 - Record it: `workflow_complete` with `node: "Task_RecordGap"`.
 - next: → `Task_LeanCheck` (Compile Lean; report axioms)
