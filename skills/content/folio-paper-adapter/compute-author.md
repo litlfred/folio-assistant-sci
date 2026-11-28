@@ -242,6 +242,36 @@ base. The witness must include: `name` / `description` / `computation`
 `auditOnly` marker if the script is research-grade. Emit any
 solver-specific structured outputs the project mandates.
 
+### §5.1 Online sequence, knot-census & number-theory database lookup (`online-sequence-and-knot-databases`, STRICT)
+
+Whenever a compute script or mathematical derivation produces an integer
+sequence, a tower of rational series coefficients, composite denominators, an
+unrecognised high-precision constant, or a knot/link/3-manifold or arithmetic
+invariant, execute the `online-sequence-and-knot-databases` protocol before
+freezing witness schemas or writing narrative claims:
+
+1. **Natural geometric / 1-loop torsion unit rescaling:** strip coordinate-gauge
+   powers ($\pi^k$, $\sqrt{d}^k$, 1-loop Hessian / Reidemeister torsion $u^k$, or
+   Dedekind $24^k$) so coefficients lie in $\mathbb{Q}$ and residual denominators
+   expose genuine arithmetic primes (for example von Staudt–Clausen Bernoulli
+   primes $p \ge 5$).
+2. **OEIS five-transform sweep (`https://oeis.org/search?fmt=json&q=...` with `-L`):**
+   query raw numerators/denominators, unit-rescaled rationals, factorial-cleared
+   $k!\,z_k$, torsion-cleared $24^k z_k$, AND both logged cumulants
+   $\ln(1 + \sum D_k x^k)$ and unlogged exponentials $\exp(\sum c_k x^k)$ (as in
+   the figure-eight $4_1$ loop tower $\omega_k \to u = \frac{2\pi}{3\sqrt{3}} \to \exp(\sum z_k (24v)^k) \to$
+   OEIS `A301732` / `A301733`).
+3. **Knot/manifold & number-theory censuses:** cross-check hyperbolic volumes,
+   Chern–Simons invariants, Alexander/Jones/HOMFLY-PT polynomials, Dehn surgery
+   slopes, symmetry groups, and trace fields against **KnotInfo / LinkInfo /
+   SnapPy / Regina**, and number fields, Dirichlet $L$-values, and modular or
+   quantum-modular $q$-series against **LMFDB** (`https://www.lmfdb.org/api/`).
+4. **High-precision PSLQ (`>= 80 dps`, `0` `float64`):** run `mpmath.pslq` /
+   `identify` at `>= 80 dps` over structured period/polylogarithm bases and
+   confirm candidate relations at held-out `>= 160 dps` (`< 10^{-150}` residual),
+   recording matched catalogue IDs (`OEIS Axxxxxx`, LMFDB labels, census names)
+   and ingesting the primary paper into `references/` and `library/`.
+
 ## §6. CI / merge etiquette
 
 CI is billing — don't churn commits; squash where possible. Combine
@@ -268,6 +298,7 @@ unbuffered with logging.
 - [ ] If exploiting a shortcut: §3 algebraic preflight on the smallest case
 - [ ] If porting to native: granularity is whole-compute per boundary call (§2.1), placed in top-level `crates/` with `0` C-FFI in core algebra crates (§4.1)
 - [ ] Every native crate workspace (`"id": "crates"`, `graphTypologies: ["code"]`) and CLI evaluator (`tool-definition/v1` in `tools/`) passes `bun run cat check:tools`
+- [ ] Any integer/rational sequence, constant, or knot/number-theoretic invariant is rescaled to natural geometric/torsion units and checked against OEIS (logged & unlogged), KnotInfo/SnapPy, LMFDB, and `>= 80 dps` PSLQ (§5.1)
 - [ ] Witness emission plan includes parameters, assertions, mandated solver outputs
 - [ ] Long-compute scripts launch unbuffered + teed to a log
 - [ ] Branch name follows the project convention; combined with related work on one PR
