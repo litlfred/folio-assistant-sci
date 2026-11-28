@@ -127,6 +127,15 @@ with project-specific ones.
   rule, `compute-author` §4.1), or crate / `<folio>-values` witnessed-value
   CLIs missing `"id": "crates"` (`graphTypologies: ["code"]`) or a validated
   `tool-definition/v1` node in `tools/` (`bun run cat check:tools`).
+- **Un-rescaled series denominators or missing online-catalogue lookup
+  (`online-sequence-and-knot-databases`).** A script or witness emits integer
+  sequences, rational perturbation/saddle coefficients with opaque composite
+  denominators, unrecognised real/complex constants, or knot/number-theoretic
+  invariants without rescaling to natural 1-loop torsion / geometric units,
+  testing OEIS across logged cumulants, unlogged exponentials, and
+  factorial-cleared forms (`compute-author` §5.1), cross-checking KnotInfo /
+  LinkInfo / SnapPy / Regina or LMFDB, or running `>= 80 dps` PSLQ (never
+  `float64` constant fitting) with `>= 160 dps` held-out confirmation.
 
 ## Verification checklist before landing any speedup
 

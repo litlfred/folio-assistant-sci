@@ -75,12 +75,13 @@ Empirical inputs never enter the triple: a measured value appears only in a mark
       <bpmn:outgoing>Flow_2</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:task id="Task_PriorWork" name="Search folio&#10;and library">
-      <bpmn:documentation>Decompose topic areas, check the folio's blocks, compute, and ingested library, shortlist needed external papers and reference datasets (CODATA, PDG, AME), query accessible scholarly databases (Crossref/DOI, arXiv, PubMed, InspireHEP, OpenAlex, Semantic Scholar, Google Scholar), ingest retrieved references, texts, and datasets into the Knowledge Graph, and assess relevancy and claim boundaries before drafting. A result settled in a held paper is cited, not re-derived.</bpmn:documentation>
+      <bpmn:documentation>Decompose topic areas, check the folio's blocks, compute, and ingested library, shortlist needed external papers and reference datasets (CODATA, PDG, AME), query accessible scholarly and mathematical databases (Crossref/DOI, arXiv, PubMed, InspireHEP, OpenAlex, Semantic Scholar, Google Scholar, plus OEIS across unit-rescaled / logged / unlogged / factorial-cleared forms, KnotInfo / LinkInfo / SnapPy / Regina censuses, LMFDB, and &gt;= 80 dps PSLQ constant recognition whenever integer sequences, series coefficients, constants, or knot/number-theoretic invariants appear), ingest retrieved references, texts, and datasets into the Knowledge Graph, and assess relevancy and claim boundaries before drafting. A result settled in a held paper is cited, not re-derived.</bpmn:documentation>
       <bpmn:extensionElements>
         <bootstrap.processes:skill ref="deep-document-research"/>
         <bootstrap.processes:skill ref="literature-search"/>
         <bootstrap.processes:skill ref="library-ingestion"/>
         <bootstrap.processes:skill ref="reference-dataset-ingestion"/>
+        <bootstrap.processes:skill ref="evidence-gathering-and-provenance"/>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_2</bpmn:incoming>
       <bpmn:outgoing>Flow_3</bpmn:outgoing>

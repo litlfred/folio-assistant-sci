@@ -92,4 +92,5 @@ did not.
 
 - `witnessed-values` (`folio-paper-adapter`) — the `{{ … }}` syntax, prefixes and filters, and fast `<folio>-values` evaluators in `crates/`.
 - `literature-search` & `library-ingestion` — the broader topic-shortlist, multi-database retrieval (Crossref/DOI, arXiv, PubMed, InspireHEP, OpenAlex, Semantic Scholar, Google Scholar, and reference data registries), KG ingestion, relevancy/claim-boundary assessment, and authoring-provenance (`authorNotes` + formal citations) workflow executed during paper authoring (`formalized-publication-authoring.bpmn`).
+- `online-sequence-and-knot-databases` — mandatory natural-unit rescaling and lookup across OEIS (JSON API across logged cumulants, unlogged exponentials, factorial-cleared, and torsion-cleared forms), KnotInfo/LinkInfo/SnapPy/Regina, LMFDB, and `>= 80 dps` PSLQ whenever computational research produces integer sequences, rational series coefficients, constants, or knot/number-theoretic invariants.
 - `document-intake` / the ingestion pipeline — the tabular rung this uses.
