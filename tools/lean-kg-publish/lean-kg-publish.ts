@@ -11,7 +11,9 @@ export default toolFactory((t) =>
     invoke: { shell: "bun run folio-assistant-sci/adapters/paper/lean/lean-kg-publish.ts" },
     io: {
       inputs: [
-        { name: "docData", schema: t("RepoPath"), required: true, arg: { flag: "--doc-data" }, description: "doc-gen4's `.lake/build/doc-data` from `lean-html-docs`." },
+        { name: "docData", schema: t("RepoPath"), required: false, arg: { flag: "--doc-data" }, description: "doc-gen4's `.lake/build/doc-data` from `lean-html-docs`. This or `--from-kg`." },
+        { name: "fromKg", schema: t("RepoPath"), required: false, arg: { flag: "--from-kg" }, description: "An already-published combined KG (a viewer directory holding `data/`, e.g. the mounted Lean store, or its `data/`): cut this sub-KG out of it with no Lean build. Needs `--modules`." },
+        { name: "sibling", schema: t("IdList"), required: false, arg: { flag: "--sibling" }, description: "`<package>/<Root>[,…]`: a link into module root `<Root>` goes to package `<package>`'s sub-KG, published beside this one (`../<package>/`). Repeat for several." },
         { name: "site", schema: t("RepoPath"), required: true, arg: { flag: "--site" }, description: "The folio's built site." },
         { name: "route", schema: t("Slug"), required: false, arg: { flag: "--route" }, description: "Where under the site. Default `lean`." },
         { name: "module", schema: t("PackageName"), required: false, arg: { flag: "--module" }, description: "A module root to keep (`qou` keeps `QOU`). Repeat for several." },
@@ -33,7 +35,7 @@ export default toolFactory((t) =>
     satisfies: ["lean-html-docs"],
     requires: { runtime: ["bun"], network: false },
     selection: {
-      when: "Instead of `lean-render-publish` when the folio publishes its Lean as a dynamic viewer over graph shards, and for STAGING branches with `--base`.",
+      when: "Instead of `lean-render-publish` when the folio publishes its Lean as a dynamic viewer over graph shards, and for STAGING branches with `--base`. Once per Lake package, with `--route lean/<package>` and `--sibling` for the other packages' roots, for one sub-KG per package (owner, 2026-11-24); with `--from-kg` when the site build has the published render but no doc-gen4 run.",
       limits:
         "doc-gen4 still has to elaborate: the shards come from its doc-data, so `lean-html-docs` (or a restored doc-gen4 cache) runs first. Links into pruned modules go to the community docs, built from their Mathlib. Docstrings are rendered client-side with marked and MathJax from CDNs.",
       cost: "Measured on qou 2026-10-11: 3,011 modules, 53,565 declarations, 651 formalizing a block; 6,005 files / 171 MB / 13 s; a no-change overlay writes 0 module files.",

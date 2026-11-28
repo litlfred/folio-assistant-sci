@@ -33,6 +33,17 @@ describe("lean-kg-viewer", () => {
     expect(js).not.toMatch(/\b(outerHTML\s*=|insertAdjacentHTML|document\.write)\b/);
   });
 
+  test("blockBadgeOpensThePaperWhenPaperBaseIsSet", () => {
+    expect(js).toMatch(/typeof c\.paperBase === "string"\) return `\$\{c\.paperBase\}\$\{paperOf\(b\)\}\/#\$\{encodeURIComponent\(b\.label\)\.replace\(/);
+    expect(js).toMatch(/href: safeHref\(blockHref\(b\)\)/);
+  });
+
+  test("treeHidesEmptyModulesAndListsBlocksApart", () => {
+    expect(js).toMatch(/state\.showEmpty \|\| m\.decls > 0/);
+    expect(js).toMatch(/const libs = mods\.filter\(\(m\) => !m\.block\)/);
+    expect(js).toMatch(/text: "Formalized blocks"/);
+  });
+
   test("fallsBackToTextWithoutPurify", () => {
     expect(js).toMatch(/else node\.textContent = htmlText\(html\)/);
     expect(js).toMatch(/if \(window\.marked && window\.DOMPurify\)/);

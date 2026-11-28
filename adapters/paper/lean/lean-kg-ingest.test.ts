@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { mkdirSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { CHUNK_SIZE, ingest, moduleOfDocPath, rewriteHeader, type IndexFile } from "./lean-kg-ingest.ts";
+import { CHUNK_SIZE, attachBlocks, collectContentBlocks, ingest, linkFor, moduleOfDocPath, parseSiblings, rerouteSignature, rewriteHeader, sourcePath, splitFromKg, type IndexFile } from "./lean-kg-ingest.ts";
 import { signatureStyles } from "./lean-kg-publish.ts";
 
 const decl = (name: string, kind = "theorem") => ({
@@ -50,7 +50,7 @@ describe("lean-kg-ingest", () => {
     expect(readdirSync(join(out, "m")).filter((f) => f.startsWith("QOU.Big.")).sort()).toEqual(["QOU.Big.0.sig.json", "QOU.Big.1.sig.json", "QOU.Big.jsonld"]);
     const shard = JSON.parse(readFileSync(join(out, "m", "QOU.A.jsonld"), "utf-8"));
     const x = shard["@graph"].find((n: { name?: string }) => n.name === "QOU.A.x");
-    expect(x.formalizes).toEqual([{ "@id": "block:prop:x", label: "prop:x", md: "ch/blk.md" }]);
+    expect(x.formalizes).toEqual([{ "@id": "block:prop:x", label: "prop:x", md: "ch/blk.md", via: "lean.ref" }]);
   });
 
   test("overlayWritesOnlyChangedModules", () => {
@@ -73,6 +73,80 @@ describe("lean-kg-ingest", () => {
   });
 });
 
+describe("lean-kg-ingest — one sub-KG per package (root bases, split)", () => {
+  const fred = (name: string) => ({
+    header: `<a href="./Fred2005/F.html#${name}">${name}</a> <a href="./QOU/A.html#QOU.A.x">x</a> <a href="./Mathlib/Algebra/Field/Defs.html#Field">Field</a>`,
+    info: { name, kind: "theorem" },
+  });
+
+  test("parseSiblingsMapsEachRootToItsPackageBesideThisOne", () => {
+    expect([...parseSiblings(["qou/QOU,qou/MassTheory", "ugb/UGB"])]).toEqual([["qou", "../qou/"], ["masstheory", "../qou/"], ["ugb", "../ugb/"]]);
+    expect(() => parseSiblings(["QOU"])).toThrow(/<package>\/<Root>/);
+    expect(() => parseSiblings(["../x/QOU"])).toThrow();
+    expect(() => parseSiblings(["qou/QOU;rm"])).toThrow();
+  });
+
+  test("rewriteHeaderSendsSiblingRootToItsSubKgAndMathlibOutside", () => {
+    const h = rewriteHeader(fred("Fred2005.F.t").header, new Set(["fred2005"]), "https://ext/", parseSiblings(["qou/QOU"]));
+    expect(h).toContain(`href="#/m/Fred2005.F/Fred2005.F.t"`);
+    expect(h).toContain(`href="../qou/#/m/QOU.A/QOU.A.x"`);
+    expect(h).toContain(`href="https://ext/Mathlib/Algebra/Field/Defs.html#Field"`);
+  });
+
+  test("linkForWithoutSiblingFallsBackToExternalDocPath", () => {
+    expect(linkFor("QOU.A", "QOU.A.x", new Set(["fred2005"]), "https://ext")).toBe("https://ext/QOU/A.html#QOU.A.x");
+  });
+
+  test("rerouteSignatureRewritesOnlyRoutesOutOfTheKeptRoots", () => {
+    const html = `<a href="#/m/QOU.A/QOU.A.x">x</a><a href="#/m/UGB.B/UGB.B.y">y</a><a href="#/m/Other.C">c</a><a href="https://ext/Mathlib/X.html#z">z</a>`;
+    const r = rerouteSignature(html, new Set(["qou"]), "https://ext/", parseSiblings(["ugb/UGB"]));
+    expect(r).toContain(`href="#/m/QOU.A/QOU.A.x"`);
+    expect(r).toContain(`href="../ugb/#/m/UGB.B/UGB.B.y"`);
+    expect(r).toContain(`href="https://ext/Other/C.html"`);
+    expect(r).toContain(`href="https://ext/Mathlib/X.html#z"`);
+  });
+
+  test("splitFromKgCutsOnePackageWithNoDocData", () => {
+    const root = mkdtempSync(join(tmpdir(), "lkg-split-"));
+    const docData = join(root, "doc-data");
+    mkdirSync(docData);
+    const write = (m: string, decls: unknown[]) =>
+      writeFileSync(join(docData, `declaration-data-${m}.bmp`), JSON.stringify({ name: m, imports: ["QOU.A"], declarations: decls, instances: [] }));
+    write("QOU.A", [decl("QOU.A.x"), decl("QOU.A.y", "def")]);
+    write("Fred2005.F", [fred("Fred2005.F.t")]);
+    const combined = join(root, "combined");
+    ingest({ docData, out: combined, modules: ["QOU", "Fred2005"] });
+    // The combined graph routes the Fred2005 → QOU link inside itself.
+    expect(readFileSync(join(combined, "m", "Fred2005.F.0.sig.json"), "utf-8")).toContain(`#/m/QOU.A/QOU.A.x`);
+
+    const out = join(root, "fred");
+    const r = splitFromKg({ kg: combined, out, modules: ["Fred2005"], externalBase: "https://ext/", rootBases: parseSiblings(["qou/QOU"]) });
+    expect(r).toMatchObject({ modules: 1, decls: 1, written: 1, overlay: false });
+    const index = JSON.parse(readFileSync(join(out, "index.json"), "utf-8")) as IndexFile;
+    expect(index.modules.map((m) => m.name)).toEqual(["Fred2005.F"]);
+    expect(index.totals).toEqual({ modules: 1, decls: 1, formalized: 0 });
+    expect(JSON.parse(readFileSync(join(out, "names.json"), "utf-8"))).toEqual([["Fred2005.F.t", 0, 0]]);
+    const sig = readFileSync(join(out, "m", "Fred2005.F.0.sig.json"), "utf-8");
+    expect(sig).toContain(`../qou/#/m/QOU.A/QOU.A.x`);
+    expect(sig).toContain(`#/m/Fred2005.F/Fred2005.F.t`);
+    expect(readdirSync(join(out, "m")).some((f) => f.startsWith("QOU."))).toBe(false);
+
+    const qou = splitFromKg({ kg: combined, out: join(root, "qou"), modules: ["QOU"] });
+    expect(qou).toMatchObject({ modules: 1, decls: 2 });
+    expect(JSON.parse(readFileSync(join(root, "qou", "names.json"), "utf-8")).map((n: unknown[]) => n[1])).toEqual([0, 0]);
+  });
+
+  test("splitFromKgRefusesOverlayEmptySelectionAndNonKg", () => {
+    const d = mkdtempSync(join(tmpdir(), "lkg-bad-"));
+    expect(() => splitFromKg({ kg: d, out: join(d, "o"), modules: ["QOU"] })).toThrow(/no index.json/);
+    writeFileSync(join(d, "index.json"), JSON.stringify({ schema: "folio-lean-kg/v1", chunkSize: 500, modules: [], kinds: [], totals: {} }));
+    writeFileSync(join(d, "names.json"), "[]");
+    expect(() => splitFromKg({ kg: d, out: join(d, "o"), modules: [] })).toThrow(/module roots/);
+    writeFileSync(join(d, "overlay.json"), "{}");
+    expect(() => splitFromKg({ kg: d, out: join(d, "o"), modules: ["QOU"] })).toThrow(/overlay/);
+  });
+});
+
 describe("signatureStyles", () => {
   test("signatureStylesScopedDropsLayout", () => {
     const css = `* { box-sizing: border-box; }\nbody { margin: 0 }\nnav { position: fixed }\n:root { --x: 1 }\n.decl_header { color: red }\nmain .fn, .impl_arg { color: blue }\n@media (prefers-color-scheme: dark) { :root { --x: 2 } nav { left: 0 } }`;
@@ -82,5 +156,85 @@ describe("signatureStyles", () => {
     expect(out).toContain(".lkg-sig .impl_arg");
     expect(out).not.toMatch(/(^|[},\n])\s*(body|nav|\*)\s*\{/);
     expect(out).toContain("@media (prefers-color-scheme: dark){:root{ --x: 2 }}");
+  });
+});
+
+describe("lean-kg-ingest-paper-links", () => {
+  /** A content tree with a block that has a .lean sibling and a block that names QOU.A.x by lean.ref. */
+  function tree(): string {
+    const root = mkdtempSync(join(tmpdir(), "lkg-blocks-"));
+    const ch = join(root, "folio", "paper", "ch");
+    mkdirSync(ch, { recursive: true });
+    writeFileSync(join(ch, "sib.ts"), `export default { label: "def:sib" }`);
+    writeFileSync(join(ch, "sib.lean"), "theorem t : 1 = 1 := rfl");
+    writeFileSync(join(ch, "lib.ts"), `export default { label: "prop:lib", lean: { ref: "qou:QOU.A.x" } }`);
+    return join(root, "folio");
+  }
+  const node = (name: string, src: string) => ({ "@type": "LeanDeclaration", name, sourceLink: `https://github.com/o/r/blob/abc/${src}#L1-L2` });
+
+  test("sourcePathReadsTheRepositoryPath", () => {
+    expect(sourcePath("https://github.com/o/r/blob/abc123/folio/p/c/x.lean#L3-L9")).toBe("folio/p/c/x.lean");
+    expect(sourcePath("https://example/x.lean#L1")).toBeUndefined();
+    expect(sourcePath(undefined)).toBeUndefined();
+  });
+
+  test("collectContentBlocksFindsRefsAndSiblings", () => {
+    const b = collectContentBlocks(tree(), "folio/");
+    expect(b.byRef.get("QOU.A.x")).toEqual([{ label: "prop:lib", md: "paper/ch/lib.md" }]);
+    expect([...b.bySource]).toEqual([["folio/paper/ch/sib.lean", { label: "def:sib", md: "paper/ch/sib.md" }]]);
+  });
+
+  test("attachBlocksLinksSiblingAndRefAndMarksTheModule", () => {
+    const blocks = collectContentBlocks(tree(), "folio/");
+    const graph: any[] = [
+      { "@type": "LeanModule", name: "Ch.Sib" },
+      node("QOU.A.x", "folio/paper/ch/sib.lean"),
+      { ...node("Ch.Sib.t", "folio/paper/ch/sib.lean"), formalizes: [{ "@id": "block:stale", label: "stale", md: "x.md", via: "lean.ref" }] },
+    ];
+    const r = attachBlocks(graph, blocks);
+    expect(r.formalized).toBe(2);
+    expect(r.block).toEqual({ label: "def:sib", md: "paper/ch/sib.md" });
+    expect(graph[0].block).toEqual({ label: "def:sib", md: "paper/ch/sib.md" });
+    expect(graph[1].formalizes.map((e: any) => [e.label, e.via])).toEqual([["prop:lib", "lean.ref"], ["def:sib", "sibling"]]);
+    expect(graph[2].formalizes.map((e: any) => e.label)).toEqual(["def:sib"]);
+  });
+
+  test("attachBlocksMarksTheModuleWhenTheBlockAlsoNamesItByLeanRef", () => {
+    const root = mkdtempSync(join(tmpdir(), "lkg-both-"));
+    const ch = join(root, "folio", "paper", "ch");
+    mkdirSync(ch, { recursive: true });
+    writeFileSync(join(ch, "b.ts"), `export default { label: "prop:b", lean: { ref: "qou:Ch.B.t" } }`);
+    writeFileSync(join(ch, "b.lean"), "");
+    const graph: any[] = [{ "@type": "LeanModule", name: "Ch.B" }, node("Ch.B.t", "folio/paper/ch/b.lean")];
+    const r = attachBlocks(graph, collectContentBlocks(join(root, "folio"), "folio/"));
+    expect(r.block).toEqual({ label: "prop:b", md: "paper/ch/b.md" });
+    expect(graph[1].formalizes).toEqual([{ "@id": "block:prop:b", label: "prop:b", md: "paper/ch/b.md", via: "lean.ref" }]);
+  });
+
+  test("attachBlocksLeavesALibraryModuleUnmarked", () => {
+    const graph: any[] = [{ "@type": "LeanModule", name: "QOU.A", block: { label: "old", md: "x.md" } }, node("QOU.A.x", "folio/paper/lean/QOU/A.lean"), node("QOU.A.y", "folio/paper/lean/QOU/A.lean")];
+    const r = attachBlocks(graph, collectContentBlocks(tree(), "folio/"));
+    expect(r).toEqual({ formalized: 1 });
+    expect(graph[0].block).toBeUndefined();
+    expect(graph[2].formalizes).toBeUndefined();
+  });
+
+  test("splitFromKgRelinksAStaleStoreAgainstCurrentContent", () => {
+    const root = mkdtempSync(join(tmpdir(), "lkg-relink-"));
+    const docData = join(root, "doc-data");
+    mkdirSync(docData);
+    const d = (name: string, src: string) => ({ header: name, info: { name, kind: "theorem", sourceLink: `https://github.com/o/r/blob/abc/${src}#L1-L2` } });
+    writeFileSync(join(docData, "declaration-data-Ch.Sib.bmp"), JSON.stringify({ name: "Ch.Sib", imports: [], declarations: [d("Ch.Sib.t", "folio/paper/ch/sib.lean")] }));
+    writeFileSync(join(docData, "declaration-data-Ch.Empty.bmp"), JSON.stringify({ name: "Ch.Empty", imports: ["Ch.Sib"], declarations: [] }));
+    const combined = join(root, "kg");
+    ingest({ docData, out: combined, modules: ["Ch"] });
+    const out = join(root, "out");
+    const r = splitFromKg({ kg: combined, out, modules: ["Ch"], blocks: collectContentBlocks(tree(), "folio/") });
+    expect(r.formalized).toBe(1);
+    const index = JSON.parse(readFileSync(join(out, "index.json"), "utf-8")) as IndexFile;
+    expect(index.modules.find((m) => m.name === "Ch.Sib")?.block).toEqual({ label: "def:sib", md: "paper/ch/sib.md" });
+    expect(index.modules.find((m) => m.name === "Ch.Empty")?.block).toBeUndefined();
+    const shard = JSON.parse(readFileSync(join(out, "m", "Ch.Sib.jsonld"), "utf-8"));
+    expect(shard["@graph"][1].formalizes[0]).toMatchObject({ label: "def:sib", via: "sibling" });
   });
 });
