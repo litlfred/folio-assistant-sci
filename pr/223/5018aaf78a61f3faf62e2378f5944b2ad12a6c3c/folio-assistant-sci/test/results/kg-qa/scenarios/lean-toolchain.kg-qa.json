@@ -1,0 +1,49 @@
+{
+  "$schema": "kg-qa/v1",
+  "subject": {
+    "kind": "role",
+    "id": "lean-toolchain",
+    "path": "scenarios/roles.json"
+  },
+  "source_hash": "sha256:7a60418c8e40bfca041631c05859ab093fda21ea2b58bf3e94a98d0aedff0896",
+  "criteria": {
+    "role-skills-resolve": {
+      "result": "pass",
+      "findings": []
+    },
+    "role-inherits-resolves": {
+      "result": "n/a",
+      "findings": []
+    },
+    "role-binds-a-lane": {
+      "result": "pass",
+      "findings": []
+    },
+    "mechanical-role-untested": {
+      "result": "pass",
+      "findings": []
+    },
+    "role-has-persona": {
+      "result": "n/a",
+      "findings": []
+    },
+    "role-has-story": {
+      "result": "n/a",
+      "findings": []
+    },
+    "role-has-actor": {
+      "result": "pass",
+      "findings": []
+    },
+    "actor-kind-fits-role": {
+      "result": "pass",
+      "findings": []
+    }
+  },
+  "totals": {
+    "pass": 5,
+    "fail": 0,
+    "n/a": 3,
+    "unknown": 0
+  }
+}
