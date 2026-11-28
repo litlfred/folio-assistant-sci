@@ -34,7 +34,7 @@ describe("lean-kg-viewer", () => {
   });
 
   test("blockBadgeOpensThePaperWhenPaperBaseIsSet", () => {
-    expect(js).toMatch(/typeof c\.paperBase === "string"\) return `\$\{c\.paperBase\}\$\{paperOf\(b\)\}\/#\$\{encodeURIComponent\(b\.label\)\}`/);
+    expect(js).toMatch(/typeof c\.paperBase === "string"\) return `\$\{c\.paperBase\}\$\{paperOf\(b\)\}\/#\$\{encodeURIComponent\(b\.label\)\.replace\(/);
     expect(js).toMatch(/href: safeHref\(blockHref\(b\)\)/);
   });
 
