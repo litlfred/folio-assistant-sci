@@ -17,3 +17,9 @@ Feature: lean-library-ingest — a Lean library is linearised in an order its im
     Given a subdirectory A whose modules Heavy imports
     When chapters groups and orders them
     Then Base precedes A and A precedes Heavy
+
+  @test:scripts/lean-library-ingest.test.ts::a_large_library_is_split_into_parts,_and_short_topics_are_gathered::smallItemsAreGatheredIntoOnePart
+  Scenario: consecutive short topics are gathered into one part
+    Given a library of five loose files and one directory of four modules, over the chapter threshold
+    When parts splits it
+    Then there are two parts, one of which is the directory

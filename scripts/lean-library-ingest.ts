@@ -149,7 +149,7 @@ type Chapter = { key: string; title: string; sections: Module[] };
 export function chapters(lib: string, mods: Module[]): Chapter[] {
   const ordered = topoOrder(mods);
   const libDepth = lib.split("/").length;
-  const keyOf = (m: Module) => m.path.replace(/\.lean$/, "").split("/").slice(libDepth, libDepth + 1)[0];
+  const keyOf = (m: Module) => m.path.replace(/\.lean$/, "").split("/").slice(libDepth, libDepth + 1)[0] ?? "_intro";
   const groups = new Map<string, Module[]>();
   for (const m of ordered) {
     const k = keyOf(m);
@@ -173,40 +173,92 @@ export function chapters(lib: string, mods: Module[]): Chapter[] {
   return placed.map((k) => {
     const secs = groups.get(k)!;
     const index = secs.find((m) => m.path.replace(/\.lean$/, "").split("/").length === libDepth + 1);
-    const title = (index ?? secs[0]).title ?? humanise(k);
+    const title = k === "_intro" ? "Introduction" : (index ?? secs[0]).title ?? humanise(k);
     return { key: k, title: secs.length > 1 ? humanise(k) : title, sections: secs };
   });
 }
+
+type Part = { key: string; title?: string; chapters: Chapter[] };
+
+/** A library with more than `threshold` chapters is split into Parts: its top-level
+ * directories become parts (in the chapter order above), and each part's own
+ * subdirectories become its chapters. Modules with no declarations (attribute or
+ * tactic registration files) are not narrated and are returned separately. */
+export function parts(lib: string, all: Module[], threshold = 30, big = 4): { parts: Part[]; skipped: Module[] } {
+  const skipped = all.filter((m) => m.decls.length === 0);
+  const mods = all.filter((m) => m.decls.length > 0);
+  const top = chapters(lib, mods);
+  if (top.length <= threshold) return { parts: [{ key: "", chapters: top }], skipped };
+  // Consecutive small items (a loose file, or a directory of fewer than `big` modules)
+  // are gathered into one group, so a part or chapter is never a single short file.
+  const gather = (items: Chapter[]): Chapter[][] => {
+    const out: Chapter[][] = [];
+    for (const c of items) {
+      const small = c.sections.length < big;
+      const last = out[out.length - 1];
+      if (small && last && last.every((x) => x.sections.length < big)) last.push(c);
+      else out.push([c]);
+    }
+    return out;
+  };
+  const merge = (g: Chapter[]): Chapter =>
+    g.length === 1 ? g[0] : { key: g.map((c) => c.key).join("+"), title: mergedTitle(g), sections: g.flatMap((c) => c.sections) };
+  const ps: Part[] = gather(top).map((g) => {
+    if (g.length > 1) return { key: g.map((c) => c.key).join("+"), title: mergedTitle(g), chapters: g };
+    const c = g[0];
+    const inner = c.sections.length >= big ? chapters(`${lib}/${c.key}`, c.sections) : [c];
+    return { key: c.key, title: c.title, chapters: inner.length > threshold ? gather(inner).map(merge) : inner };
+  });
+  return { parts: ps, skipped };
+}
+
+const mergedTitle = (g: Chapter[]) =>
+  g.length <= 3 ? g.map((c) => c.title.replace(/\.$/, "")).join("; ") : `${g[0].title.replace(/\.$/, "")}, and ${g.length - 1} further short topics`;
 
 const humanise = (s: string) => s.replace(/([a-z])([A-Z])/g, "$1 $2");
 
 const SUBSECTION_SKIP = /^(main (definitions|results|statements|theorems|declarations)|notation|implementation notes?|references?|tags|todo|main definition|main result|definitions|results)$/i;
 
-export function outlineMarkdown(lib: string, chs: Chapter[], rev: string): string {
+const roman = (n: number) => {
+  let r = "";
+  for (const [v, t] of [[1000, "M"], [900, "CM"], [500, "D"], [400, "CD"], [100, "C"], [90, "XC"], [50, "L"], [40, "XL"], [10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]] as const)
+    while (n >= v) (r += t), (n -= v);
+  return r;
+};
+
+export function outlineMarkdown(lib: string, ps: Part[], skipped: Module[], rev: string): string {
+  const chs = ps.flatMap((p) => p.chapters);
   const all = chs.flatMap((c) => c.sections);
   const nDecl = all.reduce((s, m) => s + m.decls.length, 0);
   const nDoc = all.reduce((s, m) => s + m.decls.filter((d) => d.doc).length, 0);
+  const withParts = ps.length > 1 || !!ps[0]?.title;
   let md = `# ${humanise(lib.split("/").pop()!)} — narrative outline\n\n`;
   md += `> Linearised from the import graph of \`${lib}\` at revision \`${rev}\` by \`lean-library-ingest\`. `;
-  md += `${all.length} modules, ${nDecl} declarations (${nDoc} with docstrings). `;
+  md += `${all.length} modules, ${nDecl} declarations (${nDoc} with docstrings)${withParts ? `, in ${ps.length} parts` : ""}. `;
   md += `Chapter order is a topological order of the chapter-level import DAG and section order a topological order of modules, ties broken elementary-first (smaller transitive import closure). `;
   md += `Subsections are the headings of each module's own docstring. It is a proposal for an author: every section names the Lean module it narrates, which is its provenance.\n\n`;
-  chs.forEach((c, ci) => {
-    md += `## ${ci + 1}. ${c.title}\n\n`;
-    c.sections.forEach((m, si) => {
-      const t = m.title ?? humanise(m.name.split(".").pop()!);
-      const th = m.decls.filter((d) => d.kind === "theorem" || d.kind === "lemma").length;
-      const df = m.decls.length - th;
-      md += `### ${ci + 1}.${si + 1} ${t}\n\n`;
-      md += `*Source:* \`${m.name}\` (${m.lines} lines; ${df} definitions/instances, ${th} results${m.authors ? `; ${m.authors}` : ""})`;
-      if (m.references.length) md += ` · *cites* ${m.references.map((r) => `[${r}]`).join(", ")}`;
-      md += `\n\n`;
-      const subs = m.headings.filter((h) => h !== m.title && !SUBSECTION_SKIP.test(h));
-      subs.forEach((h, hi) => (md += `- ${ci + 1}.${si + 1}.${hi + 1} ${h}\n`));
-      if (subs.length) md += `\n`;
-      if (!m.moduleDoc) md += `> ⚠ no module docstring — this section has no source narrative to start from.\n\n`;
+  let ci = 0;
+  ps.forEach((p, pi) => {
+    if (withParts) md += `# Part ${roman(pi + 1)}. ${p.title}\n\n`;
+    p.chapters.forEach((c) => {
+      ci++;
+      md += `## ${ci}. ${c.title}\n\n`;
+      c.sections.forEach((m, si) => {
+        const t = m.title ?? humanise(m.name.split(".").pop()!);
+        const th = m.decls.filter((d) => d.kind === "theorem" || d.kind === "lemma").length;
+        const df = m.decls.length - th;
+        md += `### ${ci}.${si + 1} ${t}\n\n`;
+        md += `*Source:* \`${m.name}\` (${m.lines} lines; ${df} definitions/instances, ${th} results${m.authors ? `; ${m.authors}` : ""})`;
+        if (m.references.length) md += ` · *cites* ${m.references.map((r) => `[${r}]`).join(", ")}`;
+        md += `\n\n`;
+        const subs = m.headings.filter((h) => h !== m.title && !SUBSECTION_SKIP.test(h));
+        subs.forEach((h, hi) => (md += `- ${ci}.${si + 1}.${hi + 1} ${h}\n`));
+        if (subs.length) md += `\n`;
+        if (!m.moduleDoc) md += `> ⚠ no module docstring — this section has no source narrative to start from.\n\n`;
+      });
     });
   });
+  if (skipped.length) md += `## Not narrated\n\nModules with no declarations (attribute, simp-set or tactic registration): ${skipped.map((m) => `\`${m.name}\``).join(", ")}.\n`;
   return md;
 }
 
@@ -234,7 +286,8 @@ function main() {
   for (const l of libs) {
     const mods = walk(join(root, l)).map((f) => parseModule(root, f));
     mods.forEach((m) => (allMods.set(m.name, m), libOf.set(m.name, l)));
-    const chs = chapters(l, mods);
+    const { parts: ps, skipped } = parts(l, mods);
+    const chs = ps.flatMap((p) => p.chapters);
     const dir = join(out, l.split("/").pop()!);
     mkdirSync(dir, { recursive: true });
     writeFileSync(
@@ -246,15 +299,16 @@ function main() {
           revision: rev,
           extractedBy: "folio-assistant-sci/scripts/lean-library-ingest.ts",
           edgeBasis: "import graph from source text; not elaborated",
-          chapters: chs.map((c) => ({ key: c.key, title: c.title, modules: c.sections.map((m) => m.name) })),
+          parts: ps.map((p) => ({ key: p.key, title: p.title, chapters: p.chapters.map((c) => ({ key: c.key, title: c.title, modules: c.sections.map((m) => m.name) })) })),
+          notNarrated: skipped.map((m) => m.name),
           modules: mods,
         },
         null,
         1,
       ),
     );
-    writeFileSync(join(dir, "outline.md"), outlineMarkdown(l, chs, rev));
-    console.log(`${l}: ${mods.length} modules, ${chs.length} chapters -> ${dir}`);
+    writeFileSync(join(dir, "outline.md"), outlineMarkdown(l, ps, skipped, rev));
+    console.log(`${l}: ${mods.length} modules, ${ps.length} part(s), ${chs.length} chapters -> ${dir}`);
   }
   if (libs.length > 1) {
     // order of the libraries themselves: condensed DAG over library membership

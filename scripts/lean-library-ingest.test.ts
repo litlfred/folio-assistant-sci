@@ -3,7 +3,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 
-import { chapters, computeWeights, parseModule, topoOrder } from "./lean-library-ingest.ts";
+import { chapters, computeWeights, parseModule, parts, topoOrder } from "./lean-library-ingest.ts";
 
 const ROOT = mkdtempSync(join(tmpdir(), "lean-ingest-"));
 afterAll(() => rmSync(ROOT, { recursive: true, force: true }));
@@ -40,5 +40,29 @@ describe("a Lean library is linearised in an order its imports allow", () => {
     const keys = chs.map((c) => c.key);
     expect(keys.indexOf("A")).toBeLessThan(keys.indexOf("Heavy"));
     expect(keys.indexOf("Base")).toBeLessThan(keys.indexOf("A"));
+  });
+});
+
+describe("a large library is split into parts, and short topics are gathered", () => {
+  test("smallItemsAreGatheredIntoOnePart", () => {
+    const root = mkdtempSync(join(tmpdir(), "lean-parts-"));
+    const files: string[] = [];
+    for (let i = 0; i < 5; i++) {
+      const f = join(root, `Big/T${i}.lean`);
+      mkdirSync(dirname(f), { recursive: true });
+      writeFileSync(f, `/-!\n# Topic ${i}\n-/\ndef d${i} := ${i}\n`);
+      files.push(f);
+    }
+    const deep = join(root, "Big/Deep");
+    mkdirSync(deep, { recursive: true });
+    for (let i = 0; i < 4; i++) {
+      writeFileSync(join(deep, `M${i}.lean`), `/-!\n# Deep ${i}\n-/\ndef e${i} := ${i}\n`);
+      files.push(join(deep, `M${i}.lean`));
+    }
+    computeWeights(root, ["Big"]);
+    const { parts: ps } = parts("Big", files.map((f) => parseModule(root, f)), 3, 4);
+    expect(ps.length).toBe(2);
+    expect(ps.some((p) => p.key === "Deep")).toBe(true);
+    rmSync(root, { recursive: true, force: true });
   });
 });
