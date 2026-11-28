@@ -27,7 +27,8 @@
     "check:test-gherkin:sci": "bun run cat-harness-tools/scripts/check-test-gherkin.ts --root folio-assistant-sci",
     "latex:validate": "bun run folio-assistant-sci/pipeline/validate-tex.ts",
     "latex:audit-source": "bun run folio-assistant-sci/pipeline/audit-tex-source.ts",
-    "check:workflows:security": "bun run folio-assistant-sci/scripts/check-workflows-security.ts"
+    "check:workflows:security": "bun run folio-assistant-sci/scripts/check-workflows-security.ts",
+    "lean:ingest": "bun run folio-assistant-sci/scripts/lean-library-ingest.ts"
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "21.0.4",

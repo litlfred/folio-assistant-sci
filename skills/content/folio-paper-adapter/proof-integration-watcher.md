@@ -448,6 +448,32 @@ parent §6).
       `conditional-class-violation`) block the commit per
       Slot I invariants
 
+## Bidirectional relay continuity (write-ahead readiness ↔ returning re-entry)
+
+Formalization waves and proof-QA sweeps regularly cross quota windows, context
+limits, or alternating agent turns. Follow `stalled-agent-triage`,
+`agent-handoff`, and `handover-report`:
+
+1. **Write-ahead epic checkpointing at dispatch time (`STRICT`):**
+   Whenever opening child proof beans, launching formalization paths, or
+   assigning worktrees/`/tmp` `.olean` overlays, write-ahead checkpoint the
+   parent epic body and/or a parent Epic note (`beans/notes/*` titled
+   `checkpoint: <epic/wave> <UTC>`, `handover:`, `triage:`, or `reentry:`) on
+   `cat/cat-harness/beans` **at dispatch** — never wait for post-merge, and
+   **never** mutate a claimed child executor bean's `.md` file (`agent-handoff` §1).
+   Record canonical 3-slot dispatch lines
+   (`Do bean <bean-id> on branch <branch-to-create> of repo <owner>/<repo>.`),
+   active proof hypotheses, refuted/excluded proof routes, and the
+   **Worktree / Branch / `/tmp`-Overlay / `.lake`-Donor Lease Table**.
+2. **5-step non-destructive takeover & returning-turn re-entry (`STRICT`):**
+   On cold takeover OR when returning on a subsequent turn after another agent
+   advanced the repo, reconcile before dispatching:
+   - **(1)** Fetch `origin/<default-branch>` and `origin/cat/cat-harness/beans`; inspect `git log <last-known-sha>..origin/<default-branch>`.
+   - **(2)** Read the epic's Live Relay Snapshot and `checkpoint:` / `handover:` / `triage:` / `reentry:` notes.
+   - **(3)** Classify open/draft PRs (`ready-to-merge`, `active external sibling draft`, `stalled with uncommitted/unpushed work`, `owner-fenced`).
+   - **(4)** Non-destructively inspect every local worktree (`git status --short --branch`, ahead/behind), `/tmp` `.olean` overlays, and `.lake` donor caches — **never `git reset --hard` or `lake clean`**. Rescue dirty/ahead stalled work onto `claude/salvage-<topic>-<yyyymmdd>`; if an unfrozen returning agent finds `holder != self`, a superseding `triage:` note, or remote `<branch>` advanced, it **never pushes to `<branch>` or `--force`** — it quarantine-saves unpushed commits onto `wip/reentry-<bean-id>-<short-session>`, records a `reentry:` pointer note, and yields cleanly.
+   - **(5)** Reconcile the epic lease table on `beans`, post sibling coordination notes if scopes shifted, and resume Merge Steward + worker queues.
+
 ## Harness skills that dispatch here
 
 - `integration-watcher`: a child of this abstract parent.

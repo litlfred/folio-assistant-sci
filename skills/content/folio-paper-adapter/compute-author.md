@@ -202,6 +202,35 @@ unless you specifically need them. Use the build tool's `build` +
 install flow when no virtualenv is available (the `develop` flow may
 require one).
 
+### §4.1 Standard top-level `crates/` Cargo workspace & `tools` KG registration (STRICT)
+
+Every scientific folio (`folio-assistant-sci` and paper folios) organises
+native Rust compute kernels, high-precision solvers, and fast witnessed-value
+evaluators in a single top-level **`crates/` Cargo workspace**
+(`crates/Cargo.toml`) split cleanly into three tiers:
+
+| Tier | Workspace member shape | Dependency & domain boundary |
+|---|---|---|
+| **Tier 1 — Domain-agnostic core computer-algebra crates** | `crates/<algebra-core>/` | **Zero C-FFI (`0` system C links)** and **zero domain, particle, or application clutter**. Pure exact arithmetic (big integers/rationals, polynomial & Laurent rings, Gröbner / normal-form bases, combinatorics) reusable across `folio-assistant-sci` and multiple paper folios. |
+| **Tier 2 — High-precision (`MPFR`) evaluation & solver crates** | `crates/<eval-or-solver>/` | Arbitrary-precision `MPFR` / interval evaluation and conic / interior-point / LP solvers (`Clarabel.rs` MPFR, etc.) layered strictly *above* Tier 1 so C-FFI system libraries (`libmpfr`, `libgmp`) never leak into exact algebraic cores. |
+| **Tier 3 — Fast witnessed-value evaluators & application probes** | `crates/<folio>-values/`, `crates/<probe>/` | High-precision observable / witness CLI evaluators (`<folio>-values` pattern) and folio-specific probes built *on top* of Tiers 1–2, evaluating all canonical witnessed values and assertions in one native batch invocation. |
+
+**Mandatory Knowledge Graph declarations (`tool-authoring` §4):**
+
+1. **Instance directory declaration:** declare `"crates"` in `<folio>.json`
+   under `directories`:
+   `{ "id": "crates", "path": "crates/", "graphTypologies": ["code"], "description": "..." }`.
+2. **`tools` KG node (`tool-definition/v1`):** register every executable crate
+   binary and fast `<folio>-values` evaluator as a folder-per-tool node
+   `tools/<tool-id>/<tool-id>.json` (`"$schema": "tool-definition/v1"`, typed
+   `io.inputs` / `io.outputs`, `invoke.shell`, `satisfies: ["witnessed-values"]`
+   or `["compute-author"]`), validated by `bun run cat check:tools`.
+3. **Legacy path migration (`two-phase-move`):** when moving legacy per-tool
+   crates (for example `tools/<engine>/`) into `crates/`, declare a timed
+   `moves` entry in `<folio>.json` (`two-phase-move`) so cross-layer links and
+   CI workflows (such as `build-clarabel-mpfr.yml` `with: crate: crates/...`)
+   migrate without broken-pin cycles.
+
 ## §5. Witness-emission discipline
 
 Every compute script ships a `*.witness.json` via the project's witness
@@ -212,6 +241,36 @@ base. The witness must include: `name` / `description` / `computation`
 (each with computed / expected / tolerance / source); and an
 `auditOnly` marker if the script is research-grade. Emit any
 solver-specific structured outputs the project mandates.
+
+### §5.1 Online sequence, knot-census & number-theory database lookup (`online-sequence-and-knot-databases`, STRICT)
+
+Whenever a compute script or mathematical derivation produces an integer
+sequence, a tower of rational series coefficients, composite denominators, an
+unrecognised high-precision constant, or a knot/link/3-manifold or arithmetic
+invariant, execute the `online-sequence-and-knot-databases` protocol before
+freezing witness schemas or writing narrative claims:
+
+1. **Natural geometric / 1-loop torsion unit rescaling:** strip coordinate-gauge
+   powers ($\pi^k$, $\sqrt{d}^k$, 1-loop Hessian / Reidemeister torsion $u^k$, or
+   Dedekind $24^k$) so coefficients lie in $\mathbb{Q}$ and residual denominators
+   expose genuine arithmetic primes (for example von Staudt–Clausen Bernoulli
+   primes $p \ge 5$).
+2. **OEIS five-transform sweep (`https://oeis.org/search?fmt=json&q=...` with `-L`):**
+   query raw numerators/denominators, unit-rescaled rationals, factorial-cleared
+   $k!\,z_k$, torsion-cleared $24^k z_k$, AND both logged cumulants
+   $\ln(1 + \sum D_k x^k)$ and unlogged exponentials $\exp(\sum c_k x^k)$ (as in
+   the figure-eight $4_1$ loop tower $\omega_k \to u = \frac{2\pi}{3\sqrt{3}} \to \exp(\sum z_k (24v)^k) \to$
+   OEIS `A301732` / `A301733`).
+3. **Knot/manifold & number-theory censuses:** cross-check hyperbolic volumes,
+   Chern–Simons invariants, Alexander/Jones/HOMFLY-PT polynomials, Dehn surgery
+   slopes, symmetry groups, and trace fields against **KnotInfo / LinkInfo /
+   SnapPy / Regina**, and number fields, Dirichlet $L$-values, and modular or
+   quantum-modular $q$-series against **LMFDB** (`https://www.lmfdb.org/api/`).
+4. **High-precision PSLQ (`>= 80 dps`, `0` `float64`):** run `mpmath.pslq` /
+   `identify` at `>= 80 dps` over structured period/polylogarithm bases and
+   confirm candidate relations at held-out `>= 160 dps` (`< 10^{-150}` residual),
+   recording matched catalogue IDs (`OEIS Axxxxxx`, LMFDB labels, census names)
+   and ingesting the primary paper into `references/` and `library/`.
 
 ## §6. CI / merge etiquette
 
@@ -237,7 +296,9 @@ unbuffered with logging.
 - [ ] Coefficient types are **exact** — no machine float in production
 - [ ] An equivalence cross-check at the floor vs the reference path is planned
 - [ ] If exploiting a shortcut: §3 algebraic preflight on the smallest case
-- [ ] If porting to native: granularity is whole-compute per boundary call (§2.1)
+- [ ] If porting to native: granularity is whole-compute per boundary call (§2.1), placed in top-level `crates/` with `0` C-FFI in core algebra crates (§4.1)
+- [ ] Every native crate workspace (`"id": "crates"`, `graphTypologies: ["code"]`) and CLI evaluator (`tool-definition/v1` in `tools/`) passes `bun run cat check:tools`
+- [ ] Any integer/rational sequence, constant, or knot/number-theoretic invariant is rescaled to natural geometric/torsion units and checked against OEIS (logged & unlogged), KnotInfo/SnapPy, LMFDB, and `>= 80 dps` PSLQ (§5.1)
 - [ ] Witness emission plan includes parameters, assertions, mandated solver outputs
 - [ ] Long-compute scripts launch unbuffered + teed to a log
 - [ ] Branch name follows the project convention; combined with related work on one PR

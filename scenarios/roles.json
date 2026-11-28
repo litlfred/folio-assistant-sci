@@ -105,7 +105,13 @@
     {
       "role": "authoring-agent",
       "skills": [
-        "semantic-review-scoping"
+        "semantic-review-scoping",
+        "deep-document-research",
+        "evidence-gathering-and-provenance",
+        "literature-search",
+        "reference-dataset-ingestion",
+        "handover-report",
+        "stalled-agent-triage"
       ]
     },
     {

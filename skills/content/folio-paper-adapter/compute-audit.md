@@ -120,6 +120,22 @@ with project-specific ones.
   verified invariants and their residuals, with a strict-mode CI gate
   failing on any residual above tolerance (tighter for symbolic/exact,
   looser for arbitrary-precision, loosest for machine float).
+- **Unlayered native crate or unregistered evaluator CLI.** Native Rust
+  crates placed outside the top-level `crates/` Cargo workspace (without an
+  active `two-phase-move` entry), domain/application clutter or `MPFR` C-FFI
+  dependencies leaking into a pure core computer-algebra crate (`0` C-FFI
+  rule, `compute-author` §4.1), or crate / `<folio>-values` witnessed-value
+  CLIs missing `"id": "crates"` (`graphTypologies: ["code"]`) or a validated
+  `tool-definition/v1` node in `tools/` (`bun run cat check:tools`).
+- **Un-rescaled series denominators or missing online-catalogue lookup
+  (`online-sequence-and-knot-databases`).** A script or witness emits integer
+  sequences, rational perturbation/saddle coefficients with opaque composite
+  denominators, unrecognised real/complex constants, or knot/number-theoretic
+  invariants without rescaling to natural 1-loop torsion / geometric units,
+  testing OEIS across logged cumulants, unlogged exponentials, and
+  factorial-cleared forms (`compute-author` §5.1), cross-checking KnotInfo /
+  LinkInfo / SnapPy / Regina or LMFDB, or running `>= 80 dps` PSLQ (never
+  `float64` constant fitting) with `>= 160 dps` held-out confirmation.
 
 ## Verification checklist before landing any speedup
 

@@ -101,9 +101,11 @@ export interface ConjectureBlock extends BlockBase {
 export interface ProofBlock extends BlockBase {
   kind: "proof";
   /**
-   * Label of the provable block this proof establishes (reverse link of
-   * `ProvableBase.proofs[]`). Canonical field name — use in preference to
-   * `proves`.
+   * Label of the provable block this proof establishes (reverse navigation link
+   * of `ProvableBase.proofs[]`, validated by `ProofSchema` and
+   * `proof-of-provable-prefix`). Editorial prerequisites read by
+   * `content-graph.ts` belong in `uses[]`, which is deliberately independent of
+   * `of` when a proof states its goal self-containedly.
    */
   of?: string;
   /** Optional Lean formalization of the proof. */
@@ -386,6 +388,24 @@ export const constraintRules: ConstraintRule[] = [
         `per CLAUDE.md §3b-cond. See PR #1519 commit fix(appendix): ` +
         `demote 5 propositions → conjectures for the migration pattern.`
       );
+    },
+  },
+  {
+    id: "proof-of-provable-prefix",
+    description:
+      "When a proof block sets `of` (reverse navigation link of `ProvableBase.proofs[]`), " +
+      "it must carry a valid provable or conjecture label prefix (`thm:`, `lem:`, `prop:`, `cor:`, `conj:`).",
+    appliesTo: ["proof"],
+    check: (block, _ctx) => {
+      const target = (block as ProofBlock).of;
+      if (target === undefined) return null;
+      if (!/^(?:thm|lem|prop|cor|conj):[A-Za-z0-9_-]+$/.test(target)) {
+        return (
+          `Proof "${block.label}" sets of: "${target}", which is not a valid provable/conjecture label ` +
+          `(expected prefix thm:, lem:, prop:, cor:, or conj:).`
+        );
+      }
+      return null;
     },
   },
 ];

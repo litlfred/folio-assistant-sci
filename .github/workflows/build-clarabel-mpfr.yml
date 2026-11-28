@@ -10,13 +10,15 @@
 # in a called workflow checks out the CALLER, so the crate is the folio's.
 #
 # A folio calls it from its own workflow, on the triggers it wants (a change
-# to the crate, a weekly refresh):
+# to the crate, a weekly refresh), passing the MPFR solver/evaluator crate
+# inside its declared top-level `crates/` Cargo workspace (`compute-author`
+# §4.1; legacy `tools/hecke-engine` default kept for `two-phase-move` callers):
 #
 #   jobs:
 #     clarabel:
 #       uses: litlfred/folio-assistant-sci/.github/workflows/build-clarabel-mpfr.yml@main
 #       with:
-#         crate: tools/hecke-engine
+#         crate: crates/clarabel-eval
 name: Build clarabel-MPFR binary
 
 on:
