@@ -19,7 +19,7 @@
       "graphTypologies": [
         "skills"
       ],
-      "description": "The science layer's Lean tooling skills: `lean-formal-edges`, elaborated formal dependencies between `lean.ref` declarations, and `lean-html-docs`, a folio's doc-gen4 render published with the harness chrome."
+      "description": "The science layer's Lean tooling skills: `lean-formal-edges`, elaborated formal dependencies between `lean.ref` declarations, `lean-html-docs`, a folio's doc-gen4 render published with the harness chrome, and `lean-library-ingestion`, a Lean library linearised into a textbook paper."
     },
     {
       "id": "data-skills",
