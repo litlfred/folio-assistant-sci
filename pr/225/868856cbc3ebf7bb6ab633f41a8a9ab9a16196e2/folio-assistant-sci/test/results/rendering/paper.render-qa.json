@@ -1,0 +1,28 @@
+{
+  "$schema": "folio-paper-render-qa/v1",
+  "subject": {
+    "kind": "paper-render",
+    "id": "paper"
+  },
+  "maxDefinitionWords": 120,
+  "leanNamespaces": [
+    "Mathlib",
+    "CategoryTheory"
+  ],
+  "checks": {
+    "placeholder-link": "n/a",
+    "lean-in-narrative": "n/a",
+    "definition-length": "n/a",
+    "multiply-defined": "n/a",
+    "broken-hyphen": "n/a"
+  },
+  "counts": {
+    "na": 5
+  },
+  "placeholderLinks": [],
+  "leanInNarrative": [],
+  "longDefinitions": [],
+  "multiplyDefined": [],
+  "brokenHyphens": [],
+  "reason": "no rendered paper under build/paper (no chapters/*.tex), so nothing was read: not applicable, not clean"
+}
